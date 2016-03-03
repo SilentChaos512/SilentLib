@@ -52,13 +52,12 @@ public class ItemNamedSubtypes extends ItemSL {
     return models;
   }
 
-  @Override
-  public String getUnlocalizedName(ItemStack stack) {
+  public String getNameForStack(ItemStack stack) {
 
     int meta = stack.getItemDamage();
     if (meta >= 0 && meta < names.length) {
-      return "item." + modId + ":" + names[meta];
+      return names[meta];
     }
-    return super.getUnlocalizedName(stack);
+    return super.getNameForStack(stack);
   }
 }

@@ -15,6 +15,7 @@ public interface IRegistryObject {
   // Formerly IHasVariants
   public String getName();
   public String getFullName();
+  public String getModId();
   //public List<String> getVariantNames();
 
   public List<ModelResourceLocation> getVariants();

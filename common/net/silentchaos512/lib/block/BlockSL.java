@@ -66,6 +66,12 @@ public class BlockSL extends Block implements IRegistryObject {
   }
 
   @Override
+  public String getModId() {
+
+    return modId;
+  }
+
+  @Override
   public List<ModelResourceLocation> getVariants() {
 
     if (hasSubtypes) {
@@ -81,7 +87,6 @@ public class BlockSL extends Block implements IRegistryObject {
   @Override
   public boolean registerModels() {
 
-    // TODO Auto-generated method stub
     return false;
   }
 

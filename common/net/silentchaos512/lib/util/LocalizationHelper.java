@@ -9,10 +9,26 @@ import net.minecraft.util.StatCollector;
 public class LocalizationHelper {
 
   public final String modId;
+  private boolean replacesAmpersandWithSectionSign = true;
 
+  /**
+   * Constructor. The mod ID is converted to lower case.
+   * 
+   * @param modId
+   */
   public LocalizationHelper(String modId) {
 
     this.modId = modId.toLowerCase();
+  }
+
+  /**
+   * Sets whether or not to replace ampersands with section signs. This allows formatting codes to easily be used in
+   * localization files.
+   */
+  public LocalizationHelper setReplaceAmpersand(boolean value) {
+
+    replacesAmpersandWithSectionSign = value;
+    return this;
   }
 
   // ===============
@@ -21,7 +37,11 @@ public class LocalizationHelper {
 
   public String getLocalizedString(String key) {
 
-    return StatCollector.translateToLocal(key).trim();
+    String str = StatCollector.translateToLocal(key).trim();
+    if (replacesAmpersandWithSectionSign) {
+      str = str.replaceAll("&", "\u00a7");
+    }
+    return str;
   }
 
   public String getLocalizedString(String prefix, String key) {
@@ -49,7 +69,7 @@ public class LocalizationHelper {
 
   public List<String> getBlockDescriptionLines(String blockName) {
 
-    return getDescriptionLines("block." + modId + ":" + blockName + ".desc");
+    return getDescriptionLines("tile." + modId + ":" + blockName + ".desc");
   }
 
   public List<String> getItemDescriptionLines(String itemName) {
@@ -60,11 +80,20 @@ public class LocalizationHelper {
   public List<String> getDescriptionLines(String key) {
 
     List<String> list = Lists.newArrayList();
-    String line = getLocalizedString(key + 0);
-    for (int i = 0; !line.equals(key); ++i) {
+    int i = 1;
+    String line = getLocalizedString(key + i);
+    while (!line.equals(key + i)) {
       list.add(line);
-      line = getLocalizedString(key + i);
+      line = getLocalizedString(key + ++i);
     }
+
+    if (list.isEmpty()) {
+      line = getLocalizedString(key);
+      if (!line.equals(key)) {
+        list.add(line);
+      }
+    }
+
     return list;
   }
 }
