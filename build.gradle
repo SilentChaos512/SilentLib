@@ -1,0 +1,68 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:2.1-SNAPSHOT'
+    }
+}
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+//plugins {
+//    id "net.minecraftforge.gradle.forge" version "2.0.2"
+//}
+
+version = "1.0.0"
+group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+archivesBaseName = "SilentLib-1.8.9"
+
+minecraft {
+    version = "1.8.9-11.15.0.1675"
+    runDir = "eclipse"
+
+    replace "@VERSION@", project.version
+    replaceIn "SilentLib.java"
+    
+    mappings = "stable_20"
+    useDepAts = true
+}
+
+repositories {
+  maven {
+    url "http://dvs1.progwml6.com/files/maven"
+  }
+}
+dependencies {
+  //deobfCompile "mezz.jei:jei_1.8.9:2.21.0.98"
+}
+
+processResources
+{
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+                
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+        
+    // copy everything else, thats not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+sourceSets {
+  main {
+    java { srcDirs = ["$projectDir/common"] }
+    resources { srcDirs = ["$projectDir/resources"] }
+  }
+}

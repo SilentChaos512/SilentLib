@@ -1,0 +1,108 @@
+package net.silentchaos512.lib.item;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.silentchaos512.lib.registry.IRegistryObject;
+
+public class ItemSL extends Item implements IRegistryObject {
+
+  protected int subItemCount;
+  protected String itemName;
+  protected String modId;
+
+  public ItemSL(int subItemCount, String modId, String name) {
+
+    this.subItemCount = subItemCount;
+    this.modId = modId.toLowerCase();
+    setHasSubtypes(subItemCount > 1);
+    setUnlocalizedName(name);
+  }
+
+  // =======================
+  // IRegistryObject methods
+  // =======================
+
+  @Override
+  public void addRecipes() {
+
+  }
+
+  @Override
+  public void addOreDict() {
+
+  }
+
+  @Override
+  public String getName() {
+
+    return itemName;
+  }
+
+  @Override
+  public String getFullName() {
+
+    return modId + ":" + getName();
+  }
+
+  @Override
+  public List<ModelResourceLocation> getVariants() {
+
+    if (hasSubtypes) {
+      List<ModelResourceLocation> models = Lists.newArrayList();
+      for (int i = 0; i < subItemCount; ++i) {
+        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
+      }
+      return models;
+    }
+    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+  }
+
+  @Override
+  public boolean registerModels() {
+
+    // Let SRegistry handle model registration by default. Override if necessary.
+    return false;
+  }
+
+  // ==============
+  // Item overrides
+  // ==============
+
+  @Override
+  public void getSubItems(Item item, CreativeTabs tab, List list) {
+
+    if (hasSubtypes) {
+      for (int i = 0; i < subItemCount; ++i) {
+        list.add(new ItemStack(item, 1, i));
+      }
+    } else {
+      list.add(new ItemStack(this));
+    }
+  }
+
+  @Override
+  public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced) {
+
+    // TODO
+  }
+
+  @Override
+  public String getUnlocalizedName(ItemStack stack) {
+
+    return "item." + modId + ":" + itemName + (hasSubtypes ? stack.getItemDamage() : "");
+  }
+
+  @Override
+  public Item setUnlocalizedName(String name) {
+
+    this.itemName = name;
+    return super.setUnlocalizedName(name);
+  }
+}
