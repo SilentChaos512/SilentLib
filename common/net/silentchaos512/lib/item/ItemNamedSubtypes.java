@@ -1,0 +1,64 @@
+package net.silentchaos512.lib.item;
+
+import java.util.List;
+
+import com.google.common.collect.Lists;
+
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.item.ItemStack;
+
+/**
+ * While ItemSL assigns numbers to subitems, this class will allow you to assign names instead, essentially packing
+ * multiple items into one ID. Good for "crafting material" items.
+ * 
+ * Note that you should not change the order of the names list, because that will change the meta of the item! Use
+ * ItemNamedSubtypesSorted if you want to reorganize the order of the items without changing their meta.
+ * 
+ * @author SilentChaos512
+ *
+ */
+public class ItemNamedSubtypes extends ItemSL {
+
+  public final String[] names;
+
+  public ItemNamedSubtypes(String[] names, String modId, String baseName) {
+
+    super(names.length, modId, baseName);
+    this.names = names;
+  }
+
+  public ItemStack getStack(String name) {
+
+    return getStack(name, 1);
+  }
+
+  public ItemStack getStack(String name, int count) {
+
+    for (int meta = 0; meta < names.length; ++meta) {
+      if (name.equals(names[meta])) {
+        return new ItemStack(this, count, meta);
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public List<ModelResourceLocation> getVariants() {
+
+    List<ModelResourceLocation> models = Lists.newArrayList();
+    for (String name : names) {
+      models.add(new ModelResourceLocation(modId + ":" + name, "inventory"));
+    }
+    return models;
+  }
+
+  @Override
+  public String getUnlocalizedName(ItemStack stack) {
+
+    int meta = stack.getItemDamage();
+    if (meta >= 0 && meta < names.length) {
+      return "item." + modId + ":" + names[meta];
+    }
+    return super.getUnlocalizedName(stack);
+  }
+}
