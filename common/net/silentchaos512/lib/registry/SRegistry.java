@@ -120,7 +120,7 @@ public class SRegistry {
 
   public void clientInit() {
 
-    registerModels(); // TODO: Should this be in init?
+    registerModels();
   }
 
   public void clientPostInit() {

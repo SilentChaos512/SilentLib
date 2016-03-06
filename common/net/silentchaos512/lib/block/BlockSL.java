@@ -15,7 +15,7 @@ import net.silentchaos512.lib.registry.IRegistryObject;
 
 public class BlockSL extends Block implements IRegistryObject {
 
-  protected int subBlockCount;
+  protected final int subBlockCount;
   protected boolean hasSubtypes = false;
   protected String blockName;
   protected String modId;
@@ -23,6 +23,7 @@ public class BlockSL extends Block implements IRegistryObject {
   public BlockSL(int subBlockCount, String modId, String name, Material material) {
 
     super(material);
+    this.subBlockCount = subBlockCount;
     this.modId = modId.toLowerCase();
     setUnlocalizedName(name);
     setHasSubtypes(subBlockCount > 1);
@@ -99,7 +100,7 @@ public class BlockSL extends Block implements IRegistryObject {
 
     if (hasSubtypes) {
       for (int i = 0; i < subBlockCount; ++i) {
-        list.add(new ItemStack(this, 1, i));
+        list.add(new ItemStack(item, 1, i));
       }
     } else {
       list.add(new ItemStack(item));
