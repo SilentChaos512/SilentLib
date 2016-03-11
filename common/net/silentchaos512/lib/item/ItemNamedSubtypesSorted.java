@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import scala.actors.threadpool.Arrays;
 
 /**
  * Same as ItemNamedSubtypes, but the order the subitems are listed can be changed with a sorted names list. You should
@@ -22,6 +23,27 @@ public class ItemNamedSubtypesSorted extends ItemNamedSubtypes {
 
     super(names, modId, baseName);
     this.sortedNames = sortedNames;
+    checkArrays();
+  }
+
+  protected void checkArrays() {
+
+    // Make sure the names and sortedNames contain the same elements.
+    if (names.length != sortedNames.length) {
+      throw new IllegalArgumentException("names and sortedNames are different lengths!");
+    }
+
+    String[] array1 = (String[]) Arrays.copyOf(names, names.length);
+    String[] array2 = (String[]) Arrays.copyOf(sortedNames, sortedNames.length);
+    Arrays.sort(array1);
+    Arrays.sort(array2);
+
+    for (int i = 0; i < array1.length; ++i) {
+      if (!array1[i].equals(array2[i])) {
+        throw new IllegalArgumentException(
+            "names and sortedNames don't contain the same elements!");
+      }
+    }
   }
 
   @Override

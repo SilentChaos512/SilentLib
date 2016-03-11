@@ -27,6 +27,11 @@ public class ItemNamedSubtypes extends ItemSL {
     this.names = names;
   }
 
+  public int getMetaFor(String name) {
+
+    return getStack(name).getItemDamage();
+  }
+
   public ItemStack getStack(String name) {
 
     return getStack(name, 1);
