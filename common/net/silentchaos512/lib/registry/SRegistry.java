@@ -16,6 +16,8 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.silentchaos512.lib.block.BlockSL;
@@ -135,6 +137,7 @@ public class SRegistry {
     }
   }
 
+  @SideOnly(Side.CLIENT)
   protected void registerModelVariants() {
 
     for (IRegistryObject obj : registryObjects) {
@@ -153,6 +156,7 @@ public class SRegistry {
     }
   }
 
+  @SideOnly(Side.CLIENT)
   protected void registerModels() {
 
     ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
