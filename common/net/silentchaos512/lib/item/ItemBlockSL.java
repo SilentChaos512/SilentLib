@@ -8,6 +8,7 @@ import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.block.BlockSL;
+import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
@@ -25,8 +26,10 @@ public class ItemBlockSL extends ItemBlock {
     setMaxDamage(0);
 
     if (block instanceof BlockSL) {
-      BlockSL blockSL = (BlockSL) block;
-      setHasSubtypes(blockSL.getHasSubtypes());
+      setHasSubtypes(((BlockSL) block).getHasSubtypes());
+    }
+    if (block instanceof IHasSubtypes) {
+      setHasSubtypes(((IHasSubtypes) block).hasSubtypes());
     }
     if (block instanceof IRegistryObject) {
       IRegistryObject obj = (IRegistryObject) block;
