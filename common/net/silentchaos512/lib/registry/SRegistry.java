@@ -143,10 +143,16 @@ public class SRegistry {
     for (IRegistryObject obj : registryObjects) {
       Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
       List<ModelResourceLocation> models = obj.getVariants();
-      // TODO: Remove null elements?
+      // Remove nulls
+      List<ModelResourceLocation> nonNullModels = Lists.newArrayList();
+      for (ModelResourceLocation m : models) {
+        if (m != null) {
+          nonNullModels.add(m);
+        }
+      }
 
       ModelLoader.registerItemVariants(item,
-          models.toArray(new ModelResourceLocation[models.size()]));
+          nonNullModels.toArray(new ModelResourceLocation[nonNullModels.size()]));
 
       // Custom mesh?
       // ItemMeshDefinition mesh = obj.getCustomMesh();
