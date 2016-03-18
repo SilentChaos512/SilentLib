@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.BlockPos;
+import net.minecraft.util.math.BlockPos;
 
 public class DimensionalPosition {
 
