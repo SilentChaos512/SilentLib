@@ -23,22 +23,29 @@ archivesBaseName = "SilentLib-1.9"
 minecraft {
     version = "1.9-12.16.0.1767-1.9"
     runDir = "eclipse"
-
+    
     replace "@VERSION@", project.version
     replaceIn "SilentLib.java"
-    
+
     mappings = "snapshot_20160312"
-    useDepAts = true
 }
 
-//repositories {
-//  maven {
-//    url "http://dvs1.progwml6.com/files/maven"
-//  }
-//}
-//dependencies {
-//  deobfCompile "mezz.jei:jei_1.8.9:2.21.0.98"
-//}
+dependencies {
+
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+sourceSets {
+  main {
+    java { srcDirs = ["$projectDir/common"] }
+    resources { srcDirs = ["$projectDir/resources"] }
+  }
+}
 
 processResources
 {
@@ -58,11 +65,4 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
-}
-
-sourceSets {
-  main {
-    java { srcDirs = ["$projectDir/common"] }
-    resources { srcDirs = ["$projectDir/resources"] }
-  }
 }

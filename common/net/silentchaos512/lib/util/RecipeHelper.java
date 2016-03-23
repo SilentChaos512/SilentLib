@@ -4,6 +4,7 @@ import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.oredict.ShapedOreRecipe;
 
 public class RecipeHelper {
 
@@ -37,16 +38,15 @@ public class RecipeHelper {
    *          The item being crafted.
    * @param middleStack
    *          The item in the middle of the crafting grid.
-   * @param surroundingObjects
+   * @param surrounding
    *          The item(s) surrounding the middle item. Order affects the recipe.
    */
-  public static void addSurround(ItemStack output, ItemStack middleStack,
-      Object... surroundingObjects) {
+  public static void addSurround(ItemStack output, ItemStack middleStack, Object... surrounding) {
 
-    ItemStack[] stacks = new ItemStack[surroundingObjects.length];
+    ItemStack[] stacks = new ItemStack[surrounding.length];
 
     int i = -1;
-    for (Object obj : surroundingObjects) {
+    for (Object obj : surrounding) {
       ++i;
       if (obj instanceof Block) {
         stacks[i] = new ItemStack((Block) obj);
@@ -57,7 +57,7 @@ public class RecipeHelper {
       }
     }
 
-    switch (surroundingObjects.length) {
+    switch (surrounding.length) {
       case 0: {
         // No surrounding stacks?
         throw new IllegalArgumentException("No surrounding items!");
@@ -85,6 +85,34 @@ public class RecipeHelper {
         // Too many things!
         throw new IllegalArgumentException("Too many items!");
       }
+    }
+  }
+
+  public static void addSurroundOre(ItemStack output, Object middle, Object... surrounding) {
+
+    switch (surrounding.length) {
+      case 0:
+        // No surrounding stacks?
+        throw new IllegalArgumentException("No surrounding items!");
+      case 1:
+        GameRegistry.addRecipe(
+            new ShapedOreRecipe(output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]));
+        break;
+      case 2:
+        GameRegistry.addRecipe(new ShapedOreRecipe(output, "xyx", "ycy", "xyx", 'c', middle, 'x',
+            surrounding[0], 'y', surrounding[1]));
+        break;
+      case 3:
+        GameRegistry.addRecipe(new ShapedOreRecipe(output, " xy", "zcz", "yx ", 'c', middle, 'x',
+            surrounding[0], 'y', surrounding[1], 'z', surrounding[2]));
+        break;
+      case 4:
+        GameRegistry.addRecipe(new ShapedOreRecipe(output, "xyz", "dcd", "zyx", 'c', middle, 'x',
+            surrounding[0], 'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]));
+        break;
+      default:
+        // Too many things!
+        throw new IllegalArgumentException("Too many items!");
     }
   }
 }
