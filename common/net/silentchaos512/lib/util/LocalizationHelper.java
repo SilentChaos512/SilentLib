@@ -63,6 +63,16 @@ public class LocalizationHelper {
     return getLocalizedString("wiki", key);
   }
 
+  public String getBlockSubText(String blockName, String key) {
+
+    return getLocalizedString("block", blockName +"." + key);
+  }
+
+  public String getItemSubText(String itemName, String key) {
+
+    return getLocalizedString("item", itemName + "." + key);
+  }
+
   // =================
   // Description lines
   // =================
