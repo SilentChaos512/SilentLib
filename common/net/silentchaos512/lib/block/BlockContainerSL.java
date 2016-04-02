@@ -5,23 +5,26 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.World;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 
-public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
+public class BlockContainerSL extends BlockContainer implements IRegistryObject, IHasSubtypes {
 
   protected final int subBlockCount;
   protected boolean hasSubtypes = false;
   protected String blockName;
   protected String modId;
 
-  public BlockSL(int subBlockCount, String modId, String name, Material material) {
+  protected BlockContainerSL(int subBlockCount, String modId, String name, Material material) {
 
     super(material);
     this.subBlockCount = subBlockCount;
@@ -29,6 +32,14 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     setUnlocalizedName(name);
   }
 
+  @Override
+  public TileEntity createNewTileEntity(World worldIn, int meta) {
+
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
   public boolean hasSubtypes() {
 
     return subBlockCount > 1;

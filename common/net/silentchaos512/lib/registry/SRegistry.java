@@ -20,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import net.silentchaos512.lib.block.BlockContainerSL;
 import net.silentchaos512.lib.block.BlockSL;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.item.ItemSL;
@@ -40,6 +41,11 @@ public class SRegistry {
   }
 
   public Block registerBlock(BlockSL block) {
+
+    return registerBlock(block, block.getName());
+  }
+
+  public Block registerBlock(BlockContainerSL block) {
 
     return registerBlock(block, block.getName());
   }

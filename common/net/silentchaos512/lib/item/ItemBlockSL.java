@@ -25,9 +25,6 @@ public class ItemBlockSL extends ItemBlock {
     this.block = block;
     setMaxDamage(0);
 
-    if (block instanceof BlockSL) {
-      setHasSubtypes(((BlockSL) block).getHasSubtypes());
-    }
     if (block instanceof IHasSubtypes) {
       setHasSubtypes(((IHasSubtypes) block).hasSubtypes());
     }
