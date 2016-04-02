@@ -17,7 +17,6 @@ import net.silentchaos512.lib.registry.IRegistryObject;
 public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
   protected final int subBlockCount;
-  protected boolean hasSubtypes = false;
   protected String blockName;
   protected String modId;
 
@@ -69,7 +68,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   @Override
   public List<ModelResourceLocation> getVariants() {
 
-    if (hasSubtypes) {
+    if (hasSubtypes()) {
       List<ModelResourceLocation> models = Lists.newArrayList();
       for (int i = 0; i < subBlockCount; ++i) {
         models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
@@ -92,7 +91,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   @Override
   public void getSubBlocks(Item item, CreativeTabs tab, List list) {
 
-    if (hasSubtypes) {
+    if (hasSubtypes()) {
       for (int i = 0; i < subBlockCount; ++i) {
         list.add(new ItemStack(item, 1, i));
       }
@@ -104,7 +103,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   @Override
   public int damageDropped(IBlockState state) {
 
-    return hasSubtypes ? getMetaFromState(state) : 0;
+    return hasSubtypes() ? getMetaFromState(state) : 0;
   }
 
   @Override
