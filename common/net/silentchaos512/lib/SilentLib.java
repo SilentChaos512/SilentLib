@@ -8,10 +8,11 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
-@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_ID, version = "@VERSION@")
+@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_ID, version = "@VERSION@", dependencies = SilentLib.DEPENDENCIES)
 public class SilentLib {
 
   public static final String MOD_ID = "SilentLib";
+  public static final String DEPENDENCIES = "required-after:Forge@[12.16.0.1826,);";
 
   @Instance(MOD_ID)
   public static SilentLib instance;

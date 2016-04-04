@@ -14,6 +14,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -52,16 +53,30 @@ public class SRegistry {
 
   public Block registerBlock(Block block, String key) {
 
-    return registerBlock(block, key, ItemBlockSL.class);
+    return registerBlock(block, key, new ItemBlockSL(block));
   }
 
-  public Block registerBlock(Block block, String key, Class<? extends ItemBlock> itemClass) {
+  public Block registerBlock(BlockSL block, ItemBlock itemBlock) {
+
+    return registerBlock(block, block.getName(), itemBlock);
+  }
+
+  public Block registerBlock(BlockContainerSL block, ItemBlock itemBlock) {
+
+    return registerBlock(block, block.getName(), itemBlock);
+  }
+
+  public Block registerBlock(Block block, String key, ItemBlock itemBlock) {
 
     blocks.put(key, block);
     if (block instanceof IRegistryObject) {
       registryObjects.add((IRegistryObject) block);
     }
-    GameRegistry.registerBlock(block, itemClass, key);
+
+    ResourceLocation resource = new ResourceLocation(resourcePrefix + key);
+    block.setRegistryName(resource);
+    GameRegistry.register(block);
+    GameRegistry.register(itemBlock, resource);
     return block;
   }
 
@@ -76,7 +91,10 @@ public class SRegistry {
     if (item instanceof IRegistryObject) {
       registryObjects.add((IRegistryObject) item);
     }
-    GameRegistry.registerItem(item, key);
+
+    ResourceLocation resource = new ResourceLocation(resourcePrefix + key);
+//    item.setRegistryName(resource);
+    GameRegistry.register(item, resource);
     return item;
   }
 

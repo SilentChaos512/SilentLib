@@ -21,7 +21,7 @@ group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-nam
 archivesBaseName = "SilentLib-1.9"
 
 minecraft {
-    version = "1.9-12.16.0.1806-1.9"
+    version = "1.9-12.16.0.1833-1.9"
     runDir = "eclipse"
     
     replace "@VERSION@", project.version
