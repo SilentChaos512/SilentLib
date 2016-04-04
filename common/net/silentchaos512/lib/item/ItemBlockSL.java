@@ -7,14 +7,12 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.block.BlockSL;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemBlockSL extends ItemBlock {
 
-  protected Block block;
   protected String blockName = "null";
   protected String unlocalizedName = "null";
   protected String modId = "null";
@@ -22,7 +20,6 @@ public class ItemBlockSL extends ItemBlock {
   public ItemBlockSL(Block block) {
 
     super(block);
-    this.block = block;
     setMaxDamage(0);
 
     if (block instanceof IHasSubtypes) {
@@ -43,12 +40,20 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced) {
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
+      boolean advanced) {
 
-    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-    if (loc != null) {
-      String name = getNameForStack(stack);
-      list.addAll(loc.getBlockDescriptionLines(name));
+    // Get tooltip from block? (New method)
+    int length = list.size();
+    block.addInformation(stack, player, list, advanced);
+
+    // If block doesn't add anything, use the old method.
+    if (length == list.size()) {
+      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+      if (loc != null) {
+        String name = getNameForStack(stack);
+        list.addAll(loc.getBlockDescriptionLines(name));
+      }
     }
   }
 
