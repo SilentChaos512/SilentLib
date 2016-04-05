@@ -9,6 +9,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.registry.IHasSubtypes;
@@ -31,6 +32,11 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   public boolean hasSubtypes() {
 
     return subBlockCount > 1;
+  }
+
+  public EnumRarity getRarity(int meta) {
+
+    return EnumRarity.COMMON;
   }
 
   // =======================

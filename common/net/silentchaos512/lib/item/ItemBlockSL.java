@@ -4,9 +4,11 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.block.BlockSL;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
@@ -37,6 +39,15 @@ public class ItemBlockSL extends ItemBlock {
   public int getMetadata(int meta) {
 
     return meta;
+  }
+
+  @Override
+  public EnumRarity getRarity(ItemStack stack) {
+
+    if (block instanceof BlockSL) {
+      return ((BlockSL) block).getRarity(stack.getItemDamage());
+    }
+    return super.getRarity(stack);
   }
 
   @Override
