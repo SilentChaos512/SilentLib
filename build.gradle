@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "1.0.3"
+version = "1.0.4"
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SilentLib-1.9"
 
@@ -32,19 +32,6 @@ minecraft {
 
 dependencies {
 
-}
-
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
-}
-
-sourceSets {
-  main {
-    java { srcDirs = ["$projectDir/common"] }
-    resources { srcDirs = ["$projectDir/resources"] }
-  }
 }
 
 processResources
@@ -65,4 +52,29 @@ processResources
     from(sourceSets.main.resources.srcDirs) {
         exclude 'mcmod.info'
     }
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+jar {
+    //classifier = "universal"
+}
+task deobfJar(type: Jar) {
+    from(sourceSets.main.output) {
+        classifier = "deobf"
+    }
+}
+artifacts {
+    archives deobfJar
+}
+
+sourceSets {
+  main {
+    java { srcDirs = ["$projectDir/common"] }
+    resources { srcDirs = ["$projectDir/resources"] }
+  }
 }
