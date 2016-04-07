@@ -10,12 +10,17 @@ import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.entity.Render;
+import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -93,7 +98,7 @@ public class SRegistry {
     }
 
     ResourceLocation resource = new ResourceLocation(resourcePrefix + key);
-//    item.setRegistryName(resource);
+    // item.setRegistryName(resource);
     GameRegistry.register(item, resource);
     return item;
   }
@@ -101,6 +106,19 @@ public class SRegistry {
   public void registerTileEntity(Class<? extends TileEntity> tileClass, String key) {
 
     GameRegistry.registerTileEntity(tileClass, "tile." + resourcePrefix + key);
+  }
+
+  @SideOnly(Side.CLIENT)
+  public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass,
+      TileEntitySpecialRenderer<T> renderer) {
+
+    ClientRegistry.bindTileEntitySpecialRenderer(tileClass, renderer);
+  }
+
+  @SideOnly(Side.CLIENT)
+  public void registerEntityRenderer(Class<? extends Entity> entityClass, Render renderer) {
+
+    Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(entityClass, renderer);
   }
 
   public IRecipe addRecipeHandler(Class<? extends IRecipe> recipeClass, String name,
