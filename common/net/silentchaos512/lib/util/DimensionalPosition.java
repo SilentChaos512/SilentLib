@@ -5,6 +5,8 @@ import net.minecraft.util.math.BlockPos;
 
 public class DimensionalPosition {
 
+  public static final DimensionalPosition ZERO = new DimensionalPosition(0, 0, 0, 0);
+
   public final int x, y, z, dim;
 
   public DimensionalPosition(BlockPos pos, int dim) {
@@ -37,5 +39,21 @@ public class DimensionalPosition {
   public BlockPos toBlockPos() {
 
     return new BlockPos(x, y, z);
+  }
+
+  @Override
+  public String toString() {
+
+    return String.format("(%d, %d, %d) in dimension %d", x, y, z, dim);
+  }
+
+  @Override
+  public boolean equals(Object other) {
+
+    if (other == null || !(other instanceof DimensionalPosition)) {
+      return false;
+    }
+    DimensionalPosition pos = (DimensionalPosition) other;
+    return x == pos.x && y == pos.y && z == pos.z && dim == pos.dim;
   }
 }
