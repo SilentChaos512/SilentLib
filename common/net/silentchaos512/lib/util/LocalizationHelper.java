@@ -65,7 +65,7 @@ public class LocalizationHelper {
 
   public String getBlockSubText(String blockName, String key) {
 
-    return getLocalizedString("block", blockName +"." + key);
+    return getLocalizedString("tile", blockName +"." + key);
   }
 
   public String getItemSubText(String itemName, String key) {
