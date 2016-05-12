@@ -1,9 +1,6 @@
 package net.silentchaos512.lib.block;
 
-import java.util.List;
-
 import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -14,6 +11,8 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
+
+import java.util.List;
 
 public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
