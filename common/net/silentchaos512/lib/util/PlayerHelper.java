@@ -2,6 +2,7 @@ package net.silentchaos512.lib.util;
 
 import java.util.List;
 
+import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import net.minecraft.entity.item.EntityItem;
@@ -52,29 +53,50 @@ public class PlayerHelper {
     }
   }
 
+  static Predicate<ItemStack> predicateAny = new Predicate() {
+
+    @Override
+    public boolean apply(Object input) {
+
+      return true;
+    }
+  };
+
   public static List<ItemStack> getNonNullStacks(EntityPlayer player) {
 
-    return getNonNullStacks(player, true, true, true);
+    return getNonNullStacks(player, true, true, true, predicateAny);
+  }
+
+  public static List<ItemStack> getNonNullStacks(EntityPlayer player,
+      Predicate<ItemStack> predicate) {
+
+    return getNonNullStacks(player, true, true, true, predicate);
   }
 
   public static List<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor) {
 
+    return getNonNullStacks(player, includeMain, includeOffHand, includeArmor, predicateAny);
+  }
+
+  public static List<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
+      boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
+
     List<ItemStack> list = Lists.newArrayList();
 
     if (includeMain)
       for (ItemStack stack : player.inventory.mainInventory)
-        if (stack != null)
+        if (stack != null && predicate.apply(stack))
           list.add(stack);
 
     if (includeOffHand)
       for (ItemStack stack : player.inventory.offHandInventory)
-        if (stack != null)
+        if (stack != null && predicate.apply(stack))
           list.add(stack);
 
     if (includeArmor)
       for (ItemStack stack : player.inventory.armorInventory)
-        if (stack != null)
+        if (stack != null && predicate.apply(stack))
           list.add(stack);
 
     return list;
