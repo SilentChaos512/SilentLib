@@ -11,6 +11,7 @@ public class LocalizationHelper {
 
   public final String modId;
   private boolean replacesAmpersandWithSectionSign = true;
+  private boolean hideFormatErrors = false;
 
   /**
    * Constructor. The mod ID is converted to lower case.
@@ -32,46 +33,55 @@ public class LocalizationHelper {
     return this;
   }
 
+  public LocalizationHelper setHideFormatErrors(boolean value) {
+
+    hideFormatErrors = value;
+    return this;
+  }
+
   // ===============
   // General methods
   // ===============
 
-  public String getLocalizedString(String key) {
+  public String getLocalizedString(String key, Object... parameters) {
 
-    String str = I18n.format(key).trim();
-    if (replacesAmpersandWithSectionSign) {
+    String str = I18n.format(key, parameters).trim();
+
+    if (replacesAmpersandWithSectionSign)
       str = str.replaceAll("&", "\u00a7");
-    }
+    if (hideFormatErrors)
+      str = str.replaceFirst("Format error: ", "");
+
     return str;
   }
 
-  public String getLocalizedString(String prefix, String key) {
+  public String getLocalizedString(String prefix, String key, Object... parameters) {
 
-    return getLocalizedString(prefix + "." + modId + ":" + key);
+    return getLocalizedString(prefix + "." + modId + ":" + key, parameters);
   }
 
   // ===============
   // Special methods
   // ===============
 
-  public String getMiscText(String key) {
+  public String getMiscText(String key, Object... parameters) {
 
-    return getLocalizedString("misc", key);
+    return getLocalizedString("misc", key, parameters);
   }
 
-  public String getWikiText(String key) {
+  public String getWikiText(String key, Object... parameters) {
 
-    return getLocalizedString("wiki", key);
+    return getLocalizedString("wiki", key, parameters);
   }
 
-  public String getBlockSubText(String blockName, String key) {
+  public String getBlockSubText(String blockName, String key, Object... parameters) {
 
-    return getLocalizedString("tile", blockName +"." + key);
+    return getLocalizedString("tile", blockName +"." + key, parameters);
   }
 
-  public String getItemSubText(String itemName, String key) {
+  public String getItemSubText(String itemName, String key, Object... parameters) {
 
-    return getLocalizedString("item", itemName + "." + key);
+    return getLocalizedString("item", itemName + "." + key, parameters);
   }
 
   // =================
@@ -90,6 +100,9 @@ public class LocalizationHelper {
 
   public List<String> getDescriptionLines(String key) {
 
+    boolean oldHideFormatErrors = hideFormatErrors;
+    hideFormatErrors = true;
+
     List<String> list = Lists.newArrayList();
     int i = 1;
     String line = getLocalizedString(key + i);
@@ -104,6 +117,8 @@ public class LocalizationHelper {
         list.add(line);
       }
     }
+
+    hideFormatErrors = oldHideFormatErrors;
 
     return list;
   }
