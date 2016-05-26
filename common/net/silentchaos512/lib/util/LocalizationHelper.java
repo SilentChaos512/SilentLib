@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.text.translation.LanguageMap;
 
 public class LocalizationHelper {
 
@@ -37,7 +38,7 @@ public class LocalizationHelper {
 
   public String getLocalizedString(String key) {
 
-    String str = I18n.translateToLocal(key).trim();
+    String str = I18n.format(key).trim();
     if (replacesAmpersandWithSectionSign) {
       str = str.replaceAll("&", "\u00a7");
     }
