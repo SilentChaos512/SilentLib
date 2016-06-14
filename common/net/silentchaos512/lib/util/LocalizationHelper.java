@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.client.resources.I18n;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -46,7 +47,10 @@ public class LocalizationHelper {
 
   public String getLocalizedString(String key, Object... parameters) {
 
-    String str = I18n.translateToLocalFormatted(key, parameters).trim();
+    if (FMLCommonHandler.instance().getSide() == Side.SERVER)
+      return key;
+
+    String str = I18n.format(key, parameters).trim();
 
     if (replacesAmpersandWithSectionSign)
       str = str.replaceAll("&", "\u00a7");
