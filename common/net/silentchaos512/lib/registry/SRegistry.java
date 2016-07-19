@@ -143,18 +143,18 @@ public class SRegistry {
 
   public void preInit() {
 
-    // TODO
+    for (IRegistryObject obj : registryObjects)
+      obj.addOreDict();
   }
 
   public void init() {
 
-    // TODO
-    addRecipesAndOreDictEntries();
+    for (IRegistryObject obj : registryObjects)
+      obj.addRecipes();
   }
 
   public void postInit() {
 
-    // TODO
   }
 
   public void clientPreInit() {
@@ -171,6 +171,10 @@ public class SRegistry {
 
   }
 
+  /**
+   * @deprecated Recipes and ore dictionary entries should be registered separately.
+   */
+  @Deprecated
   protected void addRecipesAndOreDictEntries() {
 
     for (IRegistryObject obj : registryObjects) {
