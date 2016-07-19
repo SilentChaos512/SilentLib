@@ -47,9 +47,11 @@ public class LocalizationHelper {
 
   public String getLocalizedString(String key, Object... parameters) {
 
+    // On server, use deprecated I18n.
     if (FMLCommonHandler.instance().getSide() == Side.SERVER)
-      return key;
+      return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(key, parameters);
 
+    // On client, use the new client-side I18n.
     String str = I18n.format(key, parameters).trim();
 
     if (replacesAmpersandWithSectionSign)
@@ -81,7 +83,7 @@ public class LocalizationHelper {
 
   public String getBlockSubText(String blockName, String key, Object... parameters) {
 
-    return getLocalizedString("tile", blockName +"." + key, parameters);
+    return getLocalizedString("tile", blockName + "." + key, parameters);
   }
 
   public String getItemSubText(String itemName, String key, Object... parameters) {
