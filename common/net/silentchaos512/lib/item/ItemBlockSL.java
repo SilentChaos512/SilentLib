@@ -38,7 +38,7 @@ public class ItemBlockSL extends ItemBlock {
   @Override
   public int getMetadata(int meta) {
 
-    return meta;
+    return meta & 0xF;
   }
 
   @Override
@@ -71,11 +71,11 @@ public class ItemBlockSL extends ItemBlock {
   @Override
   public String getUnlocalizedName(ItemStack stack) {
 
-    return unlocalizedName + (hasSubtypes ? stack.getItemDamage() : "");
+    return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
   }
 
   public String getNameForStack(ItemStack stack) {
 
-    return blockName + (hasSubtypes ? stack.getItemDamage() : "");
+    return blockName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
   }
 }
