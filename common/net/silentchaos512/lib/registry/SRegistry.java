@@ -33,9 +33,9 @@ import net.silentchaos512.lib.item.ItemSL;
 
 public class SRegistry {
 
-  private final Map<String, Block> blocks = Maps.newHashMap();
-  private final Map<String, Item> items = Maps.newHashMap();
-  private final List<IRegistryObject> registryObjects = Lists.newArrayList();
+  protected final Map<String, Block> blocks = Maps.newHashMap();
+  protected final Map<String, Item> items = Maps.newHashMap();
+  protected final List<IRegistryObject> registryObjects = Lists.newArrayList();
 
   public final String modId;
   public final String resourcePrefix;
@@ -143,14 +143,12 @@ public class SRegistry {
 
   public void preInit() {
 
-    for (IRegistryObject obj : registryObjects)
-      obj.addOreDict();
+    addOreDictEntries();
   }
 
   public void init() {
 
-    for (IRegistryObject obj : registryObjects)
-      obj.addRecipes();
+    addRecipes();
   }
 
   public void postInit() {
@@ -172,7 +170,7 @@ public class SRegistry {
   }
 
   /**
-   * @deprecated Recipes and ore dictionary entries should be registered separately.
+   * @deprecated Use addRecipes and addOreDictEntries instead.
    */
   @Deprecated
   protected void addRecipesAndOreDictEntries() {
@@ -181,6 +179,18 @@ public class SRegistry {
       obj.addOreDict();
       obj.addRecipes();
     }
+  }
+
+  protected void addRecipes() {
+
+    for (IRegistryObject obj : registryObjects)
+      obj.addRecipes();
+  }
+
+  protected void addOreDictEntries() {
+
+    for (IRegistryObject obj : registryObjects)
+      obj.addOreDict();
   }
 
   @SideOnly(Side.CLIENT)
