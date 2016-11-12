@@ -16,12 +16,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "1.0.12"
+version = "1.0.13"
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "SilentLib-1.9.4"
+archivesBaseName = "SilentLib-1.10.2"
 
 minecraft {
-    version = "1.9.4-12.17.0.1909-1.9.4"
+    version = "1.10.2-12.18.1.2072"
     runDir = "eclipse"
     
     replace "@VERSION@", project.version
