@@ -1,0 +1,4 @@
+Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
+
+1.1.0
+Modified SRegistry to use generics for block/item registry.
