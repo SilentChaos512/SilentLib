@@ -56,7 +56,8 @@ public class ItemBlockSL extends ItemBlock {
 
     // Get tooltip from block? (New method)
     int length = list.size();
-    block.addInformation(stack, player, list, advanced);
+    // FIXME
+    //block.addInformation(stack, player, list, advanced);
 
     // If block doesn't add anything, use the old method.
     if (length == list.size()) {

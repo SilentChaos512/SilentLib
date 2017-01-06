@@ -8,13 +8,15 @@ import com.google.common.collect.Lists;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentString;
+import net.silentchaos512.lib.SilentLib;
 
 public class PlayerHelper {
 
   public static void addChatMessage(EntityPlayer player, String msg) {
 
-    player.addChatMessage(new TextComponentString(msg));
+    player.sendMessage(new TextComponentString(msg));
   }
 
   public static void giveItem(EntityPlayer player, ItemStack stack) {
@@ -25,30 +27,22 @@ public class PlayerHelper {
   public static void giveItem(EntityPlayer player, ItemStack stack, double posX, double posY,
       double posZ) {
 
-    EntityItem entityItem = new EntityItem(player.worldObj, posX, posY, posZ, stack);
-    player.worldObj.spawnEntityInWorld(entityItem);
+    EntityItem entityItem = new EntityItem(player.world, posX, posY, posZ, stack);
+    entityItem.setDefaultPickupDelay();
+    player.world.spawnEntity(entityItem);
   }
 
   public static void removeItem(EntityPlayer player, ItemStack stack) {
 
-    for (int i = 0; i < player.inventory.mainInventory.length; ++i) {
-      if (stack == player.inventory.mainInventory[i]) {
-        player.inventory.mainInventory[i] = null;
-        return;
-      }
-    }
+    List<NonNullList<ItemStack>> inventories = Lists.newArrayList(player.inventory.mainInventory,
+        player.inventory.offHandInventory, player.inventory.armorInventory);
 
-    for (int i = 0; i < player.inventory.offHandInventory.length; ++i) {
-      if (stack == player.inventory.offHandInventory[i]) {
-        player.inventory.offHandInventory[i] = null;
-        return;
-      }
-    }
-
-    for (int i = 0; i < player.inventory.armorInventory.length; ++i) {
-      if (stack == player.inventory.armorInventory[i]) {
-        player.inventory.armorInventory[i] = null;
-        return;
+    for (NonNullList<ItemStack> inv : inventories) {
+      for (int i = 0; i < inv.size(); ++i) {
+        if (stack == inv.get(i)) {
+          inv.set(i, ItemStack.EMPTY);
+          return;
+        }
       }
     }
   }
@@ -62,43 +56,70 @@ public class PlayerHelper {
     }
   };
 
-  public static List<ItemStack> getNonNullStacks(EntityPlayer player) {
+  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player) {
 
-    return getNonNullStacks(player, true, true, true, predicateAny);
+    return getNonEmptyStacks(player, true, true, true, predicateAny);
   }
 
-  public static List<ItemStack> getNonNullStacks(EntityPlayer player,
+  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player,
       Predicate<ItemStack> predicate) {
 
-    return getNonNullStacks(player, true, true, true, predicate);
+    return getNonEmptyStacks(player, true, true, true, predicate);
   }
 
-  public static List<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
+  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor) {
 
-    return getNonNullStacks(player, includeMain, includeOffHand, includeArmor, predicateAny);
+    return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor, predicateAny);
   }
 
-  public static List<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
+  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
 
-    List<ItemStack> list = Lists.newArrayList();
+    NonNullList<ItemStack> list = NonNullList.create();
 
     if (includeMain)
       for (ItemStack stack : player.inventory.mainInventory)
-        if (stack != null && predicate.apply(stack))
+        if (!stack.isEmpty() && predicate.apply(stack))
           list.add(stack);
 
     if (includeOffHand)
       for (ItemStack stack : player.inventory.offHandInventory)
-        if (stack != null && predicate.apply(stack))
+        if (!stack.isEmpty() && predicate.apply(stack))
           list.add(stack);
 
     if (includeArmor)
       for (ItemStack stack : player.inventory.armorInventory)
-        if (stack != null && predicate.apply(stack))
+        if (!stack.isEmpty() && predicate.apply(stack))
           list.add(stack);
 
     return list;
+  }
+
+  @Deprecated // Renamed to getNonEmptyStacks
+  public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player) {
+
+    return getNonEmptyStacks(player);
+  }
+
+  @Deprecated // Renamed to getNonEmptyStacks
+  public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player,
+      Predicate<ItemStack> predicate) {
+
+    return getNonEmptyStacks(player, predicate);
+  }
+
+  @Deprecated // Renamed to getNonEmptyStacks
+  public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
+      boolean includeOffHand, boolean includeArmor) {
+
+    return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor);
+  }
+
+  @Deprecated // Renamed to getNonEmptyStacks
+  public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
+      boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
+
+    return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor, predicate);
   }
 }

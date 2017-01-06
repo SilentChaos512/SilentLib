@@ -7,12 +7,16 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.silentchaos512.lib.util.LocalizationHelper;
+import net.silentchaos512.lib.util.LogHelper;
 
-@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_ID, version = "@VERSION@", dependencies = SilentLib.DEPENDENCIES)
+@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_NAME, version = "SL_VERSION", dependencies = SilentLib.DEPENDENCIES)
 public class SilentLib {
 
-  public static final String MOD_ID = "SilentLib";
-  public static final String DEPENDENCIES = "required-after:Forge@[12.16.0.1826,);";
+  public static final String MOD_ID = "silentlib";
+  public static final String MOD_NAME = "Silent Lib";
+  public static final String DEPENDENCIES = "required-after:forge@[13.19.0.2156,);";
+
+  public static LogHelper logHelper = new LogHelper(MOD_NAME);
 
   @Instance(MOD_ID)
   public static SilentLib instance;

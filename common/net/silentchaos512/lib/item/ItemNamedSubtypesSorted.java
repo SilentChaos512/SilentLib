@@ -1,10 +1,11 @@
 package net.silentchaos512.lib.item;
 
 import java.util.Arrays;
-import java.util.List;
 
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 
 /**
  * Same as ItemNamedSubtypes, but the order the subitems are listed can be changed with a sorted names list. You should
@@ -47,7 +48,7 @@ public class ItemNamedSubtypesSorted extends ItemNamedSubtypes {
   }
 
   @Override
-  public void getSubItems(Item item, CreativeTabs tab, List list) {
+  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
 
     for (String name : sortedNames) {
       list.add(getStack(name));

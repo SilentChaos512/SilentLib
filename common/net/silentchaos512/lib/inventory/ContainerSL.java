@@ -39,6 +39,6 @@ public class ContainerSL extends Container {
   @Override
   public boolean canInteractWith(EntityPlayer player) {
 
-    return tileInventory.isUseableByPlayer(player);
+    return tileInventory.isUsableByPlayer(player);
   }
 }

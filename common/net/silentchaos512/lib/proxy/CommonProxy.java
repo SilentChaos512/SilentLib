@@ -1,5 +1,8 @@
 package net.silentchaos512.lib.proxy;
 
+import net.minecraft.item.Item;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.silentchaos512.lib.registry.SRegistry;
 
 public class CommonProxy {

@@ -16,18 +16,18 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "1.1.0"
+version = "1.1.3"
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "SilentLib-1.10.2"
+archivesBaseName = "SilentLib-1.11"
 
 minecraft {
-    version = "1.10.2-12.18.1.2072"
+    version = "1.11-13.19.0.2156"
     runDir = "eclipse"
     
-    replace "@VERSION@", project.version
+    replace "SL_VERSION", project.version
     replaceIn "SilentLib.java"
 
-    mappings = "snapshot_20160518"
+    mappings = "snapshot_20161122"
 }
 
 dependencies {

@@ -9,6 +9,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 
@@ -94,7 +95,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   // ===============
 
   @Override
-  public void getSubBlocks(Item item, CreativeTabs tab, List list) {
+  public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
 
     if (hasSubtypes()) {
       for (int i = 0; i < subBlockCount; ++i) {
