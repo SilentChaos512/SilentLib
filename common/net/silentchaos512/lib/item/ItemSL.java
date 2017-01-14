@@ -97,7 +97,7 @@ public class ItemSL extends Item implements IRegistryObject {
   }
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced) {
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
     if (loc != null) {
