@@ -155,7 +155,7 @@ public class SRegistry {
    */
   public void registerTileEntity(Class<? extends TileEntity> tileClass, String key) {
 
-    String fullKey = "tile." + resourcePrefix + key/*.toLowerCase()*/;
+    String fullKey = "tile." + resourcePrefix + key;
     GameRegistry.registerTileEntity(tileClass, fullKey);
   }
 
@@ -280,7 +280,7 @@ public class SRegistry {
    */
   public void clientPreInit() {
 
-    registerModelVariants();
+    // registerModelVariants();
   }
 
   /**
@@ -323,43 +323,27 @@ public class SRegistry {
   }
 
   @SideOnly(Side.CLIENT)
-  protected void registerModelVariants() {
-
-    for (IRegistryObject obj : registryObjects) {
-      Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
-      List<ModelResourceLocation> models = obj.getVariants();
-      // Remove nulls
-      List<ModelResourceLocation> nonNullModels = Lists.newArrayList();
-      for (ModelResourceLocation m : models) {
-        if (m != null) {
-          nonNullModels.add(m);
-        }
-      }
-
-      ModelLoader.registerItemVariants(item,
-          nonNullModels.toArray(new ModelResourceLocation[nonNullModels.size()]));
-
-      // Custom mesh?
-      // ItemMeshDefinition mesh = obj.getCustomMesh();
-      // if (mesh != null) {
-      // ModelLoader.setCustomMeshDefinition(item, mesh);
-      // }
-    }
-  }
-
-  @SideOnly(Side.CLIENT)
   protected void registerModels() {
 
     ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+
     for (IRegistryObject obj : registryObjects) {
       if (!obj.registerModels()) {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         List<ModelResourceLocation> models = obj.getVariants();
-        for (int i = 0; i < models.size(); ++i) {
-          if (models.get(i) != null) {
+
+        // Register item variants. Nulls not allowed.
+        List<ModelResourceLocation> nonNullModels = Lists.newArrayList();
+        for (ModelResourceLocation m : models)
+          if (m != null)
+            nonNullModels.add(m);
+        ModelLoader.registerItemVariants(item,
+            nonNullModels.toArray(new ModelResourceLocation[nonNullModels.size()]));
+
+        // Register with the mesher. Nulls don't hurt this and metas must be correct.
+        for (int i = 0; i < models.size(); ++i)
+          if (models.get(i) != null)
             mesher.register(item, i, models.get(i));
-          }
-        }
       }
     }
   }
