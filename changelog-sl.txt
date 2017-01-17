@@ -1,5 +1,8 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+1.2.0
+Fixed: Forge blockstate JSONs not loading properly. This may prevent some models from existing mods from loading properly. It also creates a bit of log spam on load about missing models that I haven't figured out, but that doesn't hurt anything.
+
 1.1.0
 Fixed an issue with entity renderer registration.
 Modified SRegistry to use generics for block/item registry.

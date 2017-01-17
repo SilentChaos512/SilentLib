@@ -66,6 +66,8 @@ public class SRegistry {
    */
   public final String resourcePrefix;
 
+  protected boolean listModelsInPost = false;
+
   public SRegistry(String modId) {
 
     this.modId = modId;
@@ -296,6 +298,11 @@ public class SRegistry {
    */
   public void clientPostInit() {
 
+    if (listModelsInPost)
+      for (IRegistryObject obj : registryObjects)
+        for (ModelResourceLocation model : obj.getVariants())
+          if (model != null)
+            System.out.println(model);
   }
 
   /**
@@ -326,24 +333,20 @@ public class SRegistry {
   protected void registerModels() {
 
     ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+    ModelResourceLocation model;
 
     for (IRegistryObject obj : registryObjects) {
       if (!obj.registerModels()) {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         List<ModelResourceLocation> models = obj.getVariants();
 
-        // Register item variants. Nulls not allowed.
-        List<ModelResourceLocation> nonNullModels = Lists.newArrayList();
-        for (ModelResourceLocation m : models)
-          if (m != null)
-            nonNullModels.add(m);
-        ModelLoader.registerItemVariants(item,
-            nonNullModels.toArray(new ModelResourceLocation[nonNullModels.size()]));
-
-        // Register with the mesher. Nulls don't hurt this and metas must be correct.
-        for (int i = 0; i < models.size(); ++i)
-          if (models.get(i) != null)
-            mesher.register(item, i, models.get(i));
+        for (int i = 0; i < models.size(); ++i) {
+          model = models.get(i);
+          if (model != null) {
+            ModelLoader.registerItemVariants(item, model);
+            mesher.register(item, i, model);
+          }
+        }
       }
     }
   }
