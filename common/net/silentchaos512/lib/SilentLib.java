@@ -5,7 +5,10 @@ import java.util.Map;
 import com.google.common.collect.Maps;
 
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.silentchaos512.lib.debug.DataDump;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -31,5 +34,12 @@ public class SilentLib {
   public void registerLocalizationHelperForMod(String modId, LocalizationHelper loc) {
 
     locHelpers.put(modId.toLowerCase(), loc);
+  }
+
+  @EventHandler
+  public void postInit(FMLPostInitializationEvent event) {
+
+    DataDump.dumpEnchantments();
+    DataDump.dumpPotionEffects();
   }
 }
