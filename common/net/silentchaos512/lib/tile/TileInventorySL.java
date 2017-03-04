@@ -1,22 +1,22 @@
 package net.silentchaos512.lib.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.silentchaos512.lib.collection.ItemStackList;
+import net.silentchaos512.lib.util.StackHelper;
 
-public abstract class TileInventorySL extends TileEntity implements IInventory {
+public abstract class TileInventorySL extends TileEntity implements IInventorySL {
 
-  protected NonNullList<ItemStack> inventory;
+  protected ItemStackList inventory;
 
   public TileInventorySL() {
 
-    inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    inventory = ItemStackList.create(getSizeInventory());
   }
 
   @Override
@@ -40,15 +40,6 @@ public abstract class TileInventorySL extends TileEntity implements IInventory {
 
     // TODO Auto-generated method stub
     return false;
-  }
-
-  @Override
-  public boolean isEmpty() {
-
-    for (ItemStack stack : inventory)
-      if (!stack.isEmpty())
-        return false;
-    return true;
   }
 
   @Override
@@ -87,7 +78,7 @@ public abstract class TileInventorySL extends TileEntity implements IInventory {
   }
 
   @Override
-  public boolean isUsableByPlayer(EntityPlayer player) {
+  public boolean isUsable(EntityPlayer player) {
 
     return world.getTileEntity(pos) != this ? false : player.getDistanceSq(pos) <= 64.0;
   }
@@ -136,8 +127,8 @@ public abstract class TileInventorySL extends TileEntity implements IInventory {
 
     super.readFromNBT(tags);
 
-    inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-    ItemStackHelper.loadAllItems(tags, inventory);
+    inventory = ItemStackList.create(getSizeInventory());
+    StackHelper.loadAllItems(tags, inventory);
   }
 
   @Override
@@ -145,7 +136,7 @@ public abstract class TileInventorySL extends TileEntity implements IInventory {
 
     super.writeToNBT(tags);
 
-    ItemStackHelper.saveAllItems(tags, inventory);
+    StackHelper.saveAllItems(tags, inventory);
 
     return tags;
   }

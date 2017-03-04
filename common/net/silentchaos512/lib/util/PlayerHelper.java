@@ -9,21 +9,30 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextComponentString;
-import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.collection.ItemStackList;
 
 public class PlayerHelper {
 
+  /** @deprecated Use ChatHelper instead. */
+  @Deprecated
   public static void addChatMessage(EntityPlayer player, String msg) {
 
-    player.sendMessage(new TextComponentString(msg));
+    ChatHelper.sendMessage(player, msg);
   }
 
+  /**
+   * Gives the player an item. Currently, this just spawns an EntityItem on the player in all cases, since that seems to
+   * be the most reliable method. Spawns 1 block above player's feet.
+   */
   public static void giveItem(EntityPlayer player, ItemStack stack) {
 
     giveItem(player, stack, player.posX, player.posY + 1.0, player.posZ);
   }
 
+  /**
+   * Gives the player an item. Currently, this just spawns an EntityItem on the player in all cases, since that seems to
+   * be the most reliable method. This version allows an exact position to be given.
+   */
   public static void giveItem(EntityPlayer player, ItemStack stack, double posX, double posY,
       double posZ) {
 
@@ -32,6 +41,9 @@ public class PlayerHelper {
     player.world.spawnEntity(entityItem);
   }
 
+  /**
+   * Removes the stack from the player's inventory, if it exists.
+   */
   public static void removeItem(EntityPlayer player, ItemStack stack) {
 
     List<NonNullList<ItemStack>> inventories = Lists.newArrayList(player.inventory.mainInventory,
@@ -47,36 +59,27 @@ public class PlayerHelper {
     }
   }
 
-  static Predicate<ItemStack> predicateAny = new Predicate() {
+  public static ItemStackList getNonEmptyStacks(EntityPlayer player) {
 
-    @Override
-    public boolean apply(Object input) {
-
-      return true;
-    }
-  };
-
-  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player) {
-
-    return getNonEmptyStacks(player, true, true, true, predicateAny);
+    return getNonEmptyStacks(player, true, true, true, s -> true);
   }
 
-  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player,
+  public static ItemStackList getNonEmptyStacks(EntityPlayer player,
       Predicate<ItemStack> predicate) {
 
     return getNonEmptyStacks(player, true, true, true, predicate);
   }
 
-  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain,
+  public static ItemStackList getNonEmptyStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor) {
 
-    return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor, predicateAny);
+    return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor, s -> true);
   }
 
-  public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain,
+  public static ItemStackList getNonEmptyStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
 
-    NonNullList<ItemStack> list = NonNullList.create();
+    ItemStackList list = ItemStackList.create();
 
     if (includeMain)
       for (ItemStack stack : player.inventory.mainInventory)
@@ -96,27 +99,31 @@ public class PlayerHelper {
     return list;
   }
 
-  @Deprecated // Renamed to getNonEmptyStacks
+  /** @deprecated Renamed to getNonEmptyStacks */
+  @Deprecated
   public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player) {
 
     return getNonEmptyStacks(player);
   }
 
-  @Deprecated // Renamed to getNonEmptyStacks
+  /** @deprecated Renamed to getNonEmptyStacks */
+  @Deprecated
   public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player,
       Predicate<ItemStack> predicate) {
 
     return getNonEmptyStacks(player, predicate);
   }
 
-  @Deprecated // Renamed to getNonEmptyStacks
+  /** @deprecated Renamed to getNonEmptyStacks */
+  @Deprecated
   public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor) {
 
     return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor);
   }
 
-  @Deprecated // Renamed to getNonEmptyStacks
+  /** @deprecated Renamed to getNonEmptyStacks */
+  @Deprecated
   public static NonNullList<ItemStack> getNonNullStacks(EntityPlayer player, boolean includeMain,
       boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
 

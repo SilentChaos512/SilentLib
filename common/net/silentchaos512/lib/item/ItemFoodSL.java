@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -22,18 +23,24 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
-public class ItemSL extends Item implements IRegistryObject {
+public class ItemFoodSL extends ItemFood implements IRegistryObject {
 
   protected int subItemCount;
   protected String itemName;
   protected String modId;
 
-  public ItemSL(int subItemCount, String modId, String name) {
+  public ItemFoodSL(int subItemCount, String modId, String name, int amount, float saturation,
+      boolean isWolfFood) {
 
+    super(amount, saturation, isWolfFood);
     this.subItemCount = subItemCount;
     this.modId = modId.toLowerCase();
-    setHasSubtypes(subItemCount > 1);
     setUnlocalizedName(name);
+  }
+
+  public ItemFoodSL(int subItemCount, String modId, String name) {
+
+    this(subItemCount, modId, name, 0, 0f, false);
   }
 
   // =======================
@@ -127,15 +134,16 @@ public class ItemSL extends Item implements IRegistryObject {
   // ==============================
 
   @Override
-  public ActionResult<ItemStack> onItemRightClick(World world, EntityPlayer player, EnumHand hand) {
-
-    return clOnItemRightClick(world, player, hand);
-  }
-
-  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player,
+  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn,
       EnumHand hand) {
 
-    return super.onItemRightClick(world, player, hand);
+    return clOnItemRightClick(worldIn, playerIn, hand);
+  }
+
+  protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
+      EnumHand hand) {
+
+    return super.onItemRightClick(worldIn, playerIn, hand);
   }
 
   @Override
@@ -151,34 +159,16 @@ public class ItemSL extends Item implements IRegistryObject {
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @SideOnly(Side.CLIENT)
   @Override
-  public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    return clOnItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
-  }
-
-  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
-
-    return super.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
+    clGetSubItems(itemIn, tab, subItems);
   }
 
   @SideOnly(Side.CLIENT)
-  @Override
-  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+  protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-    clGetSubItems(item, tab, list);
-  }
-
-  protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
-
-    if (hasSubtypes) {
-      for (int i = 0; i < subItemCount; ++i) {
-        list.add(new ItemStack(item, 1, i));
-      }
-    } else {
-      list.add(new ItemStack(this));
-    }
+    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
   }
 }

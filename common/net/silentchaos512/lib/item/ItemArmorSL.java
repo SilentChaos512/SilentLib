@@ -2,12 +2,14 @@ package net.silentchaos512.lib.item;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
+import com.google.common.collect.Lists;
+
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
+import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -16,77 +18,64 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.block.BlockSL;
-import net.silentchaos512.lib.registry.IHasSubtypes;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IRegistryObject;
-import net.silentchaos512.lib.util.LocalizationHelper;
 
-public class ItemBlockSL extends ItemBlock {
+public class ItemArmorSL extends ItemArmor implements IRegistryObject {
 
-  protected String blockName = "null";
-  protected String unlocalizedName = "null";
-  protected String modId = "null";
+  protected String itemName;
+  protected String modId;
 
-  public ItemBlockSL(Block block) {
+  public ItemArmorSL(ArmorMaterial materialIn, int renderIndexIn,
+      EntityEquipmentSlot equipmentSlotIn) {
 
-    super(block);
-    setMaxDamage(0);
+    super(materialIn, renderIndexIn, equipmentSlotIn);
+  }
 
-    if (block instanceof IHasSubtypes) {
-      setHasSubtypes(((IHasSubtypes) block).hasSubtypes());
-    }
-    if (block instanceof IRegistryObject) {
-      IRegistryObject obj = (IRegistryObject) block;
-      blockName = obj.getName();
-      unlocalizedName = "tile." + obj.getFullName();
-      modId = obj.getModId();
-    }
+  // =======================
+  // IRegistryObject methods
+  // =======================
+
+  @Override
+  public void addRecipes() {
+
   }
 
   @Override
-  public int getMetadata(int meta) {
+  public void addOreDict() {
 
-    return meta & 0xF;
   }
 
   @Override
-  public EnumRarity getRarity(ItemStack stack) {
+  public String getName() {
 
-    if (block instanceof BlockSL) {
-      return ((BlockSL) block).getRarity(stack.getItemDamage());
-    }
-    return super.getRarity(stack);
+    return itemName;
   }
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
+  public String getFullName() {
 
-    // Get tooltip from block? (New method)
-    int length = list.size();
-    // FIXME
-    // block.addInformation(stack, player, list, advanced);
-
-    // If block doesn't add anything, use the old method.
-    if (length == list.size()) {
-      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-      if (loc != null) {
-        String name = getNameForStack(stack);
-        list.addAll(loc.getBlockDescriptionLines(name));
-      }
-    }
+    return modId + ":" + getName();
   }
 
   @Override
-  public String getUnlocalizedName(ItemStack stack) {
+  public String getModId() {
 
-    return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
+    return modId;
   }
 
-  public String getNameForStack(ItemStack stack) {
+  @Override
+  public List<ModelResourceLocation> getVariants() {
 
-    return blockName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
+    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+  }
+
+  @Override
+  public boolean registerModels() {
+
+    // Let SRegistry handle model registration by default. Override if necessary.
+    return false;
   }
 
   // ==============================
@@ -120,12 +109,14 @@ public class ItemBlockSL extends ItemBlock {
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @SideOnly(Side.CLIENT)
   @Override
   public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
     clGetSubItems(itemIn, tab, subItems);
   }
 
+  @SideOnly(Side.CLIENT)
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);

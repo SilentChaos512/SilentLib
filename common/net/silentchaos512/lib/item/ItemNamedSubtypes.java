@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
+import net.silentchaos512.lib.util.StackHelper;
 
 /**
  * While ItemSL assigns numbers to subitems, this class will allow you to assign names instead, essentially packing
@@ -44,7 +45,7 @@ public class ItemNamedSubtypes extends ItemSL {
     for (int meta = 0; meta < names.length; ++meta)
       if (name.equals(names[meta]))
         return new ItemStack(this, count, meta);
-    return ItemStack.EMPTY;
+    return StackHelper.empty();
   }
 
   @Override
