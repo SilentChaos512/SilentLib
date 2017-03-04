@@ -2,6 +2,8 @@ package net.silentchaos512.lib.block;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
@@ -10,12 +12,22 @@ import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.util.ModelHelper;
 
 public class BlockContainerSL extends BlockContainer implements IRegistryObject, IHasSubtypes {
 
@@ -80,14 +92,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   @Override
   public List<ModelResourceLocation> getVariants() {
 
-    if (hasSubtypes) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
-      for (int i = 0; i < subBlockCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
-      }
-      return models;
-    }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+    return ModelHelper.getVariants(this, subBlockCount);
   }
 
   @Override
@@ -99,18 +104,6 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   // ===============
   // Block overrides
   // ===============
-
-  @Override
-  public void getSubBlocks(Item item, CreativeTabs tab, List list) {
-
-    if (hasSubtypes) {
-      for (int i = 0; i < subBlockCount; ++i) {
-        list.add(new ItemStack(item, 1, i));
-      }
-    } else {
-      list.add(new ItemStack(item));
-    }
-  }
 
   @Override
   public int damageDropped(IBlockState state) {
@@ -129,5 +122,83 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
 
     this.blockName = name;
     return super.setUnlocalizedName(name);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 10/11)
+  // inspired by CompatLayer
+  // ==============================
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
+      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+
+    clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
+  }
+
+  @SuppressWarnings("deprecation")
+  protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
+      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+
+    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
+
+    clOnNeighborChanged(state, world, pos, block);
+  }
+
+  protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
+
+  }
+
+  @Override
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
+      EnumHand hand, @Nullable ItemStack heldItem, EnumFacing side, float hitX, float hitY,
+      float hitZ) {
+
+    return clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
+  }
+
+  protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state,
+      EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+
+    return false;
+  }
+
+  @SuppressWarnings("deprecation")
+  @Override
+  public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX,
+      float hitY, float hitZ, int meta, EntityLivingBase placer) {
+
+    return clGetStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+  }
+
+  @SuppressWarnings("deprecation")
+  protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing,
+      float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+
+    return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public void getSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+    clGetSubBlocks(item, tab, list);
+  }
+
+  protected void clGetSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+    if (hasSubtypes()) {
+      for (int i = 0; i < subBlockCount; ++i) {
+        list.add(new ItemStack(item, 1, i));
+      }
+    } else {
+      list.add(new ItemStack(item));
+    }
   }
 }

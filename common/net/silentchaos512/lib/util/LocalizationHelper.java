@@ -45,6 +45,7 @@ public class LocalizationHelper {
   // General methods
   // ===============
 
+  @SuppressWarnings("deprecation")
   public String getLocalizedString(String key, Object... parameters) {
 
     // On server, use deprecated I18n.

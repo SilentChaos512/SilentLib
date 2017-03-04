@@ -9,9 +9,18 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.EnumActionResult;
+import net.minecraft.util.EnumFacing;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
+import net.silentchaos512.lib.util.ModelHelper;
 
 public class ItemSL extends Item implements IRegistryObject {
 
@@ -62,14 +71,7 @@ public class ItemSL extends Item implements IRegistryObject {
   @Override
   public List<ModelResourceLocation> getVariants() {
 
-    if (hasSubtypes) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
-      for (int i = 0; i < subItemCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
-      }
-      return models;
-    }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+    return ModelHelper.getVariants(this, subItemCount);
   }
 
   @Override
@@ -84,19 +86,8 @@ public class ItemSL extends Item implements IRegistryObject {
   // ==============
 
   @Override
-  public void getSubItems(Item item, CreativeTabs tab, List list) {
-
-    if (hasSubtypes) {
-      for (int i = 0; i < subItemCount; ++i) {
-        list.add(new ItemStack(item, 1, i));
-      }
-    } else {
-      list.add(new ItemStack(this));
-    }
-  }
-
-  @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean advanced) {
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
+      boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
     if (loc != null) {
@@ -121,5 +112,69 @@ public class ItemSL extends Item implements IRegistryObject {
 
     this.itemName = name;
     return super.setUnlocalizedName(name);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 10/11)
+  // inspired by CompatLayer
+  // ==============================
+
+  @Override
+  public ActionResult<ItemStack> onItemRightClick(ItemStack stack, World world, EntityPlayer player,
+      EnumHand hand) {
+
+    return clOnItemRightClick(world, player, hand);
+  }
+
+  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player,
+      EnumHand hand) {
+
+    return super.onItemRightClick(player.getHeldItem(hand), world, player, hand);
+  }
+
+  @Override
+  public EnumActionResult onItemUse(ItemStack stack, EntityPlayer player, World world, BlockPos pos,
+      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+
+    return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+  }
+
+  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
+      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+
+    return super.onItemUse(player.getHeldItem(hand), player, world, pos, hand, facing, hitX, hitY,
+        hitZ);
+  }
+
+  @Override
+  public EnumActionResult onItemUseFirst(ItemStack stack, EntityPlayer player, World world,
+      BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+
+    return clOnItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
+  }
+
+  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos,
+      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+
+    return super.onItemUseFirst(player.getHeldItem(hand), player, world, pos, side, hitX, hitY,
+        hitZ, hand);
+  }
+
+  @SideOnly(Side.CLIENT)
+  @Override
+  public void getSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+    clGetSubItems(item, tab, list);
+  }
+
+  protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
+
+    if (hasSubtypes) {
+      for (int i = 0; i < subItemCount; ++i) {
+        list.add(new ItemStack(item, 1, i));
+      }
+    } else {
+      list.add(new ItemStack(this));
+    }
   }
 }

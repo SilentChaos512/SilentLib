@@ -2,10 +2,14 @@ package net.silentchaos512.lib.item;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
+import net.silentchaos512.lib.util.StackHelper;
 
 /**
  * While ItemSL assigns numbers to subitems, this class will allow you to assign names instead, essentially packing
@@ -32,19 +36,17 @@ public class ItemNamedSubtypes extends ItemSL {
     return getStack(name).getItemDamage();
   }
 
-  public ItemStack getStack(String name) {
+  public @Nullable ItemStack getStack(String name) {
 
     return getStack(name, 1);
   }
 
-  public ItemStack getStack(String name, int count) {
+  public @Nullable ItemStack getStack(String name, int count) {
 
-    for (int meta = 0; meta < names.length; ++meta) {
-      if (name.equals(names[meta])) {
+    for (int meta = 0; meta < names.length; ++meta)
+      if (name.equals(names[meta]))
         return new ItemStack(this, count, meta);
-      }
-    }
-    return null;
+    return StackHelper.empty();
   }
 
   @Override
@@ -52,7 +54,8 @@ public class ItemNamedSubtypes extends ItemSL {
 
     List<ModelResourceLocation> models = Lists.newArrayList();
     for (String name : names) {
-      models.add(new ModelResourceLocation(modId + ":" + name, "inventory"));
+      String fullName = (modId + ":" + name).toLowerCase();
+      models.add(new ModelResourceLocation(fullName, "inventory"));
     }
     return models;
   }
@@ -60,9 +63,8 @@ public class ItemNamedSubtypes extends ItemSL {
   public String getNameForStack(ItemStack stack) {
 
     int meta = stack.getItemDamage();
-    if (meta >= 0 && meta < names.length) {
+    if (meta >= 0 && meta < names.length)
       return names[meta];
-    }
     return super.getNameForStack(stack);
   }
 }

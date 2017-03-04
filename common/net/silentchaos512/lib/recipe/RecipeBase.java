@@ -5,7 +5,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.world.World;
 
-
+/**
+ * @deprecated Use IRecipeSL instead.
+ */
+@Deprecated
 public class RecipeBase implements IRecipe {
 
   @Override

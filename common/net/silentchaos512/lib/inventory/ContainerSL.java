@@ -41,4 +41,9 @@ public class ContainerSL extends Container {
 
     return tileInventory.isUseableByPlayer(player);
   }
+
+  public static void onTakeFromSlot(Slot slot, EntityPlayer player, ItemStack stack) {
+
+    slot.onPickupFromSlot(player, stack);
+  }
 }

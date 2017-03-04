@@ -1,5 +1,7 @@
 package net.silentchaos512.lib.registry;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -26,10 +28,12 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -61,6 +65,8 @@ public class SRegistry {
    * The resource prefix for the mod. This is set in the constructor based on the modId.
    */
   public final String resourcePrefix;
+
+  protected boolean listModelsInPost = false;
 
   public SRegistry(String modId) {
 
@@ -151,7 +157,8 @@ public class SRegistry {
    */
   public void registerTileEntity(Class<? extends TileEntity> tileClass, String key) {
 
-    GameRegistry.registerTileEntity(tileClass, "tile." + resourcePrefix + key);
+    String fullKey = "tile." + resourcePrefix + key;
+    GameRegistry.registerTileEntity(tileClass, fullKey);
   }
 
   public void registerEntity(Class<? extends Entity> entityClass, String key) {
@@ -275,7 +282,7 @@ public class SRegistry {
    */
   public void clientPreInit() {
 
-    registerModelVariants();
+    // registerModelVariants();
   }
 
   /**
@@ -291,6 +298,11 @@ public class SRegistry {
    */
   public void clientPostInit() {
 
+    if (listModelsInPost)
+      for (IRegistryObject obj : registryObjects)
+        for (ModelResourceLocation model : obj.getVariants())
+          if (model != null)
+            System.out.println(model);
   }
 
   /**
@@ -318,41 +330,21 @@ public class SRegistry {
   }
 
   @SideOnly(Side.CLIENT)
-  protected void registerModelVariants() {
-
-    for (IRegistryObject obj : registryObjects) {
-      Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
-      List<ModelResourceLocation> models = obj.getVariants();
-      // Remove nulls
-      List<ModelResourceLocation> nonNullModels = Lists.newArrayList();
-      for (ModelResourceLocation m : models) {
-        if (m != null) {
-          nonNullModels.add(m);
-        }
-      }
-
-      ModelLoader.registerItemVariants(item,
-          nonNullModels.toArray(new ModelResourceLocation[nonNullModels.size()]));
-
-      // Custom mesh?
-      // ItemMeshDefinition mesh = obj.getCustomMesh();
-      // if (mesh != null) {
-      // ModelLoader.setCustomMeshDefinition(item, mesh);
-      // }
-    }
-  }
-
-  @SideOnly(Side.CLIENT)
   protected void registerModels() {
 
     ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
+    ModelResourceLocation model;
+
     for (IRegistryObject obj : registryObjects) {
       if (!obj.registerModels()) {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         List<ModelResourceLocation> models = obj.getVariants();
+
         for (int i = 0; i < models.size(); ++i) {
-          if (models.get(i) != null) {
-            mesher.register(item, i, models.get(i));
+          model = models.get(i);
+          if (model != null) {
+            ModelLoader.registerItemVariants(item, model);
+            mesher.register(item, i, model);
           }
         }
       }

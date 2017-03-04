@@ -2,12 +2,13 @@ package net.silentchaos512.lib.item;
 
 import java.util.List;
 
-import net.minecraft.block.Block;
+import com.google.common.collect.Lists;
+
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemFood;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
@@ -15,77 +16,109 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.block.BlockSL;
-import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
+import net.silentchaos512.lib.util.ModelHelper;
 
-public class ItemBlockSL extends ItemBlock {
+public class ItemFoodSL extends ItemFood implements IRegistryObject {
 
-  protected String blockName = "null";
-  protected String unlocalizedName = "null";
-  protected String modId = "null";
+  protected int subItemCount;
+  protected String itemName;
+  protected String modId;
 
-  public ItemBlockSL(Block block) {
+  public ItemFoodSL(int subItemCount, String modId, String name, int amount, float saturation,
+      boolean isWolfFood) {
 
-    super(block);
-    setMaxDamage(0);
+    super(amount, saturation, isWolfFood);
+    this.subItemCount = subItemCount;
+    this.modId = modId.toLowerCase();
+    setUnlocalizedName(name);
+  }
 
-    if (block instanceof IHasSubtypes) {
-      setHasSubtypes(((IHasSubtypes) block).hasSubtypes());
-    }
-    if (block instanceof IRegistryObject) {
-      IRegistryObject obj = (IRegistryObject) block;
-      blockName = obj.getName();
-      unlocalizedName = "tile." + obj.getFullName();
-      modId = obj.getModId();
-    }
+  public ItemFoodSL(int subItemCount, String modId, String name) {
+
+    this(subItemCount, modId, name, 0, 0f, false);
+  }
+
+  // =======================
+  // IRegistryObject methods
+  // =======================
+
+  @Override
+  public void addRecipes() {
+
   }
 
   @Override
-  public int getMetadata(int meta) {
+  public void addOreDict() {
 
-    return meta & 0xF;
   }
 
   @Override
-  public EnumRarity getRarity(ItemStack stack) {
+  public String getName() {
 
-    if (block instanceof BlockSL) {
-      return ((BlockSL) block).getRarity(stack.getItemDamage());
-    }
-    return super.getRarity(stack);
+    return itemName;
   }
+
+  @Override
+  public String getFullName() {
+
+    return modId + ":" + getName();
+  }
+
+  @Override
+  public String getModId() {
+
+    return modId;
+  }
+
+  @Override
+  public List<ModelResourceLocation> getVariants() {
+
+    return ModelHelper.getVariants(this, subItemCount);
+  }
+
+  @Override
+  public boolean registerModels() {
+
+    // Let SRegistry handle model registration by default. Override if necessary.
+    return false;
+  }
+
+  // ==============
+  // Item overrides
+  // ==============
 
   @Override
   public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
       boolean advanced) {
 
-    // Get tooltip from block? (New method)
-    int length = list.size();
-    // FIXME
-    // block.addInformation(stack, player, list, advanced);
-
-    // If block doesn't add anything, use the old method.
-    if (length == list.size()) {
-      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-      if (loc != null) {
-        String name = getNameForStack(stack);
-        list.addAll(loc.getBlockDescriptionLines(name));
-      }
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
     }
   }
 
   @Override
   public String getUnlocalizedName(ItemStack stack) {
 
-    return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
+    return "item." + modId + ":" + getNameForStack(stack);
   }
 
   public String getNameForStack(ItemStack stack) {
 
-    return blockName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
+    return itemName + (hasSubtypes ? stack.getItemDamage() : "");
+  }
+
+  @Override
+  public Item setUnlocalizedName(String name) {
+
+    this.itemName = name;
+    return super.setUnlocalizedName(name);
   }
 
   // ==============================
@@ -119,12 +152,14 @@ public class ItemBlockSL extends ItemBlock {
     return super.onItemUse(player.getHeldItem(hand), player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @SideOnly(Side.CLIENT)
   @Override
   public void getSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     clGetSubItems(itemIn, tab, subItems);
   }
 
+  @SideOnly(Side.CLIENT)
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(itemIn, tab, subItems);

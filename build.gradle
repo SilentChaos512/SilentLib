@@ -16,9 +16,12 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "1.1.0"
+version = "2.0.0"
+def buildNum = 0
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SilentLib-1.10.2"
+
+sourceCompatibility = targetCompatibility = 1.8
 
 minecraft {
     version = "1.10.2-12.18.1.2072"
@@ -28,6 +31,18 @@ minecraft {
     replaceIn "SilentLib.java"
 
     mappings = "snapshot_20160518"
+
+    def versionFile = file('version.properties')
+    if (versionFile.canRead()) {
+        def Properties versionProps = new Properties()
+        
+        versionProps.load(new FileInputStream(versionFile))
+        
+        buildNum = versionProps['BUILD_NUM'].toInteger() + 1
+        
+        versionProps['BUILD_NUM'] = buildNum.toString()
+        versionProps.store(versionFile.newWriter(), null)
+    }
 }
 
 dependencies {
@@ -61,15 +76,20 @@ repositories {
 }
 
 jar {
-    //classifier = "universal"
+    classifier = buildNum
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = buildNum + '-sources'
+    from sourceSets.main.allSource
 }
 task deobfJar(type: Jar) {
     from(sourceSets.main.output) {
-        classifier = "deobf"
+        classifier = buildNum + "-deobf"
     }
 }
 artifacts {
     archives deobfJar
+    archives sourcesJar
 }
 
 sourceSets {
