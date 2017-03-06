@@ -27,10 +27,13 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject {
   protected String itemName;
   protected String modId;
 
-  public ItemArmorSL(ArmorMaterial materialIn, int renderIndexIn,
+  public ItemArmorSL(String modId, String itemName, ArmorMaterial materialIn, int renderIndexIn,
       EntityEquipmentSlot equipmentSlotIn) {
 
     super(materialIn, renderIndexIn, equipmentSlotIn);
+    this.modId = modId;
+    this.itemName = itemName;
+    setUnlocalizedName(itemName);
   }
 
   // =======================
