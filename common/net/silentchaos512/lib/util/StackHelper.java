@@ -47,18 +47,18 @@ public class StackHelper {
 
     stack.setCount(amount);
     if (amount <= 0)
-      return ItemStack.EMPTY;
+      return empty();
     return stack;
   }
 
   public static boolean isEmpty(@Nonnull ItemStack stack) {
 
-    return stack.isEmpty();
+    return stack == null || stack.isEmpty();
   }
 
   public static boolean isValid(@Nonnull ItemStack stack) {
 
-    return !stack.isEmpty();
+    return stack != null && !stack.isEmpty();
   }
 
   @Nonnull
