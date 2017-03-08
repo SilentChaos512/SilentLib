@@ -17,8 +17,6 @@ local.properties
 .loadpath
 build.properties
 .gradle
-common/cofh
-common/thaumcraft
 libs
 
 # External tool builders
