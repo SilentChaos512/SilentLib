@@ -118,7 +118,7 @@ public class SRegistry {
       registryObjects.add((IRegistryObject) block);
     }
 
-    ResourceLocation resource = new ResourceLocation(resourcePrefix + key);
+    ResourceLocation resource = new ResourceLocation(resourcePrefix + key.toLowerCase());
     block.setRegistryName(resource);
     GameRegistry.register(block);
     GameRegistry.register(itemBlock, resource);
