@@ -4,8 +4,6 @@ import java.util.List;
 
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -15,6 +13,8 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryHelper;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
@@ -99,6 +99,22 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   public boolean registerModels() {
 
     return false;
+  }
+  // ========================
+  // BlockContainer overrides
+  // ========================
+
+  @Override
+  public void breakBlock(World world, BlockPos pos, IBlockState state) {
+
+    TileEntity tile = world.getTileEntity(pos);
+
+    if (tile != null && tile instanceof IInventory) {
+      InventoryHelper.dropInventoryItems(world, pos, (IInventory) tile);
+      world.updateComparatorOutputLevel(pos, this);
+    }
+
+    super.breakBlock(world, pos, state);
   }
 
   // ===============
