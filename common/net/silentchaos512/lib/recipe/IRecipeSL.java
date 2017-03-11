@@ -37,20 +37,19 @@ public interface IRecipeSL extends IRecipe {
   @Override
   public default NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
 
-//    for (int i = 0; i < inv.getSizeInventory(); ++i) {
-//      ItemStack stack = inv.getStackInSlot(i);
-//      if (StackHelper.isValid(stack)) {
-//        stack = StackHelper.shrink(stack, 1);
-//        inv.setInventorySlotContents(i, stack);
-//      }
-//    }
-//    return NonNullList.create();
     return (NonNullList<ItemStack>) getRemainingItemsCompat(inv);
   }
 
   @Nonnull
   default List<ItemStack> getRemainingItemsCompat(InventoryCrafting inv) {
 
+    for (int i = 0; i < inv.getSizeInventory(); ++i) {
+      ItemStack stack = inv.getStackInSlot(i);
+      if (StackHelper.isValid(stack)) {
+        stack = StackHelper.shrink(stack, 1);
+        inv.setInventorySlotContents(i, stack);
+      }
+    }
     return NonNullList.create();
   }
 }

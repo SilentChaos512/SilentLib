@@ -1,5 +1,14 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.0.3
+Fixed: Custom recipes not consuming ingredients.
+
+2.0.2
+Added: BiomeHelper (fix for a Fun Ores issue in 1.10.2)
+
+2.0.1
+~
+
 2.0.0-37
 Fixes the armor constructor.
 
