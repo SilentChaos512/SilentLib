@@ -43,6 +43,17 @@ public interface IRecipeSL extends IRecipe {
   @Nonnull
   default List<ItemStack> getRemainingItemsCompat(InventoryCrafting inv) {
 
-    return Lists.newArrayList();
+    List<ItemStack> ret = Lists.newArrayList();
+    ItemStack stack;
+
+    for (int i = 0; i < inv.getSizeInventory(); ++i) {
+      stack = inv.getStackInSlot(i);
+      if (StackHelper.isValid(stack)) {
+        stack = StackHelper.shrink(stack, 1);
+      }
+      inv.setInventorySlotContents(i, stack);
+    }
+
+    return ret;
   }
 }
