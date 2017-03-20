@@ -1,7 +1,11 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.0.4
+Added: ItemHelper (needed for a Gems bugfix)
+
 2.0.3
 Fixed: Custom recipes not consuming ingredients.
+Fixed: Some containers not dropping their inventories (eg Gems' material grader)
 
 2.0.2
 Added: BiomeHelper (fix for a Fun Ores issue in 1.10.2)
