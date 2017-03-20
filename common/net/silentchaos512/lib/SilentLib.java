@@ -42,4 +42,9 @@ public class SilentLib {
     DataDump.dumpEnchantments();
     DataDump.dumpPotionEffects();
   }
+
+  public static int getMCVersion() {
+
+    return 11;
+  }
 }
