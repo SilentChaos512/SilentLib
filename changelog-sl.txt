@@ -1,5 +1,9 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.0.5
+Added: KeyTrackerSL, a base class for key trackers
+Added: WorldHelper (needed for a Gems bugfix)
+
 2.0.4
 Added: ItemHelper (needed for a Gems bugfix)
 
