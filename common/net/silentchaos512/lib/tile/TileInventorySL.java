@@ -3,13 +3,14 @@ package net.silentchaos512.lib.tile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.silentchaos512.lib.collection.ItemStackList;
 import net.silentchaos512.lib.util.StackHelper;
 
-public abstract class TileInventorySL extends TileEntity implements IInventorySL {
+public abstract class TileInventorySL extends TileEntitySL implements IInventorySL {
 
   protected ItemStackList inventory;
 
@@ -138,5 +139,20 @@ public abstract class TileInventorySL extends TileEntity implements IInventorySL
     StackHelper.saveAllItems(tags, inventory);
 
     return tags;
+  }
+
+  @Override
+  public SPacketUpdateTileEntity getUpdatePacket() {
+
+    NBTTagCompound tags = getUpdateTag();
+    StackHelper.saveAllItems(tags, inventory);
+    return new SPacketUpdateTileEntity(pos, 1, tags);
+  }
+
+  @Override
+  public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+
+    super.onDataPacket(net, packet);
+    StackHelper.loadAllItems(packet.getNbtCompound(), inventory);
   }
 }
