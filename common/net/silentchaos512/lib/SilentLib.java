@@ -7,8 +7,12 @@ import com.google.common.collect.Maps;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.silentchaos512.lib.debug.DataDump;
+import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -34,6 +38,17 @@ public class SilentLib {
   public void registerLocalizationHelperForMod(String modId, LocalizationHelper loc) {
 
     locHelpers.put(modId.toLowerCase(), loc);
+  }
+
+  @EventHandler
+  public void preInit(FMLPreInitializationEvent event) {
+
+    NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerLibF());
+  }
+
+  @EventHandler
+  public void init(FMLInitializationEvent event) {
+
   }
 
   @EventHandler
