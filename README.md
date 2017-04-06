@@ -1,4 +1,4 @@
 # SilentLib
-A common library for future mods to use, to making updating and creating new mods easier.
+A common library for my Minecraft mods to use, to making updating and creating new mods easier. Used only in Minecraft 1.9 and higher. Recent versions have cross-compatibility features, allowing 1.11 mods to run on 1.10 and vice versa.
 
-I probably won't being using this in 1.8.9 (better to not fix what isn't truly broken), but I will be using this in 1.9.
+More information and downloads: https://minecraft.curseforge.com/projects/silent-lib
