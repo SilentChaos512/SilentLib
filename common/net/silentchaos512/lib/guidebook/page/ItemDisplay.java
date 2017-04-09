@@ -8,12 +8,14 @@ import java.util.List;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuidePage;
 import net.silentchaos512.lib.guidebook.gui.GuiGuide;
@@ -55,8 +57,10 @@ public class ItemDisplay {
       mc.fontRendererObj.setUnicodeFlag(false);
 
       List<String> list = this.stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips);
+      int maxWidth = 0;
 
       for (int k = 0; k < list.size(); ++k) {
+        maxWidth = Math.max(mc.fontRendererObj.getStringWidth(list.get(k)), maxWidth);
         if (k == 0) {
           list.set(k, this.stack.getRarity().rarityColor + list.get(k));
         } else {
@@ -68,7 +72,13 @@ public class ItemDisplay {
         list.add(TextFormatting.GOLD + book.loc.getLocalizedString("guide.silentlib:clickToSeeRecipe"));
       }
 
-      GuiUtils.drawHoveringText(list, mouseX, mouseY, mc.displayWidth, mc.displayHeight, -1,
+      ScaledResolution res = new ScaledResolution(mc);
+      int posX = mouseX;
+//      SilentLib.logHelper.debug(posX, res.getScaledWidth());
+      if (posX + maxWidth > res.getScaledWidth() - 15)
+        posX -= maxWidth + 20;
+
+      GuiUtils.drawHoveringText(list, posX, mouseY, mc.displayWidth, mc.displayHeight, -1,
           mc.fontRendererObj);
 
       mc.fontRendererObj.setUnicodeFlag(flagBefore);

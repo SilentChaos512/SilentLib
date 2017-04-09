@@ -27,6 +27,10 @@ public class ItemGuideBookSL extends ItemSL {
 
   private static final List<ItemGuideBookSL> bookList = Lists.newArrayList();
 
+  // Feel free to change any of these.
+  public boolean giveBookOnFirstLogin = true;
+
+  // Do not set yourself.
   @SideOnly(Side.CLIENT)
   public IGuidePage forcedPage;
   public final GuideBook book;

@@ -30,8 +30,7 @@ public abstract class GuideBook {
   protected final List<IGuidePage> pagesWithItemOrFluidData = Lists.newArrayList();
   protected ResourceLocation resourceGui;
   protected ResourceLocation resourceGadgets;
-  public GuideEntry entryAllAndSearch = new GuideEntryAllItems(this, "allAndSearch")
-      .setImportant();
+  public GuideEntry entryAllAndSearch = new GuideEntryAllItems(this, "allAndSearch").setImportant();
   public final LocalizationHelper loc;
   public int edition = -1;
 
@@ -41,16 +40,21 @@ public abstract class GuideBook {
   public GuideBook(String modId) {
 
     this.modId = modId;
-    this.loc = SilentLib.instance.getLocalizationHelperForMod(modId);
     this.resourceGui = new ResourceLocation(SilentLib.instance.MOD_ID,
         "textures/gui/gui_guide.png");
     this.resourceGadgets = new ResourceLocation(SilentLib.instance.MOD_ID,
         "textures/gui/gui_guide_gadgets.png");
+    LocalizationHelper locForMod = SilentLib.instance.getLocalizationHelperForMod(modId);
 
-    if (loc == null)
+    // Does the mod have a registered localization helper? If not, just create one.
+    if (locForMod == null) {
       SilentLib.logHelper.warning(String.format(
-          "<Guide Book> Mod \"%s\" has no localization helper! This will likely crash the game!",
+          "<Guide Book> Mod \"%s\" has no localization helper! A new one will be created, but not registered for use with blocks/items.",
           modId));
+      loc = new LocalizationHelper(modId).setReplaceAmpersand(true);
+    } else {
+      loc = locForMod;
+    }
   }
 
   public void preInit() {
