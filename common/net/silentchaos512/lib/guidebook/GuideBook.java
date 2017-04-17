@@ -138,6 +138,11 @@ public abstract class GuideBook {
 
   public abstract void initChapters();
 
+  public String[] getQuotes() {
+
+    return new String[0];
+  }
+
   public String getModId() {
 
     return modId;

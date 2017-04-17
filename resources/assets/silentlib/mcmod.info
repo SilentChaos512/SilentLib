@@ -1,0 +1,11 @@
+[
+{
+  "modid": "SilentLib",
+  "name": "Silent Lib",
+  "description": "Shared library for SilentChaos512's mods.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "authors": [ "SilentChaos512" ]
+}
+]

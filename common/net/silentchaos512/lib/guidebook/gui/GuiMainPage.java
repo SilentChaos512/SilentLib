@@ -61,20 +61,21 @@ public class GuiMainPage extends GuiGuide {
 
     this.bookletName = "guide." + book.getModId() + ":manualName.1";
 
-    // String usedQuote = QUOTES[this.mc.world.rand.nextInt(QUOTES.length)];
-    // String[] quoteSplit = usedQuote.split("@");
-    // if (quoteSplit.length == 2) {
-    // this.quote = this.fontRendererObj.listFormattedStringToWidth(quoteSplit[0], 120);
-    // this.quoteGuy = quoteSplit[1];
-    // }
+    String[] quotes = book.getQuotes();
+    if (quotes.length > 0) {
+      String usedQuote = quotes[this.mc.world.rand.nextInt(quotes.length)];
+      String[] quoteSplit = usedQuote.split("@");
+      if (quoteSplit.length > 0)
+        this.quote = this.fontRendererObj.listFormattedStringToWidth(quoteSplit[0], 120);
+      if (quoteSplit.length > 1)
+        this.quoteGuy = quoteSplit[1];
+    }
 
     String playerName = this.mc.player.getName();
     if (playerName.equalsIgnoreCase("derp")) {
       this.bookletEdition = "derp edition";
     } else {
-      int mod10 = book.edition % 10;
-      String str = book.edition
-          + (mod10 == 1 ? "st" : mod10 == 2 ? "nd" : mod10 == 3 ? "rd" : "th");
+      String str = getEditionString();
       this.bookletEdition = book.loc.getLocalizedString("guide.silentlib:edition", (Object) str);
     }
 
@@ -120,6 +121,15 @@ public class GuiMainPage extends GuiGuide {
         return;
       }
     }
+  }
+
+  protected String getEditionString() {
+
+    if (book.edition >= 11 && book.edition <= 13)
+      return book.edition + "th";
+    int mod10 = book.edition % 10;
+    String str = book.edition + (mod10 == 1 ? "st" : mod10 == 2 ? "nd" : mod10 == 3 ? "rd" : "th");
+    return str;
   }
 
   @Override
@@ -189,15 +199,16 @@ public class GuiMainPage extends GuiGuide {
           + book.getModId() + "! \nIf you don't want this, shift-click the button.";
       this.renderSplitScaledAsciiString(text, this.guiLeft + 11, this.guiTop + 55, 0, false,
           this.getMediumFontSize(), 120);
-    } else if (this.quote != null && !this.quote.isEmpty() && this.quoteGuy != null) {
+    } else if (this.quote != null && !this.quote.isEmpty()) {
       int quoteSize = this.quote.size();
 
       for (int i = 0; i < quoteSize; i++) {
         this.renderScaledAsciiString(TextFormatting.ITALIC + this.quote.get(i), this.guiLeft + 25,
             this.guiTop + 90 + (i * 8), 0, false, this.getMediumFontSize());
       }
-      this.renderScaledAsciiString("- " + this.quoteGuy, this.guiLeft + 60,
-          this.guiTop + 93 + quoteSize * 8, 0, false, this.getLargeFontSize());
+      if (this.quoteGuy != null)
+        this.renderScaledAsciiString("- " + this.quoteGuy, this.guiLeft + 60,
+            this.guiTop + 93 + quoteSize * 8, 0, false, this.getLargeFontSize());
     }
   }
 
