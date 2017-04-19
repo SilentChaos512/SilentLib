@@ -69,89 +69,11 @@ public class TileEntitySL extends TileEntity {
 
   protected void readSyncVars(NBTTagCompound tags) {
 
-    // Try to read from NBT for fields marked with SyncVariable.
-    for (Field field : getClass().getDeclaredFields()) {
-      for (Annotation annotation : field.getDeclaredAnnotations()) {
-        if (annotation instanceof SyncVariable) {
-          SyncVariable sync = (SyncVariable) annotation;
-
-          try {
-            // Set fields accessible if necessary.
-            if (!field.isAccessible())
-              field.setAccessible(true);
-            String name = sync.name();
-
-            if (field.getType() == int.class)
-              field.setInt(this, tags.getInteger(name));
-            else if (field.getType() == float.class)
-              field.setFloat(this, tags.getFloat(name));
-            else if (field.getType() == String.class)
-              field.set(this, tags.getString(name));
-            else if (field.getType() == boolean.class)
-              field.setBoolean(this, tags.getBoolean(name));
-            else if (field.getType() == double.class)
-              field.setDouble(this, tags.getDouble(name));
-            else if (field.getType() == long.class)
-              field.setLong(this, tags.getLong(name));
-            else if (field.getType() == short.class)
-              field.setShort(this, tags.getShort(name));
-            else if (field.getType() == byte.class)
-              field.setByte(this, tags.getByte(name));
-            else
-              throw new UnsupportedDataTypeException(
-                  "Don't know how to read type " + field.getType() + " from NBT!");
-          } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
-            ex.printStackTrace();
-          }
-        }
-      }
-    }
+    SyncVariable.Helper.readSyncVars(this, tags);
   }
 
   protected NBTTagCompound writeSyncVars(NBTTagCompound tags, SyncVariable.Type syncType) {
 
-    // Try to write to NBT for fields marked with SyncVariable.
-    for (Field field : getClass().getDeclaredFields()) {
-      for (Annotation annotation : field.getDeclaredAnnotations()) {
-        if (annotation instanceof SyncVariable) {
-          SyncVariable sync = (SyncVariable) annotation;
-
-          // Does variable allow writing in this case?
-          if (syncType == SyncVariable.Type.WRITE && sync.onWrite()
-              || syncType == SyncVariable.Type.PACKET && sync.onPacket()) {
-            try {
-              // Set fields accessible if necessary.
-              if (!field.isAccessible())
-                field.setAccessible(true);
-              String name = sync.name();
-
-              if (field.getType() == int.class)
-                tags.setInteger(name, field.getInt(this));
-              else if (field.getType() == float.class)
-                tags.setFloat(name, field.getFloat(this));
-              else if (field.getType() == String.class)
-                tags.setString(name, (String) field.get(this));
-              else if (field.getType() == boolean.class)
-                tags.setBoolean(name, field.getBoolean(this));
-              else if (field.getType() == double.class)
-                tags.setDouble(name, field.getDouble(this));
-              else if (field.getType() == long.class)
-                tags.setLong(name, field.getLong(this));
-              else if (field.getType() == short.class)
-                tags.setShort(name, field.getShort(this));
-              else if (field.getType() == byte.class)
-                tags.setByte(name, field.getByte(this));
-              else
-                throw new UnsupportedDataTypeException(
-                    "Don't know how to write type " + field.getType() + " to NBT!");
-            } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
-              ex.printStackTrace();
-            }
-          }
-        }
-      }
-    }
-
-    return tags;
+    return SyncVariable.Helper.writeSyncVars(this, tags, syncType);
   }
 }
