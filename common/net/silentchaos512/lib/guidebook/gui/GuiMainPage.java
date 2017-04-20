@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
@@ -19,13 +21,17 @@ import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuideEntry;
 import net.silentchaos512.lib.guidebook.button.EntryButton;
 
+/**
+ * Main page GUI for the guide book system.
+ * 
+ * @author SilentChaos512
+ * @since 2.1.0
+ */
 @SideOnly(Side.CLIENT)
 public class GuiMainPage extends GuiGuide {
 
-  // private static final String[] QUOTES = new String[] {};
-
-  private TexturedButton achievementButton;
-  private TexturedButton configButton;
+  private @Nullable TexturedButton achievementButton;
+  private @Nullable TexturedButton configButton;
 
   private GuiButton tutorialButton;
   private boolean showTutorial;
@@ -61,6 +67,7 @@ public class GuiMainPage extends GuiGuide {
 
     this.bookletName = "guide." + book.getModId() + ":manualName.1";
 
+    // Select a random quote, if there is any available.
     String[] quotes = book.getQuotes();
     if (quotes.length > 0) {
       String usedQuote = quotes[this.mc.world.rand.nextInt(quotes.length)];
@@ -71,6 +78,7 @@ public class GuiMainPage extends GuiGuide {
         this.quoteGuy = quoteSplit[1];
     }
 
+    // TODO: Player name edition substitutions?
     String playerName = this.mc.player.getName();
     if (playerName.equalsIgnoreCase("derp")) {
       this.bookletEdition = "derp edition";
@@ -79,24 +87,30 @@ public class GuiMainPage extends GuiGuide {
       this.bookletEdition = book.loc.getLocalizedString("guide.silentlib:edition", (Object) str);
     }
 
+    // Config button?
     List<String> configText = new ArrayList<String>();
     configText.add(TextFormatting.GOLD + book.loc.getLocalizedString("guide", "configButton.name"));
-    configText.addAll(this.fontRendererObj.listFormattedStringToWidth(
-        book.loc.getLocalizedString("guide", "configButton.desc", book.getModId())
-            .replaceAll("\\\\n", "\n"),
-        200));
-    this.configButton = new TexturedButton(book.getResourceGadgets(), -388, this.guiLeft + 16,
-        this.guiTop + this.ySize - 30, 188, 14, 16, 16, configText);
-    this.buttonList.add(this.configButton);
+    // configText.addAll(this.fontRendererObj.listFormattedStringToWidth(
+    // book.loc.getLocalizedString("guide", "configButton.desc", book.getModId())
+    // .replaceAll("\\\\n", "\n"),
+    // 200));
+    if (book.getConfigScreen(this) != null) {
+      this.configButton = new TexturedButton(book.getResourceGadgets(), -388, this.guiLeft + 16,
+          this.guiTop + this.ySize - 30, 188, 14, 16, 16, configText);
+      this.buttonList.add(this.configButton);
+    }
 
+    // Achievements button?
     List<String> achievementText = new ArrayList<String>();
     achievementText
         .add(TextFormatting.GOLD + book.loc.getLocalizedString("guide", "achievementButton.name"));
-    achievementText.addAll(this.fontRendererObj.listFormattedStringToWidth(
-        book.loc.getLocalizedString("booklet", "achievementButton.desc", book.getModId()), 200));
-    this.achievementButton = new TexturedButton(book.getResourceGadgets(), -389, this.guiLeft + 36,
-        this.guiTop + this.ySize - 30, 204, 14, 16, 16, achievementText);
-    this.buttonList.add(this.achievementButton);
+    // achievementText.addAll(this.fontRendererObj.listFormattedStringToWidth(
+    // book.loc.getLocalizedString("booklet", "achievementButton.desc", book.getModId()), 200));
+    if (book.getAchievementScreen(this) != null) {
+      this.achievementButton = new TexturedButton(book.getResourceGadgets(), -389,
+          this.guiLeft + 36, this.guiTop + this.ySize - 30, 204, 14, 16, 16, achievementText);
+      this.buttonList.add(this.achievementButton);
+    }
 
     // FIXME?
     // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
@@ -145,13 +159,15 @@ public class GuiMainPage extends GuiGuide {
         }
       }
     } else if (button == this.achievementButton) {
-      // FIXME
-      // GuiScreen achievements = new GuiAAAchievements(this, this.mc.player.getStatFileWriter());
-      // this.mc.displayGuiScreen(achievements);
+      // Display achievements GUI, if there is one.
+      GuiScreen achievements = book.getAchievementScreen(this);
+      if (achievements != null)
+        this.mc.displayGuiScreen(achievements);
     } else if (button == this.configButton) {
-      // FIXME
-      // GuiScreen config = new GuiConfiguration(this);
-      // this.mc.displayGuiScreen(config);
+      // Display config GUI, if there is one.
+      GuiScreen config = book.getConfigScreen(this);
+      if (config != null)
+        this.mc.displayGuiScreen(config);
     } else if (this.showTutorial && button == this.tutorialButton) {
       if (this.hasBookmarkButtons()) {
         if (!isShiftKeyDown()) {

@@ -8,8 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -22,6 +25,14 @@ import net.silentchaos512.lib.guidebook.gui.GuiGuide;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
+/**
+ * Holds all the unique data for your guide book. Extend this class and create an instance of ItemGuideBookSL to add a
+ * guide book for your mod. Call your GuideBook's preInit and postInit methods during your pre/post-init phases. A
+ * single mod can have multiple guide books, in theory.
+ * 
+ * @author SilentChaos512
+ * @since 2.1.0
+ */
 public abstract class GuideBook {
 
   protected final String modId;
@@ -57,12 +68,23 @@ public abstract class GuideBook {
     }
   }
 
-  public void preInit() {
+  //==========================================================
+  //= Initializers. Call them during the appropriate phases! =
+  //==========================================================
+
+  /**
+   * <b>Call during your pre-init phase!</b> Calls initEntries to register entries.
+   */
+  public final void preInit() {
 
     initEntries();
   }
 
-  public void postInit() {
+  /**
+   * <b>Call during your post-init phase!</b> Calls initChapters to populate entries, sorts everything, and spits out
+   * some stats.
+   */
+  public final void postInit() {
 
     initChapters();
 
@@ -134,47 +156,106 @@ public abstract class GuideBook {
     log.info("    Info:     " + countInfo);
   }
 
+  //=======================================================================
+  //= Override these methods to control guide book contents/behavior/etc. =
+  //=======================================================================
+
+  /**
+   * Initialize your entries here. DO NOT populate the entries!
+   */
   public abstract void initEntries();
 
+  /**
+   * Initialize chapters/pages here.
+   */
   public abstract void initChapters();
 
-  public String[] getQuotes() {
+  /**
+   * Gets "quotes" to display on the main page. Each quote can optionally end with "@username" to attach a name/source
+   * to the quote. A quote is selected at random each time the main page displays.
+   * 
+   * @return Array of all possible quotes.
+   * @since 2.1.1
+   */
+  public abstract String[] getQuotes();
 
-    return new String[0];
-  }
+  /**
+   * Gets a screen for the config button to display. Null may be returned if you do not have one.
+   * 
+   * @return The config GUI screen or null.
+   * @since 2.1.1
+   */
+  public abstract @Nullable GuiScreen getConfigScreen(GuiScreen parent);
 
-  public String getModId() {
+  /**
+   * Gets a screen for the achievement button to display. Null may be returned if you do not have one.
+   * 
+   * @return The achievement GUI screen or null.
+   * @since 2.1.1
+   */
+  public abstract @Nullable GuiScreen getAchievementScreen(GuiScreen parent);
 
-    return modId;
-  }
-
-  public List<IGuideChapter> getChapters() {
-
-    return chapters;
-  }
-
-  public List<IGuideEntry> getEntries() {
-
-    return entries;
-  }
-
-  public List<IGuidePage> getPagesWithItemOrFluidData() {
-
-    return pagesWithItemOrFluidData;
-  }
-
-  public void addEntry(IGuideEntry entry) {
-
-    entries.add(entry);
-  }
-
+  /**
+   * Gets a resource location to use for the book/pages background texture. Override to use a custom texture.
+   * @return ResourceLocation for the book texture.
+   */
   public ResourceLocation getResourceGui() {
 
     return resourceGui;
   }
 
+  /**
+   * Gets a resource location to use for the GUI elements of the book. Override to use a custom texture.
+   * @return
+   */
   public ResourceLocation getResourceGadgets() {
 
     return resourceGadgets;
+  }
+
+  //==============================================
+  //= Some random methods you likely won't need. =
+  //==============================================
+
+  /**
+   * @return The mod ID the guide book is associated with.
+   */
+  public String getModId() {
+
+    return modId;
+  }
+
+  /**
+   * @return A list of all chapters.
+   */
+  public List<IGuideChapter> getChapters() {
+
+    return chapters;
+  }
+
+  /**
+   * @return A list of all entries.
+   */
+  public List<IGuideEntry> getEntries() {
+
+    return entries;
+  }
+
+  /**
+   * @return A list of all pages with items/fluids displayed on them.
+   */
+  public List<IGuidePage> getPagesWithItemOrFluidData() {
+
+    return pagesWithItemOrFluidData;
+  }
+
+  /**
+   * <b>Do not call!</b> GuideEntry will call this automatically in its constructor.
+   * 
+   * @param entry
+   */
+  public void addEntry(IGuideEntry entry) {
+
+    entries.add(entry);
   }
 }
