@@ -52,8 +52,25 @@ public @interface SyncVariable {
     READ, WRITE, PACKET;
   }
 
+  /**
+   * Reads/writes sync variables for any object. Used by TileEntitySL in Lib. Gems uses this in PlayerDataHandler.
+   * 
+   * @author SilentChaos512
+   * @since 2.1.1
+   */
   public static class Helper {
 
+    /**
+     * Reads sync variables for the object. This method will attempt to read a value from NBT and assign that value for
+     * any field marked with the SyncVariable annotation.
+     * 
+     * @param obj
+     *          The object with SyncVariable fields.
+     * @param tags
+     *          The NBT to read values from.
+     * @throws UnsupportedDataTypeException
+     *           If the method does not know how to handle the type of the field.
+     */
     public static void readSyncVars(Object obj, NBTTagCompound tags) {
 
       // Try to read from NBT for fields marked with SyncVariable.
@@ -95,6 +112,20 @@ public @interface SyncVariable {
       }
     }
 
+    /**
+     * Writes sync variables for the object. This method will take the values in all fields marked with the SyncVariable
+     * annotation and save them to NBT.
+     * 
+     * @param obj
+     *          The object with SyncVariable fields.
+     * @param tags
+     *          The NBT to save values to.
+     * @param syncType
+     *          The sync type (WRITE or PACKET).
+     * @return The modified tags.
+     * @throws UnsupportedDataTypeException
+     *           If the method does not know how to handle the type of the field.
+     */
     public static NBTTagCompound writeSyncVars(Object obj, NBTTagCompound tags, Type syncType) {
 
       // Try to write to NBT for fields marked with SyncVariable.
