@@ -13,6 +13,7 @@ import javax.annotation.Nullable;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -68,9 +69,9 @@ public abstract class GuideBook {
     }
   }
 
-  //==========================================================
-  //= Initializers. Call them during the appropriate phases! =
-  //==========================================================
+  // ==========================================================
+  // = Initializers. Call them during the appropriate phases! =
+  // ==========================================================
 
   /**
    * <b>Call during your pre-init phase!</b> Calls initEntries to register entries.
@@ -156,9 +157,9 @@ public abstract class GuideBook {
     log.info("    Info:     " + countInfo);
   }
 
-  //=======================================================================
-  //= Override these methods to control guide book contents/behavior/etc. =
-  //=======================================================================
+  // =======================================================================
+  // = Override these methods to control guide book contents/behavior/etc. =
+  // =======================================================================
 
   /**
    * Initialize your entries here. DO NOT populate the entries!
@@ -197,6 +198,7 @@ public abstract class GuideBook {
 
   /**
    * Gets a resource location to use for the book/pages background texture. Override to use a custom texture.
+   * 
    * @return ResourceLocation for the book texture.
    */
   public ResourceLocation getResourceGui() {
@@ -206,6 +208,7 @@ public abstract class GuideBook {
 
   /**
    * Gets a resource location to use for the GUI elements of the book. Override to use a custom texture.
+   * 
    * @return
    */
   public ResourceLocation getResourceGadgets() {
@@ -213,9 +216,32 @@ public abstract class GuideBook {
     return resourceGadgets;
   }
 
-  //==============================================
-  //= Some random methods you likely won't need. =
-  //==============================================
+  /**
+   * Gets a String to display for the edition. You can optionally override this.
+   * 
+   * @return The displayed edition String.
+   * @since 2.1.1
+   */
+  public String getEditionString(EntityPlayer player) {
+
+    // if (player != null && player.getName().equals("SilentChaos512"))
+    // return "Silent's Edition";
+    String str = getEditionNumberString();
+    return loc.getLocalizedString("guide.silentlib:edition", (Object) str);
+  }
+
+  protected String getEditionNumberString() {
+
+    if (edition >= 11 && edition <= 13)
+      return edition + "th";
+    int mod10 = edition % 10;
+    String str = edition + (mod10 == 1 ? "st" : mod10 == 2 ? "nd" : mod10 == 3 ? "rd" : "th");
+    return str;
+  }
+
+  // ==============================================
+  // = Some random methods you likely won't need. =
+  // ==============================================
 
   /**
    * @return The mod ID the guide book is associated with.

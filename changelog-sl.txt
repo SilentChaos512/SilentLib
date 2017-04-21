@@ -1,5 +1,10 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.1.1
+Added: Implemented config/achievement buttons in guide book.
+Added: Implemented quotes in guide book.
+Fixed: [1.10.2] Missing localizations caused by the resources folder having the wrong structure.
+
 2.1.0
 Added: A guide book system. It is heavily inspired by (and partially copied from) Actually Additions. Any mod should be able to easily(?) create a decent guide book with this.
 Note on the guide book system: This was introduced because Silent's Gems was using Guide-API, which does not work across Minecraft versions. An alternative solution might have been to add a Guide-API adaptor system into Lib, but this is probably for the best.

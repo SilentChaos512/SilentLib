@@ -3,6 +3,7 @@ package net.silentchaos512.lib.util;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 
@@ -41,7 +42,8 @@ public class RecipeHelper {
    * @param surrounding
    *          The item(s) surrounding the middle item. Order affects the recipe.
    */
-  public static void addSurround(ItemStack output, ItemStack middleStack, Object... surrounding) {
+  public static IRecipe addSurround(ItemStack output, ItemStack middleStack,
+      Object... surrounding) {
 
     ItemStack[] stacks = new ItemStack[surrounding.length];
 
@@ -63,23 +65,20 @@ public class RecipeHelper {
         throw new IllegalArgumentException("No surrounding items!");
       }
       case 1: {
-        GameRegistry.addShapedRecipe(output, "xxx", "xcx", "xxx", 'c', middleStack, 'x', stacks[0]);
-        break;
+        return GameRegistry.addShapedRecipe(output, "xxx", "xcx", "xxx", 'c', middleStack, 'x',
+            stacks[0]);
       }
       case 2: {
-        GameRegistry.addShapedRecipe(output, "xyx", "ycy", "xyx", 'c', middleStack, 'x', stacks[0],
-            'y', stacks[1]);
-        break;
+        return GameRegistry.addShapedRecipe(output, "xyx", "ycy", "xyx", 'c', middleStack, 'x',
+            stacks[0], 'y', stacks[1]);
       }
       case 3: {
-        GameRegistry.addShapedRecipe(output, " xy", "zcz", "yx ", 'c', middleStack, 'x', stacks[0],
-            'y', stacks[1], 'z', stacks[2]);
-        break;
+        return GameRegistry.addShapedRecipe(output, " xy", "zcz", "yx ", 'c', middleStack, 'x',
+            stacks[0], 'y', stacks[1], 'z', stacks[2]);
       }
       case 4: {
-        GameRegistry.addShapedRecipe(output, "xyz", "dcd", "zyx", 'c', middleStack, 'x', stacks[0],
-            'y', stacks[1], 'z', stacks[2], 'd', stacks[3]);
-        break;
+        return GameRegistry.addShapedRecipe(output, "xyz", "dcd", "zyx", 'c', middleStack, 'x',
+            stacks[0], 'y', stacks[1], 'z', stacks[2], 'd', stacks[3]);
       }
       default: {
         // Too many things!
@@ -88,31 +87,35 @@ public class RecipeHelper {
     }
   }
 
-  public static void addSurroundOre(ItemStack output, Object middle, Object... surrounding) {
+  public static IRecipe addSurroundOre(ItemStack output, Object middle, Object... surrounding) {
 
+    IRecipe recipe;
     switch (surrounding.length) {
       case 0:
         // No surrounding stacks?
         throw new IllegalArgumentException("No surrounding items!");
       case 1:
-        GameRegistry.addRecipe(
-            new ShapedOreRecipe(output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]));
+        recipe = new ShapedOreRecipe(output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]);
         break;
       case 2:
-        GameRegistry.addRecipe(new ShapedOreRecipe(output, "xyx", "ycy", "xyx", 'c', middle, 'x',
-            surrounding[0], 'y', surrounding[1]));
+        recipe = new ShapedOreRecipe(output, "xyx", "ycy", "xyx", 'c', middle, 'x', surrounding[0],
+            'y', surrounding[1]);
         break;
       case 3:
-        GameRegistry.addRecipe(new ShapedOreRecipe(output, " xy", "zcz", "yx ", 'c', middle, 'x',
-            surrounding[0], 'y', surrounding[1], 'z', surrounding[2]));
+        recipe = new ShapedOreRecipe(output, " xy", "zcz", "yx ", 'c', middle, 'x', surrounding[0],
+            'y', surrounding[1], 'z', surrounding[2]);
         break;
       case 4:
-        GameRegistry.addRecipe(new ShapedOreRecipe(output, "xyz", "dcd", "zyx", 'c', middle, 'x',
-            surrounding[0], 'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]));
+        recipe = new ShapedOreRecipe(output, "xyz", "dcd", "zyx", 'c', middle, 'x', surrounding[0],
+            'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]);
         break;
       default:
         // Too many things!
         throw new IllegalArgumentException("Too many items!");
     }
+
+    if (recipe != null)
+      GameRegistry.addRecipe(recipe);
+    return recipe;
   }
 }

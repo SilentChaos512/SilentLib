@@ -83,8 +83,7 @@ public class GuiMainPage extends GuiGuide {
     if (playerName.equalsIgnoreCase("derp")) {
       this.bookletEdition = "derp edition";
     } else {
-      String str = getEditionString();
-      this.bookletEdition = book.loc.getLocalizedString("guide.silentlib:edition", (Object) str);
+      this.bookletEdition = book.getEditionString(this.mc.player);
     }
 
     // Config button?
@@ -135,15 +134,6 @@ public class GuiMainPage extends GuiGuide {
         return;
       }
     }
-  }
-
-  protected String getEditionString() {
-
-    if (book.edition >= 11 && book.edition <= 13)
-      return book.edition + "th";
-    int mod10 = book.edition % 10;
-    String str = book.edition + (mod10 == 1 ? "st" : mod10 == 2 ? "nd" : mod10 == 3 ? "rd" : "th");
-    return str;
   }
 
   @Override
