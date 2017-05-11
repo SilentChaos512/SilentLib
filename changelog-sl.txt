@@ -1,5 +1,12 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.1.3
+Added: EntityHelper#getEntityNameList to fix a Silent's Gems issue.
+Fixed: The "quote guy" not being cleared properly (guide book main page)
+
+2.1.2
+Fixed: Buggy enchantments causing a crash (Good ol' PvP's silliness, for example)
+
 2.1.1
 Added: Implemented config/achievement buttons in guide book.
 Added: Implemented quotes in guide book.

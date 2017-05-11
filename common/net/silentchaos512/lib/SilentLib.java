@@ -65,6 +65,7 @@ public class SilentLib {
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
 
+    DataDump.dumpEntityList();
     DataDump.dumpEnchantments();
     DataDump.dumpPotionEffects();
   }

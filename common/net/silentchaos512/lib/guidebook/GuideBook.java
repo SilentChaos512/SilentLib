@@ -186,6 +186,7 @@ public abstract class GuideBook {
    * @return The config GUI screen or null.
    * @since 2.1.1
    */
+  @SideOnly(Side.CLIENT)
   public abstract @Nullable GuiScreen getConfigScreen(GuiScreen parent);
 
   /**
@@ -194,6 +195,7 @@ public abstract class GuideBook {
    * @return The achievement GUI screen or null.
    * @since 2.1.1
    */
+  @SideOnly(Side.CLIENT)
   public abstract @Nullable GuiScreen getAchievementScreen(GuiScreen parent);
 
   /**

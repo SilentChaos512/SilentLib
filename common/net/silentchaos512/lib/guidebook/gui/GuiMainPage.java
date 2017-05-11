@@ -72,10 +72,14 @@ public class GuiMainPage extends GuiGuide {
     if (quotes.length > 0) {
       String usedQuote = quotes[this.mc.world.rand.nextInt(quotes.length)];
       String[] quoteSplit = usedQuote.split("@");
-      if (quoteSplit.length > 0)
+      if (quoteSplit.length > 0) {
         this.quote = this.fontRendererObj.listFormattedStringToWidth(quoteSplit[0], 120);
-      if (quoteSplit.length > 1)
+      }
+      if (quoteSplit.length > 1) {
         this.quoteGuy = quoteSplit[1];
+      } else {
+        this.quoteGuy = null;
+      }
     }
 
     // TODO: Player name edition substitutions?

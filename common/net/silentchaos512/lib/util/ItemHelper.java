@@ -45,9 +45,13 @@ public class ItemHelper {
     // Temporarily move stack to the player's offhand to allow it to be used.
     ItemStack currentOffhand = player.getHeldItemOffhand();
     player.setHeldItem(EnumHand.OFF_HAND, stack);
+
     // Use the item.
-    EnumActionResult result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side,
+    Item item = stack.getItem();
+    EnumActionResult result;
+    result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side,
         hitX, hitY, hitZ);
+
     // Put everything back in its proper place...
     player.setHeldItem(EnumHand.OFF_HAND, currentOffhand);
     return result;
