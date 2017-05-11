@@ -44,7 +44,18 @@ public class ItemHelper {
   public static EnumActionResult useItemAsPlayer(ItemStack stack, EntityPlayer player, World world,
       BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
 
-    // No need to place item in player's hand in 1.10.2.
-    return stack.getItem().onItemUse(stack, player, world, pos, EnumHand.MAIN_HAND, side, hitX, hitY, hitZ);
+    // Temporarily move stack to the player's offhand to allow it to be used.
+    ItemStack currentOffhand = player.getHeldItemOffhand();
+    player.setHeldItem(EnumHand.OFF_HAND, stack);
+
+    // Use the item.
+    Item item = stack.getItem();
+    EnumActionResult result;
+    result = stack.getItem().onItemUse(stack, player, world, pos, EnumHand.OFF_HAND, side, hitX,
+        hitY, hitZ);
+
+    // Put everything back in its proper place...
+    player.setHeldItem(EnumHand.OFF_HAND, currentOffhand);
+    return result;
   }
 }
