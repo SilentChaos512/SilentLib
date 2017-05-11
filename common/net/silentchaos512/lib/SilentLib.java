@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.google.common.collect.Maps;
 
+import net.minecraft.entity.EntityList;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -30,7 +31,7 @@ public class SilentLib {
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
   public static final String DEPENDENCIES = "required-after:Forge@[12.18.2.2125,);";
-  public static final String VERSION = "SL_VERSION";
+  public static final String VERSION = "2.1.3";//"SL_VERSION";
 
   public static LogHelper logHelper = new LogHelper(MOD_NAME);
 
@@ -66,6 +67,7 @@ public class SilentLib {
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
 
+    DataDump.dumpEntityList();
     DataDump.dumpEnchantments();
     DataDump.dumpPotionEffects();
   }
