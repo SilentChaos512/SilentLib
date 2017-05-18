@@ -5,21 +5,26 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ItemGuideBookSL;
+import net.silentchaos512.lib.util.EntityHelper;
 import net.silentchaos512.lib.util.PlayerHelper;
 
 /**
- * Silent Lib's event handler. Do not call any functions of this class.
+ * Silent Lib's common event handler. Do not call any functions of this class.
+ * 
  * @author SilentChaos512
  * @since 2.1.4
  */
-public final class SilentLibEventHandlers {
+public final class SilentLibCommonEvents {
 
   private static final String NBT_ROOT_GUIDE_BOOKS = "silentlib_guide_books";
 
   /**
    * Called when a player logs in. Used to give guide books to the player.
+   * 
    * @param event
    */
   @SubscribeEvent
@@ -46,6 +51,15 @@ public final class SilentLibEventHandlers {
       }
 
       item = ItemGuideBookSL.getBookById(++id);
+    }
+  }
+
+  @SubscribeEvent
+  public void onWorldTick(WorldTickEvent event) {
+
+    if (event.phase == Phase.START) {
+      // World tick pre.
+      EntityHelper.handleSpawns();
     }
   }
 }

@@ -22,7 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IRegistryObject;
 
-public class ItemArmorSL extends ItemArmor implements IRegistryObject {
+public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
   protected String itemName;
   protected String modId;

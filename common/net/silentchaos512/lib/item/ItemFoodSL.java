@@ -23,7 +23,7 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
-public class ItemFoodSL extends ItemFood implements IRegistryObject {
+public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
 
   protected int subItemCount;
   protected String itemName;
