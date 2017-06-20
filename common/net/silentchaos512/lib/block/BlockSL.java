@@ -132,7 +132,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   @SuppressWarnings("deprecation")
   @Override
   public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
-      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean par7) {
 
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
@@ -141,7 +141,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
       AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
 
-    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
+    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
   @SuppressWarnings("deprecation")

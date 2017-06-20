@@ -1,5 +1,9 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.1.5
+Added: EnchantmentUtils
+Preliminary 1.12 adjustments (no, 1.12 is still not usable).
+
 2.1.4
 Added: Safe method for spawning entities from other threads (EntityHelper#safeSpawn)
 Added: Left-click (empty/block) handlers for items. These can capture left-clicks on the client and send a packet to the server for processing.

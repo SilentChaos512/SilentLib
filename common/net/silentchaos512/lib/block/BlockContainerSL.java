@@ -156,7 +156,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   @SuppressWarnings("deprecation")
   @Override
   public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
-      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean par7) {
 
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
@@ -165,7 +165,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
       AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
 
-    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
+    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
   @SuppressWarnings("deprecation")

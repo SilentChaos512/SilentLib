@@ -181,4 +181,17 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
       list.add(new ItemStack(this));
     }
   }
+
+ // ===========================
+ // Cross Compatibility (MC 12)
+ // ===========================
+ 
+ public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+   LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+   if (loc != null) {
+     String name = getNameForStack(stack);
+     list.addAll(loc.getItemDescriptionLines(name));
+   }
+ }
 }
