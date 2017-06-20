@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -20,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemSL extends Item implements IRegistryObject, IItemSL {
@@ -41,7 +43,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -93,8 +95,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   // ==============
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
     if (loc != null) {
@@ -166,9 +167,9 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 
-    clGetSubItems(item, tab, list);
+    clGetSubItems(this, tab, list);
   }
 
   protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
@@ -181,4 +182,17 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
       list.add(new ItemStack(this));
     }
   }
+
+ // ===========================
+ // Cross Compatibility (MC 12)
+ // ===========================
+ 
+ public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+   LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+   if (loc != null) {
+     String name = getNameForStack(stack);
+     list.addAll(loc.getItemDescriptionLines(name));
+   }
+ }
 }

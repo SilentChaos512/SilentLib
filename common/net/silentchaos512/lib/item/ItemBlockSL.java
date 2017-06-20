@@ -3,6 +3,7 @@ package net.silentchaos512.lib.item;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -60,8 +61,7 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
     // Get tooltip from block? (New method)
     int length = list.size();
@@ -121,13 +121,13 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(this, tab, subItems);
   }
 
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
   }
 }

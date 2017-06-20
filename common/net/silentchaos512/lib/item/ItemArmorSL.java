@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 
 public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
@@ -41,7 +42,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -114,14 +115,14 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(this, tab, subItems);
   }
 
   @SideOnly(Side.CLIENT)
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
   }
 }

@@ -21,12 +21,12 @@ public interface IRecipeSL extends IRecipe {
     return StackHelper.isValid(getCraftingResult(inv));
   }
 
-  @Override
-  public default int getRecipeSize() {
-
-    // Prioritize over all normal recipes.
-    return 10;
-  }
+//  @Override
+//  public default int getRecipeSize() {
+//
+//    // Prioritize over all normal recipes.
+//    return 10;
+//  }
 
   @Override
   public default @Nonnull ItemStack getRecipeOutput() {

@@ -9,6 +9,8 @@ import java.util.List;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -56,7 +58,8 @@ public class ItemDisplay {
       boolean flagBefore = mc.fontRendererObj.getUnicodeFlag();
       mc.fontRendererObj.setUnicodeFlag(false);
 
-      List<String> list = this.stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips);
+      ITooltipFlag tooltipFlag = mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL;
+      List<String> list = this.stack.getTooltip(mc.player, tooltipFlag);
       int maxWidth = 0;
 
       for (int k = 0; k < list.size(); ++k) {

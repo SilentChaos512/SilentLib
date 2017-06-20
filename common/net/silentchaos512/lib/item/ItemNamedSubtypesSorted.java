@@ -48,7 +48,7 @@ public class ItemNamedSubtypesSorted extends ItemNamedSubtypes {
   }
 
   @Override
-  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
 
     for (String name : sortedNames) {
       list.add(getStack(name));

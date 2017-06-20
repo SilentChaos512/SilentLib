@@ -9,6 +9,7 @@ import java.util.List;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraftforge.fml.client.config.GuiUtils;
@@ -133,12 +134,15 @@ public class PageCrafting extends GuidePage {
       ShapedRecipes shaped = (ShapedRecipes) recipe;
       width = shaped.recipeWidth;
       height = shaped.recipeHeight;
-      stacks = shaped.recipeItems;
+      for (int i = 0; i < shaped.recipeItems.size(); ++i) {
+        Ingredient ing = shaped.recipeItems.get(i);
+        stacks[i] = ing.func_193365_a()[0];
+      }
       this.recipeTypeLocKey = "guide.silentlib:shapedRecipe";
     } else if (recipe instanceof ShapelessRecipes) {
       ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
       for (int i = 0; i < shapeless.recipeItems.size(); i++) {
-        stacks[i] = shapeless.recipeItems.get(i);
+        stacks[i] = shapeless.recipeItems.get(i).func_193365_a()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessRecipe";
     } else if (recipe instanceof ShapedOreRecipe) {
@@ -151,22 +155,16 @@ public class PageCrafting extends GuidePage {
             "Something went wrong trying to get the Crafting Recipe in the booklet to display!");
         e.printStackTrace();
       }
-      for (int i = 0; i < shaped.getInput().length; i++) {
-        Object input = shaped.getInput()[i];
-        if (input != null) {
-          stacks[i] = input instanceof ItemStack ? (ItemStack) input
-              : (((List<ItemStack>) input).isEmpty() ? StackHelper.empty()
-                  : ((List<ItemStack>) input).get(0));
-        }
+      for (int i = 0; i < shaped.func_192400_c().size(); i++) {
+        Ingredient input = shaped.func_192400_c().get(i);
+        stacks[i] = input.func_193365_a()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapedOreRecipe";
     } else if (recipe instanceof ShapelessOreRecipe) {
       ShapelessOreRecipe shapeless = (ShapelessOreRecipe) recipe;
-      for (int i = 0; i < shapeless.getInput().size(); i++) {
-        Object input = shapeless.getInput().get(i);
-        stacks[i] = input instanceof ItemStack ? (ItemStack) input
-            : (((List<ItemStack>) input).isEmpty() ? StackHelper.empty()
-                : ((List<ItemStack>) input).get(0));
+      for (int i = 0; i < shapeless.func_192400_c().size(); i++) {
+        Ingredient input = shapeless.func_192400_c().get(i);
+        stacks[i] = input.func_193365_a()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessOreRecipe";
     }

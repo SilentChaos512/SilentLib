@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Locale;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,7 +53,8 @@ public class GuideEntry implements IGuideEntry {
     if (!items.isEmpty()) {
       for (ItemStack stack : items) {
         if (StackHelper.isValid(stack)) {
-          List<String> tooltip = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips);
+          ITooltipFlag tooltipFlag = mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL;
+          List<String> tooltip = stack.getTooltip(mc.player, tooltipFlag);
           for (String strg : tooltip) {
             if (strg != null && strg.toLowerCase(Locale.ROOT).contains(searchBarText)) {
               return true;

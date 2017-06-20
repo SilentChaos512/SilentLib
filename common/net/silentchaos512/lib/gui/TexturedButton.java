@@ -37,8 +37,9 @@ public class TexturedButton extends GuiButton {
     this.textList.addAll(hoverTextList);
   }
 
+  // drawButton
   @Override
-  public void drawButton(Minecraft minecraft, int x, int y) {
+  public void func_191745_a(Minecraft minecraft, int x, int y, float par4) {
 
     if (this.visible) {
       minecraft.getTextureManager().bindTexture(this.resLoc);

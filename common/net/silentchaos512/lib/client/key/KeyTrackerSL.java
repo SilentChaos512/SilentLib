@@ -2,6 +2,7 @@ package net.silentchaos512.lib.client.key;
 
 import org.lwjgl.input.Keyboard;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;

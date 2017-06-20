@@ -5,6 +5,7 @@ import java.util.List;
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -21,6 +22,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
@@ -48,7 +50,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -100,8 +102,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   // ==============
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
     if (loc != null) {
@@ -161,14 +162,14 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(this, tab, subItems);
   }
 
   @SideOnly(Side.CLIENT)
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
   }
 }

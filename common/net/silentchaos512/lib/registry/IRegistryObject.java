@@ -7,7 +7,7 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 public interface IRegistryObject {
 
   // Formerly IAddRecipe
-  public void addRecipes();
+  public void addRecipes(RecipeMaker recipes);
   public void addOreDict();
 
   // Formerly IHasVariants

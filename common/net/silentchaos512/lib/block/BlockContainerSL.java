@@ -28,6 +28,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 
 public class BlockContainerSL extends BlockContainer implements IRegistryObject, IHasSubtypes {
 
@@ -62,7 +63,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -156,7 +157,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   @SuppressWarnings("deprecation")
   @Override
   public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
-      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean par7) {
 
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
@@ -165,7 +166,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
       AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
 
-    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
+    super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
   @SuppressWarnings("deprecation")
@@ -210,9 +211,9 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubBlocks(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
+  public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
 
-    clGetSubBlocks(item, tab, list);
+    clGetSubBlocks(Item.getItemFromBlock(this), tab, list);
   }
 
   protected void clGetSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {

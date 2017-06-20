@@ -1,7 +1,5 @@
 package net.silentchaos512.lib.registry;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -15,10 +13,17 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -28,14 +33,12 @@ import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.GameRegistry;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.RecipeSorter;
 import net.minecraftforge.oredict.RecipeSorter.Category;
-import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
+import scala.NotImplementedError;
 
 public class SRegistry {
 
@@ -68,10 +71,13 @@ public class SRegistry {
 
   protected boolean listModelsInPost = false;
 
+  public RecipeMaker recipes;
+
   public SRegistry(String modId) {
 
     this.modId = modId;
     this.resourcePrefix = modId.toLowerCase() + ":";
+    this.recipes = new RecipeMaker(modId);
   }
 
   public SRegistry(String modId, LogHelper logHelper) {
@@ -223,15 +229,29 @@ public class SRegistry {
       Category category, String dependencies)
       throws InstantiationException, IllegalAccessException {
 
-    IRecipe recipe = recipeClass.newInstance();
-    GameRegistry.addRecipe(recipe);
-    RecipeSorter.INSTANCE.register(resourcePrefix + name, recipeClass, category, dependencies);
-    return recipe;
+//    IRecipe recipe = recipeClass.newInstance();
+//    GameRegistry.addRecipe(recipe);
+//    RecipeSorter.INSTANCE.register(resourcePrefix + name, recipeClass, category, dependencies);
+//    return recipe;
+    throw new NotImplementedError();
+  }
+
+  public IRecipe addRecipe(String key) {
+
+    NonNullList<Ingredient> ingredients = NonNullList.create();
+    for (int i = 0; i < 9; ++i) {
+      ingredients.add(Ingredient.func_193369_a(new ItemStack(Blocks.DIRT)));
+    }
+    ShapedRecipes test = new ShapedRecipes(key, 3, 3, ingredients, new ItemStack(Items.DIAMOND));
+    CraftingManager.func_193372_a(new ResourceLocation(key), test);
+
+    return test;
   }
 
   /**
    * Gets a Block from the blocks map. Not recommended, Block instances should be saved in variables for easy access.
    */
+  @Deprecated
   public Block getBlock(String key) {
 
     return blocks.get(key);
@@ -240,6 +260,7 @@ public class SRegistry {
   /**
    * Gets an Item from the items map. Not recommended, Item instances should be saved in variables for easy access.
    */
+  @Deprecated
   public Item getItem(String key) {
 
     return items.get(key);
@@ -313,14 +334,14 @@ public class SRegistry {
 
     for (IRegistryObject obj : registryObjects) {
       obj.addOreDict();
-      obj.addRecipes();
+      obj.addRecipes(recipes);
     }
   }
 
   protected void addRecipes() {
 
     for (IRegistryObject obj : registryObjects)
-      obj.addRecipes();
+      obj.addRecipes(recipes);
   }
 
   protected void addOreDictEntries() {

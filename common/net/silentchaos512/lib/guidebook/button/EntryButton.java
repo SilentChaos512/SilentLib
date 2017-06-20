@@ -29,16 +29,16 @@ public class EntryButton extends GuiButton {
   }
 
   @Override
-  public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+  public void func_191745_a(Minecraft minecraft, int x, int y, float par4) {
 
     if (this.visible) {
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-      this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition
-          && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+      this.hovered = x >= this.xPosition && y >= this.yPosition
+          && x < this.xPosition + this.width && y < this.yPosition + this.height;
       GlStateManager.enableBlend();
       GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
       GlStateManager.blendFunc(770, 771);
-      this.mouseDragged(minecraft, mouseX, mouseY);
+      this.mouseDragged(minecraft, x, y);
 
       int textOffsetX = 0;
       if (StackHelper.isValid(this.stackToRender)) {
