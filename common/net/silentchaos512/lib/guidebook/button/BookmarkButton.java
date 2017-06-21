@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
@@ -16,6 +15,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.gui.GuiButtonSL;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuideChapter;
 import net.silentchaos512.lib.guidebook.IGuidePage;
@@ -26,7 +26,7 @@ import net.silentchaos512.lib.util.AssetUtil;
 import net.silentchaos512.lib.util.StackHelper;
 
 @SideOnly(Side.CLIENT)
-public class BookmarkButton extends GuiButton {
+public class BookmarkButton extends GuiButtonSL {
 
   private final GuiGuide booklet;
   protected GuideBook book;
@@ -56,15 +56,14 @@ public class BookmarkButton extends GuiButton {
     }
   }
 
-  // drawButton
   @Override
-  public void func_191745_a(Minecraft minecraft, int x, int y, float par4) {
+  public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float par4) {
 
     if (this.visible) {
       minecraft.getTextureManager().bindTexture(book.getResourceGadgets());
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-      this.hovered = x >= this.xPosition && y >= this.yPosition && x < this.xPosition + this.width
-          && y < this.yPosition + this.height;
+      this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width
+          && mouseY < this.y + this.height;
       int k = this.getHoverState(this.hovered);
       if (k == 0) {
         k = 1;
@@ -74,16 +73,16 @@ public class BookmarkButton extends GuiButton {
       GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
       GlStateManager.blendFunc(770, 771);
       int renderHeight = 25;
-      this.drawTexturedModalRect(this.xPosition, this.yPosition,
+      this.drawTexturedModalRect(this.x, this.y,
           224 + (this.assignedPage == null ? 0 : 16), 14 - renderHeight + k * renderHeight,
           this.width, renderHeight);
-      this.mouseDragged(minecraft, x, y);
+      this.mouseDragged(minecraft, mouseX, mouseY);
 
       if (this.assignedPage != null) {
         ItemStack display = this.assignedPage.getChapter().getDisplayItemStack();
         if (StackHelper.isValid(display)) {
           GlStateManager.pushMatrix();
-          AssetUtil.renderStackToGui(display, this.xPosition + 2, this.yPosition + 1, 0.725F);
+          AssetUtil.renderStackToGui(display, this.x + 2, this.y + 1, 0.725F);
           GlStateManager.popMatrix();
         }
       }
@@ -116,7 +115,7 @@ public class BookmarkButton extends GuiButton {
 
       Minecraft mc = Minecraft.getMinecraft();
       GuiUtils.drawHoveringText(list, mouseX, mouseY, mc.displayWidth, mc.displayHeight, -1,
-          mc.fontRendererObj);
+          mc.fontRenderer);
     }
   }
 }

@@ -55,15 +55,15 @@ public class ItemDisplay {
 
     if (this.isHovered(book, mouseX, mouseY)) {
       Minecraft mc = this.gui.mc;
-      boolean flagBefore = mc.fontRendererObj.getUnicodeFlag();
-      mc.fontRendererObj.setUnicodeFlag(false);
+      boolean flagBefore = mc.fontRenderer.getUnicodeFlag();
+      mc.fontRenderer.setUnicodeFlag(false);
 
       ITooltipFlag tooltipFlag = mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL;
       List<String> list = this.stack.getTooltip(mc.player, tooltipFlag);
       int maxWidth = 0;
 
       for (int k = 0; k < list.size(); ++k) {
-        maxWidth = Math.max(mc.fontRendererObj.getStringWidth(list.get(k)), maxWidth);
+        maxWidth = Math.max(mc.fontRenderer.getStringWidth(list.get(k)), maxWidth);
         if (k == 0) {
           list.set(k, this.stack.getRarity().rarityColor + list.get(k));
         } else {
@@ -82,9 +82,9 @@ public class ItemDisplay {
         posX -= maxWidth + 20;
 
       GuiUtils.drawHoveringText(list, posX, mouseY, mc.displayWidth, mc.displayHeight, -1,
-          mc.fontRendererObj);
+          mc.fontRenderer);
 
-      mc.fontRendererObj.setUnicodeFlag(flagBefore);
+      mc.fontRenderer.setUnicodeFlag(flagBefore);
     }
   }
 

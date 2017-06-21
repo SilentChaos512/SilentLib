@@ -236,18 +236,6 @@ public class SRegistry {
     throw new NotImplementedError();
   }
 
-  public IRecipe addRecipe(String key) {
-
-    NonNullList<Ingredient> ingredients = NonNullList.create();
-    for (int i = 0; i < 9; ++i) {
-      ingredients.add(Ingredient.func_193369_a(new ItemStack(Blocks.DIRT)));
-    }
-    ShapedRecipes test = new ShapedRecipes(key, 3, 3, ingredients, new ItemStack(Items.DIAMOND));
-    CraftingManager.func_193372_a(new ResourceLocation(key), test);
-
-    return test;
-  }
-
   /**
    * Gets a Block from the blocks map. Not recommended, Block instances should be saved in variables for easy access.
    */

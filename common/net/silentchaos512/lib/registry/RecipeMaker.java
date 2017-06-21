@@ -17,6 +17,7 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.fml.common.registry.GameData;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.silentchaos512.lib.util.StackHelper;
@@ -108,7 +109,7 @@ public class RecipeMaker {
   public IRecipe addRecipe(String key, IRecipe recipe) {
 
     key = getRecipeKey(key);
-    CraftingManager.func_193372_a(new ResourceLocation(key), recipe);
+    registerRecipe(new ResourceLocation(key), recipe);
     return recipe;
   }
 
@@ -230,9 +231,17 @@ public class RecipeMaker {
     } //@formatter:on
   }
 
+  /**
+   * Registers a created recipe (called by adder methods). This method may be removed, as it is a workaround for early
+   * Forge 1.12 versions.
+   * 
+   * @param res Registry name for recipe?
+   * @param recipe The recipe to register.
+   */
   protected void registerRecipe(ResourceLocation res, IRecipe recipe) {
 
-    CraftingManager.func_193372_a(res, recipe);
+    recipe.setRegistryName(res);
+    GameData.getRecipeRegistry().register(recipe);
   }
 
   /**
@@ -249,7 +258,7 @@ public class RecipeMaker {
 
       NonNullList<Ingredient> list = NonNullList.create();
       for (ItemStack stack : params) {
-        list.add(Ingredient.func_193369_a(stack));
+        list.add(Ingredient.fromStacks(stack));
       }
       return new ShapelessRecipes(group, output, list);
     }
@@ -311,7 +320,7 @@ public class RecipeMaker {
       NonNullList<Ingredient> ingredients = NonNullList.create();
       for (ItemStack itemstack : aitemstack) {
         if (StackHelper.isValid(itemstack)) {
-          ingredients.add(Ingredient.func_193369_a(itemstack));
+          ingredients.add(Ingredient.fromStacks(itemstack));
         }
       }
 

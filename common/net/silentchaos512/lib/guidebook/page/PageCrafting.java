@@ -136,13 +136,13 @@ public class PageCrafting extends GuidePage {
       height = shaped.recipeHeight;
       for (int i = 0; i < shaped.recipeItems.size(); ++i) {
         Ingredient ing = shaped.recipeItems.get(i);
-        stacks[i] = ing.func_193365_a()[0];
+        stacks[i] = ing.getMatchingStacks()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapedRecipe";
     } else if (recipe instanceof ShapelessRecipes) {
       ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
       for (int i = 0; i < shapeless.recipeItems.size(); i++) {
-        stacks[i] = shapeless.recipeItems.get(i).func_193365_a()[0];
+        stacks[i] = shapeless.recipeItems.get(i).getMatchingStacks()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessRecipe";
     } else if (recipe instanceof ShapedOreRecipe) {
@@ -155,16 +155,16 @@ public class PageCrafting extends GuidePage {
             "Something went wrong trying to get the Crafting Recipe in the booklet to display!");
         e.printStackTrace();
       }
-      for (int i = 0; i < shaped.func_192400_c().size(); i++) {
-        Ingredient input = shaped.func_192400_c().get(i);
-        stacks[i] = input.func_193365_a()[0];
+      for (int i = 0; i < shaped.getIngredients().size(); i++) {
+        Ingredient input = shaped.getIngredients().get(i);
+        stacks[i] = input.getMatchingStacks()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapedOreRecipe";
     } else if (recipe instanceof ShapelessOreRecipe) {
       ShapelessOreRecipe shapeless = (ShapelessOreRecipe) recipe;
-      for (int i = 0; i < shapeless.func_192400_c().size(); i++) {
-        Ingredient input = shapeless.func_192400_c().get(i);
-        stacks[i] = input.func_193365_a()[0];
+      for (int i = 0; i < shapeless.getIngredients().size(); i++) {
+        Ingredient input = shapeless.getIngredients().get(i);
+        stacks[i] = input.getMatchingStacks()[0];
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessOreRecipe";
     }
