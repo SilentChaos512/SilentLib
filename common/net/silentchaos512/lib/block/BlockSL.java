@@ -8,6 +8,8 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -23,9 +25,11 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.registry.RecipeMaker;
+import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
@@ -199,6 +203,25 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
       }
     } else {
       list.add(new ItemStack(item));
+    }
+  }
+
+
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
+
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+
+    clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      list.addAll(loc.getBlockDescriptionLines(blockName));
     }
   }
 }

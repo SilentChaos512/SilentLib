@@ -9,7 +9,6 @@ import com.google.common.collect.Maps;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
@@ -18,10 +17,10 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.silentchaos512.lib.util.StackHelper;
-import scala.NotImplementedError;
 
 /**
  * TODO
@@ -45,7 +44,7 @@ public class RecipeMaker {
 
     if (key == null || key.isEmpty())
       key = "recipe" + (++lastRecipeIndex);
-    return resourcePrefix + key;
+    return resourcePrefix + key.toLowerCase();
   }
 
   /**********************************************************************************************************
@@ -54,12 +53,22 @@ public class RecipeMaker {
    * Adders will make and register a recipe. Makers just create a recipe (useful for guide book stuff, etc.)
    **********************************************************************************************************/
 
+  public IRecipe addShapeless(String key, @Nonnull ItemStack result, Object... inputs) {
+
+    return addShapeless(key, result, makeStackArray(inputs));
+  }
+
   public IRecipe addShapeless(String key, @Nonnull ItemStack result, ItemStack... inputs) {
 
     key = getRecipeKey(key);
     IRecipe recipe = makeShapeless(result, inputs);
     registerRecipe(new ResourceLocation(key), recipe);
     return recipe;
+  }
+
+  public IRecipe makeShapeless(@Nonnull ItemStack result, Object... inputs) {
+
+    return makeShapeless(result, makeStackArray(inputs));
   }
 
   public IRecipe makeShapeless(@Nonnull ItemStack result, ItemStack... inputs) {
@@ -90,7 +99,7 @@ public class RecipeMaker {
 
   public IRecipe makeShapelessOre(@Nonnull ItemStack result, Object... inputs) {
 
-    return new ShapedOreRecipe(new ResourceLocation(modId), result, inputs);
+    return new ShapelessOreRecipe(new ResourceLocation(modId), result, inputs);
   }
 
   public IRecipe addShapedOre(String key, @Nonnull ItemStack result, Object... inputs) {
@@ -103,7 +112,22 @@ public class RecipeMaker {
 
   public IRecipe makeShapedOre(@Nonnull ItemStack result, Object... inputs) {
 
-    return new ShapelessOreRecipe(new ResourceLocation(modId), result, inputs);
+    return new ShapedOreRecipe(new ResourceLocation(modId), result, inputs);
+  }
+
+  public void addSmelting(Block input, @Nonnull ItemStack output, float xp) {
+
+    GameRegistry.addSmelting(input, output, xp);
+  }
+
+  public void addSmelting(Item input, @Nonnull ItemStack output, float xp) {
+
+    GameRegistry.addSmelting(input, output, xp);
+  }
+
+  public void addSmelting(@Nonnull ItemStack input, @Nonnull ItemStack output, float xp) {
+
+    GameRegistry.addSmelting(input, output, xp);
   }
 
   public IRecipe addRecipe(String key, IRecipe recipe) {
@@ -244,6 +268,23 @@ public class RecipeMaker {
     GameData.getRecipeRegistry().register(recipe);
   }
 
+  protected ItemStack[] makeStackArray(Object... params) {
+
+    ItemStack[] result = new ItemStack[params.length];
+    for (int i = 0; i < params.length; ++i) {
+      Object obj = params[i];
+      if (obj instanceof ItemStack)
+        result[i] = (ItemStack) obj;
+      else if (obj instanceof Item)
+        result[i] = new ItemStack((Item) obj);
+      else if (obj instanceof Block)
+        result[i] = new ItemStack((Block) obj);
+      else
+        throw new IllegalArgumentException("Can't make object of type " + obj.getClass() + " into an ItemStack!");
+    }
+    return result;
+  }
+
   /**
    * Holds code for adding recipes. Currently, this is a workaround for Forge 1.12 being incomplete. May be removed in a
    * later version.
@@ -319,9 +360,10 @@ public class RecipeMaker {
 
       NonNullList<Ingredient> ingredients = NonNullList.create();
       for (ItemStack itemstack : aitemstack) {
-        if (StackHelper.isValid(itemstack)) {
+        if (StackHelper.isValid(itemstack))
           ingredients.add(Ingredient.fromStacks(itemstack));
-        }
+        else
+          ingredients.add(Ingredient.EMPTY);
       }
 
       return new ShapedRecipes(group, j, k, ingredients, stack);

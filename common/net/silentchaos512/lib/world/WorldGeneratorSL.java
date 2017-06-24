@@ -13,7 +13,7 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
 
   public final boolean allowRetrogen;
   public final String retrogenKey;
-  
+
   public WorldGeneratorSL(boolean allowRetrogren, String retrogenKey) {
 
     this.allowRetrogen = allowRetrogren;
@@ -24,27 +24,45 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
   public void generate(Random random, int chunkX, int chunkZ, World world,
       IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
 
-    switch (world.provider.getDimension()) {
-      case 0:
-        generateSurface(world, random, chunkX * 16, chunkZ * 16);
-        break;
-      case -1:
-        generateNether(world, random, chunkX * 16, chunkZ * 16);
-        break;
-      case 1:
-        generateEnd(world, random, chunkX * 16, chunkZ * 16);
-        break;
-      default:
-        generateSurface(world, random, chunkX * 16, chunkZ * 16);
+    final int dim = world.provider.getDimension();
+    final int posX = chunkX * 16;
+    final int posZ = chunkZ * 16;
+
+    if (!generateForDimension(dim, world, random, posX, posZ)) {
+      switch (dim) {
+        case 0:
+          generateSurface(world, random, posX, posZ);
+          break;
+        case -1:
+          generateNether(world, random, posX, posZ);
+          break;
+        case 1:
+          generateEnd(world, random, posX, posZ);
+          break;
+        default:
+          generateSurface(world, random, posX, posZ);
+      }
     }
   }
 
-  protected abstract void generateSurface(World world, Random random, int posX, int posZ);
+  protected void generateSurface(World world, Random random, int posX, int posZ) {
 
-  protected abstract void generateNether(World world, Random random, int posX, int posZ);
+  }
 
-  protected abstract void generateEnd(World world, Random random, int posX, int posZ);
-  
+  protected void generateNether(World world, Random random, int posX, int posZ) {
+
+  }
+
+  protected void generateEnd(World world, Random random, int posX, int posZ) {
+
+  }
+
+  protected boolean generateForDimension(final int dim, World world, Random random, int posX,
+      int posZ) {
+
+    return false;
+  }
+
   @SubscribeEvent
   public void onChunkLoad(ChunkDataEvent.Load event) {
 

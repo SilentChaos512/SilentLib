@@ -6,6 +6,7 @@ import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
@@ -102,16 +103,6 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   // ==============
 
   @Override
-  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
-
-    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-    if (loc != null) {
-      String name = getNameForStack(stack);
-      list.addAll(loc.getItemDescriptionLines(name));
-    }
-  }
-
-  @Override
   public String getUnlocalizedName(ItemStack stack) {
 
     return "item." + modId + ":" + getNameForStack(stack);
@@ -171,5 +162,25 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 12)
+  // inspired by CompatLayer
+  // ==============================
+
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+
+    clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
+    }
   }
 }

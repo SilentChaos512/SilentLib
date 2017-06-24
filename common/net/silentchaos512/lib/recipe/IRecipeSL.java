@@ -13,6 +13,12 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.world.World;
 import net.silentchaos512.lib.util.StackHelper;
 
+/**
+ * @deprecated Use RecipeBaseSL instead.
+ * @author SilentChaos512
+ *
+ */
+@Deprecated
 public interface IRecipeSL extends IRecipe {
 
   @Override

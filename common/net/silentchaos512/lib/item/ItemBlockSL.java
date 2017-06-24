@@ -4,6 +4,7 @@ import java.util.List;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.EnumRarity;
@@ -61,24 +62,6 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
-
-    // Get tooltip from block? (New method)
-    int length = list.size();
-    // FIXME
-    // block.addInformation(stack, player, list, advanced);
-
-    // If block doesn't add anything, use the old method.
-    if (length == list.size()) {
-      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-      if (loc != null) {
-        String name = getNameForStack(stack);
-        list.addAll(loc.getBlockDescriptionLines(name));
-      }
-    }
-  }
-
-  @Override
   public String getUnlocalizedName(ItemStack stack) {
 
     return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
@@ -129,5 +112,33 @@ public class ItemBlockSL extends ItemBlock {
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 12)
+  // inspired by CompatLayer
+  // ==============================
+
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+
+    clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    // Get tooltip from block? (New method)
+    int length = list.size();
+    // FIXME
+    // block.addInformation(stack, player, list, advanced);
+
+    // If block doesn't add anything, use the old method.
+    if (length == list.size()) {
+      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+      if (loc != null) {
+        String name = getNameForStack(stack);
+        list.addAll(loc.getBlockDescriptionLines(name));
+      }
+    }
   }
 }

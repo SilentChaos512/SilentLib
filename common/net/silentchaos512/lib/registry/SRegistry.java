@@ -233,7 +233,10 @@ public class SRegistry {
 //    GameRegistry.addRecipe(recipe);
 //    RecipeSorter.INSTANCE.register(resourcePrefix + name, recipeClass, category, dependencies);
 //    return recipe;
-    throw new NotImplementedError();
+
+    IRecipe recipe = recipeClass.newInstance();
+    recipes.registerRecipe(new ResourceLocation(resourcePrefix + name), recipe);
+    return recipe;
   }
 
   /**

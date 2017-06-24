@@ -157,7 +157,7 @@ public class PageCrafting extends GuidePage {
       }
       for (int i = 0; i < shaped.getIngredients().size(); i++) {
         Ingredient input = shaped.getIngredients().get(i);
-        stacks[i] = input.getMatchingStacks()[0];
+        stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : StackHelper.empty();
       }
       this.recipeTypeLocKey = "guide.silentlib:shapedOreRecipe";
     } else if (recipe instanceof ShapelessOreRecipe) {

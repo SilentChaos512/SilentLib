@@ -1,5 +1,19 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.1
+Added: Smelting recipe adders to RecipeMaker (kind of unnecessary right now, but...)
+Added: TileEntitySpecialRendererSL
+Fixed: addInformation handlers of Item classes
+Fixed: Shaped/shapeless ore recipe adders being reversed
+
+2.2.0
+Initial 1.12 update! Expect things to break as Forge updates.
+Added: RecipeMaker. Handles creation of recipes.
+Added: WorldGeneratorSL (ideal is to allow retrogen, but that doesn't work yet).
+Changed: IRegistryObject#addRecipes now takes a parameter: the mod's RecipeMaker instance.
+Removed: The deprecated RecipeBase class.
+Removed: RecipeHelper (methods merged into RecipeMaker).
+
 2.1.4
 Added: Safe method for spawning entities from other threads (EntityHelper#safeSpawn)
 Added: Left-click (empty/block) handlers for items. These can capture left-clicks on the client and send a packet to the server for processing.

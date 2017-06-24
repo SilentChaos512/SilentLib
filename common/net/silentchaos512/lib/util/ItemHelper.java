@@ -1,8 +1,12 @@
 package net.silentchaos512.lib.util;
 
+import java.util.Random;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ActionResult;
@@ -19,6 +23,18 @@ import net.minecraft.world.World;
  *
  */
 public class ItemHelper {
+
+  public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand) {
+
+    return attemptDamageItem(stack, amount, rand, null);
+  }
+
+  public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand,
+      @Nullable EntityPlayer player) {
+
+    EntityPlayerMP playermp = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
+    return stack.attemptDamageItem(amount, rand, playermp);
+  }
 
   public static ActionResult<ItemStack> onItemRightClick(@Nonnull Item item, World world,
       EntityPlayer player, EnumHand hand) {
@@ -49,8 +65,8 @@ public class ItemHelper {
     // Use the item.
     Item item = stack.getItem();
     EnumActionResult result;
-    result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side,
-        hitX, hitY, hitZ);
+    result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side, hitX, hitY,
+        hitZ);
 
     // Put everything back in its proper place...
     player.setHeldItem(EnumHand.OFF_HAND, currentOffhand);
