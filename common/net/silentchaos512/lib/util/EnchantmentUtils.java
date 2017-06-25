@@ -6,6 +6,6 @@ public class EnchantmentUtils {
 
   public static boolean canApplyTogether(Enchantment e1, Enchantment e2) {
 
-    return e1.func_191560_c(e2);
+    return e1.isCompatibleWith(e2);
   }
 }

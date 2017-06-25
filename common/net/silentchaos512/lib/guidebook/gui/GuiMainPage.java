@@ -68,9 +68,8 @@ public class GuiMainPage extends GuiGuide {
     this.bookletName = "guide." + book.getModId() + ":manualName.1";
 
     // Select a random quote, if there is any available.
-    String[] quotes = book.getQuotes();
-    if (quotes.length > 0) {
-      String usedQuote = quotes[this.mc.world.rand.nextInt(quotes.length)];
+    String usedQuote = book.selectQuote(mc.world.rand);
+    if (!usedQuote.isEmpty()) {
       String[] quoteSplit = usedQuote.split("@");
       if (quoteSplit.length > 0) {
         this.quote = this.fontRenderer.listFormattedStringToWidth(quoteSplit[0], 120);

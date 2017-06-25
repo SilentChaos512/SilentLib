@@ -1,10 +1,12 @@
 package net.silentchaos512.lib.registry;
 
 import java.util.Map;
+import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.Maps;
+import com.google.common.collect.Queues;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -16,10 +18,11 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-import net.minecraftforge.fml.common.registry.GameData;
+import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.minecraftforge.registries.GameData;
 import net.silentchaos512.lib.util.StackHelper;
 
 /**
@@ -256,16 +259,16 @@ public class RecipeMaker {
   }
 
   /**
-   * Registers a created recipe (called by adder methods). This method may be removed, as it is a workaround for early
-   * Forge 1.12 versions.
+   * Registers a created recipe (called by adder methods, but not makers).
    * 
-   * @param res Registry name for recipe?
+   * @param name Registry name for recipe.
    * @param recipe The recipe to register.
    */
-  protected void registerRecipe(ResourceLocation res, IRecipe recipe) {
+  protected void registerRecipe(ResourceLocation name, IRecipe recipe) {
 
-    recipe.setRegistryName(res);
-    GameData.getRecipeRegistry().register(recipe);
+    if (recipe.getRegistryName() == null)
+      recipe.setRegistryName(name);
+    ForgeRegistries.RECIPES.register(recipe);
   }
 
   protected ItemStack[] makeStackArray(Object... params) {

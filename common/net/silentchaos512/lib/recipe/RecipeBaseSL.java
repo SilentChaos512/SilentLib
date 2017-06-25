@@ -6,7 +6,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.util.StackHelper;
 
-public class RecipeBaseSL implements IRecipeSL {
+public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipeSL {
 
   @Override
   public ItemStack getCraftingResult(InventoryCrafting inv) {
@@ -19,30 +19,4 @@ public class RecipeBaseSL implements IRecipeSL {
 
     return true;
   }
-
-  /*
-   * I assume these will be removed in later Forge versions?
-   */
-
-  ResourceLocation registryName;
-
-  @Override
-  public IRecipe setRegistryName(ResourceLocation name) {
-
-    registryName = name;
-    return this;
-  }
-
-  @Override
-  public ResourceLocation getRegistryName() {
-
-    return registryName;
-  }
-
-  @Override
-  public Class<IRecipe> getRegistryType() {
-
-    return (Class<IRecipe>) getClass();
-  }
-
 }

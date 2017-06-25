@@ -22,6 +22,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -136,23 +137,22 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
   @SuppressWarnings("deprecation")
   @Override
-  public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
-      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean par7) {
+  public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity,
+      boolean par7) {
 
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
 
   @SuppressWarnings("deprecation")
-  protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
-      AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
+  protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
+      Entity entity) {
 
     super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
   @SuppressWarnings("deprecation")
   @Override
-  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block,
-      BlockPos p_189540_5_) {
+  public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos p_189540_5_) {
 
     clOnNeighborChanged(state, world, pos, block);
   }
@@ -162,14 +162,14 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   }
 
   @Override
-  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player,
-      EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public boolean onBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY,
+      float hitZ) {
 
     return clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
   }
 
-  protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state,
-      EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX,
+      float hitY, float hitZ) {
 
     return false;
   }
@@ -182,8 +182,8 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   }
 
   @SuppressWarnings("deprecation")
-  protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing,
-      float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
+  protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta,
+      EntityLivingBase placer) {
 
     return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
@@ -206,7 +206,6 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     }
   }
 
-
   // ===========================
   // Cross Compatibility (MC 12)
   // ===========================
@@ -223,5 +222,17 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     if (loc != null) {
       list.addAll(loc.getBlockDescriptionLines(blockName));
     }
+  }
+
+  @Override
+  public void getDrops(NonNullList<ItemStack> drops, IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+
+    drops.addAll(clGetDrops(world, pos, state, fortune));
+  }
+
+  @SuppressWarnings("deprecation")
+  public List<ItemStack> clGetDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
+
+    return super.getDrops(world, pos, state, fortune);
   }
 }

@@ -7,7 +7,9 @@ package net.silentchaos512.lib.guidebook;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Random;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Lists;
@@ -179,6 +181,15 @@ public abstract class GuideBook {
    * @since 2.1.1
    */
   public abstract String[] getQuotes();
+
+  public @Nonnull String selectQuote(Random rand) {
+
+    String[] quotes = getQuotes();
+    if (quotes.length > 0) {
+      return quotes[rand.nextInt(quotes.length)];
+    }
+    return "";
+  }
 
   /**
    * Gets a screen for the config button to display. Null may be returned if you do not have one.
