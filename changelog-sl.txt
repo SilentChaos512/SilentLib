@@ -2,7 +2,7 @@ Considering that Silent Lib is entirely behind-the-scenes from the player's pers
 
 2.1.5
 Added: EnchantmentUtils
-Preliminary 1.12 adjustments (no, 1.12 is still not usable).
+Preliminary 1.12 adjustments (no, 1.12 is still not ready).
 
 2.1.4
 Added: Safe method for spawning entities from other threads (EntityHelper#safeSpawn)

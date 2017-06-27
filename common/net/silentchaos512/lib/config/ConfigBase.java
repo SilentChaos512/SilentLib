@@ -54,11 +54,16 @@ public abstract class ConfigBase {
 
   public double loadDouble(String key, String category, double defaultValue, double min, double max, String comment) {
 
-    Property prop = config.get(category, key, defaultValue);
+    Property prop = config.get(category, key, Double.toString(defaultValue));
     prop.setComment(comment + " [range: " + min + " ~ " + max + ", default: " + defaultValue + "]");
     prop.setMinValue(min);
     prop.setMaxValue(max);
-    double val = prop.getDouble(defaultValue);
+    double val = 0.0;
+    try {
+      val = Double.parseDouble(prop.getString());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
     return val < min ? min : val > max ? max : val;
   }
 
