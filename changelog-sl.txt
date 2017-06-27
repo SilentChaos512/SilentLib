@@ -1,5 +1,14 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.3
+Forge 2373
+Fixed: Model loading crash
+Fixed: Models for most metadata items not loading
+Fixed: Items displaying in all creative tabs
+
+2.2.2
+Forge 2365
+
 2.2.1
 Added: Smelting recipe adders to RecipeMaker (kind of unnecessary right now, but...)
 Added: TileEntitySpecialRendererSL

@@ -136,13 +136,14 @@ public class PageCrafting extends GuidePage {
       height = shaped.recipeHeight;
       for (int i = 0; i < shaped.recipeItems.size(); ++i) {
         Ingredient ing = shaped.recipeItems.get(i);
-        stacks[i] = ing.getMatchingStacks()[0];
+        stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : StackHelper.empty();
       }
       this.recipeTypeLocKey = "guide.silentlib:shapedRecipe";
     } else if (recipe instanceof ShapelessRecipes) {
       ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
       for (int i = 0; i < shapeless.recipeItems.size(); i++) {
-        stacks[i] = shapeless.recipeItems.get(i).getMatchingStacks()[0];
+        Ingredient ing = shapeless.recipeItems.get(i);
+        stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : StackHelper.empty();
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessRecipe";
     } else if (recipe instanceof ShapedOreRecipe) {
@@ -164,7 +165,7 @@ public class PageCrafting extends GuidePage {
       ShapelessOreRecipe shapeless = (ShapelessOreRecipe) recipe;
       for (int i = 0; i < shapeless.getIngredients().size(); i++) {
         Ingredient input = shapeless.getIngredients().get(i);
-        stacks[i] = input.getMatchingStacks()[0];
+        stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : StackHelper.empty();
       }
       this.recipeTypeLocKey = "guide.silentlib:shapelessOreRecipe";
     }

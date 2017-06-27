@@ -1,9 +1,11 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
+import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -72,23 +74,15 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
     if (hasSubtypes) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
       for (int i = 0; i < subItemCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
+        models.put(i, new ModelResourceLocation(getFullName() + i, "inventory"));
       }
-      return models;
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
     }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
-  }
-
-  @Override
-  public boolean registerModels() {
-
-    // Let SRegistry handle model registration by default. Override if necessary.
-    return false;
   }
 
   // ==============
@@ -124,34 +118,30 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     return clOnItemRightClick(world, player, hand);
   }
 
-  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player,
-      EnumHand hand) {
+  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 
     return super.onItemRightClick(world, player, hand);
   }
 
   @Override
-  public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
-      EnumFacing facing, float hitX, float hitY, float hitZ) {
+  public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
-  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
-      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
   @Override
-  public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+  public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 
     return clOnItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
 
-  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ,
+      EnumHand hand) {
 
     return super.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
@@ -165,6 +155,9 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
 
   protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 
+    if (!isInCreativeTab(tab))
+      return;
+
     if (hasSubtypes) {
       for (int i = 0; i < subItemCount; ++i) {
         list.add(new ItemStack(item, 1, i));
@@ -174,22 +167,22 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     }
   }
 
- // ===========================
- // Cross Compatibility (MC 12)
- // ===========================
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
 
   @Override
   public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
   }
- 
- public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
-   LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-   if (loc != null) {
-     String name = getNameForStack(stack);
-     list.addAll(loc.getItemDescriptionLines(name));
-   }
- }
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
+    }
+  }
 }

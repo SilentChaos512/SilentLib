@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.block;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
@@ -89,22 +90,15 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
     if (hasSubtypes()) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
       for (int i = 0; i < subBlockCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
+        models.put(i, new ModelResourceLocation(getFullName() + i, "inventory"));
       }
-      return models;
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
     }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
-  }
-
-  @Override
-  public boolean registerModels() {
-
-    return false;
   }
 
   // ===============

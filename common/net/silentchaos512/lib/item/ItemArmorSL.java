@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
+import java.util.Map;
 
 import com.google.common.collect.Lists;
 
@@ -22,10 +23,8 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.registry.RecipeMaker;
-import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
@@ -74,9 +73,9 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+    models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
   }
 
   @Override

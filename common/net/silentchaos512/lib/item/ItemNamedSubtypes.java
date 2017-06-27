@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -49,12 +50,12 @@ public class ItemNamedSubtypes extends ItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    List<ModelResourceLocation> models = Lists.newArrayList();
-    for (String name : names)
-      models.add(new ModelResourceLocation(modId + ":" + name, "inventory"));
-    return models;
+    int i = 0;
+    for (String name : names) {
+      models.put(i++, new ModelResourceLocation(modId + ":" + name, "inventory"));
+    }
   }
 
   public String getNameForStack(ItemStack stack) {

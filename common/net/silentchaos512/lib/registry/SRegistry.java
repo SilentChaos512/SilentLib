@@ -1,12 +1,14 @@
 package net.silentchaos512.lib.registry;
 
 import java.util.HashSet;
-import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
+
+import com.google.common.collect.MapMaker;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.ItemModelMesher;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -21,6 +23,7 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -37,7 +40,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.oredict.RecipeSorter.Category;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
@@ -300,7 +302,7 @@ public class SRegistry {
    */
   public void clientPreInit() {
 
-    // registerModelVariants();
+    // registerModels();
   }
 
   /**
@@ -308,7 +310,6 @@ public class SRegistry {
    */
   public void clientInit() {
 
-    registerModels();
   }
 
   /**
@@ -316,11 +317,18 @@ public class SRegistry {
    */
   public void clientPostInit() {
 
-    if (listModelsInPost)
-      for (IRegistryObject obj : registryObjects)
-        for (ModelResourceLocation model : obj.getVariants())
-          if (model != null)
+    if (listModelsInPost) {
+      Map<Integer, ModelResourceLocation> models = new MapMaker().makeMap();
+      for (IRegistryObject obj : registryObjects) {
+        models.clear();
+        obj.getModels(models);
+        for (ModelResourceLocation model : models.values()) {
+          if (model != null) {
             System.out.println(model);
+          }
+        }
+      }
+    }
   }
 
   @Deprecated
@@ -339,21 +347,15 @@ public class SRegistry {
   @SideOnly(Side.CLIENT)
   protected void registerModels() {
 
-    ItemModelMesher mesher = Minecraft.getMinecraft().getRenderItem().getItemModelMesher();
     ModelResourceLocation model;
+    Map<Integer, ModelResourceLocation> models = new MapMaker().initialCapacity(16).makeMap();
 
     for (IRegistryObject obj : registryObjects) {
       if (!obj.registerModels()) {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
-        List<ModelResourceLocation> models = obj.getVariants();
-
-        for (int i = 0; i < models.size(); ++i) {
-          model = models.get(i);
-          if (model != null) {
-            ModelLoader.registerItemVariants(item, model);
-            mesher.register(item, i, model);
-          }
-        }
+        models.clear();
+        obj.getModels(models);
+        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item, entry.getKey(), entry.getValue()));
       }
     }
   }
@@ -443,6 +445,12 @@ public class SRegistry {
         sregistry.handlerRecipes.registerAll(sregistry);
       }
       sregistry.addRecipes();
+    }
+
+    @SubscribeEvent
+    public void registerModels(ModelRegistryEvent event) {
+
+      sregistry.registerModels();
     }
   }
 }
