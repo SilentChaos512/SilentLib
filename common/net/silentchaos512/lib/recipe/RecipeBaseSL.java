@@ -19,4 +19,10 @@ public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEn
 
     return true;
   }
+
+  @Override
+  public boolean isHidden() {
+
+    return true;
+  }
 }
