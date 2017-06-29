@@ -78,6 +78,6 @@ public class SilentLib {
 
   public static int getMCVersion() {
 
-    return 11;
+    return 12;
   }
 }
