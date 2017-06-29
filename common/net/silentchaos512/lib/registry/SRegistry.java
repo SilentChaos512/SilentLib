@@ -274,7 +274,6 @@ public class SRegistry {
    */
   public void init() {
 
-    addRecipes();
   }
 
   /**
