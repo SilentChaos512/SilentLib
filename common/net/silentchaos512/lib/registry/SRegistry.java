@@ -47,9 +47,6 @@ import net.silentchaos512.lib.util.LogHelper;
 public class SRegistry {
 
   // Internal use only!
-  // private final List<Block> blocksToRegister = new ArrayList<>();
-  // private final List<ItemBlock> itemBlocksToRegister = new ArrayList<>();
-  // private final List<Item> itemsToRegister = new ArrayList<>();
   private final Set<IRegistryObject> registryObjects = new HashSet<>();
 
   protected IRegistrationHandler handlerBlocks;
@@ -215,16 +212,6 @@ public class SRegistry {
     EntityRegistry.registerModEntity(resource, entityClass, key, id, mod, trackingRange, updateFrequency, sendsVelocityUpdates);
   }
 
-  /**
-   * @deprecated Use the factory version registerEntityRenderer(Class, IRenderFactory)
-   */
-  @SideOnly(Side.CLIENT)
-  @Deprecated
-  public void registerEntityRenderer(Class<? extends Entity> entityClass, Render renderer) {
-
-    Minecraft.getMinecraft().getRenderManager().entityRenderMap.put(entityClass, renderer);
-  }
-
   @SideOnly(Side.CLIENT)
   public <T extends Entity> void registerEntityRenderer(Class<T> entityClass, IRenderFactory<T> renderFactory) {
 
@@ -278,7 +265,7 @@ public class SRegistry {
       if (container != null)
         mod = container.getMod();
       else if (logHelper != null)
-        logHelper.warning("SRegistry for this mod failed to get the mod instance! This could be" + " because the provided mod ID is incorrect.");
+        logHelper.warning("SRegistry for this mod failed to get the mod instance! This could be because the provided mod ID is incorrect.");
     }
   }
 
@@ -302,7 +289,6 @@ public class SRegistry {
    */
   public void clientPreInit() {
 
-    // registerModels();
   }
 
   /**

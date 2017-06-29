@@ -26,7 +26,7 @@ import net.minecraftforge.registries.GameData;
 import net.silentchaos512.lib.util.StackHelper;
 
 /**
- * TODO
+ * Used for wrapping recipe creation into a more convenient format.
  * 
  * @author SilentChaos512
  * @since 2.2.0
