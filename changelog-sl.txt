@@ -1,5 +1,10 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.4
+Updated for Forge 2387.
+Fixed: Recipes being double registered, causing a crash in latest Forge when opening recipe book. (Silent's Gems #170)
+Fixed: Hide custom recipe types in the recipe book (gets rid of the recipes for "air")
+
 2.2.3
 Forge 2373
 Fixed: Model loading crash

@@ -28,7 +28,7 @@ public class SilentLib {
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
   public static final String VERSION = "SL_VERSION";
-  public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2373,);";
+  public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2387,);";
 
   public static NetworkHandlerSL network;
   public static LogHelper logHelper = new LogHelper(MOD_NAME);

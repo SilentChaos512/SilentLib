@@ -1,12 +1,6 @@
 package net.silentchaos512.lib.registry;
 
-import java.util.Map;
-import java.util.Queue;
-
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.Maps;
-import com.google.common.collect.Queues;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -18,11 +12,13 @@ import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.CraftingHelper.ShapedPrimer;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
-import net.minecraftforge.registries.GameData;
+import net.silentchaos512.lib.recipe.IngredientSL;
 import net.silentchaos512.lib.util.StackHelper;
 
 /**
@@ -54,14 +50,28 @@ public class RecipeMaker {
    * Recipes adders and makers.
    * 
    * Adders will make and register a recipe. Makers just create a recipe (useful for guide book stuff, etc.)
+   * 
+   * Group will default to the mod ID if not specified.
    **********************************************************************************************************/
+
+  // -------------------------------------------------- Shapeless --------------------------------------------------
 
   public IRecipe addShapeless(String key, @Nonnull ItemStack result, Object... inputs) {
 
-    return addShapeless(key, result, makeStackArray(inputs));
+    return addShapeless(modId, key, result, makeStackArray(inputs));
+  }
+
+  public IRecipe addShapeless(String group, String key, @Nonnull ItemStack result, Object... inputs) {
+
+    return addShapeless(group, key, result, makeStackArray(inputs));
   }
 
   public IRecipe addShapeless(String key, @Nonnull ItemStack result, ItemStack... inputs) {
+
+    return addShapeless(modId, key, result, inputs);
+  }
+
+  public IRecipe addShapeless(String group, String key, @Nonnull ItemStack result, ItemStack... inputs) {
 
     key = getRecipeKey(key);
     IRecipe recipe = makeShapeless(result, inputs);
@@ -74,49 +84,114 @@ public class RecipeMaker {
     return makeShapeless(result, makeStackArray(inputs));
   }
 
+  public IRecipe makeShapeless(String group, @Nonnull ItemStack result, Object... inputs) {
+
+    return makeShapeless(result, makeStackArray(inputs));
+  }
+
   public IRecipe makeShapeless(@Nonnull ItemStack result, ItemStack... inputs) {
 
-    return Utils.addShapelessRecipe(modId, result, inputs);
+    return makeShapeless(modId, result, inputs);
   }
+
+  public IRecipe makeShapeless(String group, @Nonnull ItemStack result, ItemStack... inputs) {
+
+    NonNullList<Ingredient> list = NonNullList.create();
+    for (ItemStack stack : inputs)
+      list.add(Ingredient.fromStacks(stack));
+    return new ShapelessRecipes(group, result, list);
+  }
+
+  public IRecipe makeShapeless(@Nonnull ItemStack result, IngredientSL... inputs) {
+
+    return makeShapeless(modId, result, inputs);
+  }
+
+  public IRecipe makeShapeless(String group, @Nonnull ItemStack result, IngredientSL... inputs) {
+
+    NonNullList<Ingredient> list = NonNullList.create();
+    for (IngredientSL ingredient : inputs)
+      list.add(ingredient);
+    return new ShapelessRecipes(group, result, list);
+  }
+
+  // -------------------------------------------------- Shaped --------------------------------------------------
 
   public IRecipe addShaped(String key, @Nonnull ItemStack result, Object... inputs) {
 
+    return addShaped(modId, key, result, inputs);
+  }
+
+  public IRecipe addShaped(String group, String key, @Nonnull ItemStack result, Object... inputs) {
+
     key = getRecipeKey(key);
-    IRecipe recipe = Utils.addRecipe(key, result, inputs);
+    IRecipe recipe = makeShaped(group, result, inputs);
     registerRecipe(new ResourceLocation(key), recipe);
     return recipe;
   }
 
   public IRecipe makeShaped(@Nonnull ItemStack result, Object... inputs) {
 
-    return Utils.addRecipe(modId, result, inputs);
+    return makeShaped(modId, result, inputs);
   }
+
+  public IRecipe makeShaped(String group, @Nonnull ItemStack result, Object... inputs) {
+
+    ShapedPrimer primer = CraftingHelper.parseShaped(inputs);
+    return new ShapedRecipes(group, primer.width, primer.height, primer.input, result);
+  }
+
+  // -------------------------------------------------- Shapeless Ore --------------------------------------------------
 
   public IRecipe addShapelessOre(String key, @Nonnull ItemStack result, Object... inputs) {
 
+    return addShapelessOre(modId, key, result, inputs);
+  }
+
+  public IRecipe addShapelessOre(String group, String key, @Nonnull ItemStack result, Object... inputs) {
+
     key = getRecipeKey(key);
-    IRecipe recipe = makeShapelessOre(result, inputs);
+    IRecipe recipe = makeShapelessOre(group, result, inputs);
     registerRecipe(new ResourceLocation(key), recipe);
     return recipe;
   }
 
   public IRecipe makeShapelessOre(@Nonnull ItemStack result, Object... inputs) {
 
-    return new ShapelessOreRecipe(new ResourceLocation(modId), result, inputs);
+    return makeShapelessOre(modId, result, inputs);
   }
+
+  public IRecipe makeShapelessOre(String group, @Nonnull ItemStack result, Object... inputs) {
+
+    return new ShapelessOreRecipe(new ResourceLocation(group), result, inputs);
+  }
+
+  // -------------------------------------------------- Shaped Ore --------------------------------------------------
 
   public IRecipe addShapedOre(String key, @Nonnull ItemStack result, Object... inputs) {
 
+    return addShapedOre(modId, key, result, inputs);
+  }
+
+  public IRecipe addShapedOre(String group, String key, @Nonnull ItemStack result, Object... inputs) {
+
     key = getRecipeKey(key);
-    IRecipe recipe = makeShapedOre(result, inputs);
+    IRecipe recipe = makeShapedOre(group, result, inputs);
     registerRecipe(new ResourceLocation(key), recipe);
     return recipe;
   }
 
   public IRecipe makeShapedOre(@Nonnull ItemStack result, Object... inputs) {
 
-    return new ShapedOreRecipe(new ResourceLocation(modId), result, inputs);
+    return makeShapedOre(modId, result, inputs);
   }
+
+  public IRecipe makeShapedOre(String group, @Nonnull ItemStack result, Object... inputs) {
+
+    return new ShapedOreRecipe(new ResourceLocation(group), result, inputs);
+  }
+
+  // -------------------------------------------------- Smelting --------------------------------------------------
 
   public void addSmelting(Block input, @Nonnull ItemStack output, float xp) {
 
@@ -132,6 +207,8 @@ public class RecipeMaker {
 
     GameRegistry.addSmelting(input, output, xp);
   }
+
+  // -------------------------------------------------- Generic --------------------------------------------------
 
   public IRecipe addRecipe(String key, IRecipe recipe) {
 
@@ -149,7 +226,7 @@ public class RecipeMaker {
    * compression (small to big) and decompression (big to small) recipes.
    * 
    * @param key
-   *          Recipe key(?). Appends "_compress" or "_decompress" for the appropriate recipes.
+   *          Registry name for the recipe. Appends "_compress" or "_decompress" for the appropriate recipes.
    * @param small
    *          The small stack (such as ingots).
    * @param big
@@ -159,8 +236,29 @@ public class RecipeMaker {
    * @return Both created recipes in an array. First is compression, second is decompression. They are both
    *         ShapelessRecipes.
    */
-  public IRecipe[] addCompression(String key, @Nonnull ItemStack small, @Nonnull ItemStack big,
-      int count) {
+  public IRecipe[] addCompression(String key, @Nonnull ItemStack small, @Nonnull ItemStack big, int count) {
+
+    return addCompression(modId, key, small, big, count);
+  }
+
+  /**
+   * Adds a compression recipe. For example, crafting ingots into blocks and vice versa. This will add both the
+   * compression (small to big) and decompression (big to small) recipes.
+   * 
+   * @param group
+   *          The recipe group.
+   * @param key
+   *          Registry name for the recipe. Appends "_compress" or "_decompress" for the appropriate recipes.
+   * @param small
+   *          The small stack (such as ingots).
+   * @param big
+   *          The big stack (such as blocks).
+   * @param count
+   *          The number of "small" needed to make a "big". Can be anything from 1 to 9.
+   * @return Both created recipes in an array. First is compression, second is decompression. They are both
+   *         ShapelessRecipes.
+   */
+  public IRecipe[] addCompression(String group, String key, @Nonnull ItemStack small, @Nonnull ItemStack big, int count) {
 
     IRecipe[] ret = new IRecipe[2];
 
@@ -172,12 +270,12 @@ public class RecipeMaker {
     for (int i = 0; i < count; ++i) {
       smallArray[i] = small;
     }
-    ret[0] = addShapeless(key + "_compress", big, smallArray);
+    ret[0] = addShapeless(group, key + "_compress", big, smallArray);
 
     // big -> small
     ItemStack smallCopy = StackHelper.safeCopy(small);
     StackHelper.setCount(smallCopy, count);
-    ret[1] = addShapeless(key + "_decompress", smallCopy, big);
+    ret[1] = addShapeless(group, key + "_decompress", smallCopy, big);
 
     return ret;
   }
@@ -185,6 +283,8 @@ public class RecipeMaker {
   /**
    * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each) surrounding it.
    * 
+   * @param key
+   *          Registry name for the recipe.
    * @param output
    *          The item being crafted.
    * @param middleStack
@@ -192,8 +292,26 @@ public class RecipeMaker {
    * @param surrounding
    *          The item(s) surrounding the middle item. Order affects the recipe.
    */
-  public IRecipe addSurround(String key, ItemStack output, ItemStack middleStack,
-      Object... surrounding) {
+  public IRecipe addSurround(String key, ItemStack output, ItemStack middleStack, Object... surrounding) {
+
+    return addSurround(modId, key, output, middleStack, surrounding);
+  }
+
+  /**
+   * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each) surrounding it.
+   * 
+   * @param group
+   *          The recipe group.
+   * @param key
+   *          Registry name for the recipe.
+   * @param output
+   *          The item being crafted.
+   * @param middleStack
+   *          The item in the middle of the crafting grid.
+   * @param surrounding
+   *          The item(s) surrounding the middle item. Order affects the recipe.
+   */
+  public IRecipe addSurround(String group, String key, ItemStack output, ItemStack middleStack, Object... surrounding) {
 
     ItemStack[] stacks = new ItemStack[surrounding.length];
 
@@ -214,13 +332,13 @@ public class RecipeMaker {
         // No surrounding stacks?
         throw new IllegalArgumentException("No surrounding items!");
       case 1:
-        return addShaped(key, output, "xxx", "xcx", "xxx", 'c', middleStack, 'x', stacks[0]);
+        return addShaped(group, key, output, "xxx", "xcx", "xxx", 'c', middleStack, 'x', stacks[0]);
       case 2:
-        return addShaped(key, output, "xyx", "ycy", "xyx", 'c', middleStack, 'x', stacks[0], 'y', stacks[1]);
+        return addShaped(group, key, output, "xyx", "ycy", "xyx", 'c', middleStack, 'x', stacks[0], 'y', stacks[1]);
       case 3:
-        return addShaped(key, output, " xy", "zcz", "yx ", 'c', middleStack, 'x', stacks[0], 'y', stacks[1], 'z', stacks[2]);
+        return addShaped(group, key, output, " xy", "zcz", "yx ", 'c', middleStack, 'x', stacks[0], 'y', stacks[1], 'z', stacks[2]);
       case 4:
-        return addShaped(key, output, "xyz", "dcd", "zyx", 'c', middleStack, 'x', stacks[0], 'y', stacks[1], 'z', stacks[2], 'd', stacks[3]);
+        return addShaped(group, key, output, "xyz", "dcd", "zyx", 'c', middleStack, 'x', stacks[0], 'y', stacks[1], 'z', stacks[2], 'd', stacks[3]);
       default:
         // Too many things!
         throw new IllegalArgumentException("Too many items!");
@@ -230,6 +348,8 @@ public class RecipeMaker {
   /**
    * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of each) surrounding it.
    * 
+   * @param key
+   *          Registry name for the recipe.
    * @param output
    *          The item being crafted.
    * @param middleStack
@@ -237,21 +357,39 @@ public class RecipeMaker {
    * @param surrounding
    *          The item(s) or oredict key(s) surrounding the middle item. Order affects the recipe.
    */
-  public IRecipe addSurroundOre(String key, ItemStack output, Object middle,
-      Object... surrounding) {
+  public IRecipe addSurroundOre(String key, ItemStack output, Object middle, Object... surrounding) {
+
+    return addSurroundOre(modId, key, output, middle, surrounding);
+  }
+
+  /**
+   * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of each) surrounding it.
+   * 
+   * @param group
+   *          The recipe group.
+   * @param key
+   *          Registry name for the recipe.
+   * @param output
+   *          The item being crafted.
+   * @param middleStack
+   *          The item in the middle of the crafting grid.
+   * @param surrounding
+   *          The item(s) or oredict key(s) surrounding the middle item. Order affects the recipe.
+   */
+  public IRecipe addSurroundOre(String group, String key, ItemStack output, Object middle, Object... surrounding) {
 
     switch (surrounding.length) { //@formatter:off
       case 0:
         // No surrounding stacks?
         throw new IllegalArgumentException("No surrounding items!");
       case 1:
-        return addShapedOre(key, output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]);
+        return addShapedOre(group, key, output, "xxx", "xcx", "xxx", 'c', middle, 'x', surrounding[0]);
       case 2:
-        return addShapedOre(key, output, "xyx", "ycy", "xyx", 'c', middle, 'x', surrounding[0], 'y', surrounding[1]);
+        return addShapedOre(group, key, output, "xyx", "ycy", "xyx", 'c', middle, 'x', surrounding[0], 'y', surrounding[1]);
       case 3:
-        return addShapedOre(key, output, " xy", "zcz", "yx ", 'c', middle, 'x', surrounding[0], 'y', surrounding[1], 'z', surrounding[2]);
+        return addShapedOre(group, key, output, " xy", "zcz", "yx ", 'c', middle, 'x', surrounding[0], 'y', surrounding[1], 'z', surrounding[2]);
       case 4:
-        return addShapedOre(key, output, "xyz", "dcd", "zyx", 'c', middle, 'x', surrounding[0], 'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]);
+        return addShapedOre(group, key, output, "xyz", "dcd", "zyx", 'c', middle, 'x', surrounding[0], 'y', surrounding[1], 'z', surrounding[2], 'd', surrounding[3]);
       default:
         // Too many things!
         throw new IllegalArgumentException("Too many items!");
@@ -261,8 +399,10 @@ public class RecipeMaker {
   /**
    * Registers a created recipe (called by adder methods, but not makers).
    * 
-   * @param name Registry name for recipe.
-   * @param recipe The recipe to register.
+   * @param name
+   *          Registry name for recipe.
+   * @param recipe
+   *          The recipe to register.
    */
   protected void registerRecipe(ResourceLocation name, IRecipe recipe) {
 
@@ -286,90 +426,5 @@ public class RecipeMaker {
         throw new IllegalArgumentException("Can't make object of type " + obj.getClass() + " into an ItemStack!");
     }
     return result;
-  }
-
-  /**
-   * Holds code for adding recipes. Currently, this is a workaround for Forge 1.12 being incomplete. May be removed in a
-   * later version.
-   * 
-   * @author SilentChaos512
-   * @since 2.2.0
-   */
-  public static class Utils {
-
-    public static ShapelessRecipes addShapelessRecipe(String group, ItemStack output,
-        ItemStack... params) {
-
-      NonNullList<Ingredient> list = NonNullList.create();
-      for (ItemStack stack : params) {
-        list.add(Ingredient.fromStacks(stack));
-      }
-      return new ShapelessRecipes(group, output, list);
-    }
-
-    public static ShapedRecipes addRecipe(String group, ItemStack stack,
-        Object... recipeComponents) {
-
-      String s = "";
-      int i = 0;
-      int j = 0;
-      int k = 0;
-
-      if (recipeComponents[i] instanceof String[]) {
-        String[] astring = (String[]) ((String[]) recipeComponents[i++]);
-
-        for (String s2 : astring) {
-          ++k;
-          j = s2.length();
-          s = s + s2;
-        }
-      } else {
-        while (recipeComponents[i] instanceof String) {
-          String s1 = (String) recipeComponents[i++];
-          ++k;
-          j = s1.length();
-          s = s + s1;
-        }
-      }
-
-      Map<Character, ItemStack> map;
-
-      for (map = Maps.<Character, ItemStack> newHashMap(); i < recipeComponents.length; i += 2) {
-        Character character = (Character) recipeComponents[i];
-        ItemStack itemstack = ItemStack.EMPTY;
-
-        if (recipeComponents[i + 1] instanceof Item) {
-          itemstack = new ItemStack((Item) recipeComponents[i + 1]);
-        } else if (recipeComponents[i + 1] instanceof Block) {
-          itemstack = new ItemStack((Block) recipeComponents[i + 1], 1, 32767);
-        } else if (recipeComponents[i + 1] instanceof ItemStack) {
-          itemstack = (ItemStack) recipeComponents[i + 1];
-        }
-
-        map.put(character, itemstack);
-      }
-
-      ItemStack[] aitemstack = new ItemStack[j * k];
-
-      for (int l = 0; l < j * k; ++l) {
-        char c0 = s.charAt(l);
-
-        if (map.containsKey(Character.valueOf(c0))) {
-          aitemstack[l] = ((ItemStack) map.get(Character.valueOf(c0))).copy();
-        } else {
-          aitemstack[l] = ItemStack.EMPTY;
-        }
-      }
-
-      NonNullList<Ingredient> ingredients = NonNullList.create();
-      for (ItemStack itemstack : aitemstack) {
-        if (StackHelper.isValid(itemstack))
-          ingredients.add(Ingredient.fromStacks(itemstack));
-        else
-          ingredients.add(Ingredient.EMPTY);
-      }
-
-      return new ShapedRecipes(group, j, k, ingredients, stack);
-    }
   }
 }
