@@ -25,4 +25,10 @@ public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEn
 
     return true;
   }
+
+  // pre-1.12
+  public int getRecipeSize() {
+
+    return 10;
+  }
 }

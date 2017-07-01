@@ -1,10 +1,13 @@
 package net.silentchaos512.lib.util;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.Item;
@@ -29,34 +32,31 @@ public class ItemHelper {
     return attemptDamageItem(stack, amount, rand, null);
   }
 
-  public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand,
-      @Nullable EntityPlayer player) {
+  public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand, @Nullable EntityPlayer player) {
 
     EntityPlayerMP playermp = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
     return stack.attemptDamageItem(amount, rand, playermp);
   }
 
-  public static ActionResult<ItemStack> onItemRightClick(@Nonnull Item item, World world,
-      EntityPlayer player, EnumHand hand) {
+  public static ActionResult<ItemStack> onItemRightClick(@Nonnull Item item, World world, EntityPlayer player, EnumHand hand) {
 
     return item.onItemRightClick(world, player, hand);
   }
 
-  public static EnumActionResult onItemUse(@Nonnull Item item, EntityPlayer player, World world,
-      BlockPos pos, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public static EnumActionResult onItemUse(@Nonnull Item item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX,
+      float hitY, float hitZ) {
 
     return item.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
   }
 
-  public static EnumActionResult onItemUseFirst(@Nonnull Item item, EntityPlayer player,
-      World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ,
-      EnumHand hand) {
+  public static EnumActionResult onItemUseFirst(@Nonnull Item item, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY,
+      float hitZ, EnumHand hand) {
 
     return item.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
 
-  public static EnumActionResult useItemAsPlayer(ItemStack stack, EntityPlayer player, World world,
-      BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ) {
+  public static EnumActionResult useItemAsPlayer(ItemStack stack, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY,
+      float hitZ) {
 
     // Temporarily move stack to the player's offhand to allow it to be used.
     ItemStack currentOffhand = player.getHeldItemOffhand();
@@ -65,11 +65,19 @@ public class ItemHelper {
     // Use the item.
     Item item = stack.getItem();
     EnumActionResult result;
-    result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side, hitX, hitY,
-        hitZ);
+    result = stack.getItem().onItemUse(player, world, pos, EnumHand.OFF_HAND, side, hitX, hitY, hitZ);
 
     // Put everything back in its proper place...
     player.setHeldItem(EnumHand.OFF_HAND, currentOffhand);
     return result;
+  }
+
+  public static boolean isInCreativeTab(Item item, CreativeTabs targetTab) {
+
+    for (CreativeTabs tab : item.getCreativeTabs())
+      if (tab == targetTab)
+        return true;
+    CreativeTabs creativetabs = item.getCreativeTab();
+    return creativetabs != null && (targetTab == CreativeTabs.SEARCH || targetTab == creativetabs);
   }
 }

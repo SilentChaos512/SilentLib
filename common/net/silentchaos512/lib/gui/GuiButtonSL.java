@@ -15,9 +15,13 @@ public class GuiButtonSL extends GuiButton {
     super(buttonId, x, y, buttonText);
   }
 
-  // 1.10.2 and 1.11.2
-  public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+  @Override
+  public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
 
-    drawButton(minecraft, mouseX, mouseY, 0f);
+    clDrawButton(minecraft, mouseX, mouseY, partialTicks);
+  }
+
+  public void clDrawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
+    
   }
 }

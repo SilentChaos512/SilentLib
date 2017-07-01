@@ -37,7 +37,7 @@ public class TexturedButton extends GuiButtonSL {
   }
 
   @Override
-  public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float par4) {
+  public void clDrawButton(Minecraft minecraft, int mouseX, int mouseY, float par4) {
 
     if (this.visible) {
       minecraft.getTextureManager().bindTexture(this.resLoc);

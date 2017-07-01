@@ -25,6 +25,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.registry.RecipeMaker;
+import net.silentchaos512.lib.util.ItemHelper;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemSL extends Item implements IRegistryObject, IItemSL {
@@ -155,7 +156,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
 
   protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 
-    if (!isInCreativeTab(tab))
+    if (!ItemHelper.isInCreativeTab(item, tab))
       return;
 
     if (hasSubtypes) {

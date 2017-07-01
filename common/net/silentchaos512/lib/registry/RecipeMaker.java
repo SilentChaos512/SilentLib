@@ -208,9 +208,37 @@ public class RecipeMaker {
     GameRegistry.addSmelting(input, output, xp);
   }
 
-  // -------------------------------------------------- Generic --------------------------------------------------
+  // -------------------------------------------- Generic/Custom -------------------------------------------
 
-  public IRecipe addRecipe(String key, IRecipe recipe) {
+  /**
+   * Adds some generic recipe. Not sure if this has any use. Typically you would use addCustomRecipe instead.
+   * 
+   * @param key
+   *          Registry name.
+   * @param recipe
+   *          Recipe object.
+   * @return The recipe.
+   */
+  public IRecipe addGenericRecipe(String key, IRecipe recipe) {
+
+    key = getRecipeKey(key);
+    registerRecipe(new ResourceLocation(key), recipe);
+    return recipe;
+  }
+
+  /**
+   * Adds custom recipe types.
+   * 
+   * WARNING: This will automatically register with RecipeSorter in 1.11.2 and earlier (Category.SHAPED and dependencies
+   * "after:minecraft:shapeless").
+   * 
+   * @param key
+   *          Registry name.
+   * @param recipe
+   *          Recipe object.
+   * @return The recipe.
+   */
+  public IRecipe addCustomRecipe(String key, IRecipe recipe) {
 
     key = getRecipeKey(key);
     registerRecipe(new ResourceLocation(key), recipe);
