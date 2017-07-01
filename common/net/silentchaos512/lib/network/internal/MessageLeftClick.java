@@ -38,7 +38,7 @@ public final class MessageLeftClick extends MessageSL {
       return null;
 
     EnumHand hand = mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-    EntityPlayer player = context.getServerHandler().playerEntity;
+    EntityPlayer player = context.getServerHandler().player;
     ItemStack heldItem = player.getHeldItem(hand);
 
     if (StackHelper.isValid(heldItem) && heldItem.getItem() instanceof IItemSL) {

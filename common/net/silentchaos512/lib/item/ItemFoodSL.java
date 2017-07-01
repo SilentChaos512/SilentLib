@@ -1,8 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,6 +20,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
@@ -48,7 +48,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -76,16 +76,15 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
     if (hasSubtypes) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
       for (int i = 0; i < subItemCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
+        models.put(i, new ModelResourceLocation(getFullName() + i, "inventory"));
       }
-      return models;
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
     }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
   }
 
   @Override
@@ -98,17 +97,6 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
   // ==============
   // Item overrides
   // ==============
-
-  @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
-
-    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-    if (loc != null) {
-      String name = getNameForStack(stack);
-      list.addAll(loc.getItemDescriptionLines(name));
-    }
-  }
 
   @Override
   public String getUnlocalizedName(ItemStack stack) {
@@ -161,14 +149,34 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(item, tab, subItems);
   }
 
   @SideOnly(Side.CLIENT)
-  protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+  protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(item, tab, (NonNullList<ItemStack>) subItems);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 12)
+  // inspired by CompatLayer
+  // ==============================
+
+  @Override
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+
+    clAddInformation(stack, player.world, list, advanced);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
+    }
   }
 }

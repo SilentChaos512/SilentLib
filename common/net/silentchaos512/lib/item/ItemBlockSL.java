@@ -60,25 +60,6 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
-
-    // Get tooltip from block? (New method)
-    int length = list.size();
-    // FIXME
-    // block.addInformation(stack, player, list, advanced);
-
-    // If block doesn't add anything, use the old method.
-    if (length == list.size()) {
-      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-      if (loc != null) {
-        String name = getNameForStack(stack);
-        list.addAll(loc.getBlockDescriptionLines(name));
-      }
-    }
-  }
-
-  @Override
   public String getUnlocalizedName(ItemStack stack) {
 
     return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
@@ -121,13 +102,41 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(item, tab, subItems);
   }
 
-  protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+  protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(item, tab, (NonNullList<ItemStack>) subItems);
+  }
+
+  // ==============================
+  // Cross Compatibility (MC 12)
+  // inspired by CompatLayer
+  // ==============================
+
+  @Override
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+
+    clAddInformation(stack, player.world, list, advanced);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    // Get tooltip from block? (New method)
+    int length = list.size();
+    // FIXME
+    // block.addInformation(stack, player, list, advanced);
+
+    // If block doesn't add anything, use the old method.
+    if (length == list.size()) {
+      LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+      if (loc != null) {
+        String name = getNameForStack(stack);
+        list.addAll(loc.getBlockDescriptionLines(name));
+      }
+    }
   }
 }

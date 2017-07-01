@@ -174,8 +174,8 @@ public class GuiPage extends GuiGuide {
     if (this.pages[0] != null) {
       IGuideChapter chapter = this.pages[0].getChapter();
       String name = chapter.getLocalizedName();
-      this.fontRendererObj.drawString(name,
-          this.guiLeft + this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2,
+      this.fontRenderer.drawString(name,
+          this.guiLeft + this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2,
           this.guiTop - 1, 0xFFFFFF, true);
     }
 

@@ -72,8 +72,8 @@ public class GuiEntry extends GuiGuide {
     super.drawScreenPre(mouseX, mouseY, partialTicks);
 
     String name = this.entry.getLocalizedName();
-    this.fontRendererObj.drawString(name,
-        this.guiLeft + this.xSize / 2 - this.fontRendererObj.getStringWidth(name) / 2,
+    this.fontRenderer.drawString(name,
+        this.guiLeft + this.xSize / 2 - this.fontRenderer.getStringWidth(name) / 2,
         this.guiTop - 1, 0xFFFFFF, true);
 
     for (int i = 0; i < 2; i++) {

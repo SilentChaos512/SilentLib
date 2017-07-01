@@ -5,18 +5,18 @@
 package net.silentchaos512.lib.guidebook.button;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.gui.GuiButtonSL;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
 import net.silentchaos512.lib.util.AssetUtil;
 import net.silentchaos512.lib.util.StackHelper;
 import net.silentchaos512.lib.util.StringUtil;
 
 @SideOnly(Side.CLIENT)
-public class EntryButton extends GuiButton {
+public class EntryButton extends GuiButtonSL {
 
   private final GuiGuideBase gui;
   private final ItemStack stackToRender;
@@ -29,12 +29,12 @@ public class EntryButton extends GuiButton {
   }
 
   @Override
-  public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+  public void clDrawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
 
     if (this.visible) {
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-      this.hovered = mouseX >= this.xPosition && mouseY >= this.yPosition
-          && mouseX < this.xPosition + this.width && mouseY < this.yPosition + this.height;
+      this.hovered = mouseX >= this.x && mouseY >= this.y
+          && mouseX < this.x + this.width && mouseY < this.y + this.height;
       GlStateManager.enableBlend();
       GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0);
       GlStateManager.blendFunc(770, 771);
@@ -43,7 +43,7 @@ public class EntryButton extends GuiButton {
       int textOffsetX = 0;
       if (StackHelper.isValid(this.stackToRender)) {
         GlStateManager.pushMatrix();
-        AssetUtil.renderStackToGui(this.stackToRender, this.xPosition - 4, this.yPosition, 0.725F);
+        AssetUtil.renderStackToGui(this.stackToRender, this.x - 4, this.y, 0.725F);
         GlStateManager.popMatrix();
         textOffsetX = 10;
       }
@@ -52,17 +52,17 @@ public class EntryButton extends GuiButton {
 
       if (this.hovered) {
         GlStateManager.pushMatrix();
-        AssetUtil.drawHorizontalGradientRect(this.xPosition + textOffsetX - 1,
-            this.yPosition + this.height - 1,
-            this.xPosition
-                + (int) (minecraft.fontRendererObj.getStringWidth(this.displayString) * scale)
+        AssetUtil.drawHorizontalGradientRect(this.x + textOffsetX - 1,
+            this.y + this.height - 1,
+            this.x
+                + (int) (minecraft.fontRenderer.getStringWidth(this.displayString) * scale)
                 + textOffsetX + 1,
-            this.yPosition + this.height, 0x80 << 24 | 22271, 22271, this.zLevel);
+            this.y + this.height, 0x80 << 24 | 22271, 22271, this.zLevel);
         GlStateManager.popMatrix();
       }
 
-      StringUtil.renderScaledAsciiString(minecraft.fontRendererObj, this.displayString,
-          this.xPosition + textOffsetX, this.yPosition + 2 + (this.height - 8) / 2, 0, false,
+      StringUtil.renderScaledAsciiString(minecraft.fontRenderer, this.displayString,
+          this.x + textOffsetX, this.y + 2 + (this.height - 8) / 2, 0, false,
           scale);
     }
   }

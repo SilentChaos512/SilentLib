@@ -42,12 +42,12 @@ public class AssetUtil {
     GlStateManager.scale(scale, scale, scale);
 
     Minecraft mc = Minecraft.getMinecraft();
-    boolean flagBefore = mc.fontRendererObj.getUnicodeFlag();
-    mc.fontRendererObj.setUnicodeFlag(false);
+    boolean flagBefore = mc.fontRenderer.getUnicodeFlag();
+    mc.fontRenderer.setUnicodeFlag(false);
     Minecraft.getMinecraft().getRenderItem().renderItemAndEffectIntoGUI(stack, 0, 0);
-    Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(mc.fontRendererObj, stack, 0,
+    Minecraft.getMinecraft().getRenderItem().renderItemOverlayIntoGUI(mc.fontRenderer, stack, 0,
         0, null);
-    mc.fontRendererObj.setUnicodeFlag(flagBefore);
+    mc.fontRenderer.setUnicodeFlag(flagBefore);
 
     RenderHelper.disableStandardItemLighting();
     GlStateManager.popMatrix();

@@ -22,11 +22,12 @@ import net.silentchaos512.lib.network.internal.MessageLeftClick;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
-@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_NAME, version = "SL_VERSION", dependencies = SilentLib.DEPENDENCIES)
+@Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_NAME, version = SilentLib.VERSION, dependencies = SilentLib.DEPENDENCIES)
 public class SilentLib {
 
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
+  public static final String VERSION = "2.2.5";
   public static final String DEPENDENCIES = "required-after:forge@[13.19.0.2156,);";
 
   public static NetworkHandlerSL network;

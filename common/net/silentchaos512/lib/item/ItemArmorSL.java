@@ -1,8 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -21,6 +20,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 
 public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
@@ -41,7 +41,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -69,9 +69,9 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
+    models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
   }
 
   @Override
@@ -114,14 +114,28 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubItems(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> subItems) {
+  public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-    clGetSubItems(itemIn, tab, subItems);
+    clGetSubItems(item, tab, subItems);
   }
 
   @SideOnly(Side.CLIENT)
-  protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+  protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> subItems) {
 
-    super.getSubItems(itemIn, tab, (NonNullList<ItemStack>) subItems);
+    super.getSubItems(item, tab, (NonNullList<ItemStack>) subItems);
+  }
+
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
+
+   @Override
+   public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+
+     clAddInformation(stack, player.world, list, advanced);
+   }
+  
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
   }
 }

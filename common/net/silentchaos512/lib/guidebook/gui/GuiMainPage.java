@@ -68,12 +68,11 @@ public class GuiMainPage extends GuiGuide {
     this.bookletName = "guide." + book.getModId() + ":manualName.1";
 
     // Select a random quote, if there is any available.
-    String[] quotes = book.getQuotes();
-    if (quotes.length > 0) {
-      String usedQuote = quotes[this.mc.world.rand.nextInt(quotes.length)];
+    String usedQuote = book.selectQuote(mc.world.rand);
+    if (!usedQuote.isEmpty()) {
       String[] quoteSplit = usedQuote.split("@");
       if (quoteSplit.length > 0) {
-        this.quote = this.fontRendererObj.listFormattedStringToWidth(quoteSplit[0], 120);
+        this.quote = this.fontRenderer.listFormattedStringToWidth(quoteSplit[0], 120);
       }
       if (quoteSplit.length > 1) {
         this.quoteGuy = quoteSplit[1];
@@ -192,16 +191,16 @@ public class GuiMainPage extends GuiGuide {
     super.drawScreenPre(mouseX, mouseY, partialTicks);
 
     String strg = TextFormatting.DARK_GREEN + book.loc.getLocalizedString(this.bookletName);
-    this.fontRendererObj.drawString(strg,
-        this.guiLeft + 72 - this.fontRendererObj.getStringWidth(strg) / 2 - 3, this.guiTop + 19, 0);
+    this.fontRenderer.drawString(strg,
+        this.guiLeft + 72 - this.fontRenderer.getStringWidth(strg) / 2 - 3, this.guiTop + 19, 0);
     strg = TextFormatting.DARK_GREEN + book.loc.getLocalizedString("guide", "manualName.2");
-    this.fontRendererObj.drawString(strg,
-        this.guiLeft + 72 - this.fontRendererObj.getStringWidth(strg) / 2 - 3,
-        this.guiTop + 19 + this.fontRendererObj.FONT_HEIGHT, 0);
+    this.fontRenderer.drawString(strg,
+        this.guiLeft + 72 - this.fontRenderer.getStringWidth(strg) / 2 - 3,
+        this.guiTop + 19 + this.fontRenderer.FONT_HEIGHT, 0);
 
     strg = TextFormatting.GOLD + TextFormatting.ITALIC.toString() + this.bookletEdition;
-    this.fontRendererObj.drawString(strg,
-        this.guiLeft + 72 - this.fontRendererObj.getStringWidth(strg) / 2 - 3, this.guiTop + 40, 0);
+    this.fontRenderer.drawString(strg,
+        this.guiLeft + 72 - this.fontRenderer.getStringWidth(strg) / 2 - 3, this.guiTop + 40, 0);
 
     if (this.showTutorial) {
       String text = TextFormatting.BLUE

@@ -109,7 +109,7 @@ public abstract class GuiGuide extends GuiGuideBase {
     }
 
     if (this.hasSearchBar()) {
-      this.searchField = new GuiTextField(-420, this.fontRendererObj, this.guiLeft + this.xSize + 2,
+      this.searchField = new GuiTextField(-420, this.fontRenderer, this.guiLeft + this.xSize + 2,
           this.guiTop + this.ySize - 40 + 2, 64, 12);
       this.searchField.setMaxStringLength(50);
       this.searchField.setEnableBackgroundDrawing(false);
@@ -180,19 +180,19 @@ public abstract class GuiGuide extends GuiGuideBase {
       this.drawTexturedModalRect(this.guiLeft + this.xSize, this.guiTop + this.ySize - 40, 188, 0,
           68, 14);
 
-      boolean unicodeBefore = this.fontRendererObj.getUnicodeFlag();
-      this.fontRendererObj.setUnicodeFlag(true);
+      boolean unicodeBefore = this.fontRenderer.getUnicodeFlag();
+      this.fontRenderer.setUnicodeFlag(true);
 
       if (!this.searchField.isFocused()
           && (this.searchField.getText() == null || this.searchField.getText().isEmpty())) {
         String line = book.loc.getLocalizedString("guide.silentlib:searchField");
-        this.fontRendererObj.drawString(TextFormatting.ITALIC + line, this.guiLeft + this.xSize + 2,
+        this.fontRenderer.drawString(TextFormatting.ITALIC + line, this.guiLeft + this.xSize + 2,
             this.guiTop + this.ySize - 40 + 2, 0xFFFFFF, false);
       }
 
       this.searchField.drawTextBox();
 
-      this.fontRendererObj.setUnicodeFlag(unicodeBefore);
+      this.fontRenderer.setUnicodeFlag(unicodeBefore);
     }
   }
 
@@ -364,14 +364,14 @@ public abstract class GuiGuide extends GuiGuideBase {
   public void renderScaledAsciiString(String text, int x, int y, int color, boolean shadow,
       float scale) {
 
-    StringUtil.renderScaledAsciiString(this.fontRendererObj, text, x, y, color, shadow, scale);
+    StringUtil.renderScaledAsciiString(this.fontRenderer, text, x, y, color, shadow, scale);
   }
 
   @Override
   public void renderSplitScaledAsciiString(String text, int x, int y, int color, boolean shadow,
       float scale, int length) {
 
-    StringUtil.renderSplitScaledAsciiString(this.fontRendererObj, text, x, y, color, shadow, scale,
+    StringUtil.renderSplitScaledAsciiString(this.fontRenderer, text, x, y, color, shadow, scale,
         length);
   }
 

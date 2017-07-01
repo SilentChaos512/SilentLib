@@ -1,8 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -20,6 +19,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class ItemSL extends Item implements IRegistryObject, IItemSL {
@@ -41,7 +41,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -69,39 +69,20 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
     if (hasSubtypes) {
-      List<ModelResourceLocation> models = Lists.newArrayList();
       for (int i = 0; i < subItemCount; ++i) {
-        models.add(new ModelResourceLocation(getFullName() + i, "inventory"));
+        models.put(i, new ModelResourceLocation(getFullName() + i, "inventory"));
       }
-      return models;
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
     }
-    return Lists.newArrayList(new ModelResourceLocation(getFullName(), "inventory"));
-  }
-
-  @Override
-  public boolean registerModels() {
-
-    // Let SRegistry handle model registration by default. Override if necessary.
-    return false;
   }
 
   // ==============
   // Item overrides
   // ==============
-
-  @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
-
-    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-    if (loc != null) {
-      String name = getNameForStack(stack);
-      list.addAll(loc.getItemDescriptionLines(name));
-    }
-  }
 
   @Override
   public String getUnlocalizedName(ItemStack stack) {
@@ -132,34 +113,30 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     return clOnItemRightClick(world, player, hand);
   }
 
-  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player,
-      EnumHand hand) {
+  protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 
     return super.onItemRightClick(world, player, hand);
   }
 
   @Override
-  public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
-      EnumFacing facing, float hitX, float hitY, float hitZ) {
+  public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
-  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
-      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
   @Override
-  public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+  public EnumActionResult onItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
 
     return clOnItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
 
-  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos,
-      EnumFacing side, float hitX, float hitY, float hitZ, EnumHand hand) {
+  protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ,
+      EnumHand hand) {
 
     return super.onItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
@@ -168,7 +145,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   @Override
   public void getSubItems(Item item, CreativeTabs tab, NonNullList<ItemStack> list) {
 
-    clGetSubItems(item, tab, list);
+    clGetSubItems(this, tab, list);
   }
 
   protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
@@ -182,16 +159,21 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     }
   }
 
- // ===========================
- // Cross Compatibility (MC 12)
- // ===========================
- 
- public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
 
-   LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-   if (loc != null) {
-     String name = getNameForStack(stack);
-     list.addAll(loc.getItemDescriptionLines(name));
-   }
- }
+  public static boolean isInCreativeTab(Item item, CreativeTabs targetTab) {
+
+    return true;
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
+    }
+  }
 }
