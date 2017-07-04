@@ -1,8 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,10 +18,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
-import net.silentchaos512.lib.util.ModelHelper;
+import net.silentchaos512.lib.registry.RecipeMaker;
+import net.silentchaos512.lib.util.LocalizationHelper;
 
-public class ItemArmorSL extends ItemArmor implements IRegistryObject {
+public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
   protected String itemName;
   protected String modId;
@@ -41,7 +42,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -69,9 +70,9 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return ModelHelper.getVariants(this, 1);
+    models.put(0, new ModelResourceLocation(getFullName().toLowerCase(), "inventory"));
   }
 
   @Override
@@ -124,5 +125,24 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject {
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(itemIn, tab, subItems);
+  }
+
+
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
+
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+
+    clAddInformation(stack, player.world, list, advanced);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getFullName();
+      list.addAll(loc.getItemDescriptionLines(name));
+    }
   }
 }

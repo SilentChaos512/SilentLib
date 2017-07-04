@@ -12,9 +12,13 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
+import net.minecraftforge.fml.relauncher.Side;
 import net.silentchaos512.lib.debug.DataDump;
-import net.silentchaos512.lib.event.SilentLibEventHandlers;
+import net.silentchaos512.lib.event.SilentLibClientEvents;
+import net.silentchaos512.lib.event.SilentLibCommonEvents;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
+import net.silentchaos512.lib.network.NetworkHandlerSL;
+import net.silentchaos512.lib.network.internal.MessageLeftClick;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -23,9 +27,10 @@ public class SilentLib {
 
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
-  public static final String DEPENDENCIES = "required-after:Forge@[12.18.2.2125,);";
-  public static final String VERSION = "SL_VERSION";
+  public static final String DEPENDENCIES = "required-after:Forge@[12.18.3.2316,);";
+  public static final String VERSION = "2.2.5";//"SL_VERSION";
 
+  public static NetworkHandlerSL network;
   public static LogHelper logHelper = new LogHelper(MOD_NAME);
 
   @Instance(MOD_ID)
@@ -46,8 +51,14 @@ public class SilentLib {
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
 
+    network = new NetworkHandlerSL(MOD_ID);
+    network.register(MessageLeftClick.class, Side.SERVER);
     NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerLibF());
-    MinecraftForge.EVENT_BUS.register(new SilentLibEventHandlers());
+
+    MinecraftForge.EVENT_BUS.register(new SilentLibCommonEvents());
+    if (event.getSide() == Side.CLIENT) {
+      MinecraftForge.EVENT_BUS.register(new SilentLibClientEvents());
+    }
   }
 
   @EventHandler

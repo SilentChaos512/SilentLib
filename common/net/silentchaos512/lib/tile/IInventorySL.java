@@ -8,7 +8,7 @@ public interface IInventorySL extends IInventory {
   boolean isUsable(EntityPlayer player);
 
   @Override
-  default boolean isUseableByPlayer(EntityPlayer player) {
+  default boolean isUsableByPlayer(EntityPlayer player) {
 
     return isUsable(player);
   }

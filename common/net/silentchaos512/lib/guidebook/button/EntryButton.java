@@ -5,18 +5,18 @@
 package net.silentchaos512.lib.guidebook.button;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.gui.GuiButtonSL;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
 import net.silentchaos512.lib.util.AssetUtil;
 import net.silentchaos512.lib.util.StackHelper;
 import net.silentchaos512.lib.util.StringUtil;
 
 @SideOnly(Side.CLIENT)
-public class EntryButton extends GuiButton {
+public class EntryButton extends GuiButtonSL {
 
   private final GuiGuideBase gui;
   private final ItemStack stackToRender;
@@ -29,7 +29,7 @@ public class EntryButton extends GuiButton {
   }
 
   @Override
-  public void drawButton(Minecraft minecraft, int mouseX, int mouseY) {
+  public void clDrawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
 
     if (this.visible) {
       GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);

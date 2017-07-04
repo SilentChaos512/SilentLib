@@ -35,9 +35,9 @@ public class PlayerHelper {
   public static void giveItem(EntityPlayer player, ItemStack stack, double posX, double posY,
       double posZ) {
 
-    EntityItem entityItem = new EntityItem(player.worldObj, posX, posY, posZ, stack);
+    EntityItem entityItem = new EntityItem(player.world, posX, posY, posZ, stack);
     entityItem.setDefaultPickupDelay();
-    player.worldObj.spawnEntityInWorld(entityItem);
+    player.world.spawnEntity(entityItem);
   }
 
   /**

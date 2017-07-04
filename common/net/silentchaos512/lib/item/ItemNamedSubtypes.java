@@ -1,11 +1,8 @@
 package net.silentchaos512.lib.item;
 
-import java.util.List;
+import java.util.Map;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.item.ItemStack;
@@ -50,14 +47,12 @@ public class ItemNamedSubtypes extends ItemSL {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    List<ModelResourceLocation> models = Lists.newArrayList();
+    int i = 0;
     for (String name : names) {
-      String fullName = (modId + ":" + name).toLowerCase();
-      models.add(new ModelResourceLocation(fullName, "inventory"));
+      models.put(i++, new ModelResourceLocation((modId + ":" + name).toLowerCase(), "inventory"));
     }
-    return models;
   }
 
   public String getNameForStack(ItemStack stack) {

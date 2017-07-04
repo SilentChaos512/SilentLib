@@ -1,10 +1,9 @@
 package net.silentchaos512.lib.recipe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
@@ -28,32 +27,28 @@ public interface IRecipeSL extends IRecipe {
   }
 
   @Override
-  default ItemStack getRecipeOutput() {
+  public default @Nonnull ItemStack getRecipeOutput() {
 
     return StackHelper.empty();
   }
 
   @Override
-  default ItemStack[] getRemainingItems(InventoryCrafting inv) {
+  public default ItemStack[] getRemainingItems(InventoryCrafting inv) {
 
-    List<ItemStack> items = getRemainingItemsCompat(inv);
-    return items.toArray(new ItemStack[items.size()]);
+    List<ItemStack> list = getRemainingItemsCompat(inv);
+    return list.toArray(new ItemStack[list.size()]);
   }
 
   @Nonnull
   default List<ItemStack> getRemainingItemsCompat(InventoryCrafting inv) {
 
-    List<ItemStack> ret = Lists.newArrayList();
-    ItemStack stack;
-
     for (int i = 0; i < inv.getSizeInventory(); ++i) {
-      stack = inv.getStackInSlot(i);
+      ItemStack stack = inv.getStackInSlot(i);
       if (StackHelper.isValid(stack)) {
         stack = StackHelper.shrink(stack, 1);
+        inv.setInventorySlotContents(i, stack);
       }
-      inv.setInventorySlotContents(i, stack);
     }
-
-    return ret;
+    return new ArrayList<>();
   }
 }

@@ -8,12 +8,12 @@ public class ChatHelper {
 
   public static void sendMessage(EntityPlayer player, String message) {
 
-    player.addChatMessage(new TextComponentString(message));
+    player.sendMessage(new TextComponentString(message));
   }
 
   public static void sendMessage(EntityPlayer player, ITextComponent component) {
 
-    player.addChatMessage(component);
+    player.sendMessage(component);
   }
 
   public static void sendStatusMessage(EntityPlayer player, String message, boolean actionBar) {

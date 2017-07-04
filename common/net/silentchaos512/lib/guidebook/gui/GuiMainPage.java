@@ -68,9 +68,8 @@ public class GuiMainPage extends GuiGuide {
     this.bookletName = "guide." + book.getModId() + ":manualName.1";
 
     // Select a random quote, if there is any available.
-    String[] quotes = book.getQuotes();
-    if (quotes.length > 0) {
-      String usedQuote = quotes[this.mc.theWorld.rand.nextInt(quotes.length)];
+    String usedQuote = book.selectQuote(mc.world.rand);
+    if (!usedQuote.isEmpty()) {
       String[] quoteSplit = usedQuote.split("@");
       if (quoteSplit.length > 0)
         this.quote = this.fontRendererObj.listFormattedStringToWidth(quoteSplit[0], 120);
@@ -79,11 +78,11 @@ public class GuiMainPage extends GuiGuide {
     }
 
     // TODO: Player name edition substitutions?
-    String playerName = this.mc.thePlayer.getName();
+    String playerName = this.mc.player.getName();
     if (playerName.equalsIgnoreCase("derp")) {
       this.bookletEdition = "derp edition";
     } else {
-      this.bookletEdition = book.getEditionString(this.mc.thePlayer);
+      this.bookletEdition = book.getEditionString(this.mc.player);
     }
 
     // Config button?

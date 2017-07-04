@@ -56,7 +56,7 @@ public class ItemDisplay {
       boolean flagBefore = mc.fontRendererObj.getUnicodeFlag();
       mc.fontRendererObj.setUnicodeFlag(false);
 
-      List<String> list = this.stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
+      List<String> list = this.stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips);
       int maxWidth = 0;
 
       for (int k = 0; k < list.size(); ++k) {

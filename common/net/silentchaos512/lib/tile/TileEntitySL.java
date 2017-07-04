@@ -24,9 +24,9 @@ public class TileEntitySL extends TileEntity {
 
   public final void sendUpdate() {
 
-    if (worldObj != null && !worldObj.isRemote) {
-      IBlockState state = worldObj.getBlockState(pos);
-      worldObj.notifyBlockUpdate(pos, state, state, 3);
+    if (world != null && !world.isRemote) {
+      IBlockState state = world.getBlockState(pos);
+      world.notifyBlockUpdate(pos, state, state, 3);
       markDirty();
     }
   }

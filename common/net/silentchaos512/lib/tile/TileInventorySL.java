@@ -80,7 +80,7 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
   @Override
   public boolean isUsable(EntityPlayer player) {
 
-    return worldObj.getTileEntity(pos) != this ? false : player.getDistanceSq(pos) <= 64.0;
+    return world.getTileEntity(pos) != this ? false : player.getDistanceSq(pos) <= 64.0;
   }
 
   @Override

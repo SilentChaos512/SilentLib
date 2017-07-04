@@ -1,8 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
-
-import com.google.common.collect.Lists;
+import java.util.Map;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.creativetab.CreativeTabs;
@@ -19,10 +18,10 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IRegistryObject;
+import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.LocalizationHelper;
-import net.silentchaos512.lib.util.ModelHelper;
 
-public class ItemSL extends Item implements IRegistryObject {
+public class ItemSL extends Item implements IRegistryObject, IItemSL {
 
   protected int subItemCount;
   protected String itemName;
@@ -41,7 +40,7 @@ public class ItemSL extends Item implements IRegistryObject {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -69,9 +68,15 @@ public class ItemSL extends Item implements IRegistryObject {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return ModelHelper.getVariants(this, subItemCount);
+    if (hasSubtypes) {
+      for (int i = 0; i < subItemCount; ++i) {
+        models.put(i, new ModelResourceLocation(getFullName().toLowerCase() + i, "inventory"));
+      }
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName().toLowerCase(), "inventory"));
+    }
   }
 
   @Override
@@ -84,17 +89,6 @@ public class ItemSL extends Item implements IRegistryObject {
   // ==============
   // Item overrides
   // ==============
-
-  @Override
-  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
-      boolean advanced) {
-
-    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
-    if (loc != null) {
-      String name = getNameForStack(stack);
-      list.addAll(loc.getItemDescriptionLines(name));
-    }
-  }
 
   @Override
   public String getUnlocalizedName(ItemStack stack) {
@@ -175,6 +169,24 @@ public class ItemSL extends Item implements IRegistryObject {
       }
     } else {
       list.add(new ItemStack(this));
+    }
+  }
+
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
+
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
+
+    clAddInformation(stack, player.world, list, advanced);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      String name = getNameForStack(stack);
+      list.addAll(loc.getItemDescriptionLines(name));
     }
   }
 }

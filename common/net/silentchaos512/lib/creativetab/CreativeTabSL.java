@@ -33,9 +33,9 @@ public class CreativeTabSL extends CreativeTabs {
 
     super(label);
 
-    if (Item.getItemFromBlock(block) == null)
-      throw new NullPointerException(
-          "Item is null! Make certain it has been initialized before constructing the creative tab!");
+//    if (Item.getItemFromBlock(block) == null)
+//      throw new NullPointerException(
+//          "Item is null! Make certain it has been initialized before constructing the creative tab!");
 
     this.block = block;
     this.meta = meta;

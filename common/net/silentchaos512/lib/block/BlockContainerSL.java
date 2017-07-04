@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.block;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -27,12 +28,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
-import net.silentchaos512.lib.util.ModelHelper;
+import net.silentchaos512.lib.registry.RecipeMaker;
 
 public class BlockContainerSL extends BlockContainer implements IRegistryObject, IHasSubtypes {
 
   protected final int subBlockCount;
-  protected boolean hasSubtypes = false;
   protected String blockName;
   protected String modId;
 
@@ -62,7 +62,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -90,9 +90,15 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return ModelHelper.getVariants(this, subBlockCount);
+    if (hasSubtypes()) {
+      for (int i = 0; i < subBlockCount; ++i) {
+        models.put(i, new ModelResourceLocation(getFullName().toLowerCase() + i, "inventory"));
+      }
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName().toLowerCase(), "inventory"));
+    }
   }
 
   @Override
@@ -100,6 +106,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
 
     return false;
   }
+
   // ========================
   // BlockContainer overrides
   // ========================
@@ -124,7 +131,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   @Override
   public int damageDropped(IBlockState state) {
 
-    return hasSubtypes ? getMetaFromState(state) : 0;
+    return hasSubtypes() ? getMetaFromState(state) : 0;
   }
 
   @Override
@@ -187,17 +194,17 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX,
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX,
       float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
-    return clGetStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+    return clGetStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
   @SuppressWarnings("deprecation")
   protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing,
       float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
-    return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
   @SideOnly(Side.CLIENT)

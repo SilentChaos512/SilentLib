@@ -97,7 +97,7 @@ public final class GuideBookUtils {
   @SideOnly(Side.CLIENT)
   public static GuideBook getBookFromClientPlayerHand() {
 
-    EntityPlayer player = Minecraft.getMinecraft().thePlayer;
+    EntityPlayer player = Minecraft.getMinecraft().player;
     if (player != null) {
       ItemStack stack = player.getHeldItemMainhand();
       if (StackHelper.isEmpty(stack))

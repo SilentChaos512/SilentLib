@@ -51,7 +51,7 @@ public class GuideEntry implements IGuideEntry {
     if (!items.isEmpty()) {
       for (ItemStack stack : items) {
         if (StackHelper.isValid(stack)) {
-          List<String> tooltip = stack.getTooltip(mc.thePlayer, mc.gameSettings.advancedItemTooltips);
+          List<String> tooltip = stack.getTooltip(mc.player, mc.gameSettings.advancedItemTooltips);
           for (String strg : tooltip) {
             if (strg != null && strg.toLowerCase(Locale.ROOT).contains(searchBarText)) {
               return true;

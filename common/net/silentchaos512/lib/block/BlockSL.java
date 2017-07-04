@@ -1,10 +1,10 @@
 package net.silentchaos512.lib.block;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
@@ -21,12 +21,15 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
-import net.silentchaos512.lib.util.ModelHelper;
+import net.silentchaos512.lib.registry.RecipeMaker;
+import net.silentchaos512.lib.util.LocalizationHelper;
 
 public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
@@ -57,7 +60,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   // =======================
 
   @Override
-  public void addRecipes() {
+  public void addRecipes(RecipeMaker recipes) {
 
   }
 
@@ -85,15 +88,15 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   }
 
   @Override
-  public List<ModelResourceLocation> getVariants() {
+  public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-    return ModelHelper.getVariants(this, subBlockCount);
-  }
-
-  @Override
-  public boolean registerModels() {
-
-    return false;
+    if (hasSubtypes()) {
+      for (int i = 0; i < subBlockCount; ++i) {
+        models.put(i, new ModelResourceLocation(getFullName().toLowerCase() + i, "inventory"));
+      }
+    } else {
+      models.put(0, new ModelResourceLocation(getFullName().toLowerCase(), "inventory"));
+    }
   }
 
   // ===============
@@ -166,17 +169,17 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
   @SuppressWarnings("deprecation")
   @Override
-  public IBlockState onBlockPlaced(World worldIn, BlockPos pos, EnumFacing facing, float hitX,
+  public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX,
       float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
-    return clGetStateForPlacement(worldIn, pos, facing, hitX, hitY, hitZ, meta, placer);
+    return clGetStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
   @SuppressWarnings("deprecation")
   protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing,
       float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
-    return super.onBlockPlaced(world, pos, facing, hitX, hitY, hitZ, meta, placer);
+    return super.getStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
   @SideOnly(Side.CLIENT)
@@ -195,5 +198,40 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     } else {
       list.add(new ItemStack(item));
     }
+  }
+
+  // ===========================
+  // Cross Compatibility (MC 12)
+  // ===========================
+
+  @Override
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list,
+      boolean advanced) {
+
+    clAddInformation(stack, player.world, list, advanced);
+  }
+
+  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
+    if (loc != null) {
+      list.addAll(loc.getBlockDescriptionLines(blockName));
+    }
+  }
+
+  @Override
+  public List<ItemStack> getDrops(IBlockAccess world, BlockPos pos, IBlockState state,
+      int fortune) {
+
+    List<ItemStack> drops = new ArrayList<>();
+    drops.addAll(clGetDrops(world, pos, state, fortune));
+    return drops;
+  }
+
+  // @SuppressWarnings("deprecation")
+  public List<ItemStack> clGetDrops(IBlockAccess world, BlockPos pos, IBlockState state,
+      int fortune) {
+
+    return super.getDrops(world, pos, state, fortune);
   }
 }
