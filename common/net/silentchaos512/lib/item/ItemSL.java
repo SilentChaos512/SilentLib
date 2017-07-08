@@ -163,9 +163,9 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   // Cross Compatibility (MC 12)
   // ===========================
 
-  public static boolean isInCreativeTab(Item item, CreativeTabs targetTab) {
+  public void addInformation(ItemStack stack, EntityPlayer player, List<String> list, boolean advanced) {
 
-    return true;
+    clAddInformation(stack, player.world, list, advanced);
   }
 
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {

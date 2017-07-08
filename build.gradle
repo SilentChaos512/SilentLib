@@ -16,7 +16,7 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "2.1.5"
+version = "2.2.5"
 def buildNum = 0
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SilentLib-1.11.2"
@@ -24,13 +24,13 @@ archivesBaseName = "SilentLib-1.11.2"
 sourceCompatibility = targetCompatibility = 1.8
 
 minecraft {
-    version = "1.11.2-13.20.0.2282"
+    version = "1.11.2-13.20.1.2388"
     runDir = "eclipse"
     
     replace "SL_VERSION", project.version
     replaceIn "SilentLib.java"
 
-    mappings = "snapshot_20161220"
+    mappings = "stable_32"
 
     def versionFile = file('version.properties')
     if (versionFile.canRead()) {

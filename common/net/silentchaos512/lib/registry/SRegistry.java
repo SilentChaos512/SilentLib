@@ -14,28 +14,18 @@ import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionType;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.world.biome.Biome;
-import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.common.registry.IForgeRegistryEntry;
-import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfession;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.item.ItemBlockSL;
@@ -70,7 +60,7 @@ public class SRegistry {
     this.modId = modId;
     this.resourcePrefix = modId.toLowerCase() + ":";
     this.recipes = new RecipeMaker(modId);
-    MinecraftForge.EVENT_BUS.register(new EventHandler(this));
+    //MinecraftForge.EVENT_BUS.register(new EventHandler(this));
   }
 
   public SRegistry(String modId, LogHelper logHelper) {
@@ -351,91 +341,6 @@ public class SRegistry {
         obj.getModels(models);
         models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item, entry.getKey(), entry.getValue()));
       }
-    }
-  }
-
-  /**
-   * Handles the new Forge RegistryEvents. An instance will automatically be registered when an SRegistry is
-   * constructed.
-   * 
-   * @author SilentChaos512
-   * @since 2.2.2
-   */
-  public static class EventHandler {
-
-    protected SRegistry sregistry;
-
-    public EventHandler(SRegistry sregistry) {
-
-      this.sregistry = sregistry;
-    }
-
-//    @SubscribeEvent
-//    public void registerBlocks(RegistryEvent.Register<Block> event) {
-//
-//      if (sregistry.handlerBlocks != null) {
-//        sregistry.handlerBlocks.registerAll(sregistry);
-//      }
-//    }
-//
-//    @SubscribeEvent
-//    public void registerItems(RegistryEvent.Register<Item> event) {
-//
-//      if (sregistry.handlerItems != null) {
-//        sregistry.handlerItems.registerAll(sregistry);
-//      }
-//
-//      sregistry.addOreDictEntries();
-//    }
-//
-//    @SubscribeEvent
-//    public void registerPotions(RegistryEvent.Register<Potion> event) {
-//
-//      // TODO
-//    }
-//
-//    @SubscribeEvent
-//    public void registerBiomes(RegistryEvent.Register<Biome> event) {
-//
-//      // TODO
-//    }
-//
-//    @SubscribeEvent
-//    public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
-//
-//      // TODO
-//    }
-//
-//    @SubscribeEvent
-//    public void registerPotionTypes(RegistryEvent.Register<PotionType> event) {
-//
-//      // TODO
-//    }
-//
-//    @SubscribeEvent
-//    public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
-//
-//      if (sregistry.handlerEnchantments != null) {
-//        sregistry.handlerEnchantments.registerAll(sregistry);
-//      }
-//    }
-//
-//    @SubscribeEvent
-//    public void registerVillagerProfessions(RegistryEvent.Register<VillagerProfession> event) {
-//
-//      // TODO
-//    }
-//
-//    @SubscribeEvent
-//    public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-//
-//      // TODO
-//    }
-
-    @SubscribeEvent
-    public void registerModels(ModelRegistryEvent event) {
-
-      //sregistry.registerModels();
     }
   }
 }

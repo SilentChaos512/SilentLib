@@ -74,6 +74,7 @@ public class ItemHelper {
     return result;
   }
 
+  //MC 1.12 support
   public static boolean isInCreativeTab(Item item, CreativeTabs targetTab) {
 
     return true;
