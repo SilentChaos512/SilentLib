@@ -101,7 +101,7 @@ public abstract class AdaptiveConfig extends ConfigBase {
   public <T> void addAdaptorMapping(int version, String key, T val) {
 
     if (val instanceof Float || val instanceof Double)
-      adaptor.addMapping(version, key, formatDouble((double) val));
+      adaptor.addMapping(version, key, formatDouble((Double) val));
     else
       adaptor.addMapping(version, key, val);
   }
