@@ -77,19 +77,33 @@ public abstract class AdaptiveConfig extends ConfigBase {
 
   public double loadDouble(String key, String category, double defaultValue, double min, double max, String comment) {
 
-    Property prop = config.get(category, key, defaultValue);
+    String defaultString = formatDouble(defaultValue);
+    Property prop = config.get(category, key, defaultString);
     if (comment != null && !comment.isEmpty())
-      prop.setComment(comment + " [range: " + min + " ~ " + max + ", default: " + defaultValue + "]");
+      prop.setComment(comment + " [range: " + min + " ~ " + max + ", default: " + defaultString + "]");
     prop.setMinValue(min);
     prop.setMaxValue(max);
-    adaptor.adaptProperty(prop, prop.getDouble(defaultValue));
-    double val = prop.getDouble(defaultValue);
+    adaptor.adaptProperty(prop, prop.getString());
+    double val = 0.0;
+    try {
+      val = Double.parseDouble(prop.getString());
+    } catch (Exception ex) {
+      ex.printStackTrace();
+    }
     return val < min ? min : val > max ? max : val;
+  }
+
+  protected String formatDouble(double val) {
+
+    return String.format("%.4f", val).replaceFirst("0+$", "").replaceFirst("\\.$", ".0");
   }
 
   public <T> void addAdaptorMapping(int version, String key, T val) {
 
-    adaptor.addMapping(version, key, val);
+    if (val instanceof Float || val instanceof Double)
+      adaptor.addMapping(version, key, formatDouble((double) val));
+    else
+      adaptor.addMapping(version, key, val);
   }
 
   public static class Adaptor {

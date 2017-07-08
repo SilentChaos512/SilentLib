@@ -224,9 +224,10 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     drops.addAll(clGetDrops(world, pos, state, fortune));
   }
 
-  @SuppressWarnings("deprecation")
   public List<ItemStack> clGetDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 
-    return super.getDrops(world, pos, state, fortune);
+    NonNullList<ItemStack> list = NonNullList.create();
+    super.getDrops(list, world, pos, state, fortune);
+    return list;
   }
 }

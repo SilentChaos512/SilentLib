@@ -1,7 +1,8 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
 2.2.5
-Updated to be compatible with 1.11.2.
+Updated to be compatible with 1.10.2 and 1.11.2.
+Some rendering compatibility additions. Minor bugfixes.
 
 2.2.4
 Updated for Forge 2387.

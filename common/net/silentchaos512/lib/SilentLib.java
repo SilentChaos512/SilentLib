@@ -72,8 +72,8 @@ public class SilentLib {
     DataDump.dumpEntityList();
     DataDump.dumpEnchantments();
     DataDump.dumpPotionEffects();
-    if ("SL_VERSION".equals(VERSION))
-      DataDump.dumpRecipes();
+//    if ("SL_VERSION".equals(VERSION))
+//      DataDump.dumpRecipes();
   }
 
   public static int getMCVersion() {
