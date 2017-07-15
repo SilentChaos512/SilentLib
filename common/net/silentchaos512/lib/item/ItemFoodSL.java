@@ -39,6 +39,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     super(amount, saturation, isWolfFood);
     this.subItemCount = subItemCount;
     this.modId = modId.toLowerCase();
+    setHasSubtypes(subItemCount > 1);
     setUnlocalizedName(name);
   }
 
@@ -151,14 +152,12 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
-  @SideOnly(Side.CLIENT)
   @Override
   public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
     clGetSubItems(this, tab, subItems);
   }
 
-  @SideOnly(Side.CLIENT)
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
