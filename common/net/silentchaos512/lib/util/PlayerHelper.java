@@ -21,8 +21,8 @@ public class PlayerHelper {
   }
 
   /**
-   * Gives the player an item. Currently, this just spawns an EntityItem on the player in all cases, since that seems to
-   * be the most reliable method. Spawns 1 block above player's feet.
+   * Gives the player an item. If it can't be given directly, it spawns an EntityItem. Spawns 1 block above player's
+   * feet.
    */
   public static void giveItem(EntityPlayer player, ItemStack stack) {
 
@@ -30,15 +30,18 @@ public class PlayerHelper {
   }
 
   /**
-   * Gives the player an item. Currently, this just spawns an EntityItem on the player in all cases, since that seems to
-   * be the most reliable method. This version allows an exact position to be given.
+   * Gives the player an item. If it can't be given directly, it spawns an EntityItem. This version allows an exact
+   * position to be given.
    */
   public static void giveItem(EntityPlayer player, ItemStack stack, double posX, double posY,
       double posZ) {
 
-    EntityItem entityItem = new EntityItem(player.world, posX, posY, posZ, stack);
-    entityItem.setDefaultPickupDelay();
-    player.world.spawnEntity(entityItem);
+    ItemStack copy = StackHelper.safeCopy(stack);
+    if (!player.inventory.addItemStackToInventory(copy)) {
+      EntityItem entityItem = new EntityItem(player.world, posX, posY, posZ, copy);
+      entityItem.setDefaultPickupDelay();
+      player.world.spawnEntity(entityItem);
+    }
   }
 
   /**

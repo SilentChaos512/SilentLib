@@ -90,7 +90,8 @@ public class SRegistry {
     this.mod = mod;
   }
 
-  public <T> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler, Class<T> clazz) {
+  public <T> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler,
+      Class<T> clazz) {
 
     if (clazz == Block.class)
       handlerBlocks = handler;
@@ -200,22 +201,39 @@ public class SRegistry {
     registerEntity(entityClass, key, ++lastEntityId, mod, 64, 20, true);
   }
 
-  public void registerEntity(Class<? extends Entity> entityClass, String key, int trackingRange, int updateFrequency, boolean sendsVelocityUpdates) {
+  public void registerEntity(Class<? extends Entity> entityClass, String key, int trackingRange,
+      int updateFrequency, boolean sendsVelocityUpdates) {
 
-    registerEntity(entityClass, key, ++lastEntityId, mod, trackingRange, updateFrequency, sendsVelocityUpdates);
+    registerEntity(entityClass, key, ++lastEntityId, mod, trackingRange, updateFrequency,
+        sendsVelocityUpdates);
   }
 
-  public void registerEntity(Class<? extends Entity> entityClass, String key, int id, Object mod, int trackingRange, int updateFrequency,
-      boolean sendsVelocityUpdates) {
+  public void registerEntity(Class<? extends Entity> entityClass, String key, int id, Object mod,
+      int trackingRange, int updateFrequency, boolean sendsVelocityUpdates) {
 
     ResourceLocation resource = new ResourceLocation(modId, key);
-    EntityRegistry.registerModEntity(resource, entityClass, key, id, mod, trackingRange, updateFrequency, sendsVelocityUpdates);
+    EntityRegistry.registerModEntity(resource, entityClass, key, id, mod, trackingRange,
+        updateFrequency, sendsVelocityUpdates);
   }
 
   @SideOnly(Side.CLIENT)
-  public <T extends Entity> void registerEntityRenderer(Class<T> entityClass, IRenderFactory<T> renderFactory) {
+  public <T extends Entity> void registerEntityRenderer(Class<T> entityClass,
+      IRenderFactory<T> renderFactory) {
 
     RenderingRegistry.registerEntityRenderingHandler(entityClass, renderFactory);
+  }
+
+  // Potion
+
+  public void registerPotion(Potion potion) {
+
+    ForgeRegistries.POTIONS.register(potion);
+  }
+
+  public void registerPotion(Potion potion, ResourceLocation name) {
+
+    safeSetRegistryName(potion, name);
+    ForgeRegistries.POTIONS.register(potion);
   }
 
   public void safeSetRegistryName(IForgeRegistryEntry entry, ResourceLocation name) {
@@ -245,7 +263,8 @@ public class SRegistry {
    * @param renderer
    */
   @SideOnly(Side.CLIENT)
-  public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass, TileEntitySpecialRenderer<T> renderer) {
+  public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass,
+      TileEntitySpecialRenderer<T> renderer) {
 
     ClientRegistry.bindTileEntitySpecialRenderer(tileClass, renderer);
   }
@@ -265,7 +284,8 @@ public class SRegistry {
       if (container != null)
         mod = container.getMod();
       else if (logHelper != null)
-        logHelper.warning("SRegistry for this mod failed to get the mod instance! This could be because the provided mod ID is incorrect.");
+        logHelper.warning(
+            "SRegistry for this mod failed to get the mod instance! This could be because the provided mod ID is incorrect.");
     }
   }
 
@@ -340,7 +360,8 @@ public class SRegistry {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         models.clear();
         obj.getModels(models);
-        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item, entry.getKey(), entry.getValue()));
+        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item,
+            entry.getKey(), entry.getValue()));
       }
     }
   }

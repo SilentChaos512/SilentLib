@@ -1,5 +1,8 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.7
+Fixed: Food subitems not working properly.
+
 2.2.6
 Added: ModelHelperSL, which helps to fix the OBJ model issues in Silent's Gems.
 
