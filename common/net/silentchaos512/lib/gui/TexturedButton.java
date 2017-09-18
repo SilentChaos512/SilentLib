@@ -24,11 +24,13 @@ public class TexturedButton extends GuiButtonSL {
 
   public TexturedButton(ResourceLocation resLoc, int id, int x, int y, int texturePosX,
       int texturePosY, int width, int height) {
+
     this(resLoc, id, x, y, texturePosX, texturePosY, width, height, new ArrayList());
   }
 
   public TexturedButton(ResourceLocation resLoc, int id, int x, int y, int texturePosX,
       int texturePosY, int width, int height, List hoverTextList) {
+
     super(id, x, y, width, height, "");
     this.texturePosX = texturePosX;
     this.texturePosY = texturePosY;

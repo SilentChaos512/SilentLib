@@ -4,7 +4,9 @@
 
 package net.silentchaos512.lib.guidebook.gui;
 
+import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +18,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.gui.TexturedButton;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuideEntry;
@@ -32,6 +35,7 @@ public class GuiMainPage extends GuiGuide {
 
   private @Nullable TexturedButton achievementButton;
   private @Nullable TexturedButton configButton;
+  private @Nullable TexturedButton patreonButton;
 
   private GuiButton tutorialButton;
   private boolean showTutorial;
@@ -89,6 +93,9 @@ public class GuiMainPage extends GuiGuide {
       this.bookletEdition = book.getEditionString(this.mc.player);
     }
 
+    // Buttons
+    int xPos = this.guiLeft - 4;
+
     // Config button?
     List<String> configText = new ArrayList<String>();
     configText.add(TextFormatting.GOLD + book.loc.getLocalizedString("guide", "configButton.name"));
@@ -97,7 +104,8 @@ public class GuiMainPage extends GuiGuide {
     // .replaceAll("\\\\n", "\n"),
     // 200));
     if (book.getConfigScreen(this) != null) {
-      this.configButton = new TexturedButton(book.getResourceGadgets(), -388, this.guiLeft + 16,
+      xPos += 20;
+      this.configButton = new TexturedButton(book.getResourceGadgets(), -388, xPos,
           this.guiTop + this.ySize - 30, 188, 14, 16, 16, configText);
       this.buttonList.add(this.configButton);
     }
@@ -109,10 +117,20 @@ public class GuiMainPage extends GuiGuide {
     // achievementText.addAll(this.fontRendererObj.listFormattedStringToWidth(
     // book.loc.getLocalizedString("booklet", "achievementButton.desc", book.getModId()), 200));
     if (book.getAchievementScreen(this) != null) {
-      this.achievementButton = new TexturedButton(book.getResourceGadgets(), -389,
-          this.guiLeft + 36, this.guiTop + this.ySize - 30, 204, 14, 16, 16, achievementText);
+      xPos += 20;
+      this.achievementButton = new TexturedButton(book.getResourceGadgets(), -389, xPos,
+          this.guiTop + this.ySize - 30, 204, 14, 16, 16, achievementText);
       this.buttonList.add(this.achievementButton);
     }
+
+    // Patreon button
+    xPos += 20;
+    List<String> patreonText = new ArrayList<String>();
+    patreonText.add(TextFormatting.GOLD + "Support the mod on Patreon!");
+    patreonText.add("(Opens a link in your web browser)");
+    this.patreonButton = new TexturedButton(book.getResourceGadgets(), -340, xPos,
+        this.guiTop + this.ySize - 30, 16, 172, 16, 16, patreonText);
+    this.buttonList.add(this.patreonButton);
 
     // FIXME?
     // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
@@ -179,6 +197,14 @@ public class GuiMainPage extends GuiGuide {
         // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
         // data.didBookTutorial = true;
         // PacketHandlerHelper.sendPlayerDataToServer(false, 1);
+      }
+    } else if (button == this.patreonButton) {
+      if (Desktop.isDesktopSupported()) {
+        try {
+          Desktop.getDesktop().browse(new URI("https://www.patreon.com/SilentChaos512"));
+        } catch (Exception ex) {
+          SilentLib.logHelper.warning("Could not open web page.\n" + ex);
+        }
       }
     } else {
       super.actionPerformed(button);

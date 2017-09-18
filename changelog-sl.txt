@@ -1,5 +1,9 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.8
+Added: Patreon button to guide book main page.
+Fixed: Potion registration handler now works (currently, none of my mods use this).
+
 2.2.7
 Fixed: Food subitems not working properly.
 
