@@ -52,6 +52,7 @@ public class SRegistry {
   protected IRegistrationHandler handlerBlocks;
   protected IRegistrationHandler handlerItems;
   protected IRegistrationHandler handlerEnchantments;
+  protected IRegistrationHandler handlerPotions;
   protected IRegistrationHandler handlerRecipes;
 
   /** A reference to the mod's instance object. */
@@ -101,6 +102,8 @@ public class SRegistry {
       handlerEnchantments = handler;
     else if (clazz == IRecipe.class)
       handlerRecipes = handler;
+    else if (clazz == Potion.class)
+      handlerPotions = handler;
     // TODO
     return handler;
   }
@@ -403,7 +406,9 @@ public class SRegistry {
     @SubscribeEvent
     public void registerPotions(RegistryEvent.Register<Potion> event) {
 
-      // TODO
+      if (sregistry.handlerPotions != null) {
+        sregistry.handlerPotions.registerAll(sregistry);
+      }
     }
 
     @SubscribeEvent
