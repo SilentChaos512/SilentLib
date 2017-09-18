@@ -3,20 +3,33 @@ package net.silentchaos512.lib.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import net.minecraftforge.common.MinecraftForge;
+
 public class LogHelper {
 
   private Logger logger;
+  private int buildNumber = 0;
 
+  @Deprecated
+  /** @deprecated Use LogHelper(String, int) */
   public LogHelper(String modName) {
 
     logger = LogManager.getLogger(modName);
   }
 
+  public LogHelper(String modName, int buildNumber) {
+
+    logger = LogManager.getLogger(modName);
+    this.buildNumber = buildNumber;
+  }
+
   public void debug(Object... objects) {
 
-    String line = lineFromList(objects);
-    logger.debug(line);
-    System.out.println(line);
+    if (buildNumber == 0) {
+      String line = lineFromList(objects);
+      logger.debug(line);
+      System.out.println(line);
+    }
   }
 
   public void info(Object obj) {

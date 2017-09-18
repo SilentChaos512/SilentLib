@@ -2,6 +2,7 @@ Considering that Silent Lib is entirely behind-the-scenes from the player's pers
 
 2.2.8
 Added: Patreon button to guide book main page.
+Changed: LogHelper now takes a build number and will not output debug lines if it is not zero. Should fix "log spam" issues that pop up from time-to-time.
 Fixed: Potion registration handler now works (currently, none of my mods use this).
 
 2.2.7
