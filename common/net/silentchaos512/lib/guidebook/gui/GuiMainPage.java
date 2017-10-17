@@ -124,13 +124,15 @@ public class GuiMainPage extends GuiGuide {
     }
 
     // Patreon button
-    xPos += 20;
-    List<String> patreonText = new ArrayList<String>();
-    patreonText.add(TextFormatting.GOLD + "Support the mod on Patreon!");
-    patreonText.add("(Opens a link in your web browser)");
-    this.patreonButton = new TexturedButton(book.getResourceGadgets(), -340, xPos,
-        this.guiTop + this.ySize - 30, 16, 172, 16, 16, patreonText);
-    this.buttonList.add(this.patreonButton);
+    if (book.showPatreonButton) {
+      xPos += 20;
+      List<String> patreonText = new ArrayList<String>();
+      patreonText.add(TextFormatting.GOLD + "Support the mod on Patreon!");
+      patreonText.add("(Opens a link in your web browser)");
+      this.patreonButton = new TexturedButton(book.getResourceGadgets(), -340, xPos,
+          this.guiTop + this.ySize - 30, 16, 172, 16, 16, patreonText);
+      this.buttonList.add(this.patreonButton);
+    }
 
     // FIXME?
     // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);

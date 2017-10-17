@@ -219,6 +219,22 @@ public class SRegistry {
         updateFrequency, sendsVelocityUpdates);
   }
 
+  public void registerEntity(Class<? extends Entity> entityClass, String key, int trackingRange,
+      int updateFrequency, boolean sendsVelocityUpdates, int eggPrimary, int eggSecondary) {
+
+    registerEntity(entityClass, key, ++lastEntityId, mod, trackingRange, updateFrequency,
+        sendsVelocityUpdates, eggPrimary, eggSecondary);
+  }
+
+  public void registerEntity(Class<? extends Entity> entityClass, String key, int id, Object mod,
+      int trackingRange, int updateFrequency, boolean sendsVelocityUpdates, int eggPrimary,
+      int eggSecondary) {
+
+    ResourceLocation resource = new ResourceLocation(modId, key);
+    EntityRegistry.registerModEntity(resource, entityClass, key, id, mod, trackingRange,
+        updateFrequency, sendsVelocityUpdates, eggPrimary, eggSecondary);
+  }
+
   @SideOnly(Side.CLIENT)
   public <T extends Entity> void registerEntityRenderer(Class<T> entityClass,
       IRenderFactory<T> renderFactory) {

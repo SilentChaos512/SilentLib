@@ -1,5 +1,9 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.9
+Added: EntityHelper#heal method, which can bypass cancelable healing events.
+Added: GuideBook#showPatreonButton field. Defaults to false for all mods but Silent's Gems.
+
 2.2.8
 Added: Patreon button to guide book main page.
 Changed: LogHelper now takes a build number and will not output debug lines if it is not zero. Should fix "log spam" issues that pop up from time-to-time.

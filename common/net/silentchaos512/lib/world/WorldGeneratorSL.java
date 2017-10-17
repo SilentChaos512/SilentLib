@@ -1,9 +1,18 @@
 package net.silentchaos512.lib.world;
 
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.Semaphore;
+
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Sets;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.math.ChunkPos;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.ChunkProviderServer;
@@ -11,6 +20,7 @@ import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.fml.common.IWorldGenerator;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.lib.SilentLib;
 
@@ -38,7 +48,8 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
   }
 
   @Override
-  public void generate(Random random, int chunkX, int chunkZ, World world, IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
+  public void generate(Random random, int chunkX, int chunkZ, World world,
+      IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
 
     final int dim = world.provider.getDimension();
     final int posX = chunkX * 16;
@@ -73,7 +84,8 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
 
   }
 
-  protected boolean generateForDimension(final int dim, World world, Random random, int posX, int posZ) {
+  protected boolean generateForDimension(final int dim, World world, Random random, int posX,
+      int posZ) {
 
     return false;
   }
@@ -88,31 +100,64 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
   // = Retrogen =
   // ============
 
-  private int retroCurrentX = Integer.MAX_VALUE, retroCurrentZ = Integer.MAX_VALUE;
-
-  @SubscribeEvent
-  public void onChunkLoad(ChunkDataEvent.Load event) {
-
-    // Retrogen allowed?
-    if (!allowRetrogen)
-      return;
-
+//  private Map<World, ListMultimap<ChunkPos, String>> pendingWork;
+//  private Map<World, ListMultimap<ChunkPos, String>> completedWork;
+//
+//  private ConcurrentMap<World, Semaphore> completedWorkLocks;
+//
+//  private int maxPerTick = 100;
+//
+//  private Semaphore getSemaphoreFor(World world) {
+//
+//    completedWorkLocks.putIfAbsent(world, new Semaphore(1));
+//    return completedWorkLocks.get(world);
+//  }
+//
+//  @SubscribeEvent
+//  public void onChunkLoad(ChunkDataEvent.Load event) {
+//
+//    // Retrogen allowed?
+//    if (!allowRetrogen) {
+//      return;
+//    }
+//
+//    World world = event.getWorld();
+//    if (!(world instanceof WorldServer)) {
+//      return;
+//    }
+//    getSemaphoreFor(world);
+//
+//    Chunk chunk = event.getChunk();
+//
 //    // Retrogen already done?
 //    NBTTagCompound data = event.getData();
-//    if (data.hasKey(retrogenKey) && data.getInteger(retrogenKey) >= retrogenVersion)
+//    if (data.hasKey(retrogenKey) && data.getInteger(retrogenKey) >= retrogenVersion) {
 //      return;
+//    }
 //
-//    // Get chunk info.
-//    Chunk chunk = event.getChunk();
-//    // Is this chunk currently generating?
-//    if (chunk.x == retroCurrentX && chunk.z == retroCurrentZ)
+//    //queueRetrogen(world, chunk.getPos());
+//  }
+//
+//  @SubscribeEvent
+//  public void onChunkSave(ChunkDataEvent.Save event) {
+//
+//    World world = event.getWorld();
+//    if (!(world instanceof WorldServer)) {
 //      return;
-//    World world = chunk.getWorld();
-//    ChunkProviderServer chunkProvider = (ChunkProviderServer) world.getChunkProvider();
-//    IChunkGenerator chunkGenerator = chunkProvider.chunkGenerator;
+//    }
+//    getSemaphoreFor(world).acquireUninterruptibly();
+//    try {
+//      if (completedWork.containsKey(world)) {
+//        ListMultimap<ChunkPos, String> doneChunks = completedWork.get(world);
+//        NBTTagCompound data = event.getData();
+//        data.setInteger(retrogenKey, retrogenVersion);
+//      }
+//    } finally {
+//      getSemaphoreFor(world).release();
+//    }
+//  }
 //
-//    retroCurrentX = chunk.x;
-//    retroCurrentZ = chunk.z;
+//  private void runRetrogen(WorldServer world, ChunkPos chunk) {
 //
 //    // Setting up a Random object in the same way Forge does (GameRegistry#generateWorld)
 //    long worldSeed = world.getSeed();
@@ -124,10 +169,10 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
 //
 //    debug(retrogenKey + " version " + retrogenVersion + " (" + chunk.x + ", " + chunk.z + ")");
 //
-//    // Mark the chunk
-//    data.setInteger(retrogenKey, retrogenVersion);
-//
 //    // Generate!
+//    ChunkProviderServer chunkProvider = world.getChunkProvider();
+//    IChunkGenerator chunkGenerator = ObfuscationReflectionHelper.getPrivateValue(
+//        ChunkProviderServer.class, chunkProvider, "field_186029_c", "chunkGenerator");
 //    generate(rand, chunk.x, chunk.z, world, chunkGenerator, chunkProvider);
-  }
+//  }
 }

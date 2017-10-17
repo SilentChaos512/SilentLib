@@ -47,6 +47,7 @@ public abstract class GuideBook {
   public GuideEntry entryAllAndSearch = new GuideEntryAllItems(this, "allAndSearch").setImportant();
   public final LocalizationHelper loc;
   public int edition = -1;
+  public boolean showPatreonButton = false;
 
   @SideOnly(Side.CLIENT)
   public GuiGuide lastViewedPage;
@@ -54,6 +55,7 @@ public abstract class GuideBook {
   public GuideBook(String modId) {
 
     this.modId = modId;
+    this.showPatreonButton = modId.equals("silentgems");
     this.resourceGui = new ResourceLocation(SilentLib.instance.MOD_ID,
         "textures/gui/gui_guide.png");
     this.resourceGadgets = new ResourceLocation(SilentLib.instance.MOD_ID,
