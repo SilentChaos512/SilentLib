@@ -1,5 +1,8 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+2.2.11
+Added: RecipeBaseSL#getNonEmptyStacks
+
 2.2.9
 Added: EntityHelper#heal method, which can bypass cancelable healing events.
 Added: GuideBook#showPatreonButton field. Defaults to false for all mods but Silent's Gems.

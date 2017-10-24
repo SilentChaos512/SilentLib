@@ -3,7 +3,7 @@ package net.silentchaos512.lib.recipe;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
+import net.silentchaos512.lib.collection.ItemStackList;
 import net.silentchaos512.lib.util.StackHelper;
 
 public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipeSL {
@@ -30,5 +30,24 @@ public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEn
   public int getRecipeSize() {
 
     return 10;
+  }
+
+  /**
+   * Convenience method to make iterating a bit cleaner.
+   * @param inv
+   * @return
+   */
+  public static ItemStackList getNonEmptyStacks(InventoryCrafting inv) {
+
+    ItemStackList list = ItemStackList.create();
+
+    for (int i = 0; i < inv.getSizeInventory(); ++i) {
+      ItemStack stack = inv.getStackInSlot(i);
+      if (StackHelper.isValid(stack)) {
+        list.add(stack);
+      }
+    }
+
+    return list;
   }
 }
