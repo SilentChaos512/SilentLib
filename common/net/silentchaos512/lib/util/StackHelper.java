@@ -100,14 +100,26 @@ public class StackHelper {
     }
   }
 
-  public static List<ItemStack> getOres(String name) {
+  public static List<ItemStack> getOres(String oreDictKey) {
 
-    return OreDictionary.getOres(name);
+    return OreDictionary.getOres(oreDictKey);
   }
 
-  public static List<ItemStack> getOres(String name, boolean alwaysCreateEntry) {
+  public static List<ItemStack> getOres(String oreDictKey, boolean alwaysCreateEntry) {
 
-    return OreDictionary.getOres(name, alwaysCreateEntry);
+    return OreDictionary.getOres(oreDictKey, alwaysCreateEntry);
+  }
+
+  public static boolean matchesOreDict(ItemStack stack, String oreDictKey) {
+
+    if (StackHelper.isEmpty(stack))
+      return false;
+
+    for (ItemStack stackOre : getOres(oreDictKey))
+      if (stack.isItemEqual(stackOre))
+        return true;
+
+    return false;
   }
 
   public static ItemStack getAndSplit(ItemStackList stacks, int index, int amount) {
