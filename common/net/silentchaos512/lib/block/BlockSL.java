@@ -204,12 +204,14 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   // Cross Compatibility (MC 12)
   // ===========================
 
+  @SideOnly(Side.CLIENT)
   @Override
   public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
   }
 
+  @SideOnly(Side.CLIENT)
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
