@@ -1,5 +1,10 @@
 Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
 
+Some versions don't have any changes listed. Mostly just small stuff that's not worth noting.
+
+2.2.14
+Added: Blending functions to the Color class.
+
 2.2.11
 Added: RecipeBaseSL#getNonEmptyStacks
 
