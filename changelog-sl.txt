@@ -2,6 +2,12 @@ Considering that Silent Lib is entirely behind-the-scenes from the player's pers
 
 Some versions don't have any changes listed. Mostly just small stuff that's not worth noting.
 
+2.2.16
+Added: ConfigMultiValueLineParser
+
+2.2.15
+Added: zh_CN.lang (Snownee)
+
 2.2.14
 Added: Blending functions to the Color class.
 
