@@ -260,9 +260,9 @@ public class SRegistry {
 
   // Sound Events
 
-  public void registerSoundEvent(SoundEvent sound) {
+  public void registerSoundEvent(SoundEvent sound, String id) {
 
-    registerSoundEvent(sound, sound.getSoundName());
+    registerSoundEvent(sound, new ResourceLocation(modId, id));
   }
 
   public void registerSoundEvent(SoundEvent sound, ResourceLocation name) {
