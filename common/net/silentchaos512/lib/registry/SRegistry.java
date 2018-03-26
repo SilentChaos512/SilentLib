@@ -54,6 +54,7 @@ public class SRegistry {
   protected IRegistrationHandler handlerEnchantments;
   protected IRegistrationHandler handlerPotions;
   protected IRegistrationHandler handlerRecipes;
+  protected IRegistrationHandler handlerSounds;
 
   /** A reference to the mod's instance object. */
   protected Object mod;
@@ -104,6 +105,8 @@ public class SRegistry {
       handlerRecipes = handler;
     else if (clazz == Potion.class)
       handlerPotions = handler;
+    else if (clazz == SoundEvent.class)
+      handlerSounds = handler;
     // TODO
     return handler;
   }
@@ -255,6 +258,19 @@ public class SRegistry {
     ForgeRegistries.POTIONS.register(potion);
   }
 
+  // Sound Events
+
+  public void registerSoundEvent(SoundEvent sound) {
+
+    registerSoundEvent(sound, sound.getSoundName());
+  }
+
+  public void registerSoundEvent(SoundEvent sound, ResourceLocation name) {
+
+    safeSetRegistryName(sound, name);
+    ForgeRegistries.SOUND_EVENTS.register(sound);
+  }
+  
   public void safeSetRegistryName(IForgeRegistryEntry entry, ResourceLocation name) {
 
     if (entry.getRegistryName() == null) {
@@ -436,7 +452,9 @@ public class SRegistry {
     @SubscribeEvent
     public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
 
-      // TODO
+      if (sregistry.handlerSounds != null) {
+        sregistry.handlerSounds.registerAll(sregistry);
+      }
     }
 
     @SubscribeEvent
