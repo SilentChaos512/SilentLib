@@ -75,6 +75,16 @@ public class StackHelper {
     return ItemStack.EMPTY;
   }
 
+  @Nullable
+  public static NBTTagCompound getTagCompound(@Nonnull ItemStack stack, boolean createIfNull) {
+
+    if (isEmpty(stack))
+      return null;
+    if (!stack.hasTagCompound() && createIfNull)
+      stack.setTagCompound(new NBTTagCompound());
+    return stack.getTagCompound();
+  }
+
   @Nonnull
   public static ItemStack extractItem(@Nullable TileEntity tileEntity, int slot, int amount) {
 

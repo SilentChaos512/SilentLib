@@ -17,8 +17,8 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TexturedButton extends GuiButtonSL {
 
-  public final List textList = new ArrayList();
-  private final ResourceLocation resLoc;
+  public List textList = new ArrayList();
+  protected final ResourceLocation resLoc;
   public int texturePosX;
   public int texturePosY;
 

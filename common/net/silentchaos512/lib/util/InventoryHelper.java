@@ -3,6 +3,10 @@ package net.silentchaos512.lib.util;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
+/**
+ * @deprecated Use StackHelper
+ */
+@Deprecated
 public class InventoryHelper {
 
   public static boolean matchesOreDict(ItemStack stack, String oreName) {
