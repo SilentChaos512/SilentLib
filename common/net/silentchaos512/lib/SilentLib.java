@@ -13,11 +13,13 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
+import net.silentchaos512.lib.client.key.internal.InternalKeyTracker;
 import net.silentchaos512.lib.debug.DataDump;
 import net.silentchaos512.lib.event.SilentLibClientEvents;
 import net.silentchaos512.lib.event.SilentLibCommonEvents;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.network.NetworkHandlerSL;
+import net.silentchaos512.lib.network.internal.MessageChangeGamemode;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
 import net.silentchaos512.lib.util.LocalizationHelper;
 import net.silentchaos512.lib.util.LogHelper;
@@ -32,6 +34,8 @@ public class SilentLib {
 
   public static NetworkHandlerSL network;
   public static LogHelper logHelper = new LogHelper(MOD_NAME);
+
+  public boolean isDevBuild = false;
 
   @Instance(MOD_ID)
   public static SilentLib instance;
@@ -51,13 +55,17 @@ public class SilentLib {
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
 
+    isDevBuild = "SL_VERSION".equals(VERSION);
+
     network = new NetworkHandlerSL(MOD_ID);
     network.register(MessageLeftClick.class, Side.SERVER);
+    network.register(MessageChangeGamemode.class, Side.SERVER);
     NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerLibF());
 
     MinecraftForge.EVENT_BUS.register(new SilentLibCommonEvents());
     if (event.getSide() == Side.CLIENT) {
       MinecraftForge.EVENT_BUS.register(new SilentLibClientEvents());
+      MinecraftForge.EVENT_BUS.register(InternalKeyTracker.INSTANCE);
     }
   }
 
