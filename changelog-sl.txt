@@ -2,6 +2,12 @@ Considering that Silent Lib is entirely behind-the-scenes from the player's pers
 
 Some versions don't have any changes listed. Mostly just small stuff that's not worth noting.
 
+2.3.0
+Mostly tweaks/additions for Borderblocks
+Added: Dev-only keybindings to switch gamemodes. These are not registered in distributed builds.
+Added: ConfigOptionOreGen (more-or-less direct copy from Silent's Gems)
+Added: Advancement trigger registration method
+
 2.2.16
 Added: ConfigMultiValueLineParser
 

@@ -89,6 +89,30 @@ public abstract class ConfigBase {
     prop.setComment(comment);
     return prop.getBoolean();
   }
+  
+  /**
+   * Load an HTML-style color code from the config file.
+   * @param key
+   * @param category
+   * @param defaultValue
+   * @param includeAlpha
+   *          The highest eight bits will be loaded for use as an alpha component. If the loaded
+   *          value contains zero for alpha and this is true, it will be changed to 0xFF.
+   * @param comment
+   * @return A 32-bit integer in the form 0xAARRGGBB
+   * @throws NumberFormatException
+   *          If the string in the config file cannot be parsed.
+   * @since 2.2.19
+   */
+  public int loadColorCode(String key, String category, int defaultValue, boolean includeAlpha, String comment)
+      throws NumberFormatException {
+
+    String str = config.getString(key, category, String.format(includeAlpha ? "%08x" : "%06x", defaultValue), comment);
+    int result = Integer.decode("0x" + str);
+    if (includeAlpha && (result & 0xFF000000) == 0)
+      result |= 0xFF000000;
+    return result;
+  }
 
   public void init(File file) {
 

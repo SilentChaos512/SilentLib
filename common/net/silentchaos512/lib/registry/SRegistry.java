@@ -2,15 +2,15 @@ package net.silentchaos512.lib.registry;
 
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import com.google.common.collect.MapMaker;
 
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
@@ -276,6 +276,13 @@ public class SRegistry {
     if (entry.getRegistryName() == null) {
       entry.setRegistryName(name);
     }
+  }
+
+  // Advancements
+  public <T extends ICriterionInstance> ICriterionTrigger<T> registerAdvancementTrigger(ICriterionTrigger<T> trigger) {
+
+    CriteriaTriggers.register(trigger);
+    return trigger;
   }
 
   /********************************************************************************************************************
