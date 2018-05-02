@@ -13,10 +13,10 @@ apply plugin: 'net.minecraftforge.gradle.forge'
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "2.2.19"
+version = "2.3.0"
 def buildNum = 0
 group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "SilentLib-1.12"
+archivesBaseName = "SilentLib-1.12.2"
 
 sourceCompatibility = targetCompatibility = '1.8'
 compileJava {
@@ -24,13 +24,8 @@ compileJava {
 }
 
 minecraft {
-    version = "1.12-14.21.1.2387"
+    version = "1.12.2-14.23.3.2669"
     runDir = "eclipse"
-    
-    replace "SL_VERSION", project.version
-    replaceIn "SilentLib.java"
-
-    mappings = "snapshot_20170624"
 
     def versionFile = file('version.properties')
     if (versionFile.canRead()) {
@@ -43,6 +38,12 @@ minecraft {
         versionProps['BUILD_NUM'] = buildNum.toString()
         versionProps.store(versionFile.newWriter(), null)
     }
+    
+    replace "SL_VERSION", project.version
+    replace "BUILD_NUM = 0", "BUILD_NUM = " + buildNum
+    replaceIn "SilentLib.java"
+
+    mappings = "snapshot_20171003"
 }
 
 jar {

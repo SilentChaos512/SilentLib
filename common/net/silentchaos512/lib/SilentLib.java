@@ -30,12 +30,11 @@ public class SilentLib {
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
   public static final String VERSION = "SL_VERSION";
+  public static final int BUILD_NUM = 0;
   public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2387,);";
 
   public static NetworkHandlerSL network;
   public static LogHelper logHelper = new LogHelper(MOD_NAME);
-
-  public boolean isDevBuild = false;
 
   @Instance(MOD_ID)
   public static SilentLib instance;
@@ -54,8 +53,6 @@ public class SilentLib {
 
   @EventHandler
   public void preInit(FMLPreInitializationEvent event) {
-
-    isDevBuild = "SL_VERSION".equals(VERSION);
 
     network = new NetworkHandlerSL(MOD_ID);
     network.register(MessageLeftClick.class, Side.SERVER);
@@ -87,5 +84,10 @@ public class SilentLib {
   public static int getMCVersion() {
 
     return 12;
+  }
+
+  public int getBuildNumber() {
+
+    return BUILD_NUM;
   }
 }

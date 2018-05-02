@@ -9,6 +9,7 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.client.key.KeyTrackerSL;
@@ -27,7 +28,7 @@ public class InternalKeyTracker extends KeyTrackerSL {
 
     super(SilentLib.MOD_NAME + " (Dev Only)");
 
-    if (SilentLib.instance.isDevBuild) {
+    if (0 == SilentLib.instance.getBuildNumber()) {
       // Dev-only keybindings.
       keySurvivalMode = createBinding("Switch gamemode to survival", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_NUMPAD7);
       keyCreativeMode = createBinding("Switch gamemode to creative", KeyConflictContext.IN_GAME, KeyModifier.NONE, Keyboard.KEY_NUMPAD8);
