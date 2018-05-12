@@ -3,7 +3,7 @@ package net.silentchaos512.lib.client.render.tileentity;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
-
+@Deprecated
 public class TileEntitySpecialRendererSL<T extends TileEntity> extends TileEntitySpecialRenderer<T> {
 
   @Override

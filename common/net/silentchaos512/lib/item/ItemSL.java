@@ -119,6 +119,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     return clOnItemRightClick(world, player, hand);
   }
 
+  @Deprecated
   protected ActionResult<ItemStack> clOnItemRightClick(World world, EntityPlayer player, EnumHand hand) {
 
     return super.onItemRightClick(world, player, hand);
@@ -130,6 +131,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
     return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
@@ -141,6 +143,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     return clOnItemUseFirst(player, world, pos, side, hitX, hitY, hitZ, hand);
   }
 
+  @Deprecated
   protected EnumActionResult clOnItemUseFirst(EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ,
       EnumHand hand) {
 
@@ -154,6 +157,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     clGetSubItems(this, tab, list);
   }
 
+  @Deprecated
   protected void clGetSubItems(Item item, CreativeTabs tab, List<ItemStack> list) {
 
     if (!ItemHelper.isInCreativeTab(item, tab))
@@ -178,6 +182,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
   }
 
+  @Deprecated
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);

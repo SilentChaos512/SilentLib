@@ -12,6 +12,7 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
  * @author SilentChaos512
  * @since 2.2.5
  */
+@Deprecated
 public class BufferBuilderSL {
 
   public static final BufferBuilderSL INSTANCE = new BufferBuilderSL();

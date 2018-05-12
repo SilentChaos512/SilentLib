@@ -3,6 +3,7 @@ package net.silentchaos512.lib.gui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
+@Deprecated
 public class GuiButtonSL extends GuiButton {
 
   public GuiButtonSL(int buttonId, int x, int y, int widthIn, int heightIn, String buttonText) {

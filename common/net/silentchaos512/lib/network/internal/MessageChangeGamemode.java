@@ -1,15 +1,10 @@
 package net.silentchaos512.lib.network.internal;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumHand;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import net.minecraftforge.fml.relauncher.Side;
-import net.silentchaos512.lib.item.IItemSL;
 import net.silentchaos512.lib.network.MessageSL;
-import net.silentchaos512.lib.util.StackHelper;
 
 public final class MessageChangeGamemode extends MessageSL {
 

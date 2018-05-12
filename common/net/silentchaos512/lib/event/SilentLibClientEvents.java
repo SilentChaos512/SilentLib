@@ -17,7 +17,7 @@ import net.silentchaos512.lib.util.StackHelper;
  * @author SilentChaos512
  * @since 2.1.4
  */
-public class SilentLibClientEvents {
+public final class SilentLibClientEvents {
 
   @SubscribeEvent
   public void onLeftClickEmpty(LeftClickEmpty event) {

@@ -3,8 +3,6 @@ package net.silentchaos512.lib.item;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -97,6 +95,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
     return clOnItemRightClick(worldIn, playerIn, hand);
   }
 
+  @Deprecated
   protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
       EnumHand hand) {
 
@@ -110,6 +109,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
       EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
@@ -124,6 +124,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   }
 
   @SideOnly(Side.CLIENT)
+  @Deprecated
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
@@ -133,12 +134,13 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
   // Cross Compatibility (MC 12)
   // ===========================
 
-   @Override
-   public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+  @Override
+  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
-     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
-   }
-  
+    clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
+  }
+
+  @Deprecated
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
   }

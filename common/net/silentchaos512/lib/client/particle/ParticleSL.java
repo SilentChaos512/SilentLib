@@ -6,6 +6,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.silentchaos512.lib.client.render.BufferBuilderSL;
 
+@Deprecated
 public class ParticleSL extends Particle {
 
   protected ParticleSL(World worldIn, double posXIn, double posYIn, double posZIn) {

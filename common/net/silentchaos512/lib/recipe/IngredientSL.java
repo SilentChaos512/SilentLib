@@ -15,6 +15,7 @@ import net.silentchaos512.lib.util.StackHelper;
  * @author SilentChaos512
  * @since 2.2.5
  */
+@Deprecated
 public class IngredientSL extends Ingredient {
 
   public static final IngredientSL EMPTY = new IngredientSL(new ItemStack[0]) {

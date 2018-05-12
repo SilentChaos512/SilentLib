@@ -84,6 +84,7 @@ public class ItemBlockSL extends ItemBlock {
     return clOnItemRightClick(worldIn, playerIn, hand);
   }
 
+  @Deprecated
   protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
       EnumHand hand) {
 
@@ -97,6 +98,7 @@ public class ItemBlockSL extends ItemBlock {
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
       EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
@@ -109,6 +111,7 @@ public class ItemBlockSL extends ItemBlock {
     clGetSubItems(this, tab, subItems);
   }
 
+  @Deprecated
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
@@ -125,6 +128,7 @@ public class ItemBlockSL extends ItemBlock {
     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
   }
 
+  @Deprecated
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
     // Get tooltip from block? (New method)

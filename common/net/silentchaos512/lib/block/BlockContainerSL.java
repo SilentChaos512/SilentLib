@@ -153,7 +153,6 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   // inspired by CompatLayer
   // ==============================
 
-  @SuppressWarnings("deprecation")
   @Override
   public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos,
       AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity, boolean par7) {
@@ -161,14 +160,13 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
 
-  @SuppressWarnings("deprecation")
+  @Deprecated
   protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos,
       AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity) {
 
     super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block,
       BlockPos p_189540_5_) {
@@ -176,6 +174,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     clOnNeighborChanged(state, world, pos, block);
   }
 
+  @Deprecated
   protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
 
   }
@@ -187,13 +186,13 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     return clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state,
       EntityPlayer player, EnumHand hand, EnumFacing side, float hitX, float hitY, float hitZ) {
 
     return false;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX,
       float hitY, float hitZ, int meta, EntityLivingBase placer) {
@@ -201,7 +200,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     return clGetStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
-  @SuppressWarnings("deprecation")
+  @Deprecated
   protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing,
       float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
@@ -215,6 +214,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     clGetSubBlocks(Item.getItemFromBlock(this), tab, list);
   }
 
+  @Deprecated
   protected void clGetSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
 
     if (hasSubtypes()) {

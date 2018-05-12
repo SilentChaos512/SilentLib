@@ -4,6 +4,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import com.google.common.collect.MapMaker;
 
 import net.minecraft.advancements.CriteriaTriggers;
@@ -59,14 +62,15 @@ public class SRegistry {
   /** A reference to the mod's instance object. */
   protected Object mod;
   /** The LogHelper for the mod, if any. May be used to log error messages. */
-  protected LogHelper logHelper;
+  protected @Nullable LogHelper logHelper;
 
   /** The mod ID for the mod this SRegistry instance belongs to. */
   public final String modId;
   /** The resource prefix for the mod. This is set in the constructor based on the modId. */
   public final String resourcePrefix;
 
-  public RecipeMaker recipes;
+  // TODO: Make protected, add getter.
+  public @Nonnull RecipeMaker recipes;
 
   protected boolean listModelsInPost = false;
 

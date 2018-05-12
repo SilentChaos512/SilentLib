@@ -1,10 +1,13 @@
 package net.silentchaos512.lib.proxy;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.silentchaos512.lib.registry.SRegistry;
 
+/**
+ * @deprecated Better to just define your own. Will remove in 1.13.
+ * 
+ * @author SilentChaos512
+ */
+@Deprecated
 public class CommonProxy {
 
   public CommonProxy() {

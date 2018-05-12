@@ -9,14 +9,18 @@ import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.world.GameType;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.client.settings.KeyModifier;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.client.key.KeyTrackerSL;
 import net.silentchaos512.lib.network.internal.MessageChangeGamemode;
 import net.silentchaos512.lib.util.ChatHelper;
 
-public class InternalKeyTracker extends KeyTrackerSL {
+/**
+ * Registers some dev-only keybindings to change gamemodes.
+ * 
+ * @author SilentChaos512
+ */
+public final class InternalKeyTracker extends KeyTrackerSL {
 
   public static InternalKeyTracker INSTANCE = new InternalKeyTracker();
 

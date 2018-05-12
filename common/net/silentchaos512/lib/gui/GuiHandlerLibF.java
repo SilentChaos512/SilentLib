@@ -9,7 +9,6 @@ import net.silentchaos512.lib.guidebook.gui.GuiMainPage;
 import net.silentchaos512.lib.guidebook.misc.GuideBookUtils;
 import net.silentchaos512.lib.item.ItemGuideBookSL;
 
-
 public final class GuiHandlerLibF implements IGuiHandler {
 
   @Override

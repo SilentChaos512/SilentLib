@@ -3,8 +3,6 @@ package net.silentchaos512.lib.block;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.collect.Lists;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
@@ -129,7 +127,6 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   // inspired by CompatLayer
   // ==============================
 
-  @SuppressWarnings("deprecation")
   @Override
   public void addCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes, Entity entity,
       boolean par7) {
@@ -137,20 +134,20 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     clAddCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity);
   }
 
-  @SuppressWarnings("deprecation")
+  @Deprecated
   protected void clAddCollisionBoxToList(IBlockState state, World world, BlockPos pos, AxisAlignedBB entityBox, List<AxisAlignedBB> collidingBoxes,
       Entity entity) {
 
     super.addCollisionBoxToList(state, world, pos, entityBox, collidingBoxes, entity, true);
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public void neighborChanged(IBlockState state, World world, BlockPos pos, Block block, BlockPos p_189540_5_) {
 
     clOnNeighborChanged(state, world, pos, block);
   }
 
+  @Deprecated
   protected void clOnNeighborChanged(IBlockState state, World world, BlockPos pos, Block block) {
 
   }
@@ -162,20 +159,20 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     return clOnBlockActivated(world, pos, state, player, hand, side, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected boolean clOnBlockActivated(World world, BlockPos pos, IBlockState state, EntityPlayer player, EnumHand hand, EnumFacing side, float hitX,
       float hitY, float hitZ) {
 
     return false;
   }
 
-  @SuppressWarnings("deprecation")
   @Override
   public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer) {
 
     return clGetStateForPlacement(world, pos, facing, hitX, hitY, hitZ, meta, placer);
   }
 
-  @SuppressWarnings("deprecation")
+  @Deprecated
   protected IBlockState clGetStateForPlacement(World world, BlockPos pos, EnumFacing facing, float hitX, float hitY, float hitZ, int meta,
       EntityLivingBase placer) {
 
@@ -189,6 +186,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     clGetSubBlocks(Item.getItemFromBlock(this), tab, list);
   }
 
+  @Deprecated
   protected void clGetSubBlocks(Item item, CreativeTabs tab, List<ItemStack> list) {
 
     if (hasSubtypes()) {
@@ -212,6 +210,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
   }
 
   @SideOnly(Side.CLIENT)
+  @Deprecated
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);
@@ -226,6 +225,7 @@ public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
     drops.addAll(clGetDrops(world, pos, state, fortune));
   }
 
+  @Deprecated
   public List<ItemStack> clGetDrops(IBlockAccess world, BlockPos pos, IBlockState state, int fortune) {
 
     NonNullList<ItemStack> list = NonNullList.create();

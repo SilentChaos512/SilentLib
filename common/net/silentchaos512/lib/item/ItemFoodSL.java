@@ -133,6 +133,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     return clOnItemRightClick(worldIn, playerIn, hand);
   }
 
+  @Deprecated
   protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
       EnumHand hand) {
 
@@ -146,6 +147,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
       EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
@@ -158,6 +160,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     clGetSubItems(this, tab, subItems);
   }
 
+  @Deprecated
   protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
     super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
@@ -174,6 +177,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
     clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
   }
 
+  @Deprecated
   public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
 
     LocalizationHelper loc = SilentLib.instance.getLocalizationHelperForMod(modId);

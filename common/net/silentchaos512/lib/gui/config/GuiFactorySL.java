@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraftforge.fml.client.IModGuiFactory;
 
+@Deprecated
 public abstract class GuiFactorySL implements IModGuiFactory {
 
   public abstract Class<? extends GuiScreen> mainConfigGuiClass();
