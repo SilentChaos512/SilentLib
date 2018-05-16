@@ -3,6 +3,8 @@ package net.silentchaos512.lib.config;
 import java.io.File;
 import java.util.List;
 
+import com.google.common.primitives.UnsignedInts;
+
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.ConfigElement;
@@ -108,7 +110,7 @@ public abstract class ConfigBase {
       throws NumberFormatException {
 
     String str = config.getString(key, category, String.format(includeAlpha ? "%08x" : "%06x", defaultValue), comment);
-    int result = Integer.decode("0x" + str);
+    int result = UnsignedInts.parseUnsignedInt(str, 16);
     if (includeAlpha && (result & 0xFF000000) == 0)
       result |= 0xFF000000;
     return result;
