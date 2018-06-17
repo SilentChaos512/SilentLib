@@ -45,7 +45,7 @@ public interface IRecipeSL extends IRecipe {
 
     for (int i = 0; i < inv.getSizeInventory(); ++i) {
       ItemStack stack = inv.getStackInSlot(i);
-      if (StackHelper.isValid(stack)) {
+      if (StackHelper.isValid(stack) && !stack.getItem().hasContainerItem(stack)) {
         stack = StackHelper.shrink(stack, 1);
         inv.setInventorySlotContents(i, stack);
       }

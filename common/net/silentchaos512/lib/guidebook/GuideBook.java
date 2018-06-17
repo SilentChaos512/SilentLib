@@ -4,7 +4,6 @@
 
 package net.silentchaos512.lib.guidebook;
 
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
@@ -122,36 +121,9 @@ public abstract class GuideBook {
       }
     }
 
-    Collections.sort(entries, new Comparator<IGuideEntry>() {
-
-      @Override
-      public int compare(IGuideEntry entry1, IGuideEntry entry2) {
-
-        Integer p1 = entry1.getSortingPriority();
-        Integer p2 = entry2.getSortingPriority();
-        return p2.compareTo(p1);
-      }
-    });
-    Collections.sort(chapters, new Comparator<IGuideChapter>() {
-
-      @Override
-      public int compare(IGuideChapter chapter1, IGuideChapter chapter2) {
-
-        Integer p1 = chapter1.getSortingPriority();
-        Integer p2 = chapter2.getSortingPriority();
-        return p2.compareTo(p1);
-      }
-    });
-    Collections.sort(pagesWithItemOrFluidData, new Comparator<IGuidePage>() {
-
-      @Override
-      public int compare(IGuidePage page1, IGuidePage page2) {
-
-        Integer p1 = page1.getSortingPriority();
-        Integer p2 = page2.getSortingPriority();
-        return p2.compareTo(p1);
-      }
-    });
+    entries.sort(Comparator.comparing(IGuideEntry::getSortingPriority, (a, b) -> b.compareTo(a)));
+    chapters.sort(Comparator.comparing(IGuideChapter::getSortingPriority, (a, b) -> b.compareTo(a)));
+    pagesWithItemOrFluidData.sort(Comparator.comparing(IGuidePage::getSortingPriority, (a, b) -> b.compareTo(a)));
 
     LogHelper log = SilentLib.logHelper;
     log.info(String.format("Guide book for mod \"%s\" initialized!", modId));

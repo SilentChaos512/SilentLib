@@ -18,6 +18,7 @@ import net.silentchaos512.lib.collection.ItemStackList;
 
 public class StackHelper {
 
+  @Deprecated
   @Nonnull
   public static ItemStack grow(@Nonnull ItemStack stack, int amount) {
 
@@ -25,6 +26,7 @@ public class StackHelper {
     return stack;
   }
 
+  @Deprecated
   @Nonnull
   public static ItemStack shrink(@Nonnull ItemStack stack, int amount) {
 
@@ -32,17 +34,20 @@ public class StackHelper {
     return stack;
   }
 
+  @Deprecated
   @Nonnull
   public static ItemStack safeCopy(@Nonnull ItemStack stack) {
 
     return stack.copy();
   }
 
+  @Deprecated
   public static int getCount(@Nonnull ItemStack stack) {
 
     return stack.getCount();
   }
 
+  @Deprecated
   @Nonnull
   public static ItemStack setCount(@Nonnull ItemStack stack, int amount) {
 
@@ -66,10 +71,11 @@ public class StackHelper {
   public static ItemStack loadFromNBT(NBTTagCompound tags) {
 
     if (tags == null)
-      return empty();
+      return ItemStack.EMPTY;
     return new ItemStack(tags);
   }
 
+  @Deprecated
   @Nonnull
   public static ItemStack empty() {
 
@@ -145,8 +151,12 @@ public class StackHelper {
 
   public static boolean matchesOreDict(ItemStack stack, String oreDictKey) {
 
-    if (StackHelper.isEmpty(stack))
+    if (stack.isEmpty())
       return false;
+
+    for (String oreName : getOreNames(stack))
+      if (oreName.equals(oreDictKey))
+        return true;
 
     for (ItemStack stackOre : getOres(oreDictKey))
       if (stack.isItemEqual(stackOre))
@@ -155,11 +165,13 @@ public class StackHelper {
     return false;
   }
 
+  @Deprecated
   public static ItemStack getAndSplit(ItemStackList stacks, int index, int amount) {
 
     return ItemStackHelper.getAndSplit(stacks, index, amount);
   }
 
+  @Deprecated
   public static ItemStack getAndRemove(ItemStackList stacks, int index) {
 
     return ItemStackHelper.getAndRemove(stacks, index);
@@ -170,10 +182,9 @@ public class StackHelper {
     return saveAllItems(tags, stacks, true);
   }
 
-  public static NBTTagCompound saveAllItems(NBTTagCompound tags, ItemStackList stacks,
-      boolean p_191281_2_) {
+  public static NBTTagCompound saveAllItems(NBTTagCompound tags, ItemStackList stacks, boolean saveEmpty) {
 
-    return ItemStackHelper.saveAllItems(tags, stacks, p_191281_2_);
+    return ItemStackHelper.saveAllItems(tags, stacks, saveEmpty);
   }
 
   public static void loadAllItems(NBTTagCompound tags, ItemStackList stacks) {

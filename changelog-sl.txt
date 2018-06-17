@@ -2,6 +2,10 @@ Considering that Silent Lib is entirely behind-the-scenes from the player's pers
 
 Some versions don't have any changes listed. Mostly just small stuff that's not worth noting.
 
+2.3.2
+Added: StackHelper.getOreNames
+Fixed: Color codes with alpha not loading properly
+
 2.3.0
 Mostly tweaks/additions for Borderblocks
 Added: Dev-only keybindings to switch gamemodes. These are not registered in distributed builds.

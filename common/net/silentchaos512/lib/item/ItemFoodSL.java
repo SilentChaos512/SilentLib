@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
@@ -38,7 +39,7 @@ public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
 
     super(amount, saturation, isWolfFood);
     this.subItemCount = subItemCount;
-    this.modId = modId.toLowerCase();
+    this.modId = modId.toLowerCase(Locale.ROOT);
     setHasSubtypes(subItemCount > 1);
     setUnlocalizedName(name);
   }

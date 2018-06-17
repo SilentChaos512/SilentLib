@@ -1,9 +1,8 @@
 package net.silentchaos512.lib.block;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-
-import com.google.common.collect.Lists;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
@@ -41,7 +40,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
 
     super(material);
     this.subBlockCount = subBlockCount;
-    this.modId = modId.toLowerCase();
+    this.modId = modId.toLowerCase(Locale.ROOT);
     setUnlocalizedName(name);
   }
 

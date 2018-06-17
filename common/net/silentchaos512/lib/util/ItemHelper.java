@@ -27,28 +27,33 @@ import net.minecraft.world.World;
  */
 public class ItemHelper {
 
+  @Deprecated
   public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand) {
 
     return attemptDamageItem(stack, amount, rand, null);
   }
 
+  @Deprecated
   public static boolean attemptDamageItem(ItemStack stack, int amount, Random rand, @Nullable EntityPlayer player) {
 
     EntityPlayerMP playermp = player instanceof EntityPlayerMP ? (EntityPlayerMP) player : null;
     return stack.attemptDamageItem(amount, rand, playermp);
   }
 
+  @Deprecated
   public static ActionResult<ItemStack> onItemRightClick(@Nonnull Item item, World world, EntityPlayer player, EnumHand hand) {
 
     return item.onItemRightClick(world, player, hand);
   }
 
+  @Deprecated
   public static EnumActionResult onItemUse(@Nonnull Item item, EntityPlayer player, World world, BlockPos pos, EnumHand hand, EnumFacing side, float hitX,
       float hitY, float hitZ) {
 
     return item.onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
   }
 
+  @Deprecated
   public static EnumActionResult onItemUseFirst(@Nonnull Item item, EntityPlayer player, World world, BlockPos pos, EnumFacing side, float hitX, float hitY,
       float hitZ, EnumHand hand) {
 
@@ -72,6 +77,7 @@ public class ItemHelper {
     return result;
   }
 
+  @Deprecated
   public static boolean isInCreativeTab(Item item, CreativeTabs targetTab) {
 
     for (CreativeTabs tab : item.getCreativeTabs())

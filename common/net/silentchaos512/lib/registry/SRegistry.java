@@ -1,6 +1,9 @@
 package net.silentchaos512.lib.registry;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -9,6 +12,7 @@ import javax.annotation.Nullable;
 
 import com.google.common.collect.MapMaker;
 
+import gnu.trove.map.hash.THashMap;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
@@ -35,6 +39,9 @@ import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
@@ -47,17 +54,14 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
 
+// TODO: Rename register* methods to just "register" in 1.13?
 public class SRegistry {
 
   // Internal use only!
   private final Set<IRegistryObject> registryObjects = new HashSet<>();
 
-  protected IRegistrationHandler handlerBlocks;
-  protected IRegistrationHandler handlerItems;
-  protected IRegistrationHandler handlerEnchantments;
-  protected IRegistrationHandler handlerPotions;
-  protected IRegistrationHandler handlerRecipes;
-  protected IRegistrationHandler handlerSounds;
+  private List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
+  private Map<Class, IRegistrationHandler> registrationHandlers = new THashMap<>();
 
   /** A reference to the mod's instance object. */
   protected Object mod;
@@ -77,7 +81,7 @@ public class SRegistry {
   public SRegistry(String modId) {
 
     this.modId = modId;
-    this.resourcePrefix = modId.toLowerCase() + ":";
+    this.resourcePrefix = modId.toLowerCase(Locale.ROOT) + ":";
     this.recipes = new RecipeMaker(modId);
     MinecraftForge.EVENT_BUS.register(new EventHandler(this));
   }
@@ -96,22 +100,23 @@ public class SRegistry {
     this.mod = mod;
   }
 
-  public <T> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler,
-      Class<T> clazz) {
+  /**
+   * Add a phased initializer, which has preInit, init, and postInit methods which SRegistry will call automatically.
+   * 
+   * @param instance
+   *          Your initializer (singleton design is recommended)
+   * @return The unmodified instance
+   * @since 2.3.2
+   */
+  public IPhasedInitializer addPhasedInitializer(IPhasedInitializer instance) {
 
-    if (clazz == Block.class)
-      handlerBlocks = handler;
-    else if (clazz == Item.class)
-      handlerItems = handler;
-    else if (clazz == Enchantment.class)
-      handlerEnchantments = handler;
-    else if (clazz == IRecipe.class)
-      handlerRecipes = handler;
-    else if (clazz == Potion.class)
-      handlerPotions = handler;
-    else if (clazz == SoundEvent.class)
-      handlerSounds = handler;
-    // TODO
+    this.phasedInitializers.add(instance);
+    return instance;
+  }
+
+  public <T> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler, Class<T> clazz) {
+
+    this.registrationHandlers.put(clazz, handler);
     return handler;
   }
 
@@ -274,7 +279,7 @@ public class SRegistry {
     safeSetRegistryName(sound, name);
     ForgeRegistries.SOUND_EVENTS.register(sound);
   }
-  
+
   public void safeSetRegistryName(IForgeRegistryEntry entry, ResourceLocation name) {
 
     if (entry.getRegistryName() == null) {
@@ -323,6 +328,7 @@ public class SRegistry {
   /**
    * Call in the "preInit" phase in your common proxy.
    */
+  @Deprecated
   public void preInit() {
 
     if (mod == null) {
@@ -330,42 +336,89 @@ public class SRegistry {
       if (container != null)
         mod = container.getMod();
       else if (logHelper != null)
-        logHelper.warning(
-            "SRegistry for this mod failed to get the mod instance! This could be because the provided mod ID is incorrect.");
+        logHelper.warning("SRegistry for this mod failed to get the mod instance! This could be because the provided mod ID is incorrect.");
     }
+  }
+
+  /**
+   * Call in the "preInit" phase in your common proxy.
+   */
+  public void preInit(FMLPreInitializationEvent event) {
+
+    this.preInit();
+    this.phasedInitializers.forEach(i -> i.preInit(this, event));
   }
 
   /**
    * Call in the "init" phase in your common proxy.
    */
+  @Deprecated
   public void init() {
+
+  }
+
+  /**
+   * Call in the "init" phase in your common proxy.
+   */
+  public void init(FMLInitializationEvent event) {
+
+    this.init();
+    this.phasedInitializers.forEach(i -> i.init(this, event));
+  }
+
+  /**
+   * Call in the "postInit" phase in your common proxy.
+   */
+  @Deprecated
+  public void postInit() {
 
   }
 
   /**
    * Call in the "postInit" phase in your common proxy.
    */
-  public void postInit() {
+  public void postInit(FMLPostInitializationEvent event) {
+
+    this.postInit();
+    this.phasedInitializers.forEach(i -> i.postInit(this, event));
+  }
+
+  /**
+   * Call in the "preInit" phase in your client proxy.
+   */
+  @Deprecated
+  public void clientPreInit() {
 
   }
 
   /**
    * Call in the "preInit" phase in your client proxy.
    */
-  public void clientPreInit() {
+  public void clientPreInit(FMLPreInitializationEvent event) {
+
+    this.clientPreInit();
+  }
+
+  /**
+   * Call in the "init" phase in your client proxy.
+   */
+  @Deprecated
+  public void clientInit() {
 
   }
 
   /**
    * Call in the "init" phase in your client proxy.
    */
-  public void clientInit() {
+  public void clientInit(FMLInitializationEvent event) {
 
+    this.clientInit();
   }
 
   /**
    * Call in the "postInit" phase in your client proxy.
    */
+  @Deprecated
   public void clientPostInit() {
 
     if (listModelsInPost) {
@@ -373,41 +426,48 @@ public class SRegistry {
       for (IRegistryObject obj : registryObjects) {
         models.clear();
         obj.getModels(models);
-        for (ModelResourceLocation model : models.values()) {
-          if (model != null) {
+        for (ModelResourceLocation model : models.values())
+          if (model != null)
             System.out.println(model);
-          }
-        }
       }
     }
+  }
+
+  /**
+   * Call in the "postInit" phase in your client proxy.
+   * 
+   * @param event
+   */
+  public void clientPostInit(FMLPostInitializationEvent event) {
+
+    this.clientPostInit();
   }
 
   @Deprecated
   protected void addRecipes() {
 
-    for (IRegistryObject obj : registryObjects)
-      obj.addRecipes(recipes);
+    this.registryObjects.forEach(obj -> obj.addRecipes(this.recipes));
   }
 
   protected void addOreDictEntries() {
 
-    for (IRegistryObject obj : registryObjects)
-      obj.addOreDict();
+    this.registryObjects.forEach(obj -> obj.addOreDict());
   }
 
   @SideOnly(Side.CLIENT)
   protected void registerModels() {
 
-    ModelResourceLocation model;
+    // Create a single model map for processing each object. It's cleared for each object, I just don't want to make a
+    // new map each time.
     Map<Integer, ModelResourceLocation> models = new MapMaker().initialCapacity(16).makeMap();
 
     for (IRegistryObject obj : registryObjects) {
+      // Give object a chance to register its own models
       if (!obj.registerModels()) {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         models.clear();
         obj.getModels(models);
-        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item,
-            entry.getKey(), entry.getValue()));
+        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item, entry.getKey(), entry.getValue()));
       }
     }
   }
@@ -431,17 +491,17 @@ public class SRegistry {
     @SubscribeEvent
     public void registerBlocks(RegistryEvent.Register<Block> event) {
 
-      if (sregistry.handlerBlocks != null) {
-        sregistry.handlerBlocks.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(Block.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerItems(RegistryEvent.Register<Item> event) {
 
-      if (sregistry.handlerItems != null) {
-        sregistry.handlerItems.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(Item.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
 
       sregistry.addOreDictEntries();
     }
@@ -449,57 +509,66 @@ public class SRegistry {
     @SubscribeEvent
     public void registerPotions(RegistryEvent.Register<Potion> event) {
 
-      if (sregistry.handlerPotions != null) {
-        sregistry.handlerPotions.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(Potion.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerBiomes(RegistryEvent.Register<Biome> event) {
 
-      // TODO
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(Biome.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
 
-      if (sregistry.handlerSounds != null) {
-        sregistry.handlerSounds.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(SoundEvent.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerPotionTypes(RegistryEvent.Register<PotionType> event) {
 
-      // TODO
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(PotionType.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
 
-      if (sregistry.handlerEnchantments != null) {
-        sregistry.handlerEnchantments.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(Enchantment.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerVillagerProfessions(RegistryEvent.Register<VillagerProfession> event) {
 
-      // TODO
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(VillagerProfession.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
 
-      // TODO
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(EntityEntry.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
     }
 
     @SubscribeEvent
     public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
 
-      if (sregistry.handlerRecipes != null) {
-        sregistry.handlerRecipes.registerAll(sregistry);
-      }
+      IRegistrationHandler handler = sregistry.registrationHandlers.get(IRecipe.class);
+      if (handler != null)
+        handler.registerAll(sregistry);
+
       sregistry.addRecipes();
     }
 

@@ -1,5 +1,7 @@
 package net.silentchaos512.lib.util;
 
+import java.util.Locale;
+
 import javax.annotation.Nullable;
 
 import net.minecraft.init.Items;
@@ -37,11 +39,9 @@ public class DyeHelper {
         if (name.equals("lightgray"))
           name = "silver";
 
-        for (int i = 0; i < EnumDyeColor.values().length; ++i) {
-          if (EnumDyeColor.values()[i].getUnlocalizedName().toLowerCase().equals(name)) {
+        for (int i = 0; i < EnumDyeColor.values().length; ++i)
+          if (EnumDyeColor.values()[i].getUnlocalizedName().equalsIgnoreCase(name))
             return new ItemStack(Items.DYE, 1, i);
-          }
-        }
       }
     }
 

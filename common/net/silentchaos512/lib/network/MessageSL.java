@@ -72,7 +72,7 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
   }
 
   @Override
-  public final void toBytes(ByteBuf buf) {
+  public void toBytes(ByteBuf buf) {
 
     try {
       Class<?> clazz = getClass();

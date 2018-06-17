@@ -9,8 +9,11 @@ import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 /**
  * A block/item intended to be registered through an SRegistry instance. SRegistry will then handle many steps of the
  * process, including registering models and adding recipes.
+ * <p>
+ * TODO: 1.13 - Re-evaluate <strong>everything</strong> in this interface!
  * 
  * @author SilentChaos512
+ * 
  *
  */
 public interface IRegistryObject {
@@ -20,7 +23,8 @@ public interface IRegistryObject {
   /**
    * Add recipes here with the provided RecipeMaker, or just leave the method body empty.
    * 
-   * @param recipes A RecipeMaker object provided by your SRegistry.
+   * @param recipes
+   *          A RecipeMaker object provided by your SRegistry.
    */
   public void addRecipes(@Nonnull RecipeMaker recipes);
 
@@ -33,18 +37,30 @@ public interface IRegistryObject {
 
   /**
    * Return your mod ID here.
+   * 
+   * @deprecated Should use getRegistryName?
    */
-  public @Nonnull String getModId();
+  @Deprecated
+  @Nonnull
+  public String getModId();
 
   /**
    * Return the name of the block/item, excluding the resource prefix.
+   * 
+   * @deprecated Should use getRegistryName?
    */
-  public @Nonnull String getName();
+  @Deprecated
+  @Nonnull
+  public String getName();
 
   /**
    * Returns the full registry name of the object (mod_id:object_name)
+   * 
+   * @deprecated Should use getRegistryName?
    */
-  public default @Nonnull String getFullName() {
+  @Deprecated
+  @Nonnull
+  public default String getFullName() {
 
     return getModId() + ":" + getName();
   }

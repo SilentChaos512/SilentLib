@@ -12,9 +12,14 @@ import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.client.config.IConfigElement;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.silentchaos512.lib.registry.IPhasedInitializer;
+import net.silentchaos512.lib.registry.SRegistry;
 
-public abstract class ConfigBase {
+public abstract class ConfigBase implements IPhasedInitializer {
 
   public static final String SEP = Configuration.CATEGORY_SPLITTER;
   public static final String CAT_MAIN = "main";
@@ -142,6 +147,7 @@ public abstract class ConfigBase {
     return config.getCategory(category);
   }
 
+  @Deprecated
   public List<IConfigElement> getConfigElements() {
 
     return new ConfigElement(getCategory(CAT_MAIN)).getChildElements();
@@ -150,5 +156,22 @@ public abstract class ConfigBase {
   public Configuration getConfiguration() {
 
     return config;
+  }
+
+  @Override
+  public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
+
+    this.init(event.getSuggestedConfigurationFile());
+  }
+
+  @Override
+  public void init(SRegistry registry, FMLInitializationEvent event) {
+
+    this.save();
+  }
+
+  @Override
+  public void postInit(SRegistry registry, FMLPostInitializationEvent event) {
+
   }
 }

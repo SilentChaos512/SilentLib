@@ -3,18 +3,18 @@ package net.silentchaos512.lib.util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import net.minecraftforge.common.MinecraftForge;
-
 public class LogHelper {
 
   private Logger logger;
   private int buildNumber = 0;
 
+  private String lastDebugOutput = "";
+
   @Deprecated
   /** @deprecated Use LogHelper(String, int) */
   public LogHelper(String modName) {
 
-    logger = LogManager.getLogger(modName);
+    this(modName, 0);
   }
 
   public LogHelper(String modName, int buildNumber) {
@@ -27,8 +27,12 @@ public class LogHelper {
 
     if (buildNumber == 0) {
       String line = lineFromList(objects);
-      logger.debug(line);
-      System.out.println(line);
+
+      if (!line.equals(lastDebugOutput)) {
+        logger.debug(line);
+        System.out.println(line);
+        lastDebugOutput = line;
+      }
     }
   }
 
@@ -37,14 +41,29 @@ public class LogHelper {
     logger.info(obj);
   }
 
+  public void info(Object... objects) {
+
+    logger.info(lineFromList(objects));
+  }
+
   public void warning(Object obj) {
 
     logger.warn(obj);
   }
 
+  public void warning(Object... objects) {
+
+    logger.warn(lineFromList(objects));
+  }
+
   public void severe(Object obj) {
 
     logger.error(obj);
+  }
+
+  public void severe(Object... objects) {
+
+    logger.error(lineFromList(objects));
   }
 
   public void derp() {

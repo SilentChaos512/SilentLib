@@ -12,6 +12,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.silentchaos512.lib.util.StackHelper;
 
+@Deprecated
 public class ItemStackList extends NonNullList<ItemStack> {
 
   public static final ItemStackList EMPTY = ItemStackList.create(0);

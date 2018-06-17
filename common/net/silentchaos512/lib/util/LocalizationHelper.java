@@ -1,28 +1,33 @@
 package net.silentchaos512.lib.util;
 
 import java.util.List;
+import java.util.Locale;
 
 import com.google.common.collect.Lists;
 
 import net.minecraft.client.resources.I18n;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
+/**
+ * A simple wrapper for localization, with some helper methods to get some common key types (tile.modid:...,
+ * item.modid:..., etc.)
+ * 
+ * @author SilentChaos512
+ *
+ */
 public class LocalizationHelper {
 
+  /** Mod ID is stored so you never need to pass it in when localizing text. */
   public final String modId;
+  /** Will replace ampersands (&) with the section sign Minecraft uses for formatting codes. */
   private boolean replacesAmpersandWithSectionSign = true;
+  /** If I18n prepends "Format error: " to the string, it will be removed if this is true. */
   private boolean hideFormatErrors = false;
 
-  /**
-   * Constructor. The mod ID is converted to lower case.
-   * 
-   * @param modId
-   */
   public LocalizationHelper(String modId) {
 
-    this.modId = modId.toLowerCase();
+    this.modId = modId.toLowerCase(Locale.ROOT);
   }
 
   /**
@@ -56,7 +61,7 @@ public class LocalizationHelper {
     String str = I18n.format(key, parameters).trim();
 
     if (replacesAmpersandWithSectionSign)
-      str = str.replaceAll("&", "\u00a7");
+      str = str.replaceAll("&(?=[^\\s])", "\u00a7");
     if (hideFormatErrors)
       str = str.replaceFirst("Format error: ", "");
 

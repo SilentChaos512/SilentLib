@@ -1,5 +1,6 @@
 package net.silentchaos512.lib;
 
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.Maps;
@@ -31,10 +32,10 @@ public class SilentLib {
   public static final String MOD_NAME = "Silent Lib";
   public static final String VERSION = "SL_VERSION";
   public static final int BUILD_NUM = 0;
-  public static final String DEPENDENCIES = "required-after:forge@[14.21.0.2387,);";
+  public static final String DEPENDENCIES = "required-after:forge@[14.23.3.2669,);";
 
   public static NetworkHandlerSL network;
-  public static LogHelper logHelper = new LogHelper(MOD_NAME);
+  public static LogHelper logHelper = new LogHelper(MOD_NAME, BUILD_NUM);
 
   @Instance(MOD_ID)
   public static SilentLib instance;
@@ -43,12 +44,12 @@ public class SilentLib {
 
   public LocalizationHelper getLocalizationHelperForMod(String modId) {
 
-    return locHelpers.get(modId.toLowerCase());
+    return locHelpers.get(modId.toLowerCase(Locale.ROOT));
   }
 
   public void registerLocalizationHelperForMod(String modId, LocalizationHelper loc) {
 
-    locHelpers.put(modId.toLowerCase(), loc);
+    locHelpers.put(modId.toLowerCase(Locale.ROOT), loc);
   }
 
   @EventHandler
@@ -74,6 +75,7 @@ public class SilentLib {
   @EventHandler
   public void postInit(FMLPostInitializationEvent event) {
 
+    // TODO: Add config
     DataDump.dumpEntityList();
     DataDump.dumpEnchantments();
     DataDump.dumpPotionEffects();
@@ -81,6 +83,7 @@ public class SilentLib {
 //      DataDump.dumpRecipes();
   }
 
+  @Deprecated
   public static int getMCVersion() {
 
     return 12;

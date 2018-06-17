@@ -1,6 +1,9 @@
 package net.silentchaos512.lib.registry;
 
+import java.util.Locale;
+
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -43,7 +46,7 @@ public class RecipeMaker {
 
     if (key == null || key.isEmpty())
       key = "recipe" + (++lastRecipeIndex);
-    return resourcePrefix + key.toLowerCase();
+    return resourcePrefix + key.toLowerCase(Locale.ROOT);
   }
 
   /**********************************************************************************************************
@@ -301,9 +304,33 @@ public class RecipeMaker {
     ret[0] = addShapeless(group, key + "_compress", big, smallArray);
 
     // big -> small
-    ItemStack smallCopy = StackHelper.safeCopy(small);
-    StackHelper.setCount(smallCopy, count);
+    ItemStack smallCopy = small.copy();
+    smallCopy.setCount(count);
     ret[1] = addShapeless(group, key + "_decompress", smallCopy, big);
+
+    return ret;
+  }
+
+  @Nonnull
+  public IRecipe[] addCompressionOre(String key, @Nonnull ItemStack small, @Nonnull ItemStack big, @Nullable String smallOreName, @Nullable String bigOreName, int count) {
+
+    IRecipe[] ret = new IRecipe[2];
+
+    // Clamp to sane values.
+    count = MathHelper.clamp(count, 1, 9);
+
+    // small -> big
+    Object[] smallArray = new Object[count];
+    for (int i = 0; i < count; ++i) {
+      smallArray[i] = smallOreName != null && !smallOreName.isEmpty() ? smallOreName : small;
+    }
+    ret[0] = addShapelessOre(modId, key + "_oredict_compress", big, smallArray);
+
+    // big -> small
+    ItemStack smallCopy = small.copy();
+    smallCopy.setCount(count);
+    Object bigObj = bigOreName != null && !bigOreName.isEmpty() ? bigOreName : big;
+    ret[1] = addShapelessOre(modId, key + "_oredict_decompress", smallCopy, big);
 
     return ret;
   }

@@ -6,6 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.config.Configuration;
 
+// TODO: Add option to change blacklist to a whitelist
 public class ConfigOptionOreGen {
 
   public static final float VEIN_COUNT_MIN = 0.0f;

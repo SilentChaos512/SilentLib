@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.item;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import com.google.common.collect.Lists;
@@ -37,7 +38,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   public ItemSL(int subItemCount, String modId, String name) {
 
     this.subItemCount = subItemCount;
-    this.modId = modId.toLowerCase();
+    this.modId = modId.toLowerCase(Locale.ROOT);
     setHasSubtypes(subItemCount > 1);
     setUnlocalizedName(name);
   }

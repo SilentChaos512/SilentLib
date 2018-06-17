@@ -21,11 +21,11 @@ import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
  */
 public abstract class KeyTrackerSL {
 
-  final String modId;
+  final String modName;
 
-  public KeyTrackerSL(String modId) {
+  public KeyTrackerSL(String modName) {
 
-    this.modId = modId;
+    this.modName = modName;
   }
 
   @SubscribeEvent
@@ -39,7 +39,7 @@ public abstract class KeyTrackerSL {
   protected KeyBinding createBinding(String name, IKeyConflictContext keyConflictContext,
       KeyModifier keyModifier, int keyCode) {
 
-    KeyBinding binding = new KeyBinding(name, keyConflictContext, keyModifier, keyCode, modId);
+    KeyBinding binding = new KeyBinding(name, keyConflictContext, keyModifier, keyCode, modName);
     ClientRegistry.registerKeyBinding(binding);
     return binding;
   }
