@@ -48,20 +48,24 @@ minecraft {
 }
 
 jar {
-    classifier = buildNum
+//    classifier = buildNum
 }
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = buildNum + '-sources'
-    from sourceSets.main.allSource
-}
+
+//task sourcesJar(type: Jar, dependsOn: classes) {
+//    classifier = buildNum + '-sources'
+//    classifier = 'sources'
+//    from sourceSets.main.allSource
+//}
+
 task deobfJar(type: Jar) {
     from(sourceSets.main.output) {
-        classifier = buildNum + "-deobf"
+//        classifier = buildNum + "-deobf"
+        classifier = 'deobf'
     }
 }
 
 artifacts {
-    archives sourcesJar
+//    archives sourcesJar
     archives deobfJar
 }
 
