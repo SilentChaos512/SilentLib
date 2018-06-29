@@ -1,4 +1,4 @@
-package net.silentchaos512.lib;
+package net.silentchaos512.lib.draft;
 
 import java.util.Random;
 
@@ -8,6 +8,7 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.config.ConfigBase;
 import net.silentchaos512.lib.proxy.IProxy;
 import net.silentchaos512.lib.registry.SRegistry;

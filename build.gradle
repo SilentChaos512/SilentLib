@@ -8,14 +8,15 @@ buildscript {
     }
 }
 apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'maven'
 
 //plugins {
 //    id "net.minecraftforge.gradle.forge" version "2.0.2"
 //}
 
-version = "2.3.2"
+version = "2.3.3"
 def buildNum = 0
-group= "net.silentchaos512.lib" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+group= "com.github.SilentChaos512" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = "SilentLib-1.12.2"
 
 sourceCompatibility = targetCompatibility = '1.8'
@@ -69,6 +70,15 @@ sourceSets {
     java { srcDirs = ["$projectDir/common"] }
     resources { srcDirs = ["$projectDir/resources"] }
   }
+}
+
+repositories {
+    jcenter()
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    provided "org.projectlombok:lombok:1.16.8"
 }
 
 processResources

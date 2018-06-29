@@ -13,6 +13,8 @@ import net.silentchaos512.lib.guidebook.IGuideChapter;
 import net.silentchaos512.lib.guidebook.IGuideEntry;
 import net.silentchaos512.lib.guidebook.IGuidePage;
 
+import javax.annotation.Nonnull;
+
 public class GuideChapter implements IGuideChapter {
 
   public final IGuidePage[] pages;
@@ -72,6 +74,7 @@ public class GuideChapter implements IGuideChapter {
     return this.entry;
   }
 
+  @Nonnull
   @Override
   public ItemStack getDisplayItemStack() {
 

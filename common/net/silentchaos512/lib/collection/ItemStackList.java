@@ -1,17 +1,16 @@
 package net.silentchaos512.lib.collection;
 
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.NonNullList;
+import net.silentchaos512.lib.util.StackHelper;
+import org.apache.commons.lang3.Validate;
+
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.Nullable;
-
-import org.apache.commons.lang3.Validate;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.silentchaos512.lib.util.StackHelper;
-
+// TODO: Consider keeping this? It's original function has no meaning anymore, but could be a nice wrapper for some common operations, like getting stacks of a certain item class...
 @Deprecated
 public class ItemStackList extends NonNullList<ItemStack> {
 

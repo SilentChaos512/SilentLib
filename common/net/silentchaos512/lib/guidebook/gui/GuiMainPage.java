@@ -26,7 +26,7 @@ import net.silentchaos512.lib.guidebook.button.EntryButton;
 
 /**
  * Main page GUI for the guide book system.
- * 
+ *
  * @author SilentChaos512
  * @since 2.1.0
  */
@@ -152,7 +152,7 @@ public class GuiMainPage extends GuiGuide {
       if (displayed.size() > i) {
         IGuideEntry entry = displayed.get(i);
         this.buttonList.add(new EntryButton(this, i, this.guiLeft + 156, this.guiTop + 11 + i * 13,
-            115, 10, "- " + entry.getLocalizedNameWithFormatting(), null));
+            115, 10, "- " + entry.getLocalizedNameWithFormatting(), ItemStack.EMPTY));
       } else {
         return;
       }

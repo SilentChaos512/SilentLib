@@ -8,6 +8,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
+import javax.annotation.Nonnull;
+
 public interface IGuideChapter {
 
   IGuidePage[] getAllPages();
@@ -20,6 +22,7 @@ public interface IGuideChapter {
 
   IGuideEntry getEntry();
 
+  @Nonnull
   ItemStack getDisplayItemStack();
 
   String getIdentifier();

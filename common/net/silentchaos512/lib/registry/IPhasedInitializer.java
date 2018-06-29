@@ -7,15 +7,18 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 /**
  * A singleton that has preInit, init, and postInit methods. If registered in the SRegistry, these are called
  * automatically.
- * 
+ *
  * @author SilentChaos512
  * @since 2.3.2
  */
 public interface IPhasedInitializer {
 
-  public void preInit(SRegistry registry, FMLPreInitializationEvent event);
+    default void preInit(SRegistry registry, FMLPreInitializationEvent event) {
+    }
 
-  public void init(SRegistry registry, FMLInitializationEvent event);
+    default void init(SRegistry registry, FMLInitializationEvent event) {
+    }
 
-  public void postInit(SRegistry registry, FMLPostInitializationEvent event);
+    default void postInit(SRegistry registry, FMLPostInitializationEvent event) {
+    }
 }

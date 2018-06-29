@@ -1,12 +1,5 @@
 package net.silentchaos512.lib.item;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import com.google.common.collect.Lists;
-
-import net.minecraft.client.renderer.ItemMeshDefinition;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -14,11 +7,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -29,10 +18,16 @@ import net.silentchaos512.lib.registry.RecipeMaker;
 import net.silentchaos512.lib.util.ItemHelper;
 import net.silentchaos512.lib.util.LocalizationHelper;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 public class ItemSL extends Item implements IRegistryObject, IItemSL {
 
   protected int subItemCount;
+  @Deprecated
   protected String itemName;
+  @Deprecated
   protected String modId;
 
   public ItemSL(int subItemCount, String modId, String name) {

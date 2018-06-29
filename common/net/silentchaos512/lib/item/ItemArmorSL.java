@@ -1,8 +1,5 @@
 package net.silentchaos512.lib.item;
 
-import java.util.List;
-import java.util.Map;
-
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
@@ -12,11 +9,7 @@ import net.minecraft.inventory.EntityEquipmentSlot;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemArmor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.EnumActionResult;
-import net.minecraft.util.EnumFacing;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -24,124 +17,131 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.registry.RecipeMaker;
 
+import java.util.List;
+import java.util.Map;
+
 public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
-  protected String itemName;
-  protected String modId;
+    protected String itemName;
+    protected String modId;
 
-  public ItemArmorSL(String modId, String itemName, ArmorMaterial materialIn, int renderIndexIn,
-      EntityEquipmentSlot equipmentSlotIn) {
+    public ItemArmorSL(String modId, String itemName, ArmorMaterial material, EntityEquipmentSlot slot) {
+        this(modId, itemName, material, 0, slot);
+    }
 
-    super(materialIn, renderIndexIn, equipmentSlotIn);
-    this.modId = modId;
-    this.itemName = itemName;
-    setUnlocalizedName(itemName);
-  }
+    @Deprecated
+    public ItemArmorSL(String modId, String itemName, ArmorMaterial materialIn, int renderIndexIn, EntityEquipmentSlot equipmentSlotIn) {
 
-  // =======================
-  // IRegistryObject methods
-  // =======================
+        super(materialIn, renderIndexIn, equipmentSlotIn);
+        this.modId = modId;
+        this.itemName = itemName;
+        setUnlocalizedName(itemName);
+    }
 
-  @Override
-  public void addRecipes(RecipeMaker recipes) {
+    // =======================
+    // IRegistryObject methods
+    // =======================
 
-  }
+    @Override
+    public void addRecipes(RecipeMaker recipes) {
 
-  @Override
-  public void addOreDict() {
+    }
 
-  }
+    @Override
+    public void addOreDict() {
 
-  @Override
-  public String getName() {
+    }
 
-    return itemName;
-  }
+    @Override
+    public String getName() {
 
-  @Override
-  public String getFullName() {
+        return itemName;
+    }
 
-    return modId + ":" + getName();
-  }
+    @Override
+    public String getFullName() {
 
-  @Override
-  public String getModId() {
+        return modId + ":" + getName();
+    }
 
-    return modId;
-  }
+    @Override
+    public String getModId() {
 
-  @Override
-  public void getModels(Map<Integer, ModelResourceLocation> models) {
+        return modId;
+    }
 
-    models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
-  }
+    @Override
+    public void getModels(Map<Integer, ModelResourceLocation> models) {
 
-  @Override
-  public boolean registerModels() {
+        models.put(0, new ModelResourceLocation(getFullName(), "inventory"));
+    }
 
-    // Let SRegistry handle model registration by default. Override if necessary.
-    return false;
-  }
+    @Override
+    public boolean registerModels() {
 
-  // ==============================
-  // Cross Compatibility (MC 10/11)
-  // inspired by CompatLayer
-  // ==============================
+        // Let SRegistry handle model registration by default. Override if necessary.
+        return false;
+    }
 
-  @Override
-  public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn,
-      EnumHand hand) {
+    // ==============================
+    // Cross Compatibility (MC 10/11)
+    // inspired by CompatLayer
+    // ==============================
 
-    return clOnItemRightClick(worldIn, playerIn, hand);
-  }
+    @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn,
+                                                    EnumHand hand) {
 
-  @Deprecated
-  protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
-      EnumHand hand) {
+        return clOnItemRightClick(worldIn, playerIn, hand);
+    }
 
-    return super.onItemRightClick(worldIn, playerIn, hand);
-  }
+    @Deprecated
+    protected ActionResult<ItemStack> clOnItemRightClick(World worldIn, EntityPlayer playerIn,
+                                                         EnumHand hand) {
 
-  @Override
-  public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
-      EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return super.onItemRightClick(worldIn, playerIn, hand);
+    }
 
-    return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-  }
+    @Override
+    public EnumActionResult onItemUse(EntityPlayer player, World world, BlockPos pos, EnumHand hand,
+                                      EnumFacing facing, float hitX, float hitY, float hitZ) {
 
-  @Deprecated
-  protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
-      EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+        return clOnItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    }
 
-    return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
-  }
+    @Deprecated
+    protected EnumActionResult clOnItemUse(EntityPlayer player, World world, BlockPos pos,
+                                           EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
 
-  @SideOnly(Side.CLIENT)
-  @Override
-  public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
+        return super.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ);
+    }
 
-    clGetSubItems(this, tab, subItems);
-  }
+    @SideOnly(Side.CLIENT)
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> subItems) {
 
-  @SideOnly(Side.CLIENT)
-  @Deprecated
-  protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
+        clGetSubItems(this, tab, subItems);
+    }
 
-    super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
-  }
+    @SideOnly(Side.CLIENT)
+    @Deprecated
+    protected void clGetSubItems(Item itemIn, CreativeTabs tab, List<ItemStack> subItems) {
 
-  // ===========================
-  // Cross Compatibility (MC 12)
-  // ===========================
+        super.getSubItems(tab, (NonNullList<ItemStack>) subItems);
+    }
 
-  @Override
-  public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
+    // ===========================
+    // Cross Compatibility (MC 12)
+    // ===========================
 
-    clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
-  }
+    @Override
+    public void addInformation(ItemStack stack, World world, List<String> list, ITooltipFlag flag) {
 
-  @Deprecated
-  public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+        clAddInformation(stack, world, list, flag == TooltipFlags.ADVANCED);
+    }
 
-  }
+    @Deprecated
+    public void clAddInformation(ItemStack stack, World world, List<String> list, boolean advanced) {
+
+    }
 }

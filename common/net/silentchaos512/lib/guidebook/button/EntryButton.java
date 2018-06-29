@@ -15,14 +15,15 @@ import net.silentchaos512.lib.util.AssetUtil;
 import net.silentchaos512.lib.util.StackHelper;
 import net.silentchaos512.lib.util.StringUtil;
 
+import javax.annotation.Nonnull;
+
 @SideOnly(Side.CLIENT)
 public class EntryButton extends GuiButton {
 
   private final GuiGuideBase gui;
   private final ItemStack stackToRender;
 
-  public EntryButton(GuiGuideBase gui, int id, int x, int y, int width, int height, String text,
-      ItemStack stackToRender) {
+  public EntryButton(GuiGuideBase gui, int id, int x, int y, int width, int height, String text, @Nonnull ItemStack stackToRender) {
     super(id, x, y, width, height, text);
     this.gui = gui;
     this.stackToRender = stackToRender;

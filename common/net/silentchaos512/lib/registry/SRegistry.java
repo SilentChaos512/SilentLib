@@ -1,24 +1,17 @@
 package net.silentchaos512.lib.registry;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import com.google.common.collect.MapMaker;
-
 import gnu.trove.map.hash.THashMap;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
@@ -54,6 +47,10 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.*;
+
 // TODO: Rename register* methods to just "register" in 1.13?
 public class SRegistry {
 
@@ -77,6 +74,10 @@ public class SRegistry {
   public @Nonnull RecipeMaker recipes;
 
   protected boolean listModelsInPost = false;
+  @Getter(value = AccessLevel.PUBLIC)
+  @Setter(value = AccessLevel.PUBLIC)
+  @Nullable
+  private CreativeTabs defaultCreativeTab = null;
 
   public SRegistry(String modId) {
 
@@ -102,7 +103,7 @@ public class SRegistry {
 
   /**
    * Add a phased initializer, which has preInit, init, and postInit methods which SRegistry will call automatically.
-   * 
+   *
    * @param instance
    *          Your initializer (singleton design is recommended)
    * @return The unmodified instance
@@ -160,12 +161,16 @@ public class SRegistry {
       registryObjects.add((IRegistryObject) block);
     }
 
-    ResourceLocation name = new ResourceLocation(resourcePrefix + key);
+    ResourceLocation name = new ResourceLocation(modId, key);
     safeSetRegistryName(block, name);
     ForgeRegistries.BLOCKS.register(block);
     if (itemBlock != null) {
       safeSetRegistryName(itemBlock, name);
       ForgeRegistries.ITEMS.register(itemBlock);
+    }
+
+    if (defaultCreativeTab != null) {
+      block.setCreativeTab(defaultCreativeTab);
     }
 
     return block;
@@ -190,9 +195,13 @@ public class SRegistry {
       registryObjects.add((IRegistryObject) item);
     }
 
-    ResourceLocation name = new ResourceLocation(resourcePrefix + key);
+    ResourceLocation name = new ResourceLocation(modId, key);
     safeSetRegistryName(item, name);
     ForgeRegistries.ITEMS.register(item);
+
+    if (defaultCreativeTab != null) {
+      item.setCreativeTab(defaultCreativeTab);
+    }
 
     return item;
   }
@@ -201,7 +210,7 @@ public class SRegistry {
 
   public void registerEnchantment(Enchantment ench, String key) {
 
-    ResourceLocation name = new ResourceLocation(resourcePrefix + key);
+    ResourceLocation name = new ResourceLocation(modId, key);
     safeSetRegistryName(ench, name);
     ForgeRegistries.ENCHANTMENTS.register(ench);
   }
@@ -302,21 +311,18 @@ public class SRegistry {
    * Register a TileEntity. "tile." + resourcePrefix is automatically prepended to the key.
    */
   public void registerTileEntity(Class<? extends TileEntity> tileClass, String key) {
-
     String fullKey = "tile." + resourcePrefix + key;
     GameRegistry.registerTileEntity(tileClass, fullKey);
   }
 
   /**
    * Registers a renderer for a TileEntity.
-   * 
+   *
    * @param tileClass
    * @param renderer
    */
   @SideOnly(Side.CLIENT)
-  public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass,
-      TileEntitySpecialRenderer<T> renderer) {
-
+  public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass, TileEntitySpecialRenderer<T> renderer) {
     ClientRegistry.bindTileEntitySpecialRenderer(tileClass, renderer);
   }
 
@@ -435,7 +441,7 @@ public class SRegistry {
 
   /**
    * Call in the "postInit" phase in your client proxy.
-   * 
+   *
    * @param event
    */
   public void clientPostInit(FMLPostInitializationEvent event) {
@@ -467,7 +473,7 @@ public class SRegistry {
         Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
         models.clear();
         obj.getModels(models);
-        models.entrySet().forEach(entry -> ModelLoader.setCustomModelResourceLocation(item, entry.getKey(), entry.getValue()));
+        models.forEach((key, value) -> ModelLoader.setCustomModelResourceLocation(item, key, value));
       }
     }
   }
@@ -475,7 +481,7 @@ public class SRegistry {
   /**
    * Handles the new Forge RegistryEvents. An instance will automatically be registered when an SRegistry is
    * constructed.
-   * 
+   *
    * @author SilentChaos512
    * @since 2.2.2
    */

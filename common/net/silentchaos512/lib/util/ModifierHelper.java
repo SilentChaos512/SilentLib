@@ -1,15 +1,16 @@
 package net.silentchaos512.lib.util;
 
-import java.util.UUID;
-
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
 
+import java.util.UUID;
+
 /**
  * Helper methods for working with entity attributes.
- * 
+ * TODO: Rename to AttributeHelper?
+ *
  * @author SilentChaos512
  * @since 2.3.2
  */

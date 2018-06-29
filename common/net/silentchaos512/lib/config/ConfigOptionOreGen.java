@@ -1,12 +1,13 @@
 package net.silentchaos512.lib.config;
 
-import java.util.Random;
-
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.config.Configuration;
 
+import java.util.Random;
+
 // TODO: Add option to change blacklist to a whitelist
+// TODO: Add getter/setter annotations/methods, make things private, change blacklist to something immutable
 public class ConfigOptionOreGen {
 
   public static final float VEIN_COUNT_MIN = 0.0f;

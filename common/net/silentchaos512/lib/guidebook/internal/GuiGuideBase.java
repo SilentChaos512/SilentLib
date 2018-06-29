@@ -12,11 +12,9 @@ import net.minecraft.item.ItemStack;
 
 public abstract class GuiGuideBase extends GuiScreen {
 
-  public abstract void renderScaledAsciiString(String text, int x, int y, int color, boolean shadow,
-      float scale);
+  public abstract void renderScaledAsciiString(String text, int x, int y, int color, boolean shadow, float scale);
 
-  public abstract void renderSplitScaledAsciiString(String text, int x, int y, int color,
-      boolean shadow, float scale, int length);
+  public abstract void renderSplitScaledAsciiString(String text, int x, int y, int color, boolean shadow, float scale, int length);
 
   public abstract List<GuiButton> getButtonList();
 
@@ -28,8 +26,7 @@ public abstract class GuiGuideBase extends GuiScreen {
 
   public abstract int getSizeY();
 
-  public abstract void addOrModifyItemRenderer(ItemStack renderedStack, int x, int y, float scale,
-      boolean shouldTryTransfer);
+  public abstract void addOrModifyItemRenderer(ItemStack renderedStack, int x, int y, float scale, boolean shouldTryTransfer);
 
   public abstract float getSmallFontSize();
 
