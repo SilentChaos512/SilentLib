@@ -89,6 +89,7 @@ public class StackHelper {
      * @param createIfNull if true, a new, empty {@code NBTTagCompound} will be set on the stack if it does not have one
      * @return The stack's tag compound, or {@code null} if it does not have one and {@code createIfNull} is false
      */
+    @Deprecated
     public static NBTTagCompound getTagCompound(@Nonnull ItemStack stack, boolean createIfNull) {
 
         if (isEmpty(stack))

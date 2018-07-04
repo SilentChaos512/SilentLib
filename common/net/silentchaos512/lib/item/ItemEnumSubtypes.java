@@ -13,12 +13,20 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * An Item with an enum to specify subtypes.
+ * @param <T> An enum that implements {@link IStringSerializable}
+ */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class ItemEnumSubtypes<T extends Enum<T> & IStringSerializable> extends ItemSL {
 
     private final Map<String, T> nameToValue = new HashMap<>();
     private final String subtypeKey;
+
+    public ItemEnumSubtypes(String modId, String name, Class<T> valueClass) {
+        this(modId, name, "Subtype", valueClass);
+    }
 
     public ItemEnumSubtypes(String modId, String name, String subtypeKey, Class<T> valueClass) {
         super(valueClass.getEnumConstants().length, modId, name);

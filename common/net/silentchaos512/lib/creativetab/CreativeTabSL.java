@@ -2,75 +2,64 @@ package net.silentchaos512.lib.creativetab;
 
 import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.silentchaos512.lib.util.StackHelper;
+
+import java.util.function.Supplier;
 
 /**
  * CreativeTabs with cross compatibility support.
- * 
+ *
  * @author SilentChaos512
  * @since 2.0.0
  */
 public class CreativeTabSL extends CreativeTabs {
 
-  Block block = null;
-  Item item = null;
-  int meta;
+    private final Supplier<ItemStack> iconSupplier;
 
-  public CreativeTabSL(String label) {
+    @Deprecated
+    public CreativeTabSL(String label) {
+        this(label, () -> ItemStack.EMPTY);
+    }
 
-    super(label);
-  }
+    /**
+     * Create the creative tab with a block for the icon. Note that meta is ignored in 1.10.
+     *
+     * @since 2.0.6
+     */
+    @Deprecated
+    public CreativeTabSL(String label, Block block, int meta) {
+        this(label, () -> new ItemStack(block, 1, meta));
+    }
 
-  /**
-   * Create the creative tab with a block for the icon. Note that meta is ignored in 1.10.
-   * 
-   * @since 2.0.6
-   */
-  public CreativeTabSL(String label, Block block, int meta) {
+    /**
+     * Create the creative tab with an item for the icon. Note that meta is ignored in 1.10.
+     *
+     * @since 2.0.6
+     */
+    @Deprecated
+    public CreativeTabSL(String label, Item item, int meta) {
+        this(label, () -> new ItemStack(item, 1, meta));
+    }
 
-    super(label);
+    /**
+     * Supplier-based constructor. Can be called at any time, as opposed to the others which only work if the block/item
+     * has already been initialized.
+     * @param label The tab label (mod ID in many cases)
+     * @param iconSupplier A supplier that produces the ItemStack used for the tab icon
+     */
+    public CreativeTabSL(String label, Supplier<ItemStack> iconSupplier) {
+        super(label);
+        this.iconSupplier = iconSupplier;
+    }
 
-    if (Item.getItemFromBlock(block) == null)
-      throw new NullPointerException(
-          "Item is null! Make certain it has been initialized before constructing the creative tab!");
+    @Deprecated
+    protected ItemStack getStack() {
+        return iconSupplier.get();
+    }
 
-    this.block = block;
-    this.meta = meta;
-  }
-
-  /**
-   * Create the creative tab with an item for the icon. Note that meta is ignored in 1.10.
-   * 
-   * @since 2.0.6
-   */
-  public CreativeTabSL(String label, Item item, int meta) {
-
-    super(label);
-
-    if (item == null)
-      throw new NullPointerException(
-          "Item is null! Make certain it has been initialized before constructing the creative tab!");
-
-    this.item = item;
-    this.meta = meta;
-  }
-
-  protected ItemStack getStack() {
-
-    if (block != null)
-      return new ItemStack(Item.getItemFromBlock(block), 1, meta & 0xF);
-    else if (item != null)
-      return new ItemStack(item, 1, meta);
-    else
-      return null;
-  }
-
-  @Override
-  public ItemStack getTabIconItem() {
-
-    return getStack();
-  }
+    @Override
+    public ItemStack getTabIconItem() {
+        return getStack();
+    }
 }

@@ -44,6 +44,7 @@ import net.minecraftforge.fml.common.registry.VillagerRegistry.VillagerProfessio
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.silentchaos512.lib.block.ITileEntityBlock;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -164,9 +165,17 @@ public class SRegistry {
     ResourceLocation name = new ResourceLocation(modId, key);
     safeSetRegistryName(block, name);
     ForgeRegistries.BLOCKS.register(block);
+
+    // Register ItemBlock
     if (itemBlock != null) {
       safeSetRegistryName(itemBlock, name);
       ForgeRegistries.ITEMS.register(itemBlock);
+    }
+
+    // Register TileEntity
+    if (block instanceof ITileEntityBlock) {
+      Class<? extends TileEntity> clazz = ((ITileEntityBlock) block).getTileEntityClass();
+      registerTileEntity(clazz, key);
     }
 
     if (defaultCreativeTab != null) {
@@ -403,6 +412,16 @@ public class SRegistry {
   public void clientPreInit(FMLPreInitializationEvent event) {
 
     this.clientPreInit();
+
+    for (IRegistryObject obj : this.registryObjects) {
+        if (obj instanceof ITileEntityBlock) {
+            ITileEntityBlock tileBlock = (ITileEntityBlock) obj;
+            final TileEntitySpecialRenderer tesr = tileBlock.getTileRenderer();
+            if (tesr != null) {
+                ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
+            }
+        }
+    }
   }
 
   /**

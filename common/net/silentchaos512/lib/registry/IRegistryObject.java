@@ -15,6 +15,7 @@ import java.util.Map;
  *
  *
  */
+@Deprecated
 public interface IRegistryObject {
 
   // Formerly IAddRecipe
