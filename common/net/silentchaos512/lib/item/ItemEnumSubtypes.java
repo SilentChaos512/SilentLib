@@ -1,37 +1,56 @@
+/*
+ * SilentLib - ItemEnumSubtypes
+ * Copyright (C) 2018 SilentChaos512
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.silentchaos512.lib.item;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.IStringSerializable;
 import net.minecraft.util.NonNullList;
+import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
- * An Item with an enum to specify subtypes.
+ * An Item with an enum to specify subtypes. (Experimental)
  * @param <T> An enum that implements {@link IStringSerializable}
  */
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class ItemEnumSubtypes<T extends Enum<T> & IStringSerializable> extends ItemSL {
+public class ItemEnumSubtypes<T extends Enum<T> & IStringSerializable> extends Item {
 
-    private final Map<String, T> nameToValue = new HashMap<>();
+    private final Map<String, T> nameToValue = new LinkedHashMap<>();
     private final String subtypeKey;
 
-    public ItemEnumSubtypes(String modId, String name, Class<T> valueClass) {
-        this(modId, name, "Subtype", valueClass);
+    public ItemEnumSubtypes(Class<T> valueClass) {
+        this("Subtype", valueClass);
     }
 
-    public ItemEnumSubtypes(String modId, String name, String subtypeKey, Class<T> valueClass) {
-        super(valueClass.getEnumConstants().length, modId, name);
+    public ItemEnumSubtypes(String subtypeKey, Class<T> valueClass) {
+        super();
         this.subtypeKey = subtypeKey;
         Arrays.stream(valueClass.getEnumConstants()).forEach(t -> nameToValue.put(t.getName(), t));
+        setHasSubtypes(true);
     }
 
     public ItemStack getStack(String typeName) {
@@ -70,5 +89,19 @@ public class ItemEnumSubtypes<T extends Enum<T> & IStringSerializable> extends I
     @Override
     public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> list) {
         nameToValue.values().stream().map(this::getStack).forEach(list::add);
+    }
+
+    @Override
+    public String getUnlocalizedName(ItemStack stack) {
+        T type = getType(stack);
+        return super.getUnlocalizedName() + (type != null ? "_" + type.getName() : "");
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        T type = getType(stack);
+        if (type != null) {
+            tooltip.add("*" + this.subtypeKey + ": " + type.getName());
+        }
     }
 }
