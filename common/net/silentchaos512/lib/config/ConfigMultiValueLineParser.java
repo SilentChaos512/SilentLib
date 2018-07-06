@@ -1,13 +1,31 @@
+/*
+ * SilentLib - ConfigMultiValueLineParser
+ * Copyright (C) 2018 SilentChaos512
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.silentchaos512.lib.config;
 
-import javax.annotation.Nullable;
-
 import net.silentchaos512.lib.util.LogHelper;
+
+import javax.annotation.Nullable;
 
 /**
  * Designed to make parsing strings into multiple values easier. Supports multiple data types in a single line. Handles
  * error logging if provided with a LogHelper.
- * 
+ *
  * @author SilentChaos512
  * @since 2.2.16
  */
@@ -43,9 +61,9 @@ public class ConfigMultiValueLineParser {
   /**
    * Attempt to parse the line. If an error occurs (too few values in line, a value can't be parsed), null will be
    * returned. Lines with extra values will still be parsed if not in strict mode.
-   * 
+   *
    * Currently supported types (as of version 2.2.16): Integer, Float, Boolean, String
-   * 
+   *
    * @param line
    *          The line to parse. Typically one line in a string list from your config.
    * @return Null if some error occurs. Otherwise, an array of parsed values, safe to cast to the appropriate types.
@@ -114,7 +132,7 @@ public class ConfigMultiValueLineParser {
 
   /**
    * Log a warning, if log is not null.
-   * 
+   *
    * @param message
    */
   private void warning(String message) {

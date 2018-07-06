@@ -1,3 +1,21 @@
+/*
+ * SilentLib - SRegistry
+ * Copyright (C) 2018 SilentChaos512
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.silentchaos512.lib.registry;
 
 import com.google.common.collect.MapMaker;
@@ -16,6 +34,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
+import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionType;
@@ -51,8 +70,8 @@ import net.silentchaos512.lib.util.LogHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Supplier;
 
-// TODO: Rename register* methods to just "register" in 1.13?
 public class SRegistry {
 
   // Internal use only!
@@ -72,7 +91,8 @@ public class SRegistry {
   public final String resourcePrefix;
 
   // TODO: Make protected, add getter.
-  public @Nonnull RecipeMaker recipes;
+  @Nonnull
+  public RecipeMaker recipes;
 
   protected boolean listModelsInPost = false;
   @Getter(value = AccessLevel.PUBLIC)
@@ -122,10 +142,21 @@ public class SRegistry {
     return handler;
   }
 
-  /********************************************************************************************************************
+  public CreativeTabs makeCreativeTab(String label, Supplier<ItemStack> icon) {
+    CreativeTabs tab = new CreativeTabs(label) {
+      @Override
+      public ItemStack getTabIconItem() {
+        return icon.get();
+      }
+    };
+    if (defaultCreativeTab == null) defaultCreativeTab = tab;
+    return tab;
+  }
+
+  /*
    * Register methods. Should be called in the appropriate IRegistrationHandler (your ModBlocks, ModItems, etc.).
    * Recipes should be registers in the block/item's addRecipe method in most cases, but you can use a handler as well.
-   ********************************************************************************************************************/
+   */
 
   // Block
 
@@ -202,6 +233,8 @@ public class SRegistry {
 
     if (item instanceof IRegistryObject) {
       registryObjects.add((IRegistryObject) item);
+    } else {
+      item.setUnlocalizedName(modId + ":" + key);
     }
 
     ResourceLocation name = new ResourceLocation(modId, key);
@@ -312,10 +345,6 @@ public class SRegistry {
     return trigger;
   }
 
-  /********************************************************************************************************************
-   * TileEntity registration. These aren't Forge registries, but these need to be wrapped for xcompt (I think?)
-   ********************************************************************************************************************/
-
   /**
    * Register a TileEntity. "tile." + resourcePrefix is automatically prepended to the key.
    */
@@ -335,10 +364,10 @@ public class SRegistry {
     ClientRegistry.bindTileEntitySpecialRenderer(tileClass, renderer);
   }
 
-  /*******************************************************************************************************************
+  /*
    * Initialization phases. Calling in either your common or client proxy is recommended. "client" methods in your
    * client proxy, the rest in your common AND client proxy.
-   *******************************************************************************************************************/
+   */
 
   /**
    * Call in the "preInit" phase in your common proxy.

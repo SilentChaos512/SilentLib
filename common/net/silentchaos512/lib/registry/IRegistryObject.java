@@ -1,3 +1,21 @@
+/*
+ * SilentLib - IRegistryObject
+ * Copyright (C) 2018 SilentChaos512
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.silentchaos512.lib.registry;
 
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
@@ -8,12 +26,8 @@ import java.util.Map;
 /**
  * A block/item intended to be registered through an SRegistry instance. SRegistry will then handle many steps of the
  * process, including registering models and adding recipes.
- * <p>
- * TODO: 1.13 - Re-evaluate <strong>everything</strong> in this interface!
  *
- * @author SilentChaos512
- *
- *
+ * @deprecated Some methods are redundant, some will not be relevant in 1.13. Others should be split into separate interfaces.
  */
 @Deprecated
 public interface IRegistryObject {

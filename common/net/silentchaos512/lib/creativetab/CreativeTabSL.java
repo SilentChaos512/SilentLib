@@ -1,3 +1,21 @@
+/*
+ * SilentLib - CreativeTabSL
+ * Copyright (C) 2018 SilentChaos512
+ *
+ * This library is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package net.silentchaos512.lib.creativetab;
 
 import net.minecraft.block.Block;
@@ -12,7 +30,9 @@ import java.util.function.Supplier;
  *
  * @author SilentChaos512
  * @since 2.0.0
+ * @deprecated Use SRegistry.makeCreativeTab instead
  */
+@Deprecated
 public class CreativeTabSL extends CreativeTabs {
 
     private final Supplier<ItemStack> iconSupplier;
@@ -45,7 +65,8 @@ public class CreativeTabSL extends CreativeTabs {
     /**
      * Supplier-based constructor. Can be called at any time, as opposed to the others which only work if the block/item
      * has already been initialized.
-     * @param label The tab label (mod ID in many cases)
+     *
+     * @param label        The tab label (mod ID in many cases)
      * @param iconSupplier A supplier that produces the ItemStack used for the tab icon
      */
     public CreativeTabSL(String label, Supplier<ItemStack> iconSupplier) {

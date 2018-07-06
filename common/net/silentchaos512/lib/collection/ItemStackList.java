@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-// TODO: Consider keeping this? It's original function has no meaning anymore, but could be a nice wrapper for some common operations, like getting stacks of a certain item class...
 @Deprecated
 public class ItemStackList extends NonNullList<ItemStack> {
 
