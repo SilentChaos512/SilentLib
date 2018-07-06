@@ -34,12 +34,12 @@ import java.util.List;
 /**
  * Draws text directly to the screen for debugging purposes
  */
-public abstract class DebugRenderer extends Gui {
+public abstract class DebugRenderOverlay extends Gui {
 
     private List<String> debugText = getDebugText();
     private int ticksPassed = 0;
 
-    protected DebugRenderer() {
+    protected DebugRenderOverlay() {
         MinecraftForge.EVENT_BUS.register(this);
     }
 
@@ -76,7 +76,7 @@ public abstract class DebugRenderer extends Gui {
         String[] array = line.split("=");
         if (array.length == 2) {
             font.drawStringWithShadow(array[0].trim(), x, y, color);
-            font.drawStringWithShadow(array[1].trim(), x + 85, y, color);
+            font.drawStringWithShadow(array[1].trim(), x + 90, y, color);
         } else {
             font.drawStringWithShadow(line, x, y, color);
         }
@@ -84,7 +84,8 @@ public abstract class DebugRenderer extends Gui {
 
     @SubscribeEvent
     public void renderTick(RenderGameOverlayEvent.Post event) {
-        if (isHidden() || debugText.isEmpty() || Minecraft.getMinecraft().world == null || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
+        Minecraft mc = Minecraft.getMinecraft();
+        if (isHidden() || debugText.isEmpty() || mc.isGamePaused() || mc.gameSettings.showDebugInfo || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
         // Get text scale, sanity-check the value
