@@ -36,7 +36,7 @@ public class SLTestClientProxy extends SLTestCommonProxy {
     public void preInit(SRegistry registry, FMLPreInitializationEvent event) {
         super.preInit(registry, event);
 
-        makeTestDebugOverlay();
+//        makeTestDebugOverlay();
     }
 
     @Override

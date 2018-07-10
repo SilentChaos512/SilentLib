@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.network.internal;
 
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.world.GameType;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -44,7 +45,10 @@ public final class MessageChangeGamemode extends MessageSL {
     if (context.side != Side.SERVER)
       return null;
 
-    context.getServerHandler().player.setGameType(type == 3 ? GameType.SPECTATOR : type == 1 ? GameType.CREATIVE : GameType.SURVIVAL);
+    EntityPlayerMP player = context.getServerHandler().player;
+    int permLevel = player.getServer().getPlayerList().getOppedPlayers().getPermissionLevel(player.getGameProfile());
+    if (permLevel >= 2)
+      player.setGameType(GameType.getByID(this.type));
 
     return null;
   }

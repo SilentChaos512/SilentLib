@@ -67,6 +67,9 @@ minecraft {
     runDir = 'run'
     mappings = project.mcp_mappings
 
+    replace "BUILD_NUM = 0", "BUILD_NUM = " + build_num
+    replaceIn "SilentLib.java"
+
     if (project.hasProperty('coreplugin')) {
         clientJvmArgs += '-Dfml.coreMods.load=' + project.coreplugin
         serverJvmArgs += '-Dfml.coreMods.load=' + project.coreplugin
@@ -139,19 +142,8 @@ repositories {
 dependencies {
     // lombok
     if (project.hasProperty('lombok_version')) {
-        compileOnly "org.projectlombok:lombok:${project.lombok_version}"
+        compile "org.projectlombok:lombok:${project.lombok_version}"
         apt "org.projectlombok:lombok:${project.lombok_version}"
-    }
-
-    // JEI
-    if (project.hasProperty('jei_version')) {
-        deobfProvided "mezz.jei:jei_${project.mc_version}:${project.jei_version}:api"
-        runtime "mezz.jei:jei_${project.mc_version}:${project.jei_version}"
-    }
-
-    // Silent Lib
-    if (project.hasProperty('sl_version')) {
-        implementation "com.github.SilentChaos512:SilentLib:{$project.sl_version}"
     }
 }
 
@@ -172,6 +164,7 @@ processResources {
 }
 
 jar {
+    build_num = getBuildNumber()
     if (build_num > 0) {
         classifier = build_num
     }

@@ -58,12 +58,6 @@ public abstract class DebugRenderOverlay extends Gui {
     public abstract float getTextScale();
 
     /**
-     * Determine if the overlay is displayed or not.
-     * @return True if the overlay should not be displayed, false if it should.
-     */
-    public abstract boolean isHidden();
-
-    /**
      * The frequency (in ticks) that the debug text should be updated. Higher numbers mean less frequent.
      * @return The delay in ticks between text updates
      */
@@ -72,11 +66,22 @@ public abstract class DebugRenderOverlay extends Gui {
         return 10;
     }
 
+    @Nonnegative
+    public int getSplitWidth() {
+        return 100;
+    }
+
+    /**
+     * Determine if the overlay is displayed or not.
+     * @return True if the overlay should not be displayed, false if it should.
+     */
+    public abstract boolean isHidden();
+
     protected void drawLine(FontRenderer font, String line, int x, int y, int color) {
         String[] array = line.split("=");
         if (array.length == 2) {
             font.drawStringWithShadow(array[0].trim(), x, y, color);
-            font.drawStringWithShadow(array[1].trim(), x + 90, y, color);
+            font.drawStringWithShadow(array[1].trim(), x + getSplitWidth(), y, color);
         } else {
             font.drawStringWithShadow(line, x, y, color);
         }
