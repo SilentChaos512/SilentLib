@@ -207,43 +207,64 @@ artifacts {
     }
 }
 
+class Secrets {
+    def data = null
+
+    def getProperty(String key) {
+        return data ? data[key] : ''
+    }
+}
+
+import groovy.json.JsonSlurper
+
+def secretFile
+if (System.getenv().SECRET_FILE) {
+    secretFile = file System.getenv().SECRET_FILE
+} else {
+    secretFile = file 'secret.json'
+}
+
+project.ext.secret = new Secrets()
+if (secretFile.exists()) {
+    secretFile.withReader {
+        project.ext.secret.data = new JsonSlurper().parse it
+    }
+}
+
 curseforge {
     if (project.hasProperty('cf_project_id') && project.hasProperty('cf_release_type') && project.hasProperty('cf_changelog_filename') &&
             ((project.cf_release_type == 'alpha') || (project.cf_release_type == 'beta') || (project.cf_release_type == 'release'))) {
         apiKey = secret.curseforgeAPIKey
         project {
             id = project.cf_project_id
-            changelog = file(project.cf_changelog_filename)
+            //changelog = file(project.cf_changelog_filename)
             releaseType = project.cf_release_type
             addGameVersion(project.mc_version)
-            mainArtifact(jar) {
-                displayName = "$project.description $display_version"
-                relations {
-                    requiredLibrary 'mmd-orespawn'
-                    requiredLibrary 'base-metals'
-                    optionalLibrary 'additional-loot-tables'
-                }
-            }
-            if (project.hasProperty('doAPIJar')) {
-                addArtifact(apiJar) {
-                    displayName = "$project.description $display_version API"
-                }
-            }
-            if (project.hasProperty('doSourceJar')) {
-                addArtifact(sourceJar) {
-                    displayName = "$project.description $display_version Sources"
-                }
-            }
-            if (project.hasProperty('doDeobfJar')) {
-                addArtifact(deobfJar) {
-                    displayName = "$project.description $display_version Development"
-                }
-            }
-            if (project.hasProperty('doJavadocJar')) {
-                addArtifact(javadocJar) {
-                    displayName = "$project.description $display_version Javadoc"
-                }
-            }
+//            mainArtifact(jar) {
+//                displayName = "$project.description $display_version"
+//                relations {
+//                }
+//            }
+//            if (project.hasProperty('doAPIJar')) {
+//                addArtifact(apiJar) {
+//                    displayName = "$project.description $display_version API"
+//                }
+//            }
+//            if (project.hasProperty('doSourceJar')) {
+//                addArtifact(sourceJar) {
+//                    displayName = "$project.description $display_version Sources"
+//                }
+//            }
+//            if (project.hasProperty('doDeobfJar')) {
+//                addArtifact(deobfJar) {
+//                    displayName = "$project.description $display_version Development"
+//                }
+//            }
+//            if (project.hasProperty('doJavadocJar')) {
+//                addArtifact(javadocJar) {
+//                    displayName = "$project.description $display_version Javadoc"
+//                }
+//            }
         }
     }
 }
