@@ -35,6 +35,7 @@ import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
+import net.silentchaos512.lib.item.IEnumItems;
 import net.silentchaos512.lib.recipe.IngredientSL;
 import net.silentchaos512.lib.recipe.RecipeJsonHell;
 
@@ -235,9 +236,6 @@ public final class RecipeMaker {
 
     /**
      * Adds custom recipe types.
-     * <p>
-     * WARNING: This will automatically register with RecipeSorter in 1.11.2 and earlier (Category.SHAPED and dependencies
-     * "after:minecraft:shapeless").
      *
      * @param key    Registry name.
      * @param recipe Recipe object.
@@ -438,6 +436,8 @@ public final class RecipeMaker {
                 result[i] = new ItemStack((Item) obj);
             else if (obj instanceof Block)
                 result[i] = new ItemStack((Block) obj);
+            else if (obj instanceof IEnumItems)
+                result[i] = ((IEnumItems) obj).getStack();
             else
                 throw new IllegalArgumentException("Can't make object of type " + obj.getClass() + " into an ItemStack! Index " + i + ", obj=" + obj);
         }
