@@ -42,8 +42,8 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.registry.IRegistry;
 import net.minecraft.world.biome.Biome;
+import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.common.MinecraftForge;
@@ -51,7 +51,6 @@ import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.client.registry.IRenderFactory;
 import net.minecraftforge.fml.client.registry.RenderingRegistry;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -67,7 +66,9 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.block.IColoredBlock;
 import net.silentchaos512.lib.block.ITileEntityBlock;
+import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
@@ -81,6 +82,9 @@ public class SRegistry {
     private final Set<IRegistryObject> registryObjects = new HashSet<>();
     private final List<Block> blocks = NonNullList.create();
     private final List<Item> items = NonNullList.create();
+    private final List<IAddRecipes> recipeAdders = NonNullList.create();
+    private final List<IColoredBlock> coloredBlocks = NonNullList.create();
+    private final List<IColoredItem> coloredItems = NonNullList.create();
 
     private List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
     private Map<Class, IRegistrationHandler> registrationHandlers = new THashMap<>();
@@ -102,13 +106,12 @@ public class SRegistry {
     /**
      * The resource prefix for the mod. This is set in the constructor based on the modId.
      */
-    public final String resourcePrefix;
+    private final String resourcePrefix;
 
     // TODO: Make protected, add getter.
     @Nonnull
     public RecipeMaker recipes;
 
-    protected boolean listModelsInPost = false;
     @Getter(value = AccessLevel.PUBLIC)
     @Setter(value = AccessLevel.PUBLIC)
     @Nullable
@@ -217,6 +220,14 @@ public class SRegistry {
             registerTileEntity(clazz, key);
         }
 
+        if (block instanceof IAddRecipes) {
+            this.recipeAdders.add((IAddRecipes) block);
+        }
+
+        if (block instanceof IColoredBlock) {
+            this.coloredBlocks.add((IColoredBlock) block);
+        }
+
         if (defaultCreativeTab != null) {
             block.setCreativeTab(defaultCreativeTab);
         }
@@ -247,6 +258,14 @@ public class SRegistry {
         ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(item, name);
         ForgeRegistries.ITEMS.register(item);
+
+        if (item instanceof IAddRecipes) {
+            this.recipeAdders.add((IAddRecipes) item);
+        }
+
+        if (item instanceof IColoredItem) {
+            this.coloredItems.add((IColoredItem) item);
+        }
 
         if (defaultCreativeTab != null) {
             item.setCreativeTab(defaultCreativeTab);
@@ -463,16 +482,6 @@ public class SRegistry {
      */
     @Deprecated
     public void clientPostInit() {
-        if (listModelsInPost) {
-            Map<Integer, ModelResourceLocation> models = new MapMaker().makeMap();
-            for (IRegistryObject obj : registryObjects) {
-                models.clear();
-                obj.getModels(models);
-                for (ModelResourceLocation model : models.values())
-                    if (model != null)
-                        System.out.println(model);
-            }
-        }
     }
 
     /**
@@ -487,10 +496,12 @@ public class SRegistry {
     @Deprecated
     protected void addRecipes() {
         this.registryObjects.forEach(obj -> obj.addRecipes(this.recipes));
+        this.recipeAdders.forEach(obj -> obj.addRecipes(this.recipes));
     }
 
     protected void addOreDictEntries() {
         this.registryObjects.forEach(obj -> obj.addOreDict());
+        this.recipeAdders.forEach(obj -> obj.addOreDict());
     }
 
     @SideOnly(Side.CLIENT)
@@ -625,6 +636,18 @@ public class SRegistry {
         @SubscribeEvent
         public void registerModels(ModelRegistryEvent event) {
             sregistry.registerModels();
+        }
+
+        @SubscribeEvent
+        public void registerBlockColors(ColorHandlerEvent.Block event) {
+            for (IColoredBlock block : sregistry.coloredBlocks)
+                event.getBlockColors().registerBlockColorHandler(block.getColorHandler(), (Block) block);
+        }
+
+        @SubscribeEvent
+        public void registerItemColors(ColorHandlerEvent.Item event) {
+            for (IColoredItem item : sregistry.coloredItems)
+                event.getItemColors().registerItemColorHandler(item.getColorHandler(), (Item) item);
         }
     }
 }

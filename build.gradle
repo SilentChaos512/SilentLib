@@ -122,13 +122,14 @@ task incrementBuild {
         }
     }
 }
+build.dependsOn incrementBuild
 
 repositories {
     jcenter()
     mavenCentral()
-    maven { // Jitpack
-        url 'https://jitpack.io'
-    }
+//    maven { // Jitpack
+//        url 'https://jitpack.io'
+//    }
     maven { // JEI
         name = "Progwml6 maven"
         url = "http://dvs1.progwml6.com/files/maven"
