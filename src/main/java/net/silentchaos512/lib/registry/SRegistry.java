@@ -83,8 +83,8 @@ public class SRegistry {
     private final List<Block> blocks = NonNullList.create();
     private final List<Item> items = NonNullList.create();
     private final List<IAddRecipes> recipeAdders = NonNullList.create();
-    private final List<IColoredBlock> coloredBlocks = NonNullList.create();
-    private final List<IColoredItem> coloredItems = NonNullList.create();
+    private final List<Block> coloredBlocks = NonNullList.create();
+    private final List<Item> coloredItems = NonNullList.create();
 
     private List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
     private Map<Class, IRegistrationHandler> registrationHandlers = new THashMap<>();
@@ -225,7 +225,7 @@ public class SRegistry {
         }
 
         if (block instanceof IColoredBlock) {
-            this.coloredBlocks.add((IColoredBlock) block);
+            this.coloredBlocks.add(block);
         }
 
         if (defaultCreativeTab != null) {
@@ -264,7 +264,7 @@ public class SRegistry {
         }
 
         if (item instanceof IColoredItem) {
-            this.coloredItems.add((IColoredItem) item);
+            this.coloredItems.add(item);
         }
 
         if (defaultCreativeTab != null) {
@@ -638,16 +638,18 @@ public class SRegistry {
             sregistry.registerModels();
         }
 
+        @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void registerBlockColors(ColorHandlerEvent.Block event) {
-            for (IColoredBlock block : sregistry.coloredBlocks)
-                event.getBlockColors().registerBlockColorHandler(block.getColorHandler(), (Block) block);
+            for (Block block : sregistry.coloredBlocks)
+                event.getBlockColors().registerBlockColorHandler(((IColoredBlock) block).getColorHandler(), block);
         }
 
+        @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void registerItemColors(ColorHandlerEvent.Item event) {
-            for (IColoredItem item : sregistry.coloredItems)
-                event.getItemColors().registerItemColorHandler(item.getColorHandler(), (Item) item);
+            for (Item item : sregistry.coloredItems)
+                event.getItemColors().registerItemColorHandler(((IColoredItem) item).getColorHandler(), item);
         }
     }
 }
