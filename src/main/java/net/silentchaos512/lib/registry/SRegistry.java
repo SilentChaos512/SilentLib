@@ -27,6 +27,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
+import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.creativetab.CreativeTabs;
@@ -70,7 +71,6 @@ import net.silentchaos512.lib.block.IColoredBlock;
 import net.silentchaos512.lib.block.ITileEntityBlock;
 import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.item.ItemBlockSL;
-import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
 
 import javax.annotation.Nonnull;
@@ -83,6 +83,7 @@ public class SRegistry {
     private final List<Block> blocks = NonNullList.create();
     private final List<Item> items = NonNullList.create();
     private final List<IAddRecipes> recipeAdders = NonNullList.create();
+
     private final List<Block> coloredBlocks = NonNullList.create();
     private final List<Item> coloredItems = NonNullList.create();
 
@@ -269,12 +270,6 @@ public class SRegistry {
 
         if (defaultCreativeTab != null) {
             item.setCreativeTab(defaultCreativeTab);
-        }
-
-        if (GameUtil.isClient()) {
-            if (item instanceof ICustomMesh) {
-                ModelLoader.setCustomMeshDefinition(item, ((ICustomMesh) item).getCustomMesh());
-            }
         }
 
         return item;
@@ -534,7 +529,11 @@ public class SRegistry {
         }
         for (Item item : items) {
             if (!(item instanceof IRegistryObject)) {
-                if (item instanceof ICustomModel) {
+                if (item instanceof ICustomMesh) {
+                    ICustomMesh customMesh = (ICustomMesh) item;
+                    ModelBakery.registerItemVariants(item, customMesh.getVariants());
+                    ModelLoader.setCustomMeshDefinition(item, customMesh.getCustomMesh());
+                } else if (item instanceof ICustomModel) {
                     ((ICustomModel) item).registerModels();
                 } else {
                     ResourceLocation registryName = Objects.requireNonNull(item.getRegistryName());
