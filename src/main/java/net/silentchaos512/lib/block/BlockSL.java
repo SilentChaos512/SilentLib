@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Deprecated
 public class BlockSL extends Block implements IRegistryObject, IHasSubtypes {
 
   protected final int subBlockCount;

@@ -38,6 +38,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+@Deprecated
 public class ItemFoodSL extends ItemFood implements IRegistryObject, IItemSL {
 
   protected int subItemCount;

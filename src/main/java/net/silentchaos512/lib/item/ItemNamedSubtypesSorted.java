@@ -34,6 +34,7 @@ import java.util.List;
  * @author SilentChaos512
  *
  */
+@Deprecated
 public class ItemNamedSubtypesSorted extends ItemNamedSubtypes {
 
   public final String[] sortedNames;

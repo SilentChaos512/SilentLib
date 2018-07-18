@@ -35,6 +35,7 @@ import java.util.Map;
  * @author SilentChaos512
  *
  */
+@Deprecated
 public class ItemNamedSubtypes extends ItemSL {
 
   public final String[] names;
