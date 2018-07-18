@@ -38,6 +38,7 @@ import net.silentchaos512.lib.util.LocalizationHelper;
 
 import java.util.List;
 
+@Deprecated
 public class ItemBlockSL extends ItemBlock {
 
   protected String blockName = "null";
@@ -76,7 +77,7 @@ public class ItemBlockSL extends ItemBlock {
   }
 
   @Override
-  public String getUnlocalizedName(ItemStack stack) {
+  public String getTranslationKey(ItemStack stack) {
 
     return unlocalizedName + (hasSubtypes ? stack.getItemDamage() & 0xF : "");
   }

@@ -54,7 +54,7 @@ public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
         super(materialIn, renderIndexIn, equipmentSlotIn);
         this.modId = modId;
         this.itemName = itemName;
-        setUnlocalizedName(itemName);
+        setTranslationKey(itemName);
     }
 
     // =======================

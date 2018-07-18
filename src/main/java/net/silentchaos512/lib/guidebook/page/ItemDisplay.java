@@ -4,8 +4,6 @@
 
 package net.silentchaos512.lib.guidebook.page;
 
-import java.util.List;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
@@ -17,13 +15,14 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuidePage;
 import net.silentchaos512.lib.guidebook.gui.GuiGuide;
 import net.silentchaos512.lib.guidebook.gui.GuiPage;
 import net.silentchaos512.lib.guidebook.misc.GuideBookUtils;
 import net.silentchaos512.lib.util.AssetUtil;
+
+import java.util.List;
 
 public class ItemDisplay {
 
@@ -65,7 +64,7 @@ public class ItemDisplay {
       for (int k = 0; k < list.size(); ++k) {
         maxWidth = Math.max(mc.fontRenderer.getStringWidth(list.get(k)), maxWidth);
         if (k == 0) {
-          list.set(k, this.stack.getRarity().rarityColor + list.get(k));
+          list.set(k, this.stack.getRarity().color + list.get(k));
         } else {
           list.set(k, TextFormatting.GRAY + list.get(k));
         }

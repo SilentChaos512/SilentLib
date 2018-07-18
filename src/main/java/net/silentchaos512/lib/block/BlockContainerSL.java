@@ -1,9 +1,5 @@
 package net.silentchaos512.lib.block;
 
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.material.Material;
@@ -30,6 +26,10 @@ import net.silentchaos512.lib.registry.IHasSubtypes;
 import net.silentchaos512.lib.registry.IRegistryObject;
 import net.silentchaos512.lib.registry.RecipeMaker;
 
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 public class BlockContainerSL extends BlockContainer implements IRegistryObject, IHasSubtypes {
 
   protected final int subBlockCount;
@@ -41,7 +41,7 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
     super(material);
     this.subBlockCount = subBlockCount;
     this.modId = modId.toLowerCase(Locale.ROOT);
-    setUnlocalizedName(name);
+    setTranslationKey(name);
   }
 
   @Override
@@ -135,16 +135,16 @@ public class BlockContainerSL extends BlockContainer implements IRegistryObject,
   }
 
   @Override
-  public String getUnlocalizedName() {
+  public String getTranslationKey() {
 
     return "tile." + blockName;
   }
 
   @Override
-  public Block setUnlocalizedName(String name) {
+  public Block setTranslationKey(String name) {
 
     this.blockName = name;
-    return super.setUnlocalizedName(name);
+    return super.setTranslationKey(name);
   }
 
   // ==============================

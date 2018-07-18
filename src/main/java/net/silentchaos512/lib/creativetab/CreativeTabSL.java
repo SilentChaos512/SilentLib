@@ -80,7 +80,7 @@ public class CreativeTabSL extends CreativeTabs {
     }
 
     @Override
-    public ItemStack getTabIconItem() {
+    public ItemStack createIcon() {
         return getStack();
     }
 }

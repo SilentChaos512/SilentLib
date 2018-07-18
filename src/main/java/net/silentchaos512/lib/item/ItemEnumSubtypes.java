@@ -92,9 +92,9 @@ public class ItemEnumSubtypes<T extends Enum<T> & IStringSerializable> extends I
     }
 
     @Override
-    public String getUnlocalizedName(ItemStack stack) {
+    public String getTranslationKey(ItemStack stack) {
         T type = getType(stack);
-        return super.getUnlocalizedName() + (type != null ? "_" + type.getName() : "");
+        return super.getTranslationKey() + (type != null ? "_" + type.getName() : "");
     }
 
     @Override

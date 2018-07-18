@@ -30,7 +30,7 @@ public class DyeHelper {
 
   public static String getOreName(EnumDyeColor dye) {
 
-    String name = dye.getUnlocalizedName();
+    String name = dye.getTranslationKey();
     return "dye" + (dye == EnumDyeColor.SILVER ? "LightGray"
         : Character.toUpperCase(name.charAt(0)) + name.substring(1));
   }
@@ -56,7 +56,7 @@ public class DyeHelper {
           name = "silver";
 
         for (int i = 0; i < EnumDyeColor.values().length; ++i)
-          if (EnumDyeColor.values()[i].getUnlocalizedName().equalsIgnoreCase(name))
+          if (EnumDyeColor.values()[i].getTranslationKey().equalsIgnoreCase(name))
             return new ItemStack(Items.DYE, 1, i);
       }
     }

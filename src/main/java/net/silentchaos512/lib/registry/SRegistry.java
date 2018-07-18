@@ -159,7 +159,7 @@ public class SRegistry {
     public CreativeTabs makeCreativeTab(String label, Supplier<ItemStack> icon) {
         CreativeTabs tab = new CreativeTabs(label) {
             @Override
-            public ItemStack getTabIconItem() {
+            public ItemStack createIcon() {
                 return icon.get();
             }
         };
@@ -203,7 +203,7 @@ public class SRegistry {
         if (block instanceof IRegistryObject) {
             registryObjects.add((IRegistryObject) block);
         } else {
-            block.setUnlocalizedName(modId + "." + key);
+            block.setTranslationKey(modId + "." + key);
         }
         blocks.add(block);
 
@@ -252,7 +252,7 @@ public class SRegistry {
         if (item instanceof IRegistryObject) {
             registryObjects.add((IRegistryObject) item);
         } else {
-            item.setUnlocalizedName(modId + "." + key);
+            item.setTranslationKey(modId + "." + key);
         }
         items.add(item);
 

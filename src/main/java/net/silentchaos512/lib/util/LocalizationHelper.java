@@ -18,14 +18,12 @@
 
 package net.silentchaos512.lib.util;
 
-import com.google.common.collect.Lists;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.registries.IForgeRegistry;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -129,7 +127,7 @@ public class LocalizationHelper {
     public String getSubText(IForgeRegistryEntry<?> object, String key, Object... parameters) {
         String prefix = getPrefixFor(object);
         ResourceLocation name = Objects.requireNonNull(object.getRegistryName());
-        return getLocalizedString(prefix + "." + name.getResourceDomain() + "." + name.getResourcePath() + "." + key, parameters);
+        return getLocalizedString(prefix + "." + name.getNamespace() + "." + name.getPath() + "." + key, parameters);
     }
 
     // =================
@@ -149,7 +147,7 @@ public class LocalizationHelper {
     public List<String> getDescriptionLines(IForgeRegistryEntry<?> object) {
         String prefix = getPrefixFor(object);
         ResourceLocation name = Objects.requireNonNull(object.getRegistryName());
-        return getDescriptionLines(prefix + "." + name.getResourceDomain() + "." + name.getResourcePath() + ".desc");
+        return getDescriptionLines(prefix + "." + name.getNamespace() + "." + name.getPath() + ".desc");
     }
 
     public List<String> getDescriptionLines(String key) {

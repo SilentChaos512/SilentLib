@@ -54,7 +54,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
     this.subItemCount = subItemCount;
     this.modId = modId.toLowerCase(Locale.ROOT);
     setHasSubtypes(subItemCount > 1);
-    setUnlocalizedName(name);
+    setTranslationKey(name);
   }
 
   // =======================
@@ -106,7 +106,7 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   // ==============
 
   @Override
-  public String getUnlocalizedName(ItemStack stack) {
+  public String getTranslationKey(ItemStack stack) {
 
     return "item." + modId + ":" + getNameForStack(stack);
   }
@@ -117,10 +117,10 @@ public class ItemSL extends Item implements IRegistryObject, IItemSL {
   }
 
   @Override
-  public Item setUnlocalizedName(String name) {
+  public Item setTranslationKey(String name) {
 
     this.itemName = name;
-    return super.setUnlocalizedName(name);
+    return super.setTranslationKey(name);
   }
 
   // ==============================
