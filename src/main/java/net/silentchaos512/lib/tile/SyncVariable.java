@@ -1,22 +1,21 @@
 package net.silentchaos512.lib.tile;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.tileentity.TileEntity;
 
+import javax.activation.UnsupportedDataTypeException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 
-import javax.activation.UnsupportedDataTypeException;
-
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.tileentity.TileEntity;
+import static java.lang.annotation.ElementType.FIELD;
+import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Marks variables that should be automatically synced with the client. Currently, this is used just for tile entities,
  * but could have other uses I guess? See {@link TileEntitySL} for usage.
- * 
+ *
  * @author SilentChaos512
  * @since 2.0.6
  */
@@ -54,7 +53,7 @@ public @interface SyncVariable {
 
   /**
    * Reads/writes sync variables for any object. Used by TileEntitySL in Lib. Gems uses this in PlayerDataHandler.
-   * 
+   *
    * @author SilentChaos512
    * @since 2.1.1
    */
@@ -63,7 +62,7 @@ public @interface SyncVariable {
     /**
      * Reads sync variables for the object. This method will attempt to read a value from NBT and assign that value for
      * any field marked with the SyncVariable annotation.
-     * 
+     *
      * @param obj
      *          The object with SyncVariable fields.
      * @param tags
@@ -115,7 +114,7 @@ public @interface SyncVariable {
     /**
      * Writes sync variables for the object. This method will take the values in all fields marked with the SyncVariable
      * annotation and save them to NBT.
-     * 
+     *
      * @param obj
      *          The object with SyncVariable fields.
      * @param tags

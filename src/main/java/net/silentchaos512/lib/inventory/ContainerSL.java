@@ -3,7 +3,6 @@ package net.silentchaos512.lib.inventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -43,6 +42,7 @@ public class ContainerSL extends Container {
     return tileInventory.isUsableByPlayer(player);
   }
 
+  @Deprecated
   public static void onTakeFromSlot(Slot slot, EntityPlayer player, ItemStack stack) {
 
     slot.onTake(player, stack);

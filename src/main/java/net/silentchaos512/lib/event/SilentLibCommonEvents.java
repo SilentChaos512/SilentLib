@@ -21,6 +21,7 @@ package net.silentchaos512.lib.event;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -29,6 +30,8 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ItemGuideBookSL;
 import net.silentchaos512.lib.util.EntityHelper;
 import net.silentchaos512.lib.util.PlayerHelper;
+
+import java.util.Objects;
 
 /**
  * Silent Lib's common event handler. Do not call any functions of this class.
@@ -62,10 +65,11 @@ public final class SilentLibCommonEvents {
     int id = 0;
     ItemGuideBookSL item = ItemGuideBookSL.getBookById(id);
     while (item != null && item.giveBookOnFirstLogin) {
-      if (!guideData.getBoolean(item.getFullName())) {
-        guideData.setBoolean(item.getFullName(), true);
+      ResourceLocation name = Objects.requireNonNull(item.getRegistryName());
+      if (!guideData.getBoolean(name.toString())) {
+        guideData.setBoolean(name.toString(), true);
         PlayerHelper.giveItem(player, new ItemStack(item));
-        SilentLib.logHelper.info("Player has been given guide book " + item.getFullName());
+        SilentLib.logHelper.info("Player has been given guide book {}", name);
       }
 
       item = ItemGuideBookSL.getBookById(++id);
