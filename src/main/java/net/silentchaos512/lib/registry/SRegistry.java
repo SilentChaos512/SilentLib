@@ -185,7 +185,7 @@ public class SRegistry {
      * Register a Block. Its name (registry key/name) must be provided. Uses a new ItemBlockSL.
      */
     public <T extends Block> T registerBlock(T block, String key) {
-        return registerBlock(block, key, new ItemBlockSL(block));
+        return registerBlock(block, key, block instanceof IRegistryObject ? new ItemBlockSL(block) : new ItemBlock(block));
     }
 
     /**

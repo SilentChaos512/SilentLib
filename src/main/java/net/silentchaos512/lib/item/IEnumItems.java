@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.item;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
@@ -27,6 +28,7 @@ import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Locale;
+import java.util.function.Function;
 
 /**
  * Used to map enum values to items for easy grouping. Intended to be implemented on the enum, but
@@ -104,22 +106,69 @@ public interface IEnumItems<E extends Enum<E>, I extends Item> extends IStringSe
     }
 
     /**
-     * Registers items for the provided {@code IEnumItems} values. Call when registering your items.
+     * Registers items for the provided {@code IEnumItems} values. Call when registering your
+     * items.
      *
      * @param array    The values, typically {@code YourEnumClass.values()}
      * @param registry The mod's SRegistry
+     * @deprecated Use {@link RegistrationHelper} instead
      */
+    @Deprecated
     static void registerItems(IEnumItems[] array, SRegistry registry) {
         registerItems(Arrays.asList(array), registry);
     }
 
     /**
-     * Registers items for the provided {@code IEnumItems} values. Call when registering your items.
+     * Registers items for the provided {@code IEnumItems} values. Call when registering your
+     * items.
      *
      * @param list     The values
      * @param registry The mod's SRegistry
+     * @deprecated Use {@link RegistrationHelper} instead
      */
+    @Deprecated
     static void registerItems(Collection<? extends IEnumItems> list, SRegistry registry) {
         list.forEach(e -> registry.registerItem(e.getItem(), e.getName()));
+    }
+
+    class RegistrationHelper {
+        private final SRegistry registry;
+
+        public RegistrationHelper(SRegistry registry) {
+            this.registry = registry;
+        }
+
+        /**
+         * Registers items for the provided {@link IEnumItems} values.
+         * @param items The {@link IEnumItems} values
+         */
+        public void registerItems(IEnumItems... items) {
+            for (IEnumItems item : items)
+                registry.registerItem(item.getItem(), item.getName());
+        }
+
+        /**
+         * Registers blocks for any enum type, using the given functions to get the block and name.
+         * @param block Function that returns the block for the enum
+         * @param name Function that returns the registry name (minus namespace/mod ID) of the block
+         * @param enumClass The enum type, E
+         * @param <E> Any enum type
+         */
+        public <E extends Enum<E>> void registerBlocksGenericEnum(Function<E, Block> block, Function<E, String> name, Class<E> enumClass) {
+            for (E e : enumClass.getEnumConstants())
+                registry.registerBlock(block.apply(e), name.apply(e));
+        }
+
+        /**
+         * Registers items for any enum type, using the given functions to get the item and name.
+         * @param item Function that returns the item for the enum
+         * @param name Function that returns the registry name (minus namespace/mod ID) of the item
+         * @param enumClass The enum type, E
+         * @param <E> Any enum type
+         */
+        public <E extends Enum<E>> void registerItemsGenericEnum(Function<E, Item> item, Function<E, String> name, Class<E> enumClass) {
+            for (E e : enumClass.getEnumConstants())
+                registry.registerItem(item.apply(e), name.apply(e));
+        }
     }
 }
