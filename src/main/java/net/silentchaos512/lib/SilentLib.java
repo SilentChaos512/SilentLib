@@ -11,6 +11,8 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.silentchaos512.lib.client.key.internal.InternalKeyTracker;
+import net.silentchaos512.lib.event.ClientTicks;
+import net.silentchaos512.lib.event.ServerTicks;
 import net.silentchaos512.lib.event.SilentLibClientEvents;
 import net.silentchaos512.lib.event.SilentLibCommonEvents;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
@@ -45,6 +47,7 @@ public final class SilentLib {
     return locHelpers.get(modId.toLowerCase(Locale.ROOT));
   }
 
+  @Deprecated
   public void registerLocalizationHelperForMod(String modId, LocalizationHelper loc) {
 
     locHelpers.put(modId.toLowerCase(Locale.ROOT), loc);
@@ -58,10 +61,16 @@ public final class SilentLib {
     network.register(MessageChangeGamemode.class, Side.SERVER);
     NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerLibF());
 
+    // Common events
     MinecraftForge.EVENT_BUS.register(new SilentLibCommonEvents());
-    if (event.getSide() == Side.CLIENT) {
+    if (event.getSide().isClient()) {
+      // Client-only
       MinecraftForge.EVENT_BUS.register(new SilentLibClientEvents());
       MinecraftForge.EVENT_BUS.register(InternalKeyTracker.INSTANCE);
+      MinecraftForge.EVENT_BUS.register(ClientTicks.INSTANCE);
+    } else if (event.getSide().isServer()) {
+      // Server-only
+      MinecraftForge.EVENT_BUS.register(ServerTicks.INSTANCE);
     }
   }
 
