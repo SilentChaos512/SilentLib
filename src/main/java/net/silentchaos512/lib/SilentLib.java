@@ -30,7 +30,7 @@ public final class SilentLib {
 
   public static final String MOD_ID = "silentlib";
   public static final String MOD_NAME = "Silent Lib";
-  public static final String VERSION = "2.3.11";
+  public static final String VERSION = "2.3.12";
   public static final int BUILD_NUM = 0;
   public static final String DEPENDENCIES = "required-after:forge@[14.23.3.2669,);";
 
@@ -42,6 +42,7 @@ public final class SilentLib {
 
   private final Map<String, LocalizationHelper> locHelpers = Maps.newHashMap();
 
+  @Deprecated
   public LocalizationHelper getLocalizationHelperForMod(String modId) {
 
     return locHelpers.get(modId.toLowerCase(Locale.ROOT));

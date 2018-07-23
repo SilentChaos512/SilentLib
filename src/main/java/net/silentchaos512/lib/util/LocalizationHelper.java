@@ -37,6 +37,7 @@ import java.util.Objects;
  *
  * @author SilentChaos512
  */
+@Deprecated
 public class LocalizationHelper {
 
     /**
