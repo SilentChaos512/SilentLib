@@ -22,6 +22,8 @@ import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -57,6 +59,28 @@ public class I18nHelper {
         this.log = log;
         this.logServerTranslationAttempts = logServerTranslationAttempts;
         this.clientSide = FMLCommonHandler.instance().getSide() == Side.CLIENT;
+    }
+
+    /**
+     * Gets an appropriate translation key in the form {@code "prefix.modId.key"}
+     * @return The translation key
+     */
+    public String getKey(String prefix, String key) {
+        return prefix + "." + modId + "." + key;
+    }
+
+    /**
+     * Gets an appropriate translation key in the form {@code "prefix.modId.key.suffix"}
+     * @return The translation key
+     */
+    public String getKey(String prefix, String key, String suffix) {
+        return prefix + "." + modId + "." + key + "." + suffix;
+    }
+
+    public String getKey(IForgeRegistryEntry<?> object, String key) {
+        String prefix = getPrefixFor(object);
+        ResourceLocation name = Objects.requireNonNull(object.getRegistryName());
+        return prefix + "." + name.getNamespace() + "." + name.getPath() + "." + key;
     }
 
     /**
@@ -98,7 +122,7 @@ public class I18nHelper {
      * @return Translation result, or {@code key} if the key is not found
      */
     public String translate(String prefix, String key, Object... params) {
-        return translate(prefix + "." + modId + "." + key, params);
+        return translate(getKey(prefix, key), params);
     }
 
     /**
@@ -112,9 +136,7 @@ public class I18nHelper {
      * @return Translation result, or {@code key} if the key is not found
      */
     public String subText(IForgeRegistryEntry<?> object, String key, Object... params) {
-        String prefix = getPrefixFor(object);
-        ResourceLocation name = Objects.requireNonNull(object.getRegistryName());
-        return translate(prefix + "." + name.getNamespace() + "." + name.getPath() + "." + key, params);
+        return translate(getKey(object, key), params);
     }
 
     /**
@@ -127,7 +149,7 @@ public class I18nHelper {
      * @return Translation result, or {@code key} if the key is not found
      */
     public String subText(String objName, String prefix, String key, Object... params) {
-        return translate(prefix, objName + "." + key, params);
+        return translate(getKey(prefix, objName, key), params);
     }
 
     /**
@@ -152,6 +174,35 @@ public class I18nHelper {
      */
     public String itemSubText(String itemName, String key, Object... params) {
         return subText(itemName, "item", key, params);
+    }
+
+    public String miscText(String key, Object... params) {
+        return translate("misc", key, params);
+    }
+
+    /**
+     * Creates a {@link TextComponentTranslation}, suitable for sending text from server to client.
+     *
+     * @param prefix Key prefix (item, tile, etc.)
+     * @param key    Key suffix (after mod ID)
+     * @param params Optional parameters to format into translation
+     * @return An {@link ITextComponent}
+     */
+    public ITextComponent textComponent(String prefix, String key, Object... params) {
+        return new TextComponentTranslation(getKey(prefix, key), params);
+    }
+
+    /**
+     * Creates a {@link TextComponentTranslation}, suitable for sending text from server to client.
+     *
+     * @param prefix Key prefix (item, tile, etc.)
+     * @param key    Key middle (after mod ID)
+     * @param suffix Key suffix (after {@code key})
+     * @param params Optional parameters to format into translation
+     * @return An {@link ITextComponent}
+     */
+    public ITextComponent textComponent(String prefix, String key, String suffix, Object... params) {
+        return new TextComponentTranslation(getKey(prefix, key, suffix), params);
     }
 
     private String getPrefixFor(IForgeRegistryEntry<?> object) {

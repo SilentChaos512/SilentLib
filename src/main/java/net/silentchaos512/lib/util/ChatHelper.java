@@ -21,26 +21,66 @@ package net.silentchaos512.lib.util;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 
 public class ChatHelper {
+    /**
+     * Creates a {@link TextComponentString} and sends it to the player's chat log.
+     * <em>Use with care:</em> if this is called on the server, the player may not receive text in
+     * their local language.
+     *
+     * @param message The raw string passed to {@link TextComponentString}
+     */
+    public static void sendMessage(EntityPlayer player, String message) {
+        player.sendMessage(new TextComponentString(message));
+    }
 
-  public static void sendMessage(EntityPlayer player, String message) {
+    public static void sendMessage(EntityPlayer player, ITextComponent component) {
+        player.sendMessage(component);
+    }
 
-    player.sendMessage(new TextComponentString(message));
-  }
+    /**
+     * Creates a {@link TextComponentString} and sends it to the player's action bar or chat log.
+     * <em>Use with care:</em> if this is called on the server, the player may not receive text in
+     * their local language.
+     *
+     * @param message   The raw string passed to {@link TextComponentString}
+     * @param actionBar If true, sends to action bar, chat log otherwise
+     */
+    public static void sendStatusMessage(EntityPlayer player, String message, boolean actionBar) {
+        player.sendStatusMessage(new TextComponentString(message), actionBar);
+    }
 
-  public static void sendMessage(EntityPlayer player, ITextComponent component) {
+    /**
+     * Sends the {@link ITextComponent} to the player's action bar or chat log. Not recommended, use
+     * {@link #translate(EntityPlayer, String, boolean)} instead.
+     *
+     * @param component The text component.
+     * @param actionBar If true, sends to action bar, chat log otherwise
+     */
+    public static void sendStatusMessage(EntityPlayer player, ITextComponent component, boolean actionBar) {
+        player.sendStatusMessage(component, actionBar);
+    }
 
-    player.sendMessage(component);
-  }
+    /**
+     * Creates a {@link TextComponentTranslation} and sends a message to the player's chat log.
+     *
+     * @param translationKey Translation key that the client will translate
+     * @since 2.3.13
+     */
+    public static void translate(EntityPlayer player, String translationKey) {
+        sendMessage(player, new TextComponentTranslation(translationKey));
+    }
 
-  public static void sendStatusMessage(EntityPlayer player, String message, boolean actionBar) {
-
-    player.sendStatusMessage(new TextComponentString(message), actionBar);
-  }
-
-  public static void sendStatusMessage(EntityPlayer player, ITextComponent component, boolean actionBar) {
-
-    player.sendStatusMessage(component, actionBar);
-  }
+    /**
+     * Creates a {@link TextComponentTranslation} and sends a message to the player's action bar or
+     * chat log.
+     *
+     * @param translationKey Translation key that the client will translate
+     * @param actionBar      If true, sends to action bar, chat log otherwise
+     * @since 2.3.13
+     */
+    public static void translate(EntityPlayer player, String translationKey, boolean actionBar) {
+        sendStatusMessage(player, new TextComponentTranslation(translationKey), actionBar);
+    }
 }
