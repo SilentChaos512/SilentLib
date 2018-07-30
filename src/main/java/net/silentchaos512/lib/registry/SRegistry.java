@@ -34,7 +34,6 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
@@ -67,9 +66,11 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.block.BlockMetaSubtypes;
 import net.silentchaos512.lib.block.IColoredBlock;
 import net.silentchaos512.lib.block.ITileEntityBlock;
 import net.silentchaos512.lib.item.IColoredItem;
+import net.silentchaos512.lib.item.ItemBlockMetaSubtypes;
 import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -185,21 +186,31 @@ public class SRegistry {
      * Register a Block. Its name (registry key/name) must be provided. Uses a new ItemBlockSL.
      */
     public <T extends Block> T registerBlock(T block, String key) {
-        return registerBlock(block, key, block instanceof IRegistryObject ? new ItemBlockSL(block) : new ItemBlock(block));
+        return registerBlock(block, key, defaultItemBlock(block));
+    }
+
+    @Nonnull
+    private <T extends Block> net.minecraft.item.ItemBlock defaultItemBlock(T block) {
+        if (block instanceof IRegistryObject)
+            return new ItemBlockSL(block);
+        else if (block instanceof BlockMetaSubtypes)
+            return new ItemBlockMetaSubtypes((BlockMetaSubtypes) block);
+        else
+            return new net.minecraft.item.ItemBlock(block);
     }
 
     /**
      * Register an IRegistryObject Block (BlockSL, etc.) with a custom ItemBlock. Uses getName for
      * its key.
      */
-    public <T extends Block & IRegistryObject> T registerBlock(T block, ItemBlock itemBlock) {
+    public <T extends Block & IRegistryObject> T registerBlock(T block, net.minecraft.item.ItemBlock itemBlock) {
         return registerBlock(block, block.getName(), itemBlock);
     }
 
     /**
      * Register a Block. Its name (registry key/name) and ItemBlock must be provided.
      */
-    public <T extends Block> T registerBlock(T block, String key, ItemBlock itemBlock) {
+    public <T extends Block> T registerBlock(T block, String key, net.minecraft.item.ItemBlock itemBlock) {
         if (block instanceof IRegistryObject) {
             registryObjects.add((IRegistryObject) block);
         } else {

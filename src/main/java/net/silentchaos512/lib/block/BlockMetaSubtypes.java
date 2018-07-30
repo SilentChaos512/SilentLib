@@ -18,14 +18,18 @@
 
 package net.silentchaos512.lib.block;
 
+import lombok.Getter;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 
 public class BlockMetaSubtypes extends Block {
+    @Getter
+    private final int subtypeCount;
 
-    public BlockMetaSubtypes(Material blockMaterialIn) {
+    public BlockMetaSubtypes(Material blockMaterialIn, int subtypeCount) {
         super(blockMaterialIn);
+        this.subtypeCount = subtypeCount;
     }
 
     @Override
