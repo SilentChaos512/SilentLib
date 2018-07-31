@@ -5,7 +5,7 @@
   "description": "Shared library for SilentChaos512's mods.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "url": "",
+  "url": "https://minecraft.curseforge.com/projects/silent-lib",
   "authors": [ "SilentChaos512" ]
 }
 ]

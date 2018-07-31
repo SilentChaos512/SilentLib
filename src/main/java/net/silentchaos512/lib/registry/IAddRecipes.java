@@ -28,7 +28,9 @@ public interface IAddRecipes {
      *
      * @param recipes RecipeMaker object provided by the mod's SRegistry
      */
-    void addRecipes(RecipeMaker recipes);
+    @Deprecated
+    default void addRecipes(RecipeMaker recipes) {
+    }
 
     /**
      * Add ore dictionary entries for the block/item.

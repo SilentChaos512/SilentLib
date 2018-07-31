@@ -1,6 +1,7 @@
-Considering that Silent Lib is entirely behind-the-scenes from the player's perspective, this changelog likely won't mean much to most readers. You have been warned! Or something like that.
-
-Some versions don't have any changes listed. Mostly just small stuff that's not worth noting.
+2.3.13
+Updated I18nHelper with additional methods
+Updated ChatHelper with additional methods and javadoc
+Fixed: Some issues with BlockMetaSubtypes
 
 2.3.2
 Added: StackHelper.getOreNames
