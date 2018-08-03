@@ -21,6 +21,7 @@ package net.silentchaos512.lib.util;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -123,6 +124,18 @@ public class I18nHelper {
      */
     public String translate(String prefix, String key, Object... params) {
         return translate(getKey(prefix, key), params);
+    }
+
+    public String translatedName(Block block) {
+        return translate(block.getTranslationKey() + ".name");
+    }
+
+    public String translatedName(Item item) {
+        return translate(item.getTranslationKey() + ".name");
+    }
+
+    public String translatedName(ItemStack stack) {
+        return translate(stack.getTranslationKey());
     }
 
     /**

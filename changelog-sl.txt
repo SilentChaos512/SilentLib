@@ -1,3 +1,6 @@
+2.3.14
+Added: I18nHelper translatedName methods
+
 2.3.13
 Updated I18nHelper with additional methods
 Updated ChatHelper with additional methods and javadoc
