@@ -140,6 +140,13 @@ public class SRegistry {
     }
 
     /**
+     * Gets a {@link LogHelper} object to use. If the mod did not provide one, uses Silent Lib's.
+     */
+    private LogHelper logger() {
+        return this.logHelper != null ? this.logHelper : SilentLib.logHelper;
+    }
+
+    /**
      * Add a phased initializer, which has preInit, init, and postInit methods which SRegistry will
      * call automatically.
      *
@@ -211,13 +218,14 @@ public class SRegistry {
      * Register a Block. Its name (registry key/name) and ItemBlock must be provided.
      */
     public <T extends Block> T registerBlock(T block, String key, net.minecraft.item.ItemBlock itemBlock) {
-        if (block instanceof IRegistryObject) {
+        if (block instanceof IRegistryObject)
             registryObjects.add((IRegistryObject) block);
-        } else {
+        else
             block.setTranslationKey(modId + "." + key);
-        }
+
         blocks.add(block);
 
+        validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(block, name);
         ForgeRegistries.BLOCKS.register(block);
@@ -260,13 +268,13 @@ public class SRegistry {
      * Register an Item. Its name (registry key/name) must be provided.
      */
     public <T extends Item> T registerItem(T item, String key) {
-        if (item instanceof IRegistryObject) {
+        if (item instanceof IRegistryObject)
             registryObjects.add((IRegistryObject) item);
-        } else {
+        else
             item.setTranslationKey(modId + "." + key);
-        }
         items.add(item);
 
+        validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(item, name);
         ForgeRegistries.ITEMS.register(item);
@@ -354,10 +362,23 @@ public class SRegistry {
         ForgeRegistries.SOUND_EVENTS.register(sound);
     }
 
-    public void safeSetRegistryName(IForgeRegistryEntry entry, ResourceLocation name) {
-        if (entry.getRegistryName() == null) {
+    /**
+     * Set the object's registry name, if it has not already been set.
+     */
+    private void safeSetRegistryName(IForgeRegistryEntry<?> entry, ResourceLocation name) {
+        if (entry.getRegistryName() == null)
             entry.setRegistryName(name);
-        }
+        else
+            logger().warn("Registry name for {} has already been set. Was trying to set it to {}.", entry.getRegistryName(), name);
+    }
+
+    /**
+     * Ensure the given name does not contain upper case letters. This is not a problem until 1.13,
+     * so just log it as a warning.
+     */
+    private void validateRegistryName(String name) {
+        if (name.matches("[A-Z]+"))
+            logger().warn("Invalid name for object: {}", name);
     }
 
     // Advancements
@@ -376,9 +397,6 @@ public class SRegistry {
 
     /**
      * Registers a renderer for a TileEntity.
-     *
-     * @param tileClass
-     * @param renderer
      */
     @SideOnly(Side.CLIENT)
     public <T extends TileEntity> void registerTileEntitySpecialRenderer(Class<T> tileClass, TileEntitySpecialRenderer<T> renderer) {
@@ -401,7 +419,7 @@ public class SRegistry {
             if (container != null) {
                 mod = container.getMod();
                 SilentLib.logHelper.warn("Automatically acquired mod object for {}", modId);
-            } else if (logHelper != null) {
+            } else {
                 SilentLib.logHelper.warn("Could not find mod object. The mod ID is likely incorrect.");
             }
         }
@@ -457,16 +475,6 @@ public class SRegistry {
      */
     public void clientPreInit(FMLPreInitializationEvent event) {
         this.clientPreInit();
-
-        for (IRegistryObject obj : this.registryObjects) {
-            if (obj instanceof ITileEntityBlock) {
-                ITileEntityBlock tileBlock = (ITileEntityBlock) obj;
-                final TileEntitySpecialRenderer tesr = tileBlock.getTileRenderer();
-                if (tesr != null) {
-                    ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
-                }
-            }
-        }
     }
 
     /**
@@ -481,6 +489,25 @@ public class SRegistry {
      */
     public void clientInit(FMLInitializationEvent event) {
         this.clientInit();
+
+        for (IRegistryObject obj : this.registryObjects) {
+            if (obj instanceof ITileEntityBlock) {
+                ITileEntityBlock tileBlock = (ITileEntityBlock) obj;
+                final TileEntitySpecialRenderer tesr = tileBlock.getTileRenderer();
+                if (tesr != null) {
+                    ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
+                }
+            }
+        }
+        for (Block block : this.blocks) {
+            if (block instanceof ITileEntityBlock) {
+                ITileEntityBlock tileBlock = (ITileEntityBlock) block;
+                final TileEntitySpecialRenderer tesr = tileBlock.getTileRenderer();
+                if (tesr != null) {
+                    ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
+                }
+            }
+        }
     }
 
     /**
