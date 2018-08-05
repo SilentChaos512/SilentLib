@@ -19,14 +19,18 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.advancements.LibTriggers;
+import net.silentchaos512.lib.advancements.UseItemTrigger;
 import net.silentchaos512.lib.item.ItemGuideBookSL;
 import net.silentchaos512.lib.util.EntityHelper;
 import net.silentchaos512.lib.util.PlayerHelper;
@@ -41,47 +45,65 @@ import java.util.Objects;
  */
 public final class SilentLibCommonEvents {
 
-  private static final String NBT_ROOT_GUIDE_BOOKS = "silentlib_guide_books";
+    private static final String NBT_ROOT_GUIDE_BOOKS = "silentlib_guide_books";
 
-  /**
-   * Called when a player logs in. Used to give guide books to the player.
-   *
-   * @param event
-   */
-  @SubscribeEvent
-  public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+    /**
+     * Called when a player logs in. Used to give guide books to the player.
+     *
+     * @param event
+     */
+    @SubscribeEvent
+    public void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
 
-    EntityPlayer player = event.player;
-    NBTTagCompound forgeData = player.getEntityData();
-    if (!forgeData.hasKey(EntityPlayer.PERSISTED_NBT_TAG))
-      forgeData.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+        EntityPlayer player = event.player;
+        NBTTagCompound forgeData = player.getEntityData();
+        if (!forgeData.hasKey(EntityPlayer.PERSISTED_NBT_TAG))
+            forgeData.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
 
-    NBTTagCompound persistedData = forgeData.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
-    if (!persistedData.hasKey(NBT_ROOT_GUIDE_BOOKS))
-      persistedData.setTag(NBT_ROOT_GUIDE_BOOKS, new NBTTagCompound());
+        NBTTagCompound persistedData = forgeData.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        if (!persistedData.hasKey(NBT_ROOT_GUIDE_BOOKS))
+            persistedData.setTag(NBT_ROOT_GUIDE_BOOKS, new NBTTagCompound());
 
-    NBTTagCompound guideData = persistedData.getCompoundTag(NBT_ROOT_GUIDE_BOOKS);
+        NBTTagCompound guideData = persistedData.getCompoundTag(NBT_ROOT_GUIDE_BOOKS);
 
-    int id = 0;
-    ItemGuideBookSL item = ItemGuideBookSL.getBookById(id);
-    while (item != null && item.giveBookOnFirstLogin) {
-      ResourceLocation name = Objects.requireNonNull(item.getRegistryName());
-      if (!guideData.getBoolean(name.toString())) {
-        guideData.setBoolean(name.toString(), true);
-        PlayerHelper.giveItem(player, new ItemStack(item));
-        SilentLib.logHelper.info("Player has been given guide book {}", name);
-      }
+        int id = 0;
+        ItemGuideBookSL item = ItemGuideBookSL.getBookById(id);
+        while (item != null && item.giveBookOnFirstLogin) {
+            ResourceLocation name = Objects.requireNonNull(item.getRegistryName());
+            if (!guideData.getBoolean(name.toString())) {
+                guideData.setBoolean(name.toString(), true);
+                PlayerHelper.giveItem(player, new ItemStack(item));
+                SilentLib.logHelper.info("Player has been given guide book {}", name);
+            }
 
-      item = ItemGuideBookSL.getBookById(++id);
+            item = ItemGuideBookSL.getBookById(++id);
+        }
     }
-  }
 
-  @SubscribeEvent
-  public void onWorldTick(WorldTickEvent event) {
+    @SubscribeEvent
+    public void onWorldTick(WorldTickEvent event) {
 
-    if (event.phase == Phase.START) {
-      // World tick pre.
-      EntityHelper.handleSpawns();
+        if (event.phase == Phase.START) {
+            // World tick pre.
+            EntityHelper.handleSpawns();
+        }
     }
-  }
+
+    @SubscribeEvent
+    public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+            LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
+    }
+
+    @SubscribeEvent
+    public void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+            LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
+    }
+
+    @SubscribeEvent
+    public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+            LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
+    }
 }
