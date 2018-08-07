@@ -2,6 +2,8 @@ package net.silentchaos512.lib.block;
 
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 import javax.annotation.Nullable;
 
@@ -22,6 +24,7 @@ public interface ITileEntityBlock {
      *
      * @return The TESR to bind, or null if nothing should be done.
      */
+    @SideOnly(Side.CLIENT)
     @Nullable
     default TileEntitySpecialRenderer<?> getTileRenderer() {
         return null;

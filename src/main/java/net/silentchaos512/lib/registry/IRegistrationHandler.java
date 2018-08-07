@@ -25,6 +25,7 @@ package net.silentchaos512.lib.registry;
  * @author SilentChaos512
  * @since 2.2.2
  */
+@Deprecated
 public interface IRegistrationHandler<T> {
 
   public void registerAll(SRegistry reg);

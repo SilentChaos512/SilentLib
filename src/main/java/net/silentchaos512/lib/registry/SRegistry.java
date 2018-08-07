@@ -19,7 +19,6 @@
 package net.silentchaos512.lib.registry;
 
 import com.google.common.collect.MapMaker;
-import gnu.trove.map.hash.THashMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +33,7 @@ import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
@@ -72,14 +72,17 @@ import net.silentchaos512.lib.block.ITileEntityBlock;
 import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.item.ItemBlockMetaSubtypes;
 import net.silentchaos512.lib.item.ItemBlockSL;
+import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SRegistry {
+    @Deprecated
     private final Set<IRegistryObject> registryObjects = new HashSet<>();
     private final List<Block> blocks = NonNullList.create();
     private final List<Item> items = NonNullList.create();
@@ -89,28 +92,16 @@ public class SRegistry {
     private final List<Item> coloredItems = NonNullList.create();
 
     private List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
-    private Map<Class, IRegistrationHandler> registrationHandlers = new THashMap<>();
+    private Map<Class<? extends IForgeRegistryEntry<?>>, Consumer<SRegistry>> registrationHandlers = new HashMap<>();
 
-    /**
-     * A reference to the mod's instance object.
-     */
-    protected Object mod;
-    /**
-     * The LogHelper for the mod, if any. May be used to log error messages.
-     */
+    private Object mod;
     @Nullable
-    protected LogHelper logHelper;
-
-    /**
-     * The mod ID for the mod this SRegistry instance belongs to.
-     */
-    public final String modId;
-    /**
-     * The resource prefix for the mod. This is set in the constructor based on the modId.
-     */
+    private LogHelper logHelper;
+    private final String modId;
+    private final String modName;
     private final String resourcePrefix;
 
-    // TODO: Make protected, add getter.
+    // TODO: Make private, add getter.
     @Nonnull
     public RecipeMaker recipes;
 
@@ -119,28 +110,45 @@ public class SRegistry {
     @Nullable
     private CreativeTabs defaultCreativeTab = null;
 
+    /**
+     * Constructor which automatically acquires the mod container to populate required fields.
+     *
+     * @since 2.3.16
+     */
+    public SRegistry() {
+        ModContainer mod = Objects.requireNonNull(Loader.instance().activeModContainer());
+        this.modId = mod.getModId();
+        this.modName = mod.getName();
+        this.resourcePrefix = this.modId + ":";
+        this.logHelper = new LogHelper(this.modName + "/SRegistry", 1);
+        this.recipes = new RecipeMaker(modId);
+        MinecraftForge.EVENT_BUS.register(new EventHandler(this));
+    }
+
+    @Deprecated
     public SRegistry(String modId) {
         this.modId = modId;
+        this.modName = Loader.instance().activeModContainer().getName();
         this.resourcePrefix = modId.toLowerCase(Locale.ROOT) + ":";
         this.recipes = new RecipeMaker(modId);
         MinecraftForge.EVENT_BUS.register(new EventHandler(this));
     }
 
+    @Deprecated
     public SRegistry(String modId, LogHelper logHelper) {
         this(modId);
         this.logHelper = logHelper;
     }
 
     /**
-     * The mod object should be set automatically in preInit, but it can be done manually if that
-     * fails.
+     * Set the mod instance object (required if not using latest constructor)
      */
     public void setMod(Object mod) {
         this.mod = mod;
     }
 
     /**
-     * Gets a {@link LogHelper} object to use. If the mod did not provide one, uses Silent Lib's.
+     * Gets a {@link LogHelper} object to use. If {@link #logHelper} is null, uses Silent Lib's.
      */
     private LogHelper logger() {
         return this.logHelper != null ? this.logHelper : SilentLib.logHelper;
@@ -149,6 +157,9 @@ public class SRegistry {
     /**
      * Add a phased initializer, which has preInit, init, and postInit methods which SRegistry will
      * call automatically.
+     * <p>This method should be called during <em>pre-init</em> in the proper proxy,
+     * <em>before</em>
+     * calling the SRegistry's preInit method.</p>
      *
      * @param instance Your initializer (singleton design is recommended)
      * @return The unmodified instance
@@ -159,9 +170,33 @@ public class SRegistry {
         return instance;
     }
 
-    public <T> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler, Class<T> clazz) {
-        this.registrationHandlers.put(clazz, handler);
+    /**
+     * Add a registration handler
+     *
+     * @deprecated Use {@link #addRegistrationHandler(Consumer, Class)} instead
+     */
+    @Deprecated
+    public <T extends IForgeRegistryEntry<?>> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler, Class<T> clazz) {
+        addRegistrationHandler((Consumer<SRegistry>) handler::registerAll, clazz);
         return handler;
+    }
+
+    /**
+     * Adds a function that will be called when it is time to register objects for a certain class.
+     * For example, adding a handler for class {@link Item} will call the function during {@link
+     * RegistryEvent.Register} for type {@link Item}.
+     * <p>This method should be called during <em>pre-init</em> in the proper proxy.</p>
+     *
+     * @param registerFunction The function to call
+     * @param registryClass    The registry object class
+     * @throws RuntimeException if a handler for the class is already registered
+     * @since 2.3.16
+     */
+    // Interestingly, the deprecated method is still called with plain consumers... OK for now, I guess?
+    public void addRegistrationHandler(Consumer<SRegistry> registerFunction, Class<? extends IForgeRegistryEntry<?>> registryClass) throws RuntimeException {
+        if (this.registrationHandlers.containsKey(registryClass))
+            throw new RuntimeException("Registration handler for class " + registryClass + " already registered!");
+        this.registrationHandlers.put(registryClass, registerFunction);
     }
 
     public CreativeTabs makeCreativeTab(String label, Supplier<ItemStack> icon) {
@@ -185,6 +220,7 @@ public class SRegistry {
     /**
      * Register an IRegistryObject Block (BlockSL, etc.) Uses getName for its key.
      */
+    @Deprecated
     public <T extends Block & IRegistryObject> T registerBlock(T block) {
         return registerBlock(block, block.getName());
     }
@@ -197,27 +233,28 @@ public class SRegistry {
     }
 
     @Nonnull
-    private <T extends Block> net.minecraft.item.ItemBlock defaultItemBlock(T block) {
+    private <T extends Block> ItemBlock defaultItemBlock(T block) {
         if (block instanceof IRegistryObject)
             return new ItemBlockSL(block);
         else if (block instanceof BlockMetaSubtypes)
             return new ItemBlockMetaSubtypes((BlockMetaSubtypes) block);
         else
-            return new net.minecraft.item.ItemBlock(block);
+            return new ItemBlock(block);
     }
 
     /**
      * Register an IRegistryObject Block (BlockSL, etc.) with a custom ItemBlock. Uses getName for
      * its key.
      */
-    public <T extends Block & IRegistryObject> T registerBlock(T block, net.minecraft.item.ItemBlock itemBlock) {
+    @Deprecated
+    public <T extends Block & IRegistryObject> T registerBlock(T block, ItemBlock itemBlock) {
         return registerBlock(block, block.getName(), itemBlock);
     }
 
     /**
      * Register a Block. Its name (registry key/name) and ItemBlock must be provided.
      */
-    public <T extends Block> T registerBlock(T block, String key, net.minecraft.item.ItemBlock itemBlock) {
+    public <T extends Block> T registerBlock(T block, String key, ItemBlock itemBlock) {
         if (block instanceof IRegistryObject)
             registryObjects.add((IRegistryObject) block);
         else
@@ -230,7 +267,7 @@ public class SRegistry {
         safeSetRegistryName(block, name);
         ForgeRegistries.BLOCKS.register(block);
 
-        // Register ItemBlock
+        // Register ItemBlock; TODO: Should this be done in Item register event?
         safeSetRegistryName(itemBlock, name);
         ForgeRegistries.ITEMS.register(itemBlock);
 
@@ -244,7 +281,7 @@ public class SRegistry {
             this.recipeAdders.add((IAddRecipes) block);
         }
 
-        if (block instanceof IColoredBlock) {
+        if (GameUtil.isClient() && block instanceof IColoredBlock) {
             this.coloredBlocks.add(block);
         }
 
@@ -260,6 +297,7 @@ public class SRegistry {
     /**
      * Register an IRegistryObject Item (ItemSL, etc.) Uses getName for its key.
      */
+    @Deprecated
     public <T extends Item & IRegistryObject> T registerItem(T item) {
         return registerItem(item, item.getName());
     }
@@ -283,7 +321,7 @@ public class SRegistry {
             this.recipeAdders.add((IAddRecipes) item);
         }
 
-        if (item instanceof IColoredItem) {
+        if (GameUtil.isClient() && item instanceof IColoredItem) {
             this.coloredItems.add(item);
         }
 
@@ -297,6 +335,7 @@ public class SRegistry {
     // Enchantment
 
     public void registerEnchantment(Enchantment enchantment, String key) {
+        validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(enchantment, name);
         ForgeRegistries.ENCHANTMENTS.register(enchantment);
@@ -307,7 +346,7 @@ public class SRegistry {
     /**
      * Automatically incrementing ID number for registering entities.
      */
-    protected int lastEntityId = -1;
+    private int lastEntityId = -1;
 
     public void registerEntity(Class<? extends Entity> entityClass, String key) {
         registerEntity(entityClass, key, ++lastEntityId, mod, 64, 20, true);
@@ -342,28 +381,32 @@ public class SRegistry {
 
     // Potion
 
+    @Deprecated
     public void registerPotion(Potion potion) {
         ForgeRegistries.POTIONS.register(potion);
     }
 
-    public void registerPotion(Potion potion, ResourceLocation name) {
+    public void registerPotion(Potion potion, String key) {
+        if (potion.getName().isEmpty())
+            potion.setPotionName("effect." + modId + "." + key);
+
+        validateRegistryName(key);
+        ResourceLocation name = new ResourceLocation(this.modId, key);
         safeSetRegistryName(potion, name);
         ForgeRegistries.POTIONS.register(potion);
     }
 
     // Sound Events
 
-    public void registerSoundEvent(SoundEvent sound, String id) {
-        registerSoundEvent(sound, new ResourceLocation(modId, id));
-    }
-
-    public void registerSoundEvent(SoundEvent sound, ResourceLocation name) {
+    public void registerSoundEvent(SoundEvent sound, String key) {
+        validateRegistryName(key);
+        ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(sound, name);
         ForgeRegistries.SOUND_EVENTS.register(sound);
     }
 
     /**
-     * Set the object's registry name, if it has not already been set.
+     * Set the object's registry name, if it has not already been set. Logs a warning if it has.
      */
     private void safeSetRegistryName(IForgeRegistryEntry<?> entry, ResourceLocation name) {
         if (entry.getRegistryName() == null)
@@ -377,7 +420,7 @@ public class SRegistry {
      * so just log it as a warning.
      */
     private void validateRegistryName(String name) {
-        if (name.matches("[A-Z]+"))
+        if (name.matches("[^a-z0-9_]+"))
             logger().warn("Invalid name for object: {}", name);
     }
 
@@ -596,77 +639,60 @@ public class SRegistry {
             this.sregistry = sregistry;
         }
 
+        private void runRegistrationHandlerIfPresent(Class<?> clazz) {
+            if (sregistry.registrationHandlers.containsKey(clazz))
+                sregistry.registrationHandlers.get(clazz).accept(sregistry);
+        }
+
         @SubscribeEvent
         public void registerBlocks(RegistryEvent.Register<Block> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(Block.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(Block.class);
         }
 
         @SubscribeEvent
         public void registerItems(RegistryEvent.Register<Item> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(Item.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
-
+            runRegistrationHandlerIfPresent(Item.class);
             sregistry.addOreDictEntries();
         }
 
         @SubscribeEvent
         public void registerPotions(RegistryEvent.Register<Potion> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(Potion.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(Potion.class);
         }
 
         @SubscribeEvent
         public void registerBiomes(RegistryEvent.Register<Biome> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(Biome.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(Biome.class);
         }
 
         @SubscribeEvent
         public void registerSoundEvents(RegistryEvent.Register<SoundEvent> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(SoundEvent.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(SoundEvent.class);
         }
 
         @SubscribeEvent
         public void registerPotionTypes(RegistryEvent.Register<PotionType> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(PotionType.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(PotionType.class);
         }
 
         @SubscribeEvent
         public void registerEnchantments(RegistryEvent.Register<Enchantment> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(Enchantment.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(Enchantment.class);
         }
 
         @SubscribeEvent
         public void registerVillagerProfessions(RegistryEvent.Register<VillagerProfession> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(VillagerProfession.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(VillagerProfession.class);
         }
 
         @SubscribeEvent
         public void registerEntities(RegistryEvent.Register<EntityEntry> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(EntityEntry.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
+            runRegistrationHandlerIfPresent(EntityEntry.class);
         }
 
         @SubscribeEvent
         public void registerRecipes(RegistryEvent.Register<IRecipe> event) {
-            IRegistrationHandler handler = sregistry.registrationHandlers.get(IRecipe.class);
-            if (handler != null)
-                handler.registerAll(sregistry);
-
+            runRegistrationHandlerIfPresent(IRecipe.class);
             sregistry.addRecipes();
         }
 
