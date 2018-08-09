@@ -140,6 +140,10 @@ public class SRegistry {
         this.logHelper = logHelper;
     }
 
+    public RecipeMaker getRecipeMaker() {
+        return recipes;
+    }
+
     /**
      * Set the mod instance object (required if not using latest constructor)
      */
