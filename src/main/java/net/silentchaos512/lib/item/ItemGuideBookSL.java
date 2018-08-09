@@ -20,6 +20,8 @@ package net.silentchaos512.lib.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -88,5 +90,10 @@ public class ItemGuideBookSL extends Item {
         player.openGui(SilentLib.instance, bookId, world, (int) player.posX, (int) player.posY, (int) player.posZ);
         // TODO
         return new ActionResult<>(EnumActionResult.SUCCESS, player.getHeldItem(hand));
+    }
+
+    @Override
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
+        tooltip.add(I18n.format(this.getTranslationKey(stack) + ".desc"));
     }
 }
