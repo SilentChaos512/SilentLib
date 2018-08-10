@@ -18,14 +18,17 @@
 
 package net.silentchaos512.lib.util;
 
+import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.collection.ItemStackList;
 import net.silentchaos512.lib.collection.StackList;
 
@@ -35,6 +38,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StackHelper {
+    /**
+     * Creates an {@link ItemStack} from the block or item. Returns an empty stack if {@code
+     * blockOrItem} is not a block or item.
+     *
+     * @param blockOrItem A block or an item
+     * @return A stack of one of the block or item, or an empty stack if the object is not a block
+     * or item
+     */
+    public static ItemStack fromBlockOrItem(IForgeRegistryEntry<?> blockOrItem) {
+        if (blockOrItem instanceof Block)
+            return new ItemStack((Block) blockOrItem);
+        else if (blockOrItem instanceof Item)
+            return new ItemStack((Item) blockOrItem);
+        return ItemStack.EMPTY;
+    }
 
     @Deprecated
     @Nonnull
@@ -104,8 +122,10 @@ public class StackHelper {
      * Gets the NBT tag compound for the stack.
      *
      * @param stack        the {@code ItemStack}
-     * @param createIfNull if true, a new, empty {@code NBTTagCompound} will be set on the stack if it does not have one
-     * @return The stack's tag compound, or {@code null} if it does not have one and {@code createIfNull} is false
+     * @param createIfNull if true, a new, empty {@code NBTTagCompound} will be set on the stack if
+     *                     it does not have one
+     * @return The stack's tag compound, or {@code null} if it does not have one and {@code
+     * createIfNull} is false
      */
     @Deprecated
     public static NBTTagCompound getTagCompound(@Nonnull ItemStack stack, boolean createIfNull) {
@@ -155,7 +175,8 @@ public class StackHelper {
     }
 
     /**
-     * Gets all ore dictionary keys for the stack. If the stack is empty, an empty list is returned.
+     * Gets all ore dictionary keys for the stack. If the stack is empty, an empty list is
+     * returned.
      *
      * @param stack The ItemStack, which may be empty.
      * @return A list of strings, which may be empty.
@@ -190,7 +211,8 @@ public class StackHelper {
     }
 
     /**
-     * Gets all non-empty stacks inside the inventory. Inventories can be painful to iterate over, so this takes care of the ugly part.
+     * Gets all non-empty stacks inside the inventory. Inventories can be painful to iterate over,
+     * so this takes care of the ugly part.
      *
      * @param inv The inventory
      * @return A StackList of non-empty ItemStacks

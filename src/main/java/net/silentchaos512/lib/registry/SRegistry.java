@@ -19,7 +19,6 @@
 package net.silentchaos512.lib.registry;
 
 import com.google.common.collect.MapMaker;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -84,7 +83,9 @@ import java.util.function.Supplier;
 public class SRegistry {
     @Deprecated
     private final Set<IRegistryObject> registryObjects = new HashSet<>();
+    @Getter
     private final List<Block> blocks = NonNullList.create();
+    @Getter
     private final List<Item> items = NonNullList.create();
     private final List<IAddRecipes> recipeAdders = NonNullList.create();
 
@@ -105,8 +106,8 @@ public class SRegistry {
     @Nonnull
     public RecipeMaker recipes;
 
-    @Getter(value = AccessLevel.PUBLIC)
-    @Setter(value = AccessLevel.PUBLIC)
+    @Getter
+    @Setter
     @Nullable
     private CreativeTabs defaultCreativeTab = null;
 
