@@ -87,13 +87,13 @@ public class SRegistry {
     private final List<Block> blocks = NonNullList.create();
     @Getter
     private final List<Item> items = NonNullList.create();
-    private final List<IAddRecipes> recipeAdders = NonNullList.create();
 
+    private final List<IAddRecipes> recipeAdders = NonNullList.create();
     private final List<Block> coloredBlocks = NonNullList.create();
     private final List<Item> coloredItems = NonNullList.create();
 
-    private List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
-    private Map<Class<? extends IForgeRegistryEntry<?>>, Consumer<SRegistry>> registrationHandlers = new HashMap<>();
+    private final List<IPhasedInitializer> phasedInitializers = new ArrayList<>();
+    private final Map<Class<? extends IForgeRegistryEntry<?>>, Consumer<SRegistry>> registrationHandlers = new HashMap<>();
 
     private Object mod;
     @Nullable
@@ -146,7 +146,7 @@ public class SRegistry {
     }
 
     /**
-     * Set the mod instance object (required if not using latest constructor)
+     * Set the mod instance object
      */
     public void setMod(Object mod) {
         this.mod = mod;
@@ -163,16 +163,13 @@ public class SRegistry {
      * Add a phased initializer, which has preInit, init, and postInit methods which SRegistry will
      * call automatically.
      * <p>This method should be called during <em>pre-init</em> in the proper proxy,
-     * <em>before</em>
-     * calling the SRegistry's preInit method.</p>
+     * <em>before</em> calling the SRegistry's preInit method.</p>
      *
      * @param instance Your initializer (singleton design is recommended)
-     * @return The unmodified instance
      * @since 2.3.2
      */
-    public IPhasedInitializer addPhasedInitializer(IPhasedInitializer instance) {
+    public void addPhasedInitializer(IPhasedInitializer instance) {
         this.phasedInitializers.add(instance);
-        return instance;
     }
 
     /**
@@ -215,10 +212,7 @@ public class SRegistry {
         return tab;
     }
 
-    /*
-     * Register methods. Should be called in the appropriate IRegistrationHandler (your ModBlocks, ModItems, etc.).
-     * Recipes should be registers in the block/item's addRecipe method in most cases, but you can use a handler as well.
-     */
+    //region Standard register methods (usually called within a registration handler)
 
     // Block
 
@@ -257,7 +251,7 @@ public class SRegistry {
     }
 
     /**
-     * Register a Block. Its name (registry key/name) and ItemBlock must be provided.
+     * Register a Block. Its name registry name and ItemBlock must be provided.
      */
     public <T extends Block> T registerBlock(T block, String key, ItemBlock itemBlock) {
         if (block instanceof IRegistryObject)
@@ -343,6 +337,7 @@ public class SRegistry {
         validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
         safeSetRegistryName(enchantment, name);
+        enchantment.setName(name.getNamespace() + "." + name.getPath());
         ForgeRegistries.ENCHANTMENTS.register(enchantment);
     }
 
@@ -439,8 +434,7 @@ public class SRegistry {
      * Register a TileEntity. "tile." + resourcePrefix is automatically prepended to the key.
      */
     public void registerTileEntity(Class<? extends TileEntity> tileClass, String key) {
-        String fullKey = /*"tile." +*/ resourcePrefix + key;
-        GameRegistry.registerTileEntity(tileClass, fullKey);
+        GameRegistry.registerTileEntity(tileClass, new ResourceLocation(modId, key));
     }
 
     /**
@@ -451,6 +445,32 @@ public class SRegistry {
         ClientRegistry.bindTileEntitySpecialRenderer(tileClass, renderer);
     }
 
+    // Model registration wrappers
+
+    @SideOnly(Side.CLIENT)
+    public void setModel(Block block, int meta, String modelPath) {
+        setModel(Item.getItemFromBlock(block), meta, modelPath, "inventory");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setModel(Block block, int meta, String modelPath, String variant) {
+        setModel(Item.getItemFromBlock(block), meta, modelPath, variant);
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setModel(Item item, int meta, String modelPath) {
+        setModel(item, meta, modelPath, "inventory");
+    }
+
+    @SideOnly(Side.CLIENT)
+    public void setModel(Item item, int meta, String modelPath, String variant) {
+        ModelLoader.setCustomModelResourceLocation(item, meta, new ModelResourceLocation(this.resourcePrefix + modelPath, variant));
+    }
+
+    //endregion
+
+    //region Initialization phases
+
     /*
      * Initialization phases. Calling in either your common or client proxy is recommended. "client" methods in your
      * client proxy, the rest in your common AND client proxy.
@@ -459,8 +479,7 @@ public class SRegistry {
     /**
      * Call in the "preInit" phase in your common proxy.
      */
-    @Deprecated
-    public void preInit() {
+    public void preInit(FMLPreInitializationEvent event) {
         if (mod == null) {
             SilentLib.logHelper.warn("Mod {} did not manually set its mod object! This is bad and may cause crashes.", modId);
             ModContainer container = Loader.instance().getIndexedModList().get(modId);
@@ -471,73 +490,34 @@ public class SRegistry {
                 SilentLib.logHelper.warn("Could not find mod object. The mod ID is likely incorrect.");
             }
         }
-    }
 
-    /**
-     * Call in the "preInit" phase in your common proxy.
-     */
-    public void preInit(FMLPreInitializationEvent event) {
-        this.preInit();
         this.phasedInitializers.forEach(i -> i.preInit(this, event));
     }
 
     /**
      * Call in the "init" phase in your common proxy.
      */
-    @Deprecated
-    public void init() {
-    }
-
-    /**
-     * Call in the "init" phase in your common proxy.
-     */
     public void init(FMLInitializationEvent event) {
-        this.init();
         this.phasedInitializers.forEach(i -> i.init(this, event));
     }
 
     /**
      * Call in the "postInit" phase in your common proxy.
      */
-    @Deprecated
-    public void postInit() {
-    }
-
-    /**
-     * Call in the "postInit" phase in your common proxy.
-     */
     public void postInit(FMLPostInitializationEvent event) {
-        this.postInit();
         this.phasedInitializers.forEach(i -> i.postInit(this, event));
     }
 
     /**
      * Call in the "preInit" phase in your client proxy.
      */
-    @Deprecated
-    public void clientPreInit() {
-    }
-
-    /**
-     * Call in the "preInit" phase in your client proxy.
-     */
     public void clientPreInit(FMLPreInitializationEvent event) {
-        this.clientPreInit();
-    }
-
-    /**
-     * Call in the "init" phase in your client proxy.
-     */
-    @Deprecated
-    public void clientInit() {
     }
 
     /**
      * Call in the "init" phase in your client proxy.
      */
     public void clientInit(FMLInitializationEvent event) {
-        this.clientInit();
-
         for (IRegistryObject obj : this.registryObjects) {
             if (obj instanceof ITileEntityBlock) {
                 ITileEntityBlock tileBlock = (ITileEntityBlock) obj;
@@ -560,29 +540,22 @@ public class SRegistry {
 
     /**
      * Call in the "postInit" phase in your client proxy.
-     */
-    @Deprecated
-    public void clientPostInit() {
-    }
-
-    /**
-     * Call in the "postInit" phase in your client proxy.
      *
      * @param event
      */
     public void clientPostInit(FMLPostInitializationEvent event) {
-        this.clientPostInit();
     }
 
-    @Deprecated
+    //endregion
+
     protected void addRecipes() {
         this.registryObjects.forEach(obj -> obj.addRecipes(this.recipes));
         this.recipeAdders.forEach(obj -> obj.addRecipes(this.recipes));
     }
 
     protected void addOreDictEntries() {
-        this.registryObjects.forEach(obj -> obj.addOreDict());
-        this.recipeAdders.forEach(obj -> obj.addOreDict());
+        this.registryObjects.forEach(IRegistryObject::addOreDict);
+        this.recipeAdders.forEach(IAddRecipes::addOreDict);
     }
 
     @SideOnly(Side.CLIENT)
@@ -637,16 +610,17 @@ public class SRegistry {
      * @author SilentChaos512
      * @since 2.2.2
      */
+    @SuppressWarnings("unused")
     public static class EventHandler {
-        protected SRegistry sregistry;
+        private SRegistry sregistry;
 
         public EventHandler(SRegistry sregistry) {
             this.sregistry = sregistry;
         }
 
-        private void runRegistrationHandlerIfPresent(Class<?> clazz) {
-            if (sregistry.registrationHandlers.containsKey(clazz))
-                sregistry.registrationHandlers.get(clazz).accept(sregistry);
+        private void runRegistrationHandlerIfPresent(Class<? extends IForgeRegistryEntry<?>> registryClass) {
+            if (sregistry.registrationHandlers.containsKey(registryClass))
+                sregistry.registrationHandlers.get(registryClass).accept(sregistry);
         }
 
         @SubscribeEvent
