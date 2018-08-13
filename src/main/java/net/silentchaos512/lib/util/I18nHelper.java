@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.util;
 
+import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.Item;
@@ -48,6 +49,14 @@ public class I18nHelper {
     private final Set<String> triedToTranslateOnServer = new HashSet<>();
 
     /**
+     * If true, any colons (':') in translation keys will be replaced with dots ('.')
+     *
+     * @since 2.3.17
+     */
+    @Setter
+    private boolean replacesColons = true;
+
+    /**
      * Only one I18n helper should be created for each mod
      *
      * @param modId                        The mod ID
@@ -64,6 +73,7 @@ public class I18nHelper {
 
     /**
      * Gets an appropriate translation key in the form {@code "prefix.modId.key"}
+     *
      * @return The translation key
      */
     public String getKey(String prefix, String key) {
@@ -72,6 +82,7 @@ public class I18nHelper {
 
     /**
      * Gets an appropriate translation key in the form {@code "prefix.modId.key.suffix"}
+     *
      * @return The translation key
      */
     public String getKey(String prefix, String key, String suffix) {
@@ -103,6 +114,8 @@ public class I18nHelper {
      * @return Translation result, or {@code key} if the key is not found
      */
     public String translate(String key, Object... params) {
+        if (replacesColons) key = key.replace(':', '.');
+
         if (!clientSide) {
             if (logServerTranslationAttempts && !triedToTranslateOnServer.contains(key)) {
                 log.warn("Tried to translate text \"{}\" on server side", key);

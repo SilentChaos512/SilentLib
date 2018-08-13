@@ -1,3 +1,6 @@
+2.3.17
+Added: I18nHelper option to replaces colons with dots (enabled by default)
+
 2.3.14
 Added: I18nHelper translatedName methods
 
