@@ -30,15 +30,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class LogHelper {
-
     @Getter
-    private Logger logger;
+    private final Logger logger;
     @Getter
-    private int buildNumber = 0;
+    private final int buildNumber;
     private String lastDebugOutput = "";
 
     /**
-     * @deprecated Use LogHelper(String, int)
+     * @deprecated Use {@link #LogHelper(String, int)} or {@link #LogHelper(Logger, int)}
      */
     @Deprecated
     public LogHelper(String modName) {
@@ -50,12 +49,27 @@ public class LogHelper {
         this.buildNumber = buildNumber;
     }
 
+    public LogHelper(Logger providedLogger, int buildNumber) {
+        this.logger = providedLogger;
+        this.buildNumber = buildNumber;
+    }
+
     public void catching(Throwable t) {
         this.logger.catching(t);
     }
 
     public void debug(String msg, Object... params) {
         this.logger.debug(msg, params);
+
+        // Also print to standard output for easy viewing if in dev environment
+        // TODO: Is there a better way to show debug-level logs in console?
+        if (this.buildNumber == 0) {
+            String newOutput = this.logger.getMessageFactory().newMessage(msg, params).getFormattedMessage();
+            if (!newOutput.equals(lastDebugOutput)) {
+                System.out.println(newOutput);
+                this.lastDebugOutput = newOutput;
+            }
+        }
     }
 
     public void error(String msg, Object... params) {
@@ -88,12 +102,10 @@ public class LogHelper {
     }
 
     public void noticableWarning(boolean trace, List<String> lines) {
-
         this.error("********************************************************************************");
 
         for (final String line : lines) {
-            for (final String subline : wrapString(line, 78, false, new ArrayList<String>())) {
-
+            for (final String subline : wrapString(line, 78, false, new ArrayList<>())) {
                 this.error("* " + subline);
             }
         }
@@ -109,7 +121,6 @@ public class LogHelper {
     }
 
     public static List<String> wrapString(String string, int lnLength, boolean wrapLongWords, List<String> list) {
-
         final String lines[] = WordUtils.wrap(string, lnLength, null, wrapLongWords).split(SystemUtils.LINE_SEPARATOR);
         Collections.addAll(list, lines);
         return list;
@@ -117,7 +128,6 @@ public class LogHelper {
 
     @Deprecated
     public void debug(Object... objects) {
-
         if (buildNumber == 0) {
             String line = lineFromList(objects);
 

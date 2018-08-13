@@ -91,19 +91,25 @@ public final class SilentLibCommonEvents {
 
     @SubscribeEvent
     public void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+        if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+//            SilentLib.logHelper.info("Use {} on {}", event.getItemStack(), UseItemTrigger.Target.BLOCK);
             LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
+        }
     }
 
     @SubscribeEvent
     public void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+        if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+//            SilentLib.logHelper.info("Use {} on {}", event.getItemStack(), UseItemTrigger.Target.ENTITY);
             LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
+        }
     }
 
     @SubscribeEvent
     public void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-        if (event.getEntityPlayer() instanceof EntityPlayerMP)
+        if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+//            SilentLib.logHelper.info("Use {} on {}", event.getItemStack(), UseItemTrigger.Target.ITEM);
             LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
+        }
     }
 }
