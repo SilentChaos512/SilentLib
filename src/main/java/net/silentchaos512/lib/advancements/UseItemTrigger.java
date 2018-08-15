@@ -14,7 +14,7 @@ import net.silentchaos512.lib.SilentLib;
 
 import java.util.*;
 
-// TODO: Test me!
+// TODO: Triggers for wrong items?
 public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance> {
     private static final ResourceLocation ID = new ResourceLocation(SilentLib.MOD_ID, "use_item");
     private final Map<PlayerAdvancements, UseItemTrigger.Listeners> listeners = new HashMap<>();
@@ -98,14 +98,19 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         }
 
         public void trigger(ItemStack stack, Target target) {
-            List<Listener<Instance>> list = new ArrayList<>();
+            List<Listener<Instance>> list = null;
 
-            for (Listener<Instance> listener : this.listeners)
-                if (listener.getCriterionInstance().test(stack, target))
+            for (Listener<Instance> listener : this.listeners) {
+                if (listener.getCriterionInstance().test(stack, target)) {
+                    if (list == null) list = new ArrayList<>();
                     list.add(listener);
+                }
+            }
 
-            for (ICriterionTrigger.Listener<UseItemTrigger.Instance> listener1 : list)
-                listener1.grantCriterion(this.playerAdvancements);
+            if (list != null) {
+                for (ICriterionTrigger.Listener<UseItemTrigger.Instance> listener1 : list)
+                    listener1.grantCriterion(this.playerAdvancements);
+            }
         }
     }
 

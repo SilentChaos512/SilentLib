@@ -25,6 +25,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,7 @@ public class LocalizationHelper {
     public LocalizationHelper(String modId) {
 
         this.modId = modId.toLowerCase(Locale.ROOT);
+        SilentLib.logHelper.warn("Mod '{}' still has deprecated LocalizationHelper. This should be fixed!", modId);
     }
 
     /**

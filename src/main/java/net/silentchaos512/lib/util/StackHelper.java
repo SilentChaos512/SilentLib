@@ -45,6 +45,7 @@ public class StackHelper {
      * @param blockOrItem A block or an item
      * @return A stack of one of the block or item, or an empty stack if the object is not a block
      * or item
+     * @since 2.3.17
      */
     public static ItemStack fromBlockOrItem(IForgeRegistryEntry<?> blockOrItem) {
         if (blockOrItem instanceof Block)

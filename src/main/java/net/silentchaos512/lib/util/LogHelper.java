@@ -25,11 +25,11 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class LogHelper {
+    private static final Map<String, LogHelper> LOGGER_BY_MODNAME = new HashMap<>();
+
     @Getter
     private final Logger logger;
     @Getter
@@ -47,11 +47,30 @@ public class LogHelper {
     public LogHelper(String modName, int buildNumber) {
         this.logger = LogManager.getLogger(modName);
         this.buildNumber = buildNumber;
+        addLogHelper(modName);
     }
 
     public LogHelper(Logger providedLogger, int buildNumber) {
         this.logger = providedLogger;
         this.buildNumber = buildNumber;
+        addLogHelper(providedLogger.getName());
+    }
+
+    private void addLogHelper(String modName) {
+        LOGGER_BY_MODNAME.put(modName, this);
+        this.debug("Add LogHelper for \"{}\"", modName);
+    }
+
+    /**
+     * Gets the LogHelper for the mod name (<em>not mod ID</em>), if it exists. Holding a reference
+     * to the object should be preferred; this method should not be used in most cases.
+     *
+     * @param modName The mod name (not ID)
+     * @return Optional of LogHelper if one has been registered, empty Optional otherwise
+     */
+    public static Optional<LogHelper> getRegisteredLogger(String modName) {
+        if (!LOGGER_BY_MODNAME.containsKey(modName)) return Optional.empty();
+        return Optional.of(LOGGER_BY_MODNAME.get(modName));
     }
 
     public void catching(Throwable t) {

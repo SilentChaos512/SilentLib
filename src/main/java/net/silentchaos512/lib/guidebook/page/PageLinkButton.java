@@ -4,15 +4,15 @@
 
 package net.silentchaos512.lib.guidebook.page;
 
-import java.awt.Desktop;
-import java.net.URI;
-
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
+
+import java.awt.*;
+import java.net.URI;
 
 public class PageLinkButton extends GuidePage {
 
@@ -37,8 +37,7 @@ public class PageLinkButton extends GuidePage {
     super.initGui(gui, startX, startY);
 
     gui.getButtonList().add(new GuiButton(this.buttonId, startX + 125 / 2 - 50, startY + 130, 100,
-        20, book.loc.getLocalizedString("guide",
-            "chapter." + this.chapter.getIdentifier() + ".button." + this.getLocalizationKey())));
+        20, book.loc.getLocalizedString("guide", "chapter." + this.chapter.getIdentifier() + ".button." + this.key)));
   }
 
   @Override
