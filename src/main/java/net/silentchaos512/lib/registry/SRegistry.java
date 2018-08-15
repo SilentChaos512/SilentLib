@@ -42,6 +42,13 @@ import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.world.biome.Biome;
+import net.minecraft.world.storage.loot.LootTableList;
+import net.minecraft.world.storage.loot.conditions.LootCondition;
+import net.minecraft.world.storage.loot.conditions.LootConditionManager;
+import net.minecraft.world.storage.loot.functions.LootFunction;
+import net.minecraft.world.storage.loot.functions.LootFunctionManager;
+import net.minecraft.world.storage.loot.properties.EntityProperty;
+import net.minecraft.world.storage.loot.properties.EntityPropertyManager;
 import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -405,6 +412,24 @@ public class SRegistry {
         ForgeRegistries.SOUND_EVENTS.register(sound);
     }
 
+    // Loot
+
+    public void registerLootCondition(LootCondition.Serializer<? extends LootCondition> serializer) {
+        LootConditionManager.registerCondition(serializer);
+    }
+
+    public void registerLootEntityProperty(EntityProperty.Serializer<? extends EntityProperty> serializer) {
+        EntityPropertyManager.registerProperty(serializer);
+    }
+
+    public void registerLootFunction(LootFunction.Serializer<? extends LootFunction> serializer) {
+        LootFunctionManager.registerFunction(serializer);
+    }
+
+    public void registerLootTable(String name) {
+        LootTableList.register(new ResourceLocation(this.modId, name));
+    }
+
     /**
      * Set the object's registry name, if it has not already been set. Logs a warning if it has.
      */
@@ -476,28 +501,44 @@ public class SRegistry {
      * client proxy, the rest in your common AND client proxy.
      */
 
+    private boolean preInitDone = false;
+    private boolean initDone = false;
+    private boolean postInitDone = false;
+
     /**
      * Call in the "preInit" phase in your common proxy.
      */
     public void preInit(FMLPreInitializationEvent event) {
-        if (mod == null) {
-            SilentLib.logHelper.warn("Mod {} did not manually set its mod object! This is bad and may cause crashes.", modId);
-            ModContainer container = Loader.instance().getIndexedModList().get(modId);
-            if (container != null) {
-                mod = container.getMod();
-                SilentLib.logHelper.warn("Automatically acquired mod object for {}", modId);
-            } else {
-                SilentLib.logHelper.warn("Could not find mod object. The mod ID is likely incorrect.");
-            }
+        if (preInitDone) {
+            logger().warn("preInit called more than once!");
+            return;
         }
 
+        verifyOrFindModObject();
         this.phasedInitializers.forEach(i -> i.preInit(this, event));
+        this.preInitDone = true;
+    }
+
+    private void verifyOrFindModObject() {
+        if (mod == null) {
+            logger().warn("Mod {} did not manually set its mod object! This is bad and may cause crashes.", modId);
+            ModContainer container = Loader.instance().getIndexedModList().get(modId);
+            if (container != null) {
+                this.mod = container.getMod();
+                logger().warn("Automatically acquired mod object for {}", modId);
+            } else {
+                logger().warn("Could not find mod object. The mod ID is likely incorrect.");
+            }
+        }
     }
 
     /**
      * Call in the "init" phase in your common proxy.
      */
     public void init(FMLInitializationEvent event) {
+        if (initDone) {
+            logger().warn("init called more than once!");
+        }
         this.phasedInitializers.forEach(i -> i.init(this, event));
     }
 
