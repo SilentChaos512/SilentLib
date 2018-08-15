@@ -73,6 +73,17 @@ public class ChatHelper {
     }
 
     /**
+     * Creates a {@link TextComponentTranslation} and sends a message to the player's chat log.
+     *
+     * @param translationKey Translation key that the client will translate
+     * @param args           Format arguments
+     * @since 2.3.17
+     */
+    public static void translate(EntityPlayer player, String translationKey, Object... args) {
+        sendMessage(player, new TextComponentTranslation(translationKey, args));
+    }
+
+    /**
      * Creates a {@link TextComponentTranslation} and sends a message to the player's action bar or
      * chat log.
      *
@@ -80,7 +91,20 @@ public class ChatHelper {
      * @param actionBar      If true, sends to action bar, chat log otherwise
      * @since 2.3.13
      */
-    public static void translate(EntityPlayer player, String translationKey, boolean actionBar) {
+    public static void translateStatus(EntityPlayer player, String translationKey, boolean actionBar) {
         sendStatusMessage(player, new TextComponentTranslation(translationKey), actionBar);
+    }
+
+    /**
+     * Creates a {@link TextComponentTranslation} and sends a message to the player's action bar or
+     * chat log.
+     *
+     * @param translationKey Translation key that the client will translate
+     * @param actionBar      If true, sends to action bar, chat log otherwise
+     * @param args           Format arguments
+     * @since 2.3.17
+     */
+    public static void translateStatus(EntityPlayer player, String translationKey, boolean actionBar, Object... args) {
+        sendStatusMessage(player, new TextComponentTranslation(translationKey, args), actionBar);
     }
 }
