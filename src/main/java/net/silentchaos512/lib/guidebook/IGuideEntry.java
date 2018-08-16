@@ -10,24 +10,23 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 import java.util.List;
 
 public interface IGuideEntry {
+    List<IGuideChapter> getAllChapters();
 
-  List<IGuideChapter> getAllChapters();
+    String getIdentifier();
 
-  String getIdentifier();
+    @SideOnly(Side.CLIENT)
+    String getLocalizedName();
 
-  @SideOnly(Side.CLIENT)
-  String getLocalizedName();
+    @SideOnly(Side.CLIENT)
+    String getLocalizedNameWithFormatting();
 
-  @SideOnly(Side.CLIENT)
-  String getLocalizedNameWithFormatting();
+    void addChapter(IGuideChapter chapter);
 
-  void addChapter(IGuideChapter chapter);
+    @SideOnly(Side.CLIENT)
+    List<IGuideChapter> getChaptersForDisplay(String searchBarText);
 
-  @SideOnly(Side.CLIENT)
-  List<IGuideChapter> getChaptersForDisplay(String searchBarText);
+    int getSortingPriority();
 
-  int getSortingPriority();
-
-  @SideOnly(Side.CLIENT)
-  boolean visibleOnFrontPage();
+    @SideOnly(Side.CLIENT)
+    boolean visibleOnFrontPage();
 }

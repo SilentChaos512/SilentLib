@@ -38,6 +38,7 @@ import net.silentchaos512.lib.util.LocalizationHelper;
 
 import java.util.List;
 
+// TODO: Ready for removal?
 @Deprecated
 public class ItemBlockSL extends ItemBlock {
 

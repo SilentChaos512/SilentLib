@@ -12,22 +12,22 @@ import javax.annotation.Nonnull;
 
 public interface IGuideChapter {
 
-  IGuidePage[] getAllPages();
+    IGuidePage[] getAllPages();
 
-  @SideOnly(Side.CLIENT)
-  String getLocalizedName();
+    @SideOnly(Side.CLIENT)
+    String getLocalizedName();
 
-  @SideOnly(Side.CLIENT)
-  String getLocalizedNameWithFormatting();
+    @SideOnly(Side.CLIENT)
+    String getLocalizedNameWithFormatting();
 
-  IGuideEntry getEntry();
+    IGuideEntry getEntry();
 
-  @Nonnull
-  ItemStack getDisplayItemStack();
+    @Nonnull
+    ItemStack getDisplayItemStack();
 
-  String getIdentifier();
+    String getIdentifier();
 
-  int getPageIndex(IGuidePage page);
+    int getPageIndex(IGuidePage page);
 
-  int getSortingPriority();
+    int getSortingPriority();
 }

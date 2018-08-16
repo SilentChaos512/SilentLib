@@ -30,6 +30,7 @@ import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -94,6 +95,6 @@ public class ItemGuideBookSL extends Item {
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        tooltip.add(I18n.format(this.getTranslationKey(stack) + ".desc"));
+        tooltip.add(TextFormatting.ITALIC + I18n.format(this.getTranslationKey(stack) + ".desc"));
     }
 }

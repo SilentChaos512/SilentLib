@@ -35,6 +35,7 @@ import java.util.Map;
  * @author SilentChaos512
  *
  */
+// TODO: Ready for removal?
 @Deprecated
 public class ItemNamedSubtypes extends ItemSL {
 

@@ -34,6 +34,7 @@ import java.util.List;
  * @author SilentChaos512
  *
  */
+// TODO: Ready for removal?
 @Deprecated
 public class ItemNamedSubtypesSorted extends ItemNamedSubtypes {
 

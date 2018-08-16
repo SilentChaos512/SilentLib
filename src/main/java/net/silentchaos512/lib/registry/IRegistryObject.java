@@ -29,6 +29,7 @@ import java.util.Map;
  *
  * @deprecated Some methods are redundant, some will not be relevant in 1.13. Others should be split into separate interfaces.
  */
+// TODO: Ready for removal!
 @Deprecated
 public interface IRegistryObject {
 

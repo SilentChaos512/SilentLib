@@ -16,103 +16,88 @@ import net.silentchaos512.lib.guidebook.IGuidePage;
 import javax.annotation.Nonnull;
 
 public class GuideChapter implements IGuideChapter {
+    public final IGuidePage[] pages;
+    public final IGuideEntry entry;
+    public final ItemStack displayStack;
+    private final GuideBook book;
+    private final String identifier;
+    private final int priority;
+    public TextFormatting color;
 
-  public final IGuidePage[] pages;
-  public final IGuideEntry entry;
-  public final ItemStack displayStack;
-  private final GuideBook book;
-  private final String identifier;
-  private final int priority;
-  public TextFormatting color;
-
-  public GuideChapter(GuideBook book, String identifier, IGuideEntry entry,
-      ItemStack displayStack, IGuidePage... pages) {
-
-    this(book, identifier, entry, displayStack, 0, pages);
-  }
-
-  public GuideChapter(GuideBook book, String identifier, IGuideEntry entry,
-      ItemStack displayStack, int priority, IGuidePage... pages) {
-
-    this.book = book;
-    this.pages = pages;
-    this.identifier = identifier;
-    this.entry = entry;
-    this.displayStack = displayStack;
-    this.priority = priority;
-    this.color = TextFormatting.RESET;
-
-    this.entry.addChapter(this);
-    for (IGuidePage page : this.pages) {
-      page.setChapter(this);
+    public GuideChapter(GuideBook book, String identifier, IGuideEntry entry, ItemStack displayStack, IGuidePage... pages) {
+        this(book, identifier, entry, displayStack, 0, pages);
     }
-  }
 
-  @Override
-  public IGuidePage[] getAllPages() {
+    public GuideChapter(GuideBook book, String identifier, IGuideEntry entry, ItemStack displayStack, int priority, IGuidePage... pages) {
+        this.book = book;
+        this.pages = pages;
+        this.identifier = identifier;
+        this.entry = entry;
+        this.displayStack = displayStack;
+        this.priority = priority;
+        this.color = TextFormatting.RESET;
 
-    return this.pages;
-  }
-
-  @Override
-  @SideOnly(Side.CLIENT)
-  public String getLocalizedName() {
-
-    return book.loc.getLocalizedString("guide", "chapter." + this.getIdentifier() + ".name");
-  }
-
-  @Override
-  @SideOnly(Side.CLIENT)
-  public String getLocalizedNameWithFormatting() {
-
-    return this.color + this.getLocalizedName();
-  }
-
-  @Override
-  public IGuideEntry getEntry() {
-
-    return this.entry;
-  }
-
-  @Nonnull
-  @Override
-  public ItemStack getDisplayItemStack() {
-
-    return this.displayStack;
-  }
-
-  @Override
-  public String getIdentifier() {
-
-    return this.identifier;
-  }
-
-  @Override
-  public int getPageIndex(IGuidePage page) {
-
-    for (int i = 0; i < this.pages.length; i++) {
-      if (this.pages[i] == page) {
-        return i;
-      }
+        this.entry.addChapter(this);
+        for (IGuidePage page : this.pages) {
+            page.setChapter(this);
+        }
     }
-    return -1;
-  }
 
-  @Override
-  public int getSortingPriority() {
+    @Override
+    public IGuidePage[] getAllPages() {
+        return this.pages;
+    }
 
-    return this.priority;
-  }
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getLocalizedName() {
+        return book.i18n.translate("guide", "chapter." + this.getIdentifier() + ".name");
+    }
 
-  public GuideChapter setImportant() {
+    @Override
+    @SideOnly(Side.CLIENT)
+    public String getLocalizedNameWithFormatting() {
+        return this.color + this.getLocalizedName();
+    }
 
-    this.color = TextFormatting.DARK_GREEN;
-    return this;
-  }
+    @Override
+    public IGuideEntry getEntry() {
+        return this.entry;
+    }
 
-  public GuideChapter setSpecial() {
+    @Nonnull
+    @Override
+    public ItemStack getDisplayItemStack() {
+        return this.displayStack;
+    }
 
-    this.color = TextFormatting.DARK_PURPLE;
-    return this;
-  }
+    @Override
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    @Override
+    public int getPageIndex(IGuidePage page) {
+        for (int i = 0; i < this.pages.length; i++) {
+            if (this.pages[i] == page) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    @Override
+    public int getSortingPriority() {
+        return this.priority;
+    }
+
+    public GuideChapter setImportant() {
+        this.color = TextFormatting.DARK_GREEN;
+        return this;
+    }
+
+    public GuideChapter setSpecial() {
+        this.color = TextFormatting.DARK_PURPLE;
+        return this;
+    }
 }

@@ -38,6 +38,7 @@ import net.silentchaos512.lib.registry.RecipeMaker;
 import java.util.List;
 import java.util.Map;
 
+// TODO: Ready for removal?
 @Deprecated
 public class ItemArmorSL extends ItemArmor implements IRegistryObject, IItemSL {
 
