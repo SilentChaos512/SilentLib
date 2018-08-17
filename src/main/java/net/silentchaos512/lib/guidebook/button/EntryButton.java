@@ -12,7 +12,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
 import net.silentchaos512.lib.util.AssetUtil;
-import net.silentchaos512.lib.util.StackHelper;
 import net.silentchaos512.lib.util.StringUtil;
 
 import javax.annotation.Nonnull;
@@ -39,7 +38,7 @@ public class EntryButton extends GuiButton {
             this.mouseDragged(minecraft, mouseX, mouseY);
 
             int textOffsetX = 0;
-            if (StackHelper.isValid(this.stackToRender)) {
+            if (!this.stackToRender.isEmpty()) {
                 GlStateManager.pushMatrix();
                 AssetUtil.renderStackToGui(this.stackToRender, this.x - 4, this.y, 0.725F);
                 GlStateManager.popMatrix();

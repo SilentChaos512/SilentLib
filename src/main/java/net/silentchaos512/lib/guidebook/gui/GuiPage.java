@@ -88,7 +88,7 @@ public class GuiPage extends GuiGuide {
                     try {
                         Desktop.getDesktop().browse(new URI(link));
                     } catch (Exception e) {
-                        SilentLib.logHelper.warning("Couldn't open website from guide book page!");
+                        SilentLib.logHelper.warn("Couldn't open website from guide book page!");
                         e.printStackTrace();
                     }
                 }

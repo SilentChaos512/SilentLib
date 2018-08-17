@@ -18,7 +18,6 @@ import net.silentchaos512.lib.guidebook.gui.GuiMainPage;
 import net.silentchaos512.lib.guidebook.gui.GuiPage;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
 import net.silentchaos512.lib.item.ItemGuideBookSL;
-import net.silentchaos512.lib.util.StackHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +90,7 @@ public final class GuideBookUtils {
         EntityPlayer player = Minecraft.getMinecraft().player;
         if (player != null) {
             ItemStack stack = player.getHeldItemMainhand();
-            if (StackHelper.isEmpty(stack))
+            if (stack.isEmpty())
                 stack = player.getHeldItemOffhand();
 
             if (stack.getItem() instanceof ItemGuideBookSL) {

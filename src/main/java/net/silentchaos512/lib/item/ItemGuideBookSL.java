@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ItemGuideBookSL extends Item {
-
     private static final List<ItemGuideBookSL> bookList = new ArrayList<>();
 
     // Feel free to change any of these.

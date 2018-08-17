@@ -16,7 +16,6 @@ import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuideChapter;
 import net.silentchaos512.lib.guidebook.IGuideEntry;
 import net.silentchaos512.lib.guidebook.IGuidePage;
-import net.silentchaos512.lib.util.StackHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +48,7 @@ public class GuideEntry implements IGuideEntry {
         page.getItemStacksForPage(items);
         if (!items.isEmpty()) {
             for (ItemStack stack : items) {
-                if (StackHelper.isValid(stack)) {
+                if (!stack.isEmpty()) {
                     ITooltipFlag tooltipFlag = mc.gameSettings.advancedItemTooltips ? TooltipFlags.ADVANCED : TooltipFlags.NORMAL;
                     List<String> tooltip = stack.getTooltip(mc.player, tooltipFlag);
                     for (String strg : tooltip) {

@@ -36,14 +36,6 @@ public class LogHelper {
     private final int buildNumber;
     private String lastDebugOutput = "";
 
-    /**
-     * @deprecated Use {@link #LogHelper(String, int)} or {@link #LogHelper(Logger, int)}
-     */
-    @Deprecated
-    public LogHelper(String modName) {
-        this(modName, 0);
-    }
-
     public LogHelper(String modName, int buildNumber) {
         this.logger = LogManager.getLogger(modName);
         this.buildNumber = buildNumber;
@@ -139,67 +131,9 @@ public class LogHelper {
         this.error("********************************************************************************");
     }
 
-    public static List<String> wrapString(String string, int lnLength, boolean wrapLongWords, List<String> list) {
+    private static List<String> wrapString(String string, int lnLength, boolean wrapLongWords, List<String> list) {
         final String lines[] = WordUtils.wrap(string, lnLength, null, wrapLongWords).split(SystemUtils.LINE_SEPARATOR);
         Collections.addAll(list, lines);
         return list;
-    }
-
-    @Deprecated
-    public void debug(Object... objects) {
-        if (buildNumber == 0) {
-            String line = lineFromList(objects);
-
-            if (!line.equals(lastDebugOutput)) {
-                logger.debug(line);
-                System.out.println(line);
-                lastDebugOutput = line;
-            }
-        }
-    }
-
-    @Deprecated
-    public void info(Object obj) {
-        logger.info(obj);
-    }
-
-    @Deprecated
-    public void info(Object... objects) {
-        logger.info(lineFromList(objects));
-    }
-
-    @Deprecated
-    public void warning(Object obj) {
-        logger.warn(obj);
-    }
-
-    @Deprecated
-    public void warning(Object... objects) {
-        logger.warn(lineFromList(objects));
-    }
-
-    @Deprecated
-    public void severe(Object obj) {
-        logger.error(obj);
-    }
-
-    @Deprecated
-    public void severe(Object... objects) {
-        logger.error(lineFromList(objects));
-    }
-
-    public void derp() {
-        debug("Derp!");
-    }
-
-    public String lineFromList(Object... objects) {
-        String str = "";
-        for (int i = 0; i < objects.length; ++i) {
-            if (i != 0) {
-                str += ", ";
-            }
-            str += objects[i];
-        }
-        return str;
     }
 }

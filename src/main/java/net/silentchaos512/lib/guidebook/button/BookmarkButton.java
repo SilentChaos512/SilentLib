@@ -20,7 +20,6 @@ import net.silentchaos512.lib.guidebook.gui.GuiGuide;
 import net.silentchaos512.lib.guidebook.gui.GuiPage;
 import net.silentchaos512.lib.guidebook.misc.GuideBookUtils;
 import net.silentchaos512.lib.util.AssetUtil;
-import net.silentchaos512.lib.util.StackHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +77,7 @@ public class BookmarkButton extends GuiButton {
 
             if (this.assignedPage != null) {
                 ItemStack display = this.assignedPage.getChapter().getDisplayItemStack();
-                if (StackHelper.isValid(display)) {
+                if (!display.isEmpty()) {
                     GlStateManager.pushMatrix();
                     AssetUtil.renderStackToGui(display, this.x + 2, this.y + 1, 0.725F);
                     GlStateManager.popMatrix();

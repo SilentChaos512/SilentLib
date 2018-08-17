@@ -18,7 +18,6 @@
 
 package net.silentchaos512.lib.registry;
 
-import com.google.common.collect.MapMaker;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -77,7 +76,6 @@ import net.silentchaos512.lib.block.IColoredBlock;
 import net.silentchaos512.lib.block.ITileEntityBlock;
 import net.silentchaos512.lib.item.IColoredItem;
 import net.silentchaos512.lib.item.ItemBlockMetaSubtypes;
-import net.silentchaos512.lib.item.ItemBlockSL;
 import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
 
@@ -88,8 +86,6 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class SRegistry {
-    @Deprecated
-    private final Set<IRegistryObject> registryObjects = new HashSet<>();
     @Getter
     private final List<Block> blocks = NonNullList.create();
     @Getter
@@ -109,9 +105,8 @@ public class SRegistry {
     private final String modName;
     private final String resourcePrefix;
 
-    // TODO: Make private, add getter.
     @Nonnull
-    public RecipeMaker recipes;
+    private final RecipeMaker recipes;
 
     @Getter
     @Setter
@@ -131,21 +126,6 @@ public class SRegistry {
         this.logHelper = new LogHelper(this.modName + "/SRegistry", 1);
         this.recipes = new RecipeMaker(modId);
         MinecraftForge.EVENT_BUS.register(new EventHandler(this));
-    }
-
-    @Deprecated
-    public SRegistry(String modId) {
-        this.modId = modId;
-        this.modName = Loader.instance().activeModContainer().getName();
-        this.resourcePrefix = modId.toLowerCase(Locale.ROOT) + ":";
-        this.recipes = new RecipeMaker(modId);
-        MinecraftForge.EVENT_BUS.register(new EventHandler(this));
-    }
-
-    @Deprecated
-    public SRegistry(String modId, LogHelper logHelper) {
-        this(modId);
-        this.logHelper = logHelper;
     }
 
     public RecipeMaker getRecipeMaker() {
@@ -177,17 +157,6 @@ public class SRegistry {
      */
     public void addPhasedInitializer(IPhasedInitializer instance) {
         this.phasedInitializers.add(instance);
-    }
-
-    /**
-     * Add a registration handler
-     *
-     * @deprecated Use {@link #addRegistrationHandler(Consumer, Class)} instead
-     */
-    @Deprecated
-    public <T extends IForgeRegistryEntry<?>> IRegistrationHandler<T> addRegistrationHandler(IRegistrationHandler<T> handler, Class<T> clazz) {
-        addRegistrationHandler((Consumer<SRegistry>) handler::registerAll, clazz);
-        return handler;
     }
 
     /**
@@ -224,14 +193,6 @@ public class SRegistry {
     // Block
 
     /**
-     * Register an IRegistryObject Block (BlockSL, etc.) Uses getName for its key.
-     */
-    @Deprecated
-    public <T extends Block & IRegistryObject> T registerBlock(T block) {
-        return registerBlock(block, block.getName());
-    }
-
-    /**
      * Register a Block. Its name (registry key/name) must be provided. Uses a new ItemBlockSL.
      */
     public <T extends Block> T registerBlock(T block, String key) {
@@ -240,33 +201,18 @@ public class SRegistry {
 
     @Nonnull
     private <T extends Block> ItemBlock defaultItemBlock(T block) {
-        if (block instanceof IRegistryObject)
-            return new ItemBlockSL(block);
-        else if (block instanceof BlockMetaSubtypes)
+        if (block instanceof BlockMetaSubtypes)
             return new ItemBlockMetaSubtypes((BlockMetaSubtypes) block);
         else
             return new ItemBlock(block);
     }
 
     /**
-     * Register an IRegistryObject Block (BlockSL, etc.) with a custom ItemBlock. Uses getName for
-     * its key.
-     */
-    @Deprecated
-    public <T extends Block & IRegistryObject> T registerBlock(T block, ItemBlock itemBlock) {
-        return registerBlock(block, block.getName(), itemBlock);
-    }
-
-    /**
      * Register a Block. Its name registry name and ItemBlock must be provided.
      */
     public <T extends Block> T registerBlock(T block, String key, ItemBlock itemBlock) {
-        if (block instanceof IRegistryObject)
-            registryObjects.add((IRegistryObject) block);
-        else
-            block.setTranslationKey(modId + "." + key);
-
         blocks.add(block);
+        block.setTranslationKey(modId + "." + key);
 
         validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
@@ -301,22 +247,11 @@ public class SRegistry {
     // Item
 
     /**
-     * Register an IRegistryObject Item (ItemSL, etc.) Uses getName for its key.
-     */
-    @Deprecated
-    public <T extends Item & IRegistryObject> T registerItem(T item) {
-        return registerItem(item, item.getName());
-    }
-
-    /**
      * Register an Item. Its name (registry key/name) must be provided.
      */
     public <T extends Item> T registerItem(T item, String key) {
-        if (item instanceof IRegistryObject)
-            registryObjects.add((IRegistryObject) item);
-        else
-            item.setTranslationKey(modId + "." + key);
         items.add(item);
+        item.setTranslationKey(modId + "." + key);
 
         validateRegistryName(key);
         ResourceLocation name = new ResourceLocation(modId, key);
@@ -387,11 +322,6 @@ public class SRegistry {
     }
 
     // Potion
-
-    @Deprecated
-    public void registerPotion(Potion potion) {
-        ForgeRegistries.POTIONS.register(potion);
-    }
 
     public void registerPotion(Potion potion, String key) {
         if (potion.getName().isEmpty())
@@ -509,7 +439,7 @@ public class SRegistry {
      * Call in the "preInit" phase in your common proxy.
      */
     public void preInit(FMLPreInitializationEvent event) {
-        if (preInitDone) {
+        if (this.preInitDone) {
             logger().warn("preInit called more than once!");
             return;
         }
@@ -536,17 +466,24 @@ public class SRegistry {
      * Call in the "init" phase in your common proxy.
      */
     public void init(FMLInitializationEvent event) {
-        if (initDone) {
+        if (this.initDone) {
             logger().warn("init called more than once!");
+            return;
         }
         this.phasedInitializers.forEach(i -> i.init(this, event));
+        this.initDone = true;
     }
 
     /**
      * Call in the "postInit" phase in your common proxy.
      */
     public void postInit(FMLPostInitializationEvent event) {
+        if (this.postInitDone) {
+            logger().warn("postInit called more than once!");
+            return;
+        }
         this.phasedInitializers.forEach(i -> i.postInit(this, event));
+        this.postInitDone = true;
     }
 
     /**
@@ -559,15 +496,6 @@ public class SRegistry {
      * Call in the "init" phase in your client proxy.
      */
     public void clientInit(FMLInitializationEvent event) {
-        for (IRegistryObject obj : this.registryObjects) {
-            if (obj instanceof ITileEntityBlock) {
-                ITileEntityBlock tileBlock = (ITileEntityBlock) obj;
-                final TileEntitySpecialRenderer tesr = tileBlock.getTileRenderer();
-                if (tesr != null) {
-                    ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
-                }
-            }
-        }
         for (Block block : this.blocks) {
             if (block instanceof ITileEntityBlock) {
                 ITileEntityBlock tileBlock = (ITileEntityBlock) block;
@@ -589,57 +517,38 @@ public class SRegistry {
 
     //endregion
 
-    protected void addRecipes() {
-        this.registryObjects.forEach(obj -> obj.addRecipes(this.recipes));
+    private void addRecipes() {
+        //noinspection deprecation
         this.recipeAdders.forEach(obj -> obj.addRecipes(this.recipes));
     }
 
-    protected void addOreDictEntries() {
-        this.registryObjects.forEach(IRegistryObject::addOreDict);
+    private void addOreDictEntries() {
+        //noinspection deprecation
         this.recipeAdders.forEach(IAddRecipes::addOreDict);
     }
 
     @SideOnly(Side.CLIENT)
-    protected void registerModels() {
-        // Create a single model map for processing each object. It's cleared for each object, I just don't want to make a
-        // new map each time.
-        Map<Integer, ModelResourceLocation> models = new MapMaker().initialCapacity(16).makeMap();
-
-        for (IRegistryObject obj : registryObjects) {
-            // Give object a chance to register its own models
-            if (!obj.registerModels()) {
-                Item item = obj instanceof Block ? Item.getItemFromBlock((Block) obj) : (Item) obj;
-                models.clear();
-                obj.getModels(models);
-                models.forEach((key, value) -> ModelLoader.setCustomModelResourceLocation(item, key, value));
-            }
-        }
-
-        // New method
+    private void registerModels() {
         for (Block block : blocks) {
-            if (!(block instanceof IRegistryObject)) {
-                if (block instanceof ICustomModel) {
-                    ((ICustomModel) block).registerModels();
-                } else {
-                    ResourceLocation registryName = Objects.requireNonNull(block.getRegistryName());
-                    ModelResourceLocation model = new ModelResourceLocation(registryName, "inventory");
-                    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, model);
-                }
+            if (block instanceof ICustomModel) {
+                ((ICustomModel) block).registerModels();
+            } else {
+                ResourceLocation registryName = Objects.requireNonNull(block.getRegistryName());
+                ModelResourceLocation model = new ModelResourceLocation(registryName, "inventory");
+                ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(block), 0, model);
             }
         }
         for (Item item : items) {
-            if (!(item instanceof IRegistryObject)) {
-                if (item instanceof ICustomMesh) {
-                    ICustomMesh customMesh = (ICustomMesh) item;
-                    ModelBakery.registerItemVariants(item, customMesh.getVariants());
-                    ModelLoader.setCustomMeshDefinition(item, customMesh.getCustomMesh());
-                } else if (item instanceof ICustomModel) {
-                    ((ICustomModel) item).registerModels();
-                } else {
-                    ResourceLocation registryName = Objects.requireNonNull(item.getRegistryName());
-                    ModelResourceLocation model = new ModelResourceLocation(registryName, "inventory");
-                    ModelLoader.setCustomModelResourceLocation(item, 0, model);
-                }
+            if (item instanceof ICustomMesh) {
+                ICustomMesh customMesh = (ICustomMesh) item;
+                ModelBakery.registerItemVariants(item, customMesh.getVariants());
+                ModelLoader.setCustomMeshDefinition(item, customMesh.getCustomMesh());
+            } else if (item instanceof ICustomModel) {
+                ((ICustomModel) item).registerModels();
+            } else {
+                ResourceLocation registryName = Objects.requireNonNull(item.getRegistryName());
+                ModelResourceLocation model = new ModelResourceLocation(registryName, "inventory");
+                ModelLoader.setCustomModelResourceLocation(item, 0, model);
             }
         }
     }

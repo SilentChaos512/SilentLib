@@ -25,9 +25,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickBlock
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.LeftClickEmpty;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.item.IItemSL;
+import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
-import net.silentchaos512.lib.util.StackHelper;
 
 /**
  * Silent Lib's client event handler. Do not call any functions of this class.
@@ -41,9 +40,9 @@ public final class SilentLibClientEvents {
   public void onLeftClickEmpty(LeftClickEmpty event) {
 
     ItemStack stack = event.getItemStack();
-    if (StackHelper.isValid(stack) && stack.getItem() instanceof IItemSL) {
+    if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
       // Client-side call
-      ActionResult<ItemStack> result = ((IItemSL) stack.getItem())
+      ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
           .onItemLeftClickSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
       // Server-side call
       if (result.getType() == EnumActionResult.SUCCESS) {
@@ -57,9 +56,9 @@ public final class SilentLibClientEvents {
   public void onLeftClickBlock(LeftClickBlock event) {
 
     ItemStack stack = event.getItemStack();
-    if (StackHelper.isValid(stack) && stack.getItem() instanceof IItemSL) {
+    if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
       // Client-side call
-      ActionResult<ItemStack> result = ((IItemSL) stack.getItem())
+      ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
           .onItemLeftClickBlockSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
       // Server-side call
       if (result.getType() == EnumActionResult.SUCCESS) {

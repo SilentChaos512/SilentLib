@@ -11,7 +11,6 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
-import net.silentchaos512.lib.util.StackHelper;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +32,7 @@ public class PageFurnace extends GuidePage {
     private static ItemStack getInputForOutput(ItemStack output) {
         for (Map.Entry<ItemStack, ItemStack> entry : FurnaceRecipes.instance().getSmeltingList().entrySet()) {
             ItemStack stack = entry.getValue();
-            if (StackHelper.isValid(stack)) {
+            if (!stack.isEmpty()) {
                 if (stack.isItemEqual(output)) {
                     return entry.getKey();
                 }

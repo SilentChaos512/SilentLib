@@ -19,7 +19,6 @@ import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.internal.GuiGuideBase;
-import net.silentchaos512.lib.util.StackHelper;
 
 import java.util.Arrays;
 import java.util.List;
@@ -104,7 +103,7 @@ public class PageCrafting extends GuidePage {
             for (IRecipe recipe : this.recipes) {
                 if (recipe != null) {
                     ItemStack output = recipe.getRecipeOutput();
-                    if (StackHelper.isValid(output)) {
+                    if (!output.isEmpty()) {
                         ItemStack copy = output.copy();
                         if (this.isWildcard) {
                             copy.setItemDamage(OreDictionary.WILDCARD_VALUE);
@@ -127,14 +126,14 @@ public class PageCrafting extends GuidePage {
             height = shaped.recipeHeight;
             for (int i = 0; i < shaped.recipeItems.size(); ++i) {
                 Ingredient ing = shaped.recipeItems.get(i);
-                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : StackHelper.empty();
+                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY;
             }
             this.recipeTypeLocKey = "guide.silentlib:shapedRecipe";
         } else if (recipe instanceof ShapelessRecipes) {
             ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
             for (int i = 0; i < shapeless.recipeItems.size(); i++) {
                 Ingredient ing = shapeless.recipeItems.get(i);
-                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : StackHelper.empty();
+                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY;
             }
             this.recipeTypeLocKey = "guide.silentlib:shapelessRecipe";
         } else if (recipe instanceof ShapedOreRecipe) {
@@ -148,14 +147,14 @@ public class PageCrafting extends GuidePage {
             }
             for (int i = 0; i < shaped.getIngredients().size(); i++) {
                 Ingredient input = shaped.getIngredients().get(i);
-                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : StackHelper.empty();
+                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY;
             }
             this.recipeTypeLocKey = "guide.silentlib:shapedOreRecipe";
         } else if (recipe instanceof ShapelessOreRecipe) {
             ShapelessOreRecipe shapeless = (ShapelessOreRecipe) recipe;
             for (int i = 0; i < shapeless.getIngredients().size(); i++) {
                 Ingredient input = shapeless.getIngredients().get(i);
-                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : StackHelper.empty();
+                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY;
             }
             this.recipeTypeLocKey = "guide.silentlib:shapelessOreRecipe";
         }
@@ -163,7 +162,7 @@ public class PageCrafting extends GuidePage {
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
                 ItemStack stack = stacks[y * width + x];
-                if (StackHelper.isValid(stack)) {
+                if (!stack.isEmpty()) {
                     ItemStack copy = stack.copy();
                     copy.setCount(1);
                     if (copy.getItemDamage() == OreDictionary.WILDCARD_VALUE) {

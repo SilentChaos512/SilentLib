@@ -138,7 +138,7 @@ public class ConfigMultiValueLineParser {
   private void warning(String message) {
 
     if (log != null) {
-      log.warning(configId + ": " + message);
+      log.warn(configId + ": " + message);
     }
   }
 }

@@ -1,10 +1,5 @@
 package net.silentchaos512.lib.client.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.vecmath.Matrix4f;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -17,7 +12,10 @@ import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.common.model.TRSRTransformation;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.silentchaos512.lib.util.StackHelper;
+
+import javax.vecmath.Matrix4f;
+import java.util.ArrayList;
+import java.util.List;
 
 @SideOnly(Side.CLIENT)
 public class MultiLayerModelSL extends PerspectiveMapWrapper {
@@ -52,7 +50,7 @@ public class MultiLayerModelSL extends PerspectiveMapWrapper {
   @Override
   public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long rand) {
 
-    if (StackHelper.isEmpty(stack)) {
+    if (stack.isEmpty()) {
       return new ArrayList<>();
     }
 

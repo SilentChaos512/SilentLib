@@ -22,7 +22,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 
 public final class GameUtil {
-
     private GameUtil() {
         throw new IllegalAccessError("Utility class");
     }

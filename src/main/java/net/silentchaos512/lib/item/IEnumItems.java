@@ -42,7 +42,6 @@ import java.util.function.Function;
  * @since 2.3.7
  */
 public interface IEnumItems<E extends Enum<E>, I extends Item> extends IStringSerializable {
-
     /**
      * Gets the enum that represents the object. Typically, you would just {@code return this}. This
      * exists because the implementing class may not be an enum.

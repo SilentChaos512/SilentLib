@@ -28,14 +28,13 @@ import net.silentchaos512.lib.registry.SRegistry;
  * A template for proxy classes
  */
 public interface IProxy {
+    void preInit(SRegistry registry, FMLPreInitializationEvent event);
 
-  void preInit(SRegistry registry, FMLPreInitializationEvent event);
+    void init(SRegistry registry, FMLInitializationEvent event);
 
-  void init(SRegistry registry, FMLInitializationEvent event);
+    void postInit(SRegistry registry, FMLPostInitializationEvent event);
 
-  void postInit(SRegistry registry, FMLPostInitializationEvent event);
+    EntityPlayer getClientPlayer();
 
-  EntityPlayer getClientPlayer();
-
-  int getParticleSettings();
+    int getParticleSettings();
 }

@@ -1,17 +1,10 @@
 package net.silentchaos512.lib.tile;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-
-import javax.activation.UnsupportedDataTypeException;
-
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
-import net.silentchaos512.lib.collection.ItemStackList;
-import net.silentchaos512.lib.util.StackHelper;
 
 /**
  * Basic TileEntity with SyncVariable support.

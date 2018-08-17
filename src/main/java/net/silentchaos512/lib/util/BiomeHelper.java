@@ -24,14 +24,11 @@ import net.minecraftforge.common.BiomeDictionary;
 import java.util.Set;
 
 public class BiomeHelper {
+    public static Set<BiomeDictionary.Type> getTypes(Biome biome) {
+        return BiomeDictionary.getTypes(biome);
+    }
 
-  public static Set<BiomeDictionary.Type> getTypes(Biome biome) {
-
-    return BiomeDictionary.getTypes(biome);
-  }
-
-  public static String getTypeName(BiomeDictionary.Type type) {
-
-    return type.getName();
-  }
+    public static String getTypeName(BiomeDictionary.Type type) {
+        return type.getName();
+    }
 }

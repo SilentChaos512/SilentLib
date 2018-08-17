@@ -53,7 +53,7 @@ public class ChatHelper {
 
     /**
      * Sends the {@link ITextComponent} to the player's action bar or chat log. Not recommended, use
-     * {@link #translate(EntityPlayer, String, boolean)} instead.
+     * {@link #translateStatus(EntityPlayer, String, boolean)} instead.
      *
      * @param component The text component.
      * @param actionBar If true, sends to action bar, chat log otherwise

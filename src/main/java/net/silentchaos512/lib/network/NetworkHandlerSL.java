@@ -29,18 +29,15 @@ import net.minecraftforge.fml.relauncher.Side;
  * @since 2.1.3
  */
 public class NetworkHandlerSL {
+    public final SimpleNetworkWrapper wrapper;
 
-  public final SimpleNetworkWrapper wrapper;
+    private int lastMessageId = -1;
 
-  private int lastMessageId = -1;
+    public NetworkHandlerSL(String modId) {
+        wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(modId);
+    }
 
-  public NetworkHandlerSL(String modId) {
-
-    wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(modId);
-  }
-
-  public void register(Class clazz, Side handlerSide) {
-
-    wrapper.registerMessage(clazz, clazz, ++lastMessageId, handlerSide);
-  }
+    public void register(Class clazz, Side handlerSide) {
+        wrapper.registerMessage(clazz, clazz, ++lastMessageId, handlerSide);
+    }
 }

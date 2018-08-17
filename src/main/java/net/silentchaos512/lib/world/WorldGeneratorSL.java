@@ -23,7 +23,6 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.gen.IChunkGenerator;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.IWorldGenerator;
-import net.silentchaos512.lib.SilentLib;
 
 import java.util.Random;
 
@@ -91,12 +90,6 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
       int posZ) {
 
     return false;
-  }
-
-  protected void debug(Object obj) {
-
-    if (printDebugInfo)
-      SilentLib.logHelper.debug(obj);
   }
 
   // ============

@@ -36,7 +36,6 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.silentchaos512.lib.item.IEnumItems;
-import net.silentchaos512.lib.recipe.IngredientSL;
 import net.silentchaos512.lib.recipe.RecipeJsonHell;
 
 import javax.annotation.Nullable;
@@ -128,11 +127,11 @@ public final class RecipeMaker {
         return new ShapelessRecipes(group, result, list);
     }
 
-    public IRecipe makeShapeless(ItemStack result, IngredientSL... inputs) {
+    public IRecipe makeShapeless(ItemStack result, Ingredient... inputs) {
         return makeShapeless(modId, result, inputs);
     }
 
-    public IRecipe makeShapeless(String group, ItemStack result, IngredientSL... inputs) {
+    public IRecipe makeShapeless(String group, ItemStack result, Ingredient... inputs) {
         NonNullList<Ingredient> list = NonNullList.create();
         Collections.addAll(list, inputs);
         return new ShapelessRecipes(group, result, list);

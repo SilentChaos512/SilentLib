@@ -21,51 +21,45 @@ package net.silentchaos512.lib.recipe;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
-import net.silentchaos512.lib.collection.ItemStackList;
-import net.silentchaos512.lib.util.StackHelper;
+import net.minecraft.util.NonNullList;
 
-public class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipeSL {
-
-  @Override
-  public ItemStack getCraftingResult(InventoryCrafting inv) {
-
-    return StackHelper.empty();
-  }
-
-  @Override
-  public boolean canFit(int width, int height) {
-
-    return true;
-  }
-
-  @Override
-  public boolean isDynamic() {
-
-    return true;
-  }
-
-  // pre-1.12
-  public int getRecipeSize() {
-
-    return 10;
-  }
-
-  /**
-   * Convenience method to make iterating a bit cleaner.
-   * @param inv
-   * @return
-   */
-  public static ItemStackList getNonEmptyStacks(InventoryCrafting inv) {
-
-    ItemStackList list = ItemStackList.create();
-
-    for (int i = 0; i < inv.getSizeInventory(); ++i) {
-      ItemStack stack = inv.getStackInSlot(i);
-      if (StackHelper.isValid(stack)) {
-        list.add(stack);
-      }
+public abstract class RecipeBaseSL extends net.minecraftforge.registries.IForgeRegistryEntry.Impl<IRecipe> implements IRecipe {
+    @Override
+    public boolean canFit(int width, int height) {
+        return true;
     }
 
-    return list;
-  }
+    @Override
+    public boolean isDynamic() {
+        return true;
+    }
+
+    @Override
+    public NonNullList<ItemStack> getRemainingItems(InventoryCrafting inv) {
+        for (int i = 0; i < inv.getSizeInventory(); ++i) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && !stack.getItem().hasContainerItem(stack)) {
+                stack.shrink(1);
+                inv.setInventorySlotContents(i, stack);
+            }
+        }
+        return NonNullList.create();
+    }
+
+    /**
+     * Convenience method to make iterating a bit cleaner.
+     *
+     * @param inv
+     * @return
+     */
+    public static NonNullList<ItemStack> getNonEmptyStacks(InventoryCrafting inv) {
+        NonNullList<ItemStack> list = NonNullList.create();
+        for (int i = 0; i < inv.getSizeInventory(); ++i) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                list.add(stack);
+            }
+        }
+        return list;
+    }
 }

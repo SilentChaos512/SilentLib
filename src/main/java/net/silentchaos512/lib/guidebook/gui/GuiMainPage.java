@@ -200,7 +200,7 @@ public class GuiMainPage extends GuiGuide {
                 try {
                     Desktop.getDesktop().browse(new URI("https://www.patreon.com/SilentChaos512"));
                 } catch (Exception ex) {
-                    SilentLib.logHelper.warning("Could not open web page.\n" + ex);
+                    SilentLib.logHelper.warn("Could not open web page.\n" + ex);
                 }
             }
         } else {
