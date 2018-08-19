@@ -148,7 +148,7 @@ public class I18nHelper {
     }
 
     public String translatedName(ItemStack stack) {
-        return translate(stack.getTranslationKey());
+        return translate(stack.getTranslationKey() + ".name");
     }
 
     /**
