@@ -1,3 +1,7 @@
+3.0.0
+Removes many deprecated components, breaking compatibility with older versions
+Added: IRecipeSerializer to support creation of recipe JSONs for custom recipe factories
+
 2.3.17
 Added: I18nHelper option to replaces colons with dots (enabled by default)
 Added: SRegistry setModel methods

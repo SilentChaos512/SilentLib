@@ -36,11 +36,14 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.oredict.ShapedOreRecipe;
 import net.minecraftforge.oredict.ShapelessOreRecipe;
 import net.silentchaos512.lib.item.IEnumItems;
+import net.silentchaos512.lib.recipe.IRecipeSerializer;
 import net.silentchaos512.lib.recipe.RecipeJsonHell;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Used for wrapping recipe creation into a more convenient format.
@@ -49,12 +52,12 @@ import java.util.Locale;
  * @since 2.2.0
  */
 public final class RecipeMaker {
-
     private String modId;
     private String resourcePrefix;
     private int lastRecipeIndex = -1;
     @Setter
     private boolean jsonHellMode = false;
+    private Map<ResourceLocation, IRecipeSerializer> customSerializers = new HashMap<>();
 
     public RecipeMaker(String modId) {
         this.modId = modId;
@@ -70,13 +73,19 @@ public final class RecipeMaker {
         if (!jsonHellMode) return;
         name = name.replaceFirst(resourcePrefix, "");
         try {
-            if (shaped)
+            if (customSerializers.containsKey(result.getItem().getRegistryName()))
+                RecipeJsonHell.createRecipe(name, customSerializers.get(result.getItem().getRegistryName()), result, inputs);
+            else if (shaped)
                 RecipeJsonHell.createShapedRecipe(name, result, inputs);
             else
                 RecipeJsonHell.createShapelessRecipe(name, result, inputs);
         } catch (IllegalArgumentException ex) {
             System.out.println("Failed to make JSON recipe \"" + name + "\" (" + ex.getMessage() + ")");
         }
+    }
+
+    public void setRecipeSerializer(Item item, IRecipeSerializer serializer) {
+        customSerializers.put(item.getRegistryName(), serializer);
     }
 
     /*
@@ -221,7 +230,8 @@ public final class RecipeMaker {
     // -------------------------------------------- Generic/Custom -------------------------------------------
 
     /**
-     * Adds some generic recipe. Not sure if this has any use. Typically you would use addCustomRecipe instead.
+     * Adds some generic recipe. Not sure if this has any use. Typically you would use
+     * addCustomRecipe instead.
      *
      * @param key    Registry name.
      * @param recipe Recipe object.
@@ -251,31 +261,33 @@ public final class RecipeMaker {
      */
 
     /**
-     * Adds a compression recipe. For example, crafting ingots into blocks and vice versa. This will add both the
-     * compression (small to big) and decompression (big to small) recipes.
+     * Adds a compression recipe. For example, crafting ingots into blocks and vice versa. This will
+     * add both the compression (small to big) and decompression (big to small) recipes.
      *
-     * @param key   Registry name for the recipe. Appends "_compress" or "_decompress" for the appropriate recipes.
+     * @param key   Registry name for the recipe. Appends "_compress" or "_decompress" for the
+     *              appropriate recipes.
      * @param small The small stack (such as ingots).
      * @param big   The big stack (such as blocks).
      * @param count The number of "small" needed to make a "big". Can be anything from 1 to 9.
-     * @return Both created recipes in an array. First is compression, second is decompression. They are both
-     * ShapelessRecipes.
+     * @return Both created recipes in an array. First is compression, second is decompression. They
+     * are both ShapelessRecipes.
      */
     public IRecipe[] addCompression(String key, ItemStack small, ItemStack big, int count) {
         return addCompression(modId, key, small, big, count);
     }
 
     /**
-     * Adds a compression recipe. For example, crafting ingots into blocks and vice versa. This will add both the
-     * compression (small to big) and decompression (big to small) recipes.
+     * Adds a compression recipe. For example, crafting ingots into blocks and vice versa. This will
+     * add both the compression (small to big) and decompression (big to small) recipes.
      *
      * @param group The recipe group.
-     * @param key   Registry name for the recipe. Appends "_compress" or "_decompress" for the appropriate recipes.
+     * @param key   Registry name for the recipe. Appends "_compress" or "_decompress" for the
+     *              appropriate recipes.
      * @param small The small stack (such as ingots).
      * @param big   The big stack (such as blocks).
      * @param count The number of "small" needed to make a "big". Can be anything from 1 to 9.
-     * @return Both created recipes in an array. First is compression, second is decompression. They are both
-     * ShapelessRecipes.
+     * @return Both created recipes in an array. First is compression, second is decompression. They
+     * are both ShapelessRecipes.
      */
     public IRecipe[] addCompression(String group, String key, ItemStack small, ItemStack big, int count) {
         IRecipe[] ret = new IRecipe[2];
@@ -321,7 +333,8 @@ public final class RecipeMaker {
     }
 
     /**
-     * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each) surrounding it.
+     * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each)
+     * surrounding it.
      *
      * @param key         Registry name for the recipe.
      * @param output      The item being crafted.
@@ -333,7 +346,8 @@ public final class RecipeMaker {
     }
 
     /**
-     * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each) surrounding it.
+     * Adds one recipe consisting of a center item with 1-4 different items (2-8 of each)
+     * surrounding it.
      *
      * @param group       The recipe group.
      * @param key         Registry name for the recipe.
@@ -375,25 +389,29 @@ public final class RecipeMaker {
     }
 
     /**
-     * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of each) surrounding it.
+     * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of
+     * each) surrounding it.
      *
      * @param key         Registry name for the recipe.
      * @param output      The item being crafted.
      * @param middle      The item in the middle of the crafting grid.
-     * @param surrounding The item(s) or oredict key(s) surrounding the middle item. Order affects the recipe.
+     * @param surrounding The item(s) or oredict key(s) surrounding the middle item. Order affects
+     *                    the recipe.
      */
     public IRecipe addSurroundOre(String key, ItemStack output, Object middle, Object... surrounding) {
         return addSurroundOre(modId, key, output, middle, surrounding);
     }
 
     /**
-     * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of each) surrounding it.
+     * Adds one recipe consisting of a center item with 1-4 different items or oredict keys (2-8 of
+     * each) surrounding it.
      *
      * @param group       The recipe group.
      * @param key         Registry name for the recipe.
      * @param output      The item being crafted.
      * @param middle      The item in the middle of the crafting grid.
-     * @param surrounding The item(s) or oredict key(s) surrounding the middle item. Order affects the recipe.
+     * @param surrounding The item(s) or oredict key(s) surrounding the middle item. Order affects
+     *                    the recipe.
      */
     public IRecipe addSurroundOre(String group, String key, ItemStack output, Object middle, Object... surrounding) {
         switch (surrounding.length) {
