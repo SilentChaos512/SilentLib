@@ -9,6 +9,7 @@ import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.item.crafting.ShapelessRecipes;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.client.config.GuiUtils;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -116,7 +117,7 @@ public class PageCrafting extends GuidePage {
     }
 
     private void setupRecipe(GuiGuideBase gui, IRecipe recipe, int startX, int startY) {
-        ItemStack[] stacks = new ItemStack[9];
+        NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
         int width = 3;
         int height = 3;
 
@@ -126,16 +127,16 @@ public class PageCrafting extends GuidePage {
             height = shaped.recipeHeight;
             for (int i = 0; i < shaped.recipeItems.size(); ++i) {
                 Ingredient ing = shaped.recipeItems.get(i);
-                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY;
+                stacks.set(i, ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY);
             }
-            this.recipeTypeLocKey = "guide.silentlib:shapedRecipe";
+            this.recipeTypeLocKey = SilentLib.i18n.getKey("guide", "shapedRecipe");
         } else if (recipe instanceof ShapelessRecipes) {
             ShapelessRecipes shapeless = (ShapelessRecipes) recipe;
             for (int i = 0; i < shapeless.recipeItems.size(); i++) {
                 Ingredient ing = shapeless.recipeItems.get(i);
-                stacks[i] = ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY;
+                stacks.set(i, ing.getMatchingStacks().length > 0 ? ing.getMatchingStacks()[0] : ItemStack.EMPTY);
             }
-            this.recipeTypeLocKey = "guide.silentlib:shapelessRecipe";
+            this.recipeTypeLocKey = SilentLib.i18n.getKey("guide", "shapelessRecipe");
         } else if (recipe instanceof ShapedOreRecipe) {
             ShapedOreRecipe shaped = (ShapedOreRecipe) recipe;
             try {
@@ -147,21 +148,21 @@ public class PageCrafting extends GuidePage {
             }
             for (int i = 0; i < shaped.getIngredients().size(); i++) {
                 Ingredient input = shaped.getIngredients().get(i);
-                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY;
+                stacks.set(i, input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY);
             }
-            this.recipeTypeLocKey = "guide.silentlib:shapedOreRecipe";
+            this.recipeTypeLocKey = SilentLib.i18n.getKey("guide", "shapedOreRecipe");
         } else if (recipe instanceof ShapelessOreRecipe) {
             ShapelessOreRecipe shapeless = (ShapelessOreRecipe) recipe;
             for (int i = 0; i < shapeless.getIngredients().size(); i++) {
                 Ingredient input = shapeless.getIngredients().get(i);
-                stacks[i] = input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY;
+                stacks.set(i, input.getMatchingStacks().length > 0 ? input.getMatchingStacks()[0] : ItemStack.EMPTY);
             }
-            this.recipeTypeLocKey = "guide.silentlib:shapelessOreRecipe";
+            this.recipeTypeLocKey = SilentLib.i18n.getKey("guide", "shapelessOreRecipe");
         }
 
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
-                ItemStack stack = stacks[y * width + x];
+                ItemStack stack = stacks.get(y * width + x);
                 if (!stack.isEmpty()) {
                     ItemStack copy = stack.copy();
                     copy.setCount(1);

@@ -18,6 +18,7 @@ import net.silentchaos512.lib.event.SilentLibCommonEvents;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.network.NetworkHandlerSL;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
+import net.silentchaos512.lib.util.I18nHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
 @Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_NAME, version = SilentLib.VERSION, dependencies = SilentLib.DEPENDENCIES)
@@ -30,6 +31,7 @@ public final class SilentLib implements IModBase {
 
     public static NetworkHandlerSL network;
     public static LogHelper logHelper = new LogHelper(MOD_NAME, BUILD_NUM);
+    public static I18nHelper i18n = new I18nHelper(MOD_ID, logHelper, true);
 
     @Instance(MOD_ID)
     public static SilentLib instance;
