@@ -29,6 +29,7 @@ import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.silentchaos512.lib.SilentLib;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashSet;
@@ -39,6 +40,8 @@ import java.util.Set;
 /**
  * I18n wrapper that mostly eliminates the need to concatenate strings to make keys, and adds some
  * helper methods. Stores the mod ID so it never needs to be passed around.
+ * <p>By default, text will still be translated on the server side, but a warning will be
+ * logged when this happens.</p>
  */
 @ParametersAreNonnullByDefault
 public class I18nHelper {
@@ -117,11 +120,17 @@ public class I18nHelper {
         if (replacesColons) key = key.replace(':', '.');
 
         if (!clientSide) {
+            // Log server translation attempt as a warning. Logs only once for each key.
             if (logServerTranslationAttempts && !triedToTranslateOnServer.contains(key)) {
-                log.warn("Tried to translate text \"{}\" on server side", key);
+                log.warn("Tried to translate text on server side: {}", key);
+                // Print stacktrace in dev only
+                if (SilentLib.instance.isDevBuild())
+                    log.catching(new RuntimeException());
                 triedToTranslateOnServer.add(key);
             }
-            return key;
+            // Go ahead and translate text with deprecated I18n on the server for now...
+            //noinspection deprecation
+            return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(key, params);
         }
 
         return I18n.format(key, params);

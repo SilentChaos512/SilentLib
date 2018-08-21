@@ -100,7 +100,7 @@ public final class RecipeJsonHell {
 
             if (stack.hasTagCompound()) {
 //                throw new IllegalArgumentException("Too lazy to implement nbt support rn");
-                SilentLib.logHelper.warn("Component contains NBT: " + component);
+                SilentLib.logHelper.warn("Recipe component contains NBT and cannot be serialized properly: {}", component);
             }
 
             return ret;
