@@ -18,9 +18,10 @@ import java.util.Map;
 /**
  * Originally copied from Bookshelf by Darkhax, modified to support arbitrary JSON serializers.
  * <p>Original class: https://github.com/Darkhax-Minecraft/Bookshelf/blob/master/src/main/java/net/darkhax/bookshelf/json/RecipeGenerator.java</p>
- * The basic shaped/shapeless serializers work for most recipes (basic and oredict), but do support
- * NBT. To have NBT on the crafting result, a custom {@link IRecipeSerializer} and {@link
- * net.minecraftforge.common.crafting.IRecipeFactory} are needed.
+ *
+ * <p>The basic shaped/shapeless serializers work for most recipes (basic and oredict), but do
+ * support NBT. To have NBT on the crafting result, a custom {@link IRecipeSerializer} and {@link
+ * net.minecraftforge.common.crafting.IRecipeFactory} are needed.</p>
  */
 public final class RecipeJsonHell {
 
@@ -38,16 +39,25 @@ public final class RecipeJsonHell {
         throw new IllegalAccessError("Utility class");
     }
 
+    /**
+     * Creates a JSON recipe file with the provided serializer.
+     *
+     * @param name       Name for file
+     * @param serializer The {@link IRecipeSerializer}
+     * @param result     The resulting {@link ItemStack} (note the built-in serializers do not
+     *                   support NBT)
+     * @param components Recipe components, which will depend on the serializer
+     * @since 3.0.0
+     */
     public static void createRecipe(String name, IRecipeSerializer serializer, ItemStack result, Object... components) {
-        final JsonObject json = serializer.serialize(result, components);
-        createRecipeFile(json, name);
+        createRecipeFile(serializer.serialize(result, components), name);
     }
 
     /**
      * Creates a json file for a shaped recipe. Supports normal and ore recipes.
      *
-     * @param result     The resulting item.
-     * @param components The components of the shaped recipe.
+     * @param result     The resulting item (NBT not supported by built-in serializers)
+     * @param components The components of the shaped recipe
      */
     public static void createShapedRecipe(String name, ItemStack result, Object... components) {
         createRecipe(name, ShapedSerializer.INSTANCE, result, components);
@@ -56,8 +66,8 @@ public final class RecipeJsonHell {
     /**
      * Creates a json file for a shapeless recipe. Supports normal and ore recipes.
      *
-     * @param result     The resulting item.
-     * @param components The components of the shapeless recipe.
+     * @param result     The resulting item (NBT not supported by built-in serializers)
+     * @param components The components of the shapeless recipe
      */
     public static void createShapelessRecipe(String name, ItemStack result, Object... components) {
         createRecipe(name, ShapelessSerializer.INSTANCE, result, components);
@@ -98,8 +108,8 @@ public final class RecipeJsonHell {
                 ret.addProperty("count", stack.getCount());
             }
 
+            // Warn about items with NBT, but go ahead and serialize what we can
             if (stack.hasTagCompound()) {
-//                throw new IllegalArgumentException("Too lazy to implement nbt support rn");
                 SilentLib.logHelper.warn("Recipe component contains NBT and cannot be serialized properly: {}", component);
             }
 
@@ -139,6 +149,11 @@ public final class RecipeJsonHell {
         }
     }
 
+    /**
+     * A basic serializer for shaped recipes, with ore dictionary support. Does not support NBT.
+     *
+     * @since 3.0.0
+     */
     public static final class ShapedSerializer implements IRecipeSerializer {
         public static final ShapedSerializer INSTANCE = new ShapedSerializer();
 
@@ -167,8 +182,7 @@ public final class RecipeJsonHell {
             for (; i < components.length; i++) {
                 final Object component = components[i];
 
-                // Handles character params. These should always be followed by an
-                // ingredient.
+                // Handles character params. These should always be followed by an ingredient.
                 if (component instanceof Character) {
                     if (curKey != null) {
                         throw new IllegalArgumentException("Provided two char keys in a row");
@@ -182,8 +196,7 @@ public final class RecipeJsonHell {
                         throw new IllegalArgumentException("Providing object without a char key");
                     }
 
-                    // If a string is used as an ingredient, it means this is an
-                    // oredict recipe.
+                    // If a string is used as an ingredient, it means this is an oredict recipe.
                     if (component instanceof String) {
                         isOreDict = true;
                     }
@@ -207,6 +220,11 @@ public final class RecipeJsonHell {
         }
     }
 
+    /**
+     * A basic serializer for shapeless recipes, with ore dictionary support. Does not support NBT.
+     *
+     * @since 3.0.0
+     */
     public static final class ShapelessSerializer implements IRecipeSerializer {
         public static final ShapelessSerializer INSTANCE = new ShapelessSerializer();
 
@@ -221,8 +239,7 @@ public final class RecipeJsonHell {
 
             // Handles the processing/serialization for all the ingredients.
             for (final Object component : components) {
-                // If a string is used as an ingredient, it means this is an oredict
-                // recipe.
+                // If a string is used as an ingredient, it means this is an oredict recipe.
                 if (component instanceof String) {
                     isOreDict = true;
                 }
