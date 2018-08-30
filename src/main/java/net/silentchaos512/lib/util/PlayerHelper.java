@@ -37,7 +37,8 @@ public class PlayerHelper {
         ItemStack copy = stack.copy();
         if (!player.inventory.addItemStackToInventory(copy)) {
             EntityItem entityItem = new EntityItem(player.world, player.posX, player.posY + 1.0, player.posZ, copy);
-            entityItem.setDefaultPickupDelay();
+            entityItem.setNoPickupDelay();
+            entityItem.setOwner(player.getName());
             player.world.spawnEntity(entityItem);
         }
     }

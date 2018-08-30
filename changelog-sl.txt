@@ -1,5 +1,6 @@
 3.0.2
 Documented recipe serializers
+Added: ItemLootContainer, an item that gives player items from a loot table when used
 Fixed: IColoredBlock not registering item color handler
 
 3.0.1
