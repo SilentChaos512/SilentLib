@@ -1,3 +1,7 @@
+3.0.2
+Documented recipe serializers
+Fixed: IColoredBlock not registering item color handler
+
 3.0.1
 Fixed: Guide book crash (Silent's Gems #328)
 

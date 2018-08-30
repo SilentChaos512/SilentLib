@@ -26,6 +26,8 @@ import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.block.model.ModelBakery;
 import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.color.BlockColors;
+import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.enchantment.Enchantment;
@@ -633,15 +635,19 @@ public class SRegistry {
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void registerBlockColors(ColorHandlerEvent.Block event) {
+            BlockColors blockColors = event.getBlockColors();
             for (Block block : sregistry.coloredBlocks)
-                event.getBlockColors().registerBlockColorHandler(((IColoredBlock) block).getColorHandler(), block);
+                blockColors.registerBlockColorHandler(((IColoredBlock) block).getColorHandler(), block);
         }
 
         @SideOnly(Side.CLIENT)
         @SubscribeEvent
         public void registerItemColors(ColorHandlerEvent.Item event) {
+            ItemColors itemColors = event.getItemColors();
+            for (Block block : sregistry.coloredBlocks)
+                itemColors.registerItemColorHandler(((IColoredBlock) block).getItemColorHandler(), Item.getItemFromBlock(block));
             for (Item item : sregistry.coloredItems)
-                event.getItemColors().registerItemColorHandler(((IColoredItem) item).getColorHandler(), item);
+                itemColors.registerItemColorHandler(((IColoredItem) item).getColorHandler(), item);
         }
     }
 }
