@@ -19,6 +19,7 @@
 package net.silentchaos512.lib.item;
 
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
@@ -137,5 +138,11 @@ public class ItemLootContainer extends Item {
         // Don't care if clicked on a block or empty space
         this.onItemRightClick(worldIn, player, hand).getType();
         return EnumActionResult.FAIL;
+    }
+
+    @Override
+    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
+        if (!this.isInCreativeTab(tab)) return;
+        items.add(this.getStack());
     }
 }
