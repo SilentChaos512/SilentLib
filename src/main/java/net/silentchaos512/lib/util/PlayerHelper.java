@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
@@ -56,6 +57,28 @@ public class PlayerHelper {
                 }
             }
         }
+    }
+
+    /**
+     * Gets a tag compound from the player's persisted data NBT compound, or creates it if it does
+     * not exist. This can be used to save additional data to a player.
+     *
+     * @param player         The player
+     * @param subcompoundKey The key for the tag compound (ideally should contain mod ID)
+     * @return The tag compound, creating it if it does not exist.
+     */
+    public static NBTTagCompound getPersistedDataSubcompound(EntityPlayer player, String subcompoundKey) {
+        NBTTagCompound forgeData = player.getEntityData();
+        if (!forgeData.hasKey(EntityPlayer.PERSISTED_NBT_TAG)) {
+            forgeData.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+        }
+
+        NBTTagCompound persistedData = forgeData.getCompoundTag(EntityPlayer.PERSISTED_NBT_TAG);
+        if (!persistedData.hasKey(subcompoundKey)) {
+            persistedData.setTag(subcompoundKey, new NBTTagCompound());
+        }
+
+        return persistedData.getCompoundTag(subcompoundKey);
     }
 
     @Nonnull

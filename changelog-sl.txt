@@ -1,3 +1,6 @@
+3.0.3
+Added: InitialSpawnItems
+
 3.0.2
 Documented recipe serializers
 Added: ItemLootContainer, an item that gives player items from a loot table when used
