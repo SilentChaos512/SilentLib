@@ -24,8 +24,6 @@ import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.oredict.OreDictionary;
 
-import javax.annotation.Nullable;
-
 public class DyeHelper {
     public static String getOreName(EnumDyeColor dye) {
         String name = dye.getTranslationKey();
@@ -37,10 +35,9 @@ public class DyeHelper {
     }
 
     public static boolean isItemDye(ItemStack stack) {
-        return oreDictDyeToVanilla(stack) != null;
+        return !oreDictDyeToVanilla(stack).isEmpty();
     }
 
-    @Nullable
     public static ItemStack oreDictDyeToVanilla(ItemStack stack) {
         for (int id : OreDictionary.getOreIDs(stack)) {
             String name = OreDictionary.getOreName(id);
@@ -55,6 +52,6 @@ public class DyeHelper {
             }
         }
 
-        return null;
+        return ItemStack.EMPTY;
     }
 }
