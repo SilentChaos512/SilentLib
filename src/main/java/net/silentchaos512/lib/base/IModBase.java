@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.base;
 
+import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
 
 public interface IModBase {
@@ -12,7 +13,7 @@ public interface IModBase {
     int getBuildNum();
 
     default boolean isDevBuild() {
-        return 0 == getBuildNum();
+        return 0 == getBuildNum() || GameUtil.isDeobfuscated();
     }
 
     default LogHelper getLog() {
