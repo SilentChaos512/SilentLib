@@ -49,8 +49,8 @@ import java.util.List;
  * @since 3.0.2
  */
 public class ItemLootContainer extends Item {
-    private static final String NBT_ROOT = SilentLib.MOD_ID + "_lootcontainer";
-    private static final String NBT_LOOT_TABLE = "loot_table";
+    private static final String NBT_ROOT = SilentLib.MOD_ID + ".LootContainer";
+    private static final String NBT_LOOT_TABLE = "LootTable";
 
     private final ResourceLocation defaultLootTable;
 
