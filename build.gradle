@@ -1,3 +1,5 @@
+// Based on jriwanek's Forge Modding Skeleton (https://github.com/jriwanek/ForgeModdingSkeleton)
+
 buildscript {
     repositories {
         jcenter()
@@ -16,7 +18,7 @@ buildscript {
 }
 
 plugins {
-    id "com.matthewprenger.cursegradle" version "1.0.10"
+    id "com.matthewprenger.cursegradle" version "1.1.0"
     id 'net.ltgt.apt' version '0.10' // for lombok
 }
 
@@ -145,6 +147,12 @@ dependencies {
     if (project.hasProperty('lombok_version')) {
         compile "org.projectlombok:lombok:${project.lombok_version}"
         apt "org.projectlombok:lombok:${project.lombok_version}"
+    }
+
+    // JEI
+    if (project.hasProperty('jei_version')) {
+        deobfProvided "mezz.jei:jei_${project.mc_version}:${project.jei_version}:api"
+        //runtime "mezz.jei:jei_${project.mc_version}:${project.jei_version}"
     }
 }
 

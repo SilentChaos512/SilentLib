@@ -67,6 +67,21 @@ public abstract class ConfigBase implements IPhasedInitializer {
         return val < min ? min : val > max ? max : val;
     }
 
+    public long loadLong(String key, String category, long defaultValue, String comment) {
+        Property prop = config.get(category, key, defaultValue);
+        prop.setComment(comment);
+        return prop.getLong(defaultValue);
+    }
+
+    public long loadLong(String key, String category, long defaultValue, long min, long max, String comment) {
+        Property prop = config.get(category, key, defaultValue);
+        prop.setComment(comment + " [range: " + min + " ~ " + max + ", default: " + defaultValue + "]");
+        prop.setMinValue(min);
+        prop.setMaxValue(max);
+        long val = prop.getLong(defaultValue);
+        return val < min ? min : val > max ? max : val;
+    }
+
     public double loadDouble(String key, String category, double defaultValue, String comment) {
         Property prop = config.get(category, key, Double.toString(defaultValue));
         prop.setComment(comment);
