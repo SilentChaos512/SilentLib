@@ -1,3 +1,6 @@
+3.0.4
+Added: HudAnchor
+
 3.0.3
 Added: InitialSpawnItems
 
