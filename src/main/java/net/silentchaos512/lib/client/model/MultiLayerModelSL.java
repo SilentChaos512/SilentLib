@@ -17,6 +17,7 @@ import javax.vecmath.Matrix4f;
 import java.util.ArrayList;
 import java.util.List;
 
+@Deprecated
 @SideOnly(Side.CLIENT)
 public class MultiLayerModelSL extends PerspectiveMapWrapper {
 

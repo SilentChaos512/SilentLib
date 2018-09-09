@@ -1,9 +1,10 @@
 package net.silentchaos512.lib;
 
-import net.minecraftforge.common.MinecraftForge;
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -11,17 +12,18 @@ import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.base.IModBase;
-import net.silentchaos512.lib.event.ClientTicks;
-import net.silentchaos512.lib.event.ServerTicks;
-import net.silentchaos512.lib.event.SilentLibClientEvents;
-import net.silentchaos512.lib.event.SilentLibCommonEvents;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.network.NetworkHandlerSL;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
+import net.silentchaos512.lib.proxy.internal.SilentLibCommonProxy;
 import net.silentchaos512.lib.util.I18nHelper;
 import net.silentchaos512.lib.util.LogHelper;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @Mod(modid = SilentLib.MOD_ID, name = SilentLib.MOD_NAME, version = SilentLib.VERSION, dependencies = SilentLib.DEPENDENCIES)
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class SilentLib implements IModBase {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
@@ -36,6 +38,11 @@ public final class SilentLib implements IModBase {
     @Instance(MOD_ID)
     public static SilentLib instance;
 
+    @SidedProxy(
+            clientSide = "net.silentchaos512.lib.proxy.internal.SilentLibClientProxy",
+            serverSide = "net.silentchaos512.lib.proxy.internal.SilentLibServerProxy")
+    public static SilentLibCommonProxy proxy;
+
     @EventHandler
     public void preInit(FMLPreInitializationEvent event) {
         network = new NetworkHandlerSL(MOD_ID);
@@ -45,24 +52,17 @@ public final class SilentLib implements IModBase {
         // Make sure advancement triggers get registered...
         LibTriggers.init();
 
-        // Common events
-        MinecraftForge.EVENT_BUS.register(new SilentLibCommonEvents());
-        if (event.getSide().isClient()) {
-            // Client-only
-            MinecraftForge.EVENT_BUS.register(new SilentLibClientEvents());
-            MinecraftForge.EVENT_BUS.register(ClientTicks.INSTANCE);
-        } else if (event.getSide().isServer()) {
-            // Server-only
-            MinecraftForge.EVENT_BUS.register(ServerTicks.INSTANCE);
-        }
+        proxy.preInit(event);
     }
 
     @EventHandler
     public void init(FMLInitializationEvent event) {
+        proxy.init(event);
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+        proxy.postInit(event);
     }
 
     @Override

@@ -76,7 +76,9 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.block.BlockMetaSubtypes;
 import net.silentchaos512.lib.block.IColoredBlock;
 import net.silentchaos512.lib.block.ITileEntityBlock;
+import net.silentchaos512.lib.client.render.TEISRCustomEnchantedEffect;
 import net.silentchaos512.lib.item.IColoredItem;
+import net.silentchaos512.lib.item.ICustomEnchantColor;
 import net.silentchaos512.lib.item.ItemBlockMetaSubtypes;
 import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
@@ -505,6 +507,12 @@ public class SRegistry {
                 if (tesr != null) {
                     ClientRegistry.bindTileEntitySpecialRenderer(tileBlock.getTileEntityClass(), tesr);
                 }
+            }
+        }
+
+        for (Item item : this.items) {
+            if (item instanceof ICustomEnchantColor) {
+                item.setTileEntityItemStackRenderer(TEISRCustomEnchantedEffect.INSTANCE);
             }
         }
     }
