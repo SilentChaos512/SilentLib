@@ -493,12 +493,14 @@ public class SRegistry {
     /**
      * Call in the "preInit" phase in your client proxy.
      */
+    @SideOnly(Side.CLIENT)
     public void clientPreInit(FMLPreInitializationEvent event) {
     }
 
     /**
      * Call in the "init" phase in your client proxy.
      */
+    @SideOnly(Side.CLIENT)
     public void clientInit(FMLInitializationEvent event) {
         for (Block block : this.blocks) {
             if (block instanceof ITileEntityBlock) {
@@ -522,6 +524,7 @@ public class SRegistry {
      *
      * @param event
      */
+    @SideOnly(Side.CLIENT)
     public void clientPostInit(FMLPostInitializationEvent event) {
     }
 

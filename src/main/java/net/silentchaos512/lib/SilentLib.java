@@ -27,7 +27,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class SilentLib implements IModBase {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "3.0.4";
+    public static final String VERSION = "3.0.5";
     public static final int BUILD_NUM = 0;
     public static final String DEPENDENCIES = "required-after:forge@[14.23.3.2669,);";
 
