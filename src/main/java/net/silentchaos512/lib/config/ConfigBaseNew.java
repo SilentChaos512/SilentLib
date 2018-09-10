@@ -46,7 +46,15 @@ public abstract class ConfigBaseNew extends ConfigBase {
     }
 
     private void readAnnotatedFields() {
-        for (Field field : this.getClass().getDeclaredFields()) {
+        readAnnotatedFields(this.getClass());
+    }
+
+    private void readAnnotatedFields(Class<?> clazz) {
+        for (Class<?> innerClass : clazz.getDeclaredClasses()) {
+            readAnnotatedFields(innerClass);
+        }
+
+        for (Field field : clazz.getDeclaredFields()) {
             ConfigOption config = null;
             ConfigOption.Comment comment = null;
             ConfigOption.BooleanDefault booleanDefault = null;
