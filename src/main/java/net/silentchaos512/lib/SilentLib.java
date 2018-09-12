@@ -8,10 +8,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.base.IModBase;
+import net.silentchaos512.lib.command.internal.CommandDataDump;
 import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.network.NetworkHandlerSL;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
@@ -63,6 +65,11 @@ public final class SilentLib implements IModBase {
     @EventHandler
     public void postInit(FMLPostInitializationEvent event) {
         proxy.postInit(event);
+    }
+
+    @EventHandler
+    public void onServerStarting(FMLServerStartingEvent event) {
+        event.registerServerCommand(new CommandDataDump());
     }
 
     @Override
