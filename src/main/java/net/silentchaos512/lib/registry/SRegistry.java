@@ -88,8 +88,11 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 public class SRegistry {
+    private static final Pattern PATTERN_REGISTRY_NAME = Pattern.compile("[^a-z0-9_]+");
+
     @Getter
     private final List<Block> blocks = NonNullList.create();
     @Getter
@@ -104,9 +107,8 @@ public class SRegistry {
 
     private Object mod;
     @Nullable
-    private LogHelper logHelper;
+    private final LogHelper logHelper;
     private final String modId;
-    private final String modName;
     private final String resourcePrefix;
 
     @Nonnull
@@ -125,9 +127,8 @@ public class SRegistry {
     public SRegistry() {
         ModContainer mod = Objects.requireNonNull(Loader.instance().activeModContainer());
         this.modId = mod.getModId();
-        this.modName = mod.getName();
         this.resourcePrefix = this.modId + ":";
-        this.logHelper = new LogHelper(this.modName + "/SRegistry", 1);
+        this.logHelper = new LogHelper(mod.getName() + "/SRegistry", 1);
         this.recipes = new RecipeMaker(modId);
         MinecraftForge.EVENT_BUS.register(new EventHandler(this));
     }
@@ -379,7 +380,7 @@ public class SRegistry {
      * so just log it as a warning.
      */
     private void validateRegistryName(String name) {
-        if (name.matches("[^a-z0-9_]+"))
+        if (PATTERN_REGISTRY_NAME.matcher(name).matches())
             logger().warn("Invalid name for object: {}", name);
     }
 
@@ -575,7 +576,7 @@ public class SRegistry {
      */
     @SuppressWarnings("unused")
     public static class EventHandler {
-        private SRegistry sregistry;
+        private final SRegistry sregistry;
 
         public EventHandler(SRegistry sregistry) {
             this.sregistry = sregistry;

@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.event;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -36,7 +38,7 @@ import java.util.function.Supplier;
  */
 @Mod.EventBusSubscriber
 public class Greetings {
-    private static final List<Supplier<Optional<ITextComponent>>> messages = new ArrayList<>();
+    private static final List<Function<EntityPlayer, Optional<ITextComponent>>> messages = new ArrayList<>();
 
     /**
      * Add a message to display to the player on login. If the supplier returns {@code null}, no
@@ -45,9 +47,23 @@ public class Greetings {
      * @param message A text component supplier for your message. Using {@link
      *                net.minecraft.util.text.TextComponentTranslation} may be ideal.
      * @since 2.3.17
+     * @deprecated Use {@link #addMessage(Function)} instead
      */
+    @Deprecated
     public static void addMessage(Supplier<ITextComponent> message) {
-        messages.add(() -> Optional.ofNullable(message.get()));
+        messages.add(player -> Optional.ofNullable(message.get()));
+    }
+
+    /**
+     * Add a message to display to the player on login. If the function returns {@code null}, no
+     * message is displayed. Consider displaying your message only once per session or per day.
+     *
+     * @param message A function to create the message. Using {@link net.minecraft.util.text.TextComponentTranslation}
+     *                may be ideal.
+     * @since 3.0.6
+     */
+    public static void addMessage(Function<EntityPlayer, ITextComponent> message) {
+        messages.add(player -> Optional.ofNullable(message.apply(player)));
     }
 
     /**
@@ -57,6 +73,6 @@ public class Greetings {
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player == null) return;
-        messages.forEach(messageSupplier -> messageSupplier.get().ifPresent(event.player::sendMessage));
+        messages.forEach(msg -> msg.apply(event.player).ifPresent(event.player::sendMessage));
     }
 }

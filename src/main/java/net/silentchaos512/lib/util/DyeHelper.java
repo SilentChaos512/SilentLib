@@ -43,7 +43,7 @@ public class DyeHelper {
             String name = OreDictionary.getOreName(id);
             if (name.startsWith("dye")) {
                 name = name.substring(3);
-                if (name.equals("lightgray"))
+                if ("lightgray".equals(name))
                     name = "silver";
 
                 for (int i = 0; i < EnumDyeColor.values().length; ++i)

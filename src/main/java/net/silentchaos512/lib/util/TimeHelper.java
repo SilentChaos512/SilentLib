@@ -18,8 +18,12 @@
 
 package net.silentchaos512.lib.util;
 
-public class TimeHelper {
-    private static int TICKS_PER_SECOND = 20;
+public final class TimeHelper {
+    private static final int TICKS_PER_SECOND = 20;
+
+    private TimeHelper() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     public static int ticksFromSeconds(float seconds) {
         return (int) (TICKS_PER_SECOND * seconds);

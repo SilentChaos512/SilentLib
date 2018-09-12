@@ -24,11 +24,20 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MoverType;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.List;
 import java.util.Queue;
 
-public class EntityHelper {
+@Mod.EventBusSubscriber
+public final class EntityHelper {
+    private EntityHelper() {
+        throw new IllegalAccessError("Utility class");
+    }
+
+    @Deprecated
     public static void moveSelf(Entity entity, double x, double y, double z) {
         entity.move(MoverType.SELF, x, y, z);
     }
@@ -38,13 +47,14 @@ public class EntityHelper {
      *
      * @since 2.1.3
      */
+    @Deprecated
     public static List<String> getEntityNameList() {
         List<String> list = Lists.newArrayList();
         EntityList.getEntityNameList().forEach(res -> list.add(EntityList.getTranslationName(res)));
         return list;
     }
 
-    private static Queue<Entity> entitiesToSpawn = Queues.newArrayDeque();
+    private static volatile Queue<Entity> entitiesToSpawn = Queues.newArrayDeque();
 
     /**
      * Thread-safe spawning of entities. The queued entities will be spawned in the START (pre)
@@ -56,12 +66,7 @@ public class EntityHelper {
         entitiesToSpawn.add(entity);
     }
 
-    /**
-     * Called by SilentLibCommonEvents#onWorldTick. Calling this yourself is not recommended.
-     *
-     * @since 2.1.4
-     */
-    public static void handleSpawns() {
+    private static void handleSpawns() {
         Entity entity;
         while ((entity = entitiesToSpawn.poll()) != null) {
             entity.world.spawnEntity(entity);
@@ -79,6 +84,13 @@ public class EntityHelper {
             entityLiving.heal(healAmount);
         } else {
             entityLiving.setHealth(entityLiving.getHealth() + healAmount);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.WorldTickEvent event) {
+        if (event.phase == TickEvent.Phase.START) {
+            handleSpawns();
         }
     }
 }

@@ -20,14 +20,15 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.util.math.MathHelper;
 
+@SuppressWarnings("MagicNumber")
 public class Color {
     public static final Color BLACK = new Color(0x0);
     public static final Color WHITE = new Color(0xFFFFFF);
 
-    private float red;
-    private float green;
-    private float blue;
-    private float alpha;
+    private final float red;
+    private final float green;
+    private final float blue;
+    private final float alpha;
 
     public Color(int color) {
         this((color >> 16) & 0xFF, (color >> 8) & 0xFF, color & 0xFF);

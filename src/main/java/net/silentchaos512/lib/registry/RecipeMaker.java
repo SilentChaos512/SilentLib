@@ -52,8 +52,8 @@ import java.util.Map;
  * @since 2.2.0
  */
 public final class RecipeMaker {
-    private String modId;
-    private String resourcePrefix;
+    private final String modId;
+    private final String resourcePrefix;
     private int lastRecipeIndex = -1;
     @Setter
     private boolean jsonHellMode = false;
@@ -64,7 +64,7 @@ public final class RecipeMaker {
         resourcePrefix = modId + ":";
     }
 
-    protected String getRecipeKey(String key) {
+    private String getRecipeKey(String key) {
         if (key.isEmpty()) key = "recipe" + (++lastRecipeIndex);
         return resourcePrefix + key.toLowerCase(Locale.ROOT);
     }
@@ -290,8 +290,6 @@ public final class RecipeMaker {
      * are both ShapelessRecipes.
      */
     public IRecipe[] addCompression(String group, String key, ItemStack small, ItemStack big, int count) {
-        IRecipe[] ret = new IRecipe[2];
-
         // Clamp to sane values.
         count = MathHelper.clamp(count, 1, 9);
 
@@ -300,6 +298,7 @@ public final class RecipeMaker {
         for (int i = 0; i < count; ++i) {
             smallArray[i] = small;
         }
+        IRecipe[] ret = new IRecipe[2];
         ret[0] = addShapeless(group, key + "_compress", big, smallArray);
 
         // big -> small
@@ -311,8 +310,6 @@ public final class RecipeMaker {
     }
 
     public IRecipe[] addCompressionOre(String key, ItemStack small, ItemStack big, @Nullable String smallOreName, @Nullable String bigOreName, int count) {
-        IRecipe[] ret = new IRecipe[2];
-
         // Clamp to sane values.
         count = MathHelper.clamp(count, 1, 9);
 
@@ -321,13 +318,14 @@ public final class RecipeMaker {
         for (int i = 0; i < count; ++i) {
             smallArray[i] = smallOreName != null && !smallOreName.isEmpty() ? smallOreName : small;
         }
+        IRecipe[] ret = new IRecipe[2];
         ret[0] = addShapelessOre(modId, key + "_oredict_compress", big, smallArray);
 
         // big -> small
         ItemStack smallCopy = small.copy();
         smallCopy.setCount(count);
         Object bigObj = bigOreName != null && !bigOreName.isEmpty() ? bigOreName : big;
-        ret[1] = addShapelessOre(modId, key + "_oredict_decompress", smallCopy, big);
+        ret[1] = addShapelessOre(modId, key + "_oredict_decompress", smallCopy, bigObj);
 
         return ret;
     }

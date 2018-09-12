@@ -49,8 +49,7 @@ public abstract class RecipeBaseSL extends net.minecraftforge.registries.IForgeR
     /**
      * Convenience method to make iterating a bit cleaner.
      *
-     * @param inv
-     * @return
+     * @return A list of all non-empty stacks in the inventory
      */
     public static NonNullList<ItemStack> getNonEmptyStacks(InventoryCrafting inv) {
         NonNullList<ItemStack> list = NonNullList.create();

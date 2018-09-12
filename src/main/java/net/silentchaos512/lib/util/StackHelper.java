@@ -34,7 +34,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class StackHelper {
+public final class StackHelper {
+    private StackHelper() {
+        throw new IllegalAccessError("Utility class");
+    }
+
     /**
      * Creates an {@link ItemStack} from the block or item. Returns an empty stack if {@code
      * blockOrItem} is not a block or item.

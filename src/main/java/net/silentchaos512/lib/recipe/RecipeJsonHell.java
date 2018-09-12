@@ -19,7 +19,7 @@ import java.util.Map;
  * Originally copied from Bookshelf by Darkhax, modified to support arbitrary JSON serializers.
  * <p>Original class: https://github.com/Darkhax-Minecraft/Bookshelf/blob/master/src/main/java/net/darkhax/bookshelf/json/RecipeGenerator.java</p>
  *
- * <p>The basic shaped/shapeless serializers work for most recipes (basic and oredict), but do
+ * <p>The basic shaped/shapeless serializers work for most recipes (basic and oredict), but do not
  * support NBT. To have NBT on the crafting result, a custom {@link IRecipeSerializer} and {@link
  * net.minecraftforge.common.crafting.IRecipeFactory} are needed.</p>
  */
