@@ -18,15 +18,22 @@
 
 package net.silentchaos512.lib.event;
 
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class ServerTicks {
-    public static final ServerTicks INSTANCE = new ServerTicks();
-
+/**
+ * Can schedule actions to run during {@link TickEvent.ServerTickEvent}, which is mainly useful for
+ * handling packets.
+ *
+ * @since 2.3.12
+ */
+@Mod.EventBusSubscriber(Side.SERVER)
+public final class ServerTicks {
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     private ServerTicks() {
@@ -37,12 +44,12 @@ public class ServerTicks {
     }
 
     @SubscribeEvent
-    public void serverTicks(TickEvent.ServerTickEvent event) {
-        if (event.phase != TickEvent.Phase.START) return;
-        runScheduledActions();
+    public static void serverTicks(TickEvent.ServerTickEvent event) {
+        if (event.phase == TickEvent.Phase.START)
+            runScheduledActions();
     }
 
-    private void runScheduledActions() {
+    private static void runScheduledActions() {
         Runnable action = scheduledActions.poll();
         while (action != null) {
             action.run();

@@ -20,14 +20,12 @@ package net.silentchaos512.lib.proxy.internal;
 
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.silentchaos512.lib.event.ClientTicks;
 import net.silentchaos512.lib.event.SilentLibClientEvents;
 
-public class SilentLibClientProxy extends SilentLibCommonProxy {
+public final class SilentLibClientProxy extends SilentLibCommonProxy {
     @Override
     public void preInit(FMLPreInitializationEvent event) {
         super.preInit(event);
         MinecraftForge.EVENT_BUS.register(new SilentLibClientEvents());
-        MinecraftForge.EVENT_BUS.register(ClientTicks.INSTANCE);
     }
 }

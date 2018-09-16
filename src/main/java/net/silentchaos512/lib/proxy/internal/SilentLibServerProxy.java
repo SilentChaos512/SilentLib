@@ -18,14 +18,5 @@
 
 package net.silentchaos512.lib.proxy.internal;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.silentchaos512.lib.event.ServerTicks;
-
-public class SilentLibServerProxy extends SilentLibCommonProxy {
-    @Override
-    public void preInit(FMLPreInitializationEvent event) {
-        super.preInit(event);
-        MinecraftForge.EVENT_BUS.register(ServerTicks.INSTANCE);
-    }
+public final class SilentLibServerProxy extends SilentLibCommonProxy {
 }

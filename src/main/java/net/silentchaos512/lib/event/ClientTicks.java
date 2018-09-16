@@ -20,15 +20,22 @@ package net.silentchaos512.lib.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
-public class ClientTicks {
-    public static final ClientTicks INSTANCE = new ClientTicks();
-
+/**
+ * Can schedule actions to run during {@link TickEvent.ClientTickEvent}, which is mainly useful for
+ * handling packets. Also tracks some tick-related variables useful for rendering.
+ *
+ * @since 2.3.12
+ */
+@Mod.EventBusSubscriber(Side.CLIENT)
+public final class ClientTicks {
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     public static int ticksInGame = 0;
@@ -39,24 +46,24 @@ public class ClientTicks {
     private ClientTicks() {
     }
 
-    public void scheduleAction(Runnable action) {
+    public static void scheduleAction(Runnable action) {
         scheduledActions.add(action);
     }
 
     @SubscribeEvent
-    public void clientTickEnd(TickEvent.ClientTickEvent event) {
+    public static void clientTickEnd(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         runScheduledActions();
         updateTickCounters();
     }
 
     @SubscribeEvent
-    public void renderTick(TickEvent.RenderTickEvent event) {
+    public static void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
             partialTicks = event.renderTickTime;
     }
 
-    private void runScheduledActions() {
+    private static void runScheduledActions() {
         Runnable action = scheduledActions.poll();
         while (action != null) {
             action.run();
@@ -64,7 +71,7 @@ public class ClientTicks {
         }
     }
 
-    private void updateTickCounters() {
+    private static void updateTickCounters() {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
         if (gui == null || !gui.doesGuiPauseGame()) {
             ++ticksInGame;
