@@ -37,8 +37,10 @@ import java.util.Optional;
 
 public class CommandDataDump extends CommandBase {
     enum SubCommand implements IStringSerializable {
+        BLOCK(DataDump::dumpBlocks),
         ENCHANTMENT(DataDump::dumpEnchantments),
         ENTITY(DataDump::dumpEntityList),
+        ITEM(DataDump::dumpItems),
         POTION(DataDump::dumpPotionEffects);
 
         private final Runnable command;

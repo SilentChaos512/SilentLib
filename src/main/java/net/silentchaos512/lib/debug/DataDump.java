@@ -19,9 +19,11 @@
 package net.silentchaos512.lib.debug;
 
 import com.google.common.collect.Lists;
+import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityList;
+import net.minecraft.item.Item;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.potion.Potion;
@@ -30,6 +32,7 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
 import net.silentchaos512.lib.SilentLib;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,6 +42,26 @@ public final class DataDump {
 
     private DataDump() {
         throw new IllegalAccessError("Utility class");
+    }
+
+    public static void dumpBlocks() {
+        SilentLib.logHelper.info(SEPARATOR);
+        List<String> lines = new ArrayList<>();
+
+        for (Block block : ForgeRegistries.BLOCKS) {
+            try {
+                ResourceLocation name = Objects.requireNonNull(block.getRegistryName(), REGISTRY_NAME_IS_NULL);
+                String translatedName = SilentLib.i18n.translate(block.getTranslationKey() + ".name");
+                lines.add(String.format("%-60s %-60s", name, translatedName));
+            } catch (Exception ex) {
+                SilentLib.logHelper.warn("*** Error on block: {} ***", block);
+                SilentLib.logHelper.catching(ex);
+            }
+        }
+
+        lines.sort(String::compareToIgnoreCase);
+        lines.forEach(str -> SilentLib.logHelper.info(str));
+        SilentLib.logHelper.info(SEPARATOR);
     }
 
     public static void dumpEnchantments() {
@@ -76,6 +99,26 @@ public final class DataDump {
 
         list.sort(String::compareToIgnoreCase);
         list.forEach(str -> SilentLib.logHelper.info(str));
+        SilentLib.logHelper.info(SEPARATOR);
+    }
+
+    public static void dumpItems() {
+        SilentLib.logHelper.info(SEPARATOR);
+        List<String> lines = new ArrayList<>();
+
+        for (Item item : ForgeRegistries.ITEMS) {
+            try {
+                ResourceLocation name = Objects.requireNonNull(item.getRegistryName(), REGISTRY_NAME_IS_NULL);
+                String translatedName = SilentLib.i18n.translate(item.getTranslationKey() + ".name");
+                lines.add(String.format("%-60s %-60s", name, translatedName));
+            } catch (Exception ex) {
+                SilentLib.logHelper.warn("*** Error on item: {} ***", item);
+                SilentLib.logHelper.catching(ex);
+            }
+        }
+
+//        lines.sort(String::compareToIgnoreCase);
+        lines.forEach(str -> SilentLib.logHelper.info(str));
         SilentLib.logHelper.info(SEPARATOR);
     }
 
