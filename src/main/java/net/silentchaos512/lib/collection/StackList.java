@@ -18,7 +18,11 @@
 
 package net.silentchaos512.lib.collection;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -27,19 +31,49 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
- * ArrayList designed to hold non-empty ItemStacks. Ignores any empty stacks that are added. Has some convenience
- * methods for selecting stacks.
+ * ArrayList designed to hold non-empty ItemStacks. Ignores any empty stacks that are added. Has
+ * some convenience methods for selecting stacks.
  *
  * @since 3.0.0(?)
  */
-public class StackList extends ArrayList<ItemStack> {
-
+public final class StackList extends ArrayList<ItemStack> {
     private StackList() {
     }
 
+    /**
+     * Create a StackList of the provided stacks, automatically removing any empty stacks.
+     *
+     * @param stacks The {@link ItemStack}s, may be empty but not null
+     * @return A new list of all non-empty (valid) stacks
+     */
     public static StackList of(ItemStack... stacks) {
         StackList newList = new StackList();
         Collections.addAll(newList, stacks);
+        return newList;
+    }
+
+    /**
+     * Create a StackList from the non-empty (valid) stacks in the provided inventory.
+     *
+     * @param inventory The {@link IInventory}
+     * @return A new list of all non-empty stacks from the inventory
+     * @since 3.0.6
+     */
+    public static StackList fromInventory(IInventory inventory) {
+        StackList newList = new StackList();
+        for (int i = 0; i < inventory.getSizeInventory(); ++i) {
+            newList.add(inventory.getStackInSlot(i));
+        }
+        return newList;
+    }
+
+    public static StackList fromNBT(NBTTagList tagList) {
+        StackList newList = new StackList();
+        for (NBTBase nbt : tagList) {
+            if (nbt instanceof NBTTagCompound) {
+                newList.add(new ItemStack((NBTTagCompound) nbt));
+            }
+        }
         return newList;
     }
 
@@ -78,7 +112,7 @@ public class StackList extends ArrayList<ItemStack> {
         return (int) stream().filter(predicate).count();
     }
 
-    private Predicate<ItemStack> itemClassMatcher(Class<?> itemClass) {
+    private static Predicate<ItemStack> itemClassMatcher(Class<?> itemClass) {
         return stack -> itemClass.isInstance(stack.getItem());
     }
 

@@ -26,8 +26,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.silentchaos512.lib.SilentLib;
 
@@ -71,7 +69,7 @@ public class I18nHelper {
         this.modId = modId;
         this.log = log;
         this.logServerTranslationAttempts = logServerTranslationAttempts;
-        this.clientSide = FMLCommonHandler.instance().getSide() == Side.CLIENT;
+        this.clientSide = GameUtil.isClient();
     }
 
     /**
@@ -90,6 +88,10 @@ public class I18nHelper {
      */
     public String getKey(String prefix, String key, String suffix) {
         return prefix + "." + modId + "." + key + "." + suffix;
+    }
+
+    public String getKey(String prefix, ResourceLocation name) {
+        return prefix + "." + name.getNamespace() + "." + name.getPath();
     }
 
     public String getKey(IForgeRegistryEntry<?> object, String key) {

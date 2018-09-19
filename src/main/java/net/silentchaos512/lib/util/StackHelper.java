@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.util;
 
+import mcp.MethodsReturnNonnullByDefault;
 import net.minecraft.block.Block;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.Item;
@@ -32,8 +33,10 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
 public final class StackHelper {
     private StackHelper() {
         throw new IllegalAccessError("Utility class");
@@ -49,6 +52,7 @@ public final class StackHelper {
      * @since 2.3.17
      */
     public static ItemStack fromBlockOrItem(IForgeRegistryEntry<?> blockOrItem) {
+        //noinspection ChainOfInstanceofChecks
         if (blockOrItem instanceof Block)
             return new ItemStack((Block) blockOrItem);
         else if (blockOrItem instanceof Item)
@@ -71,7 +75,8 @@ public final class StackHelper {
      * createIfNull} is false
      */
     @Deprecated
-    public static NBTTagCompound getTagCompound(@Nonnull ItemStack stack, boolean createIfNull) {
+    @Nullable
+    public static NBTTagCompound getTagCompound(ItemStack stack, boolean createIfNull) {
         if (stack.isEmpty())
             return null;
         if (!stack.hasTagCompound() && createIfNull)
@@ -79,12 +84,10 @@ public final class StackHelper {
         return stack.getTagCompound();
     }
 
-    @Nonnull
     public static List<ItemStack> getOres(String oreDictKey) {
         return OreDictionary.getOres(oreDictKey);
     }
 
-    @Nonnull
     public static List<ItemStack> getOres(String oreDictKey, boolean alwaysCreateEntry) {
         return OreDictionary.getOres(oreDictKey, alwaysCreateEntry);
     }
@@ -97,8 +100,7 @@ public final class StackHelper {
      * @return A list of strings, which may be empty.
      * @since 2.3.2
      */
-    @Nonnull
-    public static List<String> getOreNames(@Nonnull ItemStack stack) {
+    public static List<String> getOreNames(ItemStack stack) {
         List<String> list = new ArrayList<>();
         if (stack.isEmpty())
             return list;
@@ -130,13 +132,33 @@ public final class StackHelper {
      * @param inv The inventory
      * @return A StackList of non-empty ItemStacks
      * @since 3.0.0(?)
+     * @deprecated Use {@link StackList#fromInventory(IInventory)} instead.
      */
-    public static StackList getNonEmptyStacks(@Nonnull IInventory inv) {
+    @Deprecated
+    public static StackList getNonEmptyStacks(IInventory inv) {
         StackList list = StackList.of();
         for (int i = 0; i < inv.getSizeInventory(); ++i) {
             // StackList automatically filters empty stacks
             list.add(inv.getStackInSlot(i));
         }
         return list;
+    }
+
+    /**
+     * Obtain the first matching stack. {@link StackList} has a similar method, but this avoids
+     * creating the entire list when it isn't needed.
+     *
+     * @param inv       The inventory to search
+     * @param predicate Condition to match
+     * @return The first matching stack, or {@link ItemStack#EMPTY} if there is none
+     * @since 3.0.6
+     */
+    public static ItemStack firstMatch(IInventory inv, Predicate<ItemStack> predicate) {
+        for (int i = 0; i < inv.getSizeInventory(); ++i) {
+            ItemStack stack = inv.getStackInSlot(i);
+            if (!stack.isEmpty() && predicate.test(stack))
+                return stack;
+        }
+        return ItemStack.EMPTY;
     }
 }
