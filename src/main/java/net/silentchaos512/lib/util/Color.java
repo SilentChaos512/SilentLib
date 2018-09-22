@@ -22,8 +22,10 @@ import net.minecraft.util.math.MathHelper;
 
 @SuppressWarnings("MagicNumber")
 public class Color {
+    public static final int VALUE_WHITE = 0xFFFFFF;
+
     public static final Color BLACK = new Color(0x0);
-    public static final Color WHITE = new Color(0xFFFFFF);
+    public static final Color WHITE = new Color(VALUE_WHITE);
 
     private final float red;
     private final float green;
