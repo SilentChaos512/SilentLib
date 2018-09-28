@@ -76,7 +76,19 @@ public final class MathUtils {
         return dx * dx + dz * dz;
     }
 
-    public static boolean isInRange(double value, double min, double max) {
+    public static boolean inRangeExclusive(double value, double min, double max) {
+        return value < max && value > min;
+    }
+
+    public static boolean inRangeExclusive(int value, int min, int max) {
+        return value < max && value > min;
+    }
+
+    public static boolean inRangeInclusive(double value, double min, double max) {
+        return value <= max && value >= min;
+    }
+
+    public static boolean inRangeInclusive(int value, int min, int max) {
         return value <= max && value >= min;
     }
 

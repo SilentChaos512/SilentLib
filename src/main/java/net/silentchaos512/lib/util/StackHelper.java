@@ -84,6 +84,22 @@ public final class StackHelper {
         return stack.getTagCompound();
     }
 
+    /**
+     * Gets the NBT tag compound for the stack, creating it if missing. Empty stacks return a new,
+     * empty tag compound (ie nothing will be saved or modified)
+     *
+     * @param stack The item
+     * @return The stack's tag compound (possibly just created), or a new empty tag compound if the
+     * stack is empty.
+     * @since 3.0.6
+     */
+    public static NBTTagCompound getOrCreateTagCompound(ItemStack stack) {
+        if (stack.isEmpty()) return new NBTTagCompound();
+        if (!stack.hasTagCompound()) stack.setTagCompound(new NBTTagCompound());
+        //noinspection ConstantConditions - guaranteed not null
+        return stack.getTagCompound();
+    }
+
     public static List<ItemStack> getOres(String oreDictKey) {
         return OreDictionary.getOres(oreDictKey);
     }
