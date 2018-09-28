@@ -36,6 +36,9 @@ import java.util.Queue;
  */
 @Mod.EventBusSubscriber(Side.CLIENT)
 public final class ClientTicks {
+    @Deprecated
+    public static final ClientTicks INSTANCE = new ClientTicks();
+
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     public static int ticksInGame = 0;
@@ -43,8 +46,7 @@ public final class ClientTicks {
     public static float deltaTicks = 0f;
     public static float totalTicks = 0f;
 
-    private ClientTicks() {
-    }
+    private ClientTicks() {}
 
     public static void scheduleAction(Runnable action) {
         scheduledActions.add(action);
