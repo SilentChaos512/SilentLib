@@ -21,7 +21,7 @@ package net.silentchaos512.lib.event;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -32,15 +32,20 @@ import java.util.Queue;
  *
  * @since 2.3.12
  */
-@Mod.EventBusSubscriber(Side.SERVER)
+@Mod.EventBusSubscriber
 public final class ServerTicks {
+    private static final int QUEUE_OVERFLOW_LIMIT = 30;
+    @SuppressWarnings("FieldMayBeFinal")
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
-    private ServerTicks() {
-    }
+    private ServerTicks() {}
 
     public static void scheduleAction(Runnable action) {
+        // In SSP, this is still considered client side, so we can't check the side?
         scheduledActions.add(action);
+
+        if (scheduledActions.size() > QUEUE_OVERFLOW_LIMIT)
+            SilentLib.logHelper.warn("Too many server tick actions queued! Currently at {} items.", scheduledActions.size());
     }
 
     @SubscribeEvent

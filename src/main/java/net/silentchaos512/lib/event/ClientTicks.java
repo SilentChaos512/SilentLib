@@ -24,6 +24,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.relauncher.Side;
+import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.util.GameUtil;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -39,6 +41,9 @@ public final class ClientTicks {
     @Deprecated
     public static final ClientTicks INSTANCE = new ClientTicks();
 
+    private static final int QUEUE_OVERFLOW_LIMIT = 20;
+
+    @SuppressWarnings("FieldMayBeFinal")
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
 
     public static int ticksInGame = 0;
@@ -49,7 +54,13 @@ public final class ClientTicks {
     private ClientTicks() {}
 
     public static void scheduleAction(Runnable action) {
-        scheduledActions.add(action);
+        if (GameUtil.isClient())
+            scheduledActions.add(action);
+        else
+            SilentLib.logHelper.debug("Tried to add client tick action on server side? {}", action);
+
+        if (scheduledActions.size() > QUEUE_OVERFLOW_LIMIT)
+            SilentLib.logHelper.warn("Too many client tick actions queued! Currently at {} items.", scheduledActions.size());
     }
 
     @SubscribeEvent
