@@ -130,12 +130,8 @@ public final class StackHelper {
         if (stack.isEmpty())
             return false;
 
-        for (String oreName : getOreNames(stack))
-            if (oreName.equals(oreDictKey))
-                return true;
-
-        for (ItemStack stackOre : getOres(oreDictKey))
-            if (stack.isItemEqual(stackOre))
+        for (int id : OreDictionary.getOreIDs(stack))
+            if (OreDictionary.getOreName(id).equals(oreDictKey))
                 return true;
 
         return false;
