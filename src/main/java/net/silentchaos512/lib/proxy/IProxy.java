@@ -19,10 +19,10 @@
 package net.silentchaos512.lib.proxy;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.*;
 import net.silentchaos512.lib.registry.SRegistry;
+
+import javax.annotation.Nullable;
 
 /**
  * A template for proxy classes
@@ -34,7 +34,7 @@ public interface IProxy {
 
     void postInit(SRegistry registry, FMLPostInitializationEvent event);
 
-    EntityPlayer getClientPlayer();
+    @Nullable EntityPlayer getClientPlayer();
 
     int getParticleSettings();
 }

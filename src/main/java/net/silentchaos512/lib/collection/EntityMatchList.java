@@ -23,7 +23,6 @@ import net.minecraft.entity.EntityList;
 import net.minecraft.util.ResourceLocation;
 
 public class EntityMatchList extends AbstractMatchList<Entity> {
-
     public EntityMatchList(boolean whitelist, boolean allowUserToChangeType, String... defaultValues) {
         super(whitelist, allowUserToChangeType, defaultValues);
     }

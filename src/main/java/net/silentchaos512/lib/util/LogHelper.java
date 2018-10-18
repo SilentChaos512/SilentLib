@@ -27,6 +27,8 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
+// TODO: 1.13: change to a utility class, rely more on Logger directly
+// TODO: 1.13: add debug log class with same features as current debug method?
 public class LogHelper {
     private static final Map<String, LogHelper> LOGGER_BY_MODNAME = new HashMap<>();
 

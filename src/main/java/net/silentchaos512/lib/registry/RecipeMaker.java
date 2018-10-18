@@ -57,7 +57,7 @@ public final class RecipeMaker {
     private int lastRecipeIndex = -1;
     @Setter
     private boolean jsonHellMode = false;
-    private Map<ResourceLocation, IRecipeSerializer> customSerializers = new HashMap<>();
+    private final Map<ResourceLocation, IRecipeSerializer> customSerializers = new HashMap<>();
 
     public RecipeMaker(String modId) {
         this.modId = modId;

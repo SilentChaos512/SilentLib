@@ -19,7 +19,8 @@
 package net.silentchaos512.lib.util;
 
 public final class TimeHelper {
-    private static final int TICKS_PER_SECOND = 20;
+    public static final int TICKS_PER_SECOND = 20;
+    public static final int VANILLA_DAY_LENGTH = 24000;
 
     private TimeHelper() {
         throw new IllegalAccessError("Utility class");
