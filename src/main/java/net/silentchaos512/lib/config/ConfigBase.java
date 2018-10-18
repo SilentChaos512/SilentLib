@@ -35,7 +35,9 @@ import net.silentchaos512.lib.registry.SRegistry;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class ConfigBase implements IPhasedInitializer {
 
@@ -148,19 +150,18 @@ public abstract class ConfigBase implements IPhasedInitializer {
     /**
      * Loads an enum from a string value in the config. Valid values will be appended to comment.
      *
-     * @param key                        Config key
-     * @param category                   Config category
-     * @param enumClass                  The enum class, no special requirements
-     * @param defaultValue               The default value, also used if the config contains an
-     *                                   invalid value
-     * @param comment                    Config comment
-     * @param <T>                        Any enum
+     * @param key          Config key
+     * @param category     Config category
+     * @param enumClass    The enum class, no special requirements
+     * @param defaultValue The default value, also used if the config contains an invalid value
+     * @param comment      Config comment
+     * @param <T>          Any enum
      * @return An enum whose {@code name} matches (ignoring case) the string loaded from the config,
      * or {@code defaultValue} if there is no match
      * @since 2.3.6
      */
     public <T extends Enum<T>> T loadEnum(String key, String category, Class<T> enumClass, T defaultValue, String comment) {
-        return loadEnum(key, category, enumClass, defaultValue, comment, true);
+        return loadEnum(key, category, defaultValue, comment, true, EnumSet.allOf(enumClass));
     }
 
     /**
@@ -179,15 +180,33 @@ public abstract class ConfigBase implements IPhasedInitializer {
      * @since 2.3.6
      */
     public <T extends Enum<T>> T loadEnum(String key, String category, Class<T> enumClass, T defaultValue, String comment, boolean appendValidValuesToComment) {
-        String[] validValues = new String[enumClass.getEnumConstants().length];
-        for (T t : enumClass.getEnumConstants())
-            validValues[t.ordinal()] = t.name();
+        return loadEnum(key, category, defaultValue, comment, appendValidValuesToComment, EnumSet.allOf(enumClass));
+    }
+
+    /**
+     * Loads an enum from a string value in the config. Restricted to the specified values of the
+     * enum.
+     *
+     * @param key                        Config key
+     * @param category                   Config category
+     * @param defaultValue               The default value, also used if the config contains an
+     *                                   invalid value
+     * @param comment                    Config comment
+     * @param appendValidValuesToComment If true, the valid values are added to comment
+     * @param allowedValues              The values of the enum to allow
+     * @param <T>                        Any enum type
+     * @return An enum whose {@code name} matches (ignoring case) the string loaded from the config,
+     * or {@code defaultValue} if there is no match or the value is not allowed.
+     * @since 3.0.7
+     */
+    public <T extends Enum<T>> T loadEnum(String key, String category, T defaultValue, String comment, boolean appendValidValuesToComment, Set<T> allowedValues) {
+        String[] validValues = allowedValues.stream().map(Enum::name).toArray(String[]::new);
 
         if (appendValidValuesToComment)
             comment += "\nValid values: " + Arrays.toString(validValues);
         String value = config.getString(key, category, defaultValue.name(), comment, validValues);
 
-        for (T t : enumClass.getEnumConstants())
+        for (T t : allowedValues)
             if (t.name().equalsIgnoreCase(value))
                 return t;
         return defaultValue;
