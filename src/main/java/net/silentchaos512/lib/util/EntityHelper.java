@@ -27,11 +27,12 @@ import net.minecraft.entity.MoverType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.List;
 import java.util.Queue;
 
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class EntityHelper {
     private EntityHelper() {
         throw new IllegalAccessError("Utility class");

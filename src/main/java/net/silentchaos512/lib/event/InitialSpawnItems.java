@@ -42,11 +42,13 @@ import java.util.function.Supplier;
  * @author SilentChaos512
  * @since 3.0.3
  */
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 @ParametersAreNonnullByDefault
-public class InitialSpawnItems {
+public final class InitialSpawnItems {
     private static final Map<ResourceLocation, Supplier<ItemStack>> SPAWN_ITEMS = new HashMap<>();
     private static final String NBT_KEY = SilentLib.MOD_ID + ".SpawnItemsGiven";
+
+    private InitialSpawnItems() {}
 
     /**
      * Add a spawn item. If the supplier returns an empty stack ({@link ItemStack#EMPTY}), nothing

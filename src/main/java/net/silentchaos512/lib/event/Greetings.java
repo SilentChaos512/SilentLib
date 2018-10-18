@@ -23,6 +23,7 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,9 +37,11 @@ import java.util.function.Supplier;
  *
  * @since 2.3.17
  */
-@Mod.EventBusSubscriber
-public class Greetings {
+@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
+public final class Greetings {
     private static final List<Function<EntityPlayer, Optional<ITextComponent>>> messages = new ArrayList<>();
+
+    private Greetings() {}
 
     /**
      * Add a message to display to the player on login. If the supplier returns {@code null}, no
@@ -69,7 +72,6 @@ public class Greetings {
     /**
      * Event handler, DO NOT CALL.
      */
-    @SuppressWarnings("unused")
     @SubscribeEvent
     public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player == null) return;

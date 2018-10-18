@@ -32,7 +32,7 @@ import java.util.Queue;
  *
  * @since 2.3.12
  */
-@Mod.EventBusSubscriber
+@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class ServerTicks {
     private static final int QUEUE_OVERFLOW_LIMIT = 30;
     @SuppressWarnings("FieldMayBeFinal")

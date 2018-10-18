@@ -36,7 +36,7 @@ import java.util.Queue;
  *
  * @since 2.3.12
  */
-@Mod.EventBusSubscriber(Side.CLIENT)
+@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID, value = Side.CLIENT)
 public final class ClientTicks {
     @Deprecated
     public static final ClientTicks INSTANCE = new ClientTicks();
