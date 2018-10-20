@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.registry;
 
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -55,8 +56,8 @@ public final class RecipeMaker {
     private final String modId;
     private final String resourcePrefix;
     private int lastRecipeIndex = -1;
-    @Setter
-    private boolean jsonHellMode = false;
+    @Setter private boolean jsonHellMode = false;
+    @Getter private int oldRecipeRegisterCount;
     private final Map<ResourceLocation, IRecipeSerializer> customSerializers = new HashMap<>();
 
     public RecipeMaker(String modId) {
@@ -439,6 +440,7 @@ public final class RecipeMaker {
     private void registerRecipe(ResourceLocation name, IRecipe recipe) {
         if (recipe.getRegistryName() == null) recipe.setRegistryName(name);
         ForgeRegistries.RECIPES.register(recipe);
+        ++oldRecipeRegisterCount;
     }
 
     private ItemStack[] makeStackArray(Object... params) {

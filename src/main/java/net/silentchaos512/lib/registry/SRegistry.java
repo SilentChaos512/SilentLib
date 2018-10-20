@@ -487,6 +487,12 @@ public class SRegistry {
             logger().warn("postInit called more than once!");
             return;
         }
+
+        int oldRecipeRegisterCount = recipes.getOldRecipeRegisterCount();
+        if (oldRecipeRegisterCount > 0) {
+            logger().warn("Mod '{}' is still registering recipes with RecipeMaker ({} recipes)", modId, oldRecipeRegisterCount);
+        }
+
         this.phasedInitializers.forEach(i -> i.postInit(this, event));
         this.postInitDone = true;
     }
