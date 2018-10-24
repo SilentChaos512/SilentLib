@@ -24,6 +24,8 @@ import net.minecraft.util.math.Vec3i;
 import java.util.Random;
 
 public final class MathUtils {
+    private static final Random RANDOM = new Random();
+
     private MathUtils() {
         throw new IllegalAccessError("Utility class");
     }
@@ -142,8 +144,28 @@ public final class MathUtils {
         return max;
     }
 
+    public static double nextGaussian(double mean, double deviation) {
+        return deviation * RANDOM.nextGaussian() + mean;
+    }
+
+    public static double nextGaussian(Random random, double mean, double deviation) {
+        return deviation * random.nextGaussian() + mean;
+    }
+
+    public static int nextInt(int bound) {
+        return RANDOM.nextInt(bound);
+    }
+
+    public static int nextIntInclusive(int min, int max) {
+        return RANDOM.nextInt(max - min + 1) + min;
+    }
+
     public static int nextIntInclusive(Random random, int min, int max) {
         return random.nextInt(max - min + 1) + min;
+    }
+
+    public static boolean tryPercentage(double percent) {
+        return RANDOM.nextDouble() < percent;
     }
 
     public static boolean tryPercentage(Random random, double percent) {
