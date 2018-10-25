@@ -246,7 +246,7 @@ curseforge {
         apiKey = secret.curseforgeAPIKey
         project {
             id = project.cf_project_id
-            //changelog = file(project.cf_changelog_filename)
+            changelog = file(project.cf_changelog_filename)
             releaseType = project.cf_release_type
             addGameVersion(project.mc_version)
 //            mainArtifact(jar) {

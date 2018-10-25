@@ -1,3 +1,21 @@
+# Changelog
+
+Changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+Silent Lib's changelog is not updated very frequently and most changes are not important for end-users.
+Only recent changes use the new format, the old format has been left alone for previous versions.
+
+## [Unreleased]
+### Added
+- Instances of recipes being registered the "old way" (without JSON) are counted and logged.
+For Silent's Gems users: Yes, I am aware of the 160+ recipes it counts (the mod contains a total of
+about 1300 recipes, most are now JSON but some are... problematic right now).
+### Fixed
+- Ore dictionary lookup optimizations
+
+## Old log (original format) starts here:
+
 3.0.4
 Added: HudAnchor
 

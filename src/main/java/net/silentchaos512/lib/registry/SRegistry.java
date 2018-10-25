@@ -490,7 +490,12 @@ public class SRegistry {
 
         int oldRecipeRegisterCount = recipes.getOldRecipeRegisterCount();
         if (oldRecipeRegisterCount > 0) {
-            logger().warn("Mod '{}' is still registering recipes with RecipeMaker ({} recipes)", modId, oldRecipeRegisterCount);
+            long totalRecipes = ForgeRegistries.RECIPES.getKeys().stream()
+                    .map(ResourceLocation::getNamespace)
+                    .filter(s -> s.equals(modId))
+                    .count();
+            logger().warn("Mod '{}' is still registering recipes with RecipeMaker ({} recipes, out of {} total)",
+                    modId, oldRecipeRegisterCount, totalRecipes);
         }
 
         this.phasedInitializers.forEach(i -> i.postInit(this, event));
