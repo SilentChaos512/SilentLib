@@ -26,21 +26,35 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.silentchaos512.lib.util.Color;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Draws text directly to the screen for debugging purposes
  */
 public abstract class DebugRenderOverlay extends Gui {
+    protected static final String SPLITTER = "=";
 
-    private List<String> debugText = getDebugText();
+    private static final int DEFAULT_UPDATE_FREQUENCY = 10;
+    private static final int DEFAULT_SPLIT_WIDTH = 100;
+
+    private List<String> debugText = new ArrayList<>();
+    private int startX = 3;
+    private int startY = 3;
     private int ticksPassed = 0;
 
     protected DebugRenderOverlay() {
         MinecraftForge.EVENT_BUS.register(this);
+    }
+
+    protected DebugRenderOverlay(int startX, int startY) {
+        MinecraftForge.EVENT_BUS.register(this);
+        this.startX = startX;
+        this.startY = startY;
     }
 
     /**
@@ -63,12 +77,12 @@ public abstract class DebugRenderOverlay extends Gui {
      */
     @Nonnegative
     public int getUpdateFrequency() {
-        return 10;
+        return DEFAULT_UPDATE_FREQUENCY;
     }
 
     @Nonnegative
     public int getSplitWidth() {
-        return 100;
+        return DEFAULT_SPLIT_WIDTH;
     }
 
     /**
@@ -77,14 +91,23 @@ public abstract class DebugRenderOverlay extends Gui {
      */
     public abstract boolean isHidden();
 
+    @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
     protected void drawLine(FontRenderer font, String line, int x, int y, int color) {
-        String[] array = line.split("=");
+        String[] array = line.split(SPLITTER);
         if (array.length == 2) {
             font.drawStringWithShadow(array[0].trim(), x, y, color);
             font.drawStringWithShadow(array[1].trim(), x + getSplitWidth(), y, color);
         } else {
             font.drawStringWithShadow(line, x, y, color);
         }
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
     }
 
     @SubscribeEvent
@@ -102,10 +125,10 @@ public abstract class DebugRenderOverlay extends Gui {
         GlStateManager.pushMatrix();
         GlStateManager.scale(scale, scale, 1);
 
-        int x = 3;
-        int y = 3;
+        int x = getStartX();
+        int y = getStartY();
         for (String line : debugText) {
-            drawLine(font, line, x, y, 0xFFFFFF);
+            drawLine(font, line, x, y, Color.VALUE_WHITE);
             y += 10;
         }
 
