@@ -118,6 +118,7 @@ public class I18nHelper {
      * @param params Optional parameters to format into translation
      * @return Translation result, or {@code key} if the key is not found
      */
+    @SuppressWarnings("deprecation") // I18n.translateToLocalFormatted - server backup
     public String translate(String key, Object... params) {
         if (replacesColons) key = key.replace(':', '.');
 
@@ -131,7 +132,6 @@ public class I18nHelper {
                 triedToTranslateOnServer.add(key);
             }
             // Go ahead and translate text with deprecated I18n on the server for now...
-            //noinspection deprecation
             return net.minecraft.util.text.translation.I18n.translateToLocalFormatted(key, params);
         }
 

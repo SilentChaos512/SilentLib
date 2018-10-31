@@ -20,6 +20,8 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.LoaderState;
 
 public final class GameUtil {
     private GameUtil() {
@@ -51,5 +53,21 @@ public final class GameUtil {
      */
     public static boolean isDeobfuscated() {
         return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+    }
+
+    /**
+     * Determine if tooltips should be calculated, call in {@link net.minecraftforge.event.entity.player.ItemTooltipEvent}
+     * handlers. This can prevent tooltip events from being processed at unnecessary times (world
+     * loading/closing), while still allowing JEI to build its cache. JEI tooltip caches are done in
+     * {@link LoaderState#AVAILABLE}, in-game is {@link LoaderState#SERVER_STARTED}.
+     *
+     * @since 3.0.8
+     */
+    public static boolean shouldCalculateTooltip() {
+        LoaderState state = Loader.instance().getLoaderState();
+        // These states have no reason to go through tooltips that I can tell, but they do.
+        return state != LoaderState.INITIALIZATION
+                && state != LoaderState.SERVER_ABOUT_TO_START
+                && state != LoaderState.SERVER_STOPPING;
     }
 }

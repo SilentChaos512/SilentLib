@@ -542,13 +542,13 @@ public class SRegistry {
 
     //endregion
 
+    @SuppressWarnings("deprecation")
     private void addRecipes() {
-        //noinspection deprecation
         this.recipeAdders.forEach(obj -> obj.addRecipes(this.recipes));
     }
 
+    @SuppressWarnings("deprecation")
     private void addOreDictEntries() {
-        //noinspection deprecation
         this.recipeAdders.forEach(IAddRecipes::addOreDict);
     }
 

@@ -8,6 +8,10 @@ Only recent changes use the new format, the old format has been left alone for p
 
 ## [Unreleased]
 ### Added
+- Drop-down GUI element (usable, but needs some work)
+
+## [3.0.7] - 2018-10-27
+### Added
 - Instances of recipes being registered the "old way" (without JSON) are counted and logged.
 For Silent's Gems users: Yes, I am aware of the 160+ recipes it counts (the mod contains a total of
 about 1300 recipes, most are now JSON but some are... problematic right now).
