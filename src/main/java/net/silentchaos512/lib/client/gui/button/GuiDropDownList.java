@@ -28,6 +28,11 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * Drop down list. Needs cleanup, method signatures may change.
+ *
+ * @since 3.0.8
+ */
 // FIXME: direction UP stacks the elements upside-down.
 public class GuiDropDownList extends GuiButton {
     static final int ELEMENT_WIDTH = 100;

@@ -24,6 +24,11 @@ import net.silentchaos512.lib.SilentLib;
 
 import java.util.function.Consumer;
 
+/**
+ * Drop down list element. Still needs some cleanup. Also see {@link GuiDropDownList}.
+ *
+ * @since 3.0.8
+ */
 public class GuiDropDownElement extends GuiButton {
     GuiDropDownList parent;
     private final Consumer<GuiDropDownElement> action;
