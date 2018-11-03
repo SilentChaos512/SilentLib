@@ -173,9 +173,12 @@ processResources {
 }
 
 jar {
-    build_num = getBuildNumber()
-    if (build_num > 0) {
-        classifier = build_num
+    mustRunAfter incrementBuild
+    doFirst {
+        build_num = getBuildNumber()
+        if (build_num > 0) {
+            classifier = build_num
+        }
     }
     manifest {
         if (project.hasProperty('coreplugin')) {
