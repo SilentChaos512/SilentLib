@@ -21,10 +21,13 @@ package net.silentchaos512.lib.collection;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.minecraftforge.common.config.Configuration;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Skeleton implementation of IMatchList. Stores a list of string keys for matching and handles loading from config.
@@ -32,13 +35,15 @@ import java.util.List;
  * @param <T> A type with some sort of string key.
  */
 public abstract class AbstractMatchList<T> implements IMatchList<T> {
+    private static final Pattern WILDCARD_PATTERN = Pattern.compile("\\*");
 
+    // TODO: Change to enum?
     /** The list is a whitelist if this is true, or a blacklist if this is false */
-    @Getter(value = AccessLevel.PROTECTED)
+    @Getter(AccessLevel.PROTECTED)
     private boolean whitelist;
     /** Stores loaded keys */
-    @Getter(value = AccessLevel.PACKAGE)
-    private List<String> list = new ArrayList<>();
+    @Getter(AccessLevel.PACKAGE)
+    private final List<String> list = new ArrayList<>();
     /** If true, a config to set {@code whitelist} will be generated and loaded */
     private final boolean allowUserToChangeType;
     /** Default values for the list. These are NOT added to {@code list}, you must call loadConfig */
@@ -49,12 +54,12 @@ public abstract class AbstractMatchList<T> implements IMatchList<T> {
     AbstractMatchList(boolean whitelist, boolean allowUserToChangeType, String... defaultValues) {
         this.whitelist = this.defaultIsWhitelist = whitelist;
         this.allowUserToChangeType = allowUserToChangeType;
-        this.defaultValues = defaultValues;
+        this.defaultValues = defaultValues.clone();
     }
 
     @Override
     public boolean matches(T t) {
-        return contains(t) == isWhitelist();
+        return contains(t) == this.whitelist;
     }
 
     /**
@@ -71,6 +76,15 @@ public abstract class AbstractMatchList<T> implements IMatchList<T> {
      */
     protected boolean containsKey(String key) {
         return list.stream().anyMatch(entry -> entry.equalsIgnoreCase(key));
+    }
+
+    protected static boolean keyMatches(String pattern, String key) {
+        if (pattern.endsWith("*")) {
+            String regex = WILDCARD_PATTERN.matcher(pattern).replaceAll(Matcher.quoteReplacement(".*"));
+            SilentLib.debug.log("'{}' matches '{}' = {}", key, pattern, key.matches("(?i)" + regex));
+            return key.matches("(?i)" + regex);
+        }
+        return pattern.equalsIgnoreCase(key);
     }
 
     private static final String NAME_LIST_SUFFIX = " List";

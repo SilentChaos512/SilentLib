@@ -20,7 +20,6 @@ package net.silentchaos512.lib.client.gui.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.silentchaos512.lib.SilentLib;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -75,12 +74,10 @@ public class GuiDropDownList extends GuiButton {
     }
 
     private void setExpanded(boolean value) {
-        SilentLib.logHelper.debug("setExpanded {}", value);
         expanded = value;
 
         for (GuiDropDownElement b : children) {
             b.visible = expanded;
-            SilentLib.logHelper.debug("Button position: {}, {}", b.x, b.y);
             // Should positions be adjusted?
         }
 

@@ -36,7 +36,8 @@ public class EntityMatchList extends AbstractMatchList<Entity> {
         String id = resource.toString();
         String idOld = EntityList.getEntityString(entity);
 
-        return getList().stream().anyMatch(entry -> entry.equalsIgnoreCase(id) || entry.equalsIgnoreCase(idOld)
+        return getList().stream().anyMatch(entry -> keyMatches(entry, id)
+                || entry.equalsIgnoreCase(idOld)
                 || entry.equalsIgnoreCase("minecraft:" + id));
     }
 }

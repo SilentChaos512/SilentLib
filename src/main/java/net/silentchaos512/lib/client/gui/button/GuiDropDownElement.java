@@ -20,7 +20,6 @@ package net.silentchaos512.lib.client.gui.button;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
-import net.silentchaos512.lib.SilentLib;
 
 import java.util.function.Consumer;
 
@@ -45,13 +44,11 @@ public class GuiDropDownElement extends GuiButton {
 
     @Override
     public boolean mousePressed(Minecraft mc, int mouseX, int mouseY) {
-        SilentLib.logHelper.debug("GuiDropDownElement#mousePressed (parent {}) visible={}", parent, visible);
         return this.visible && super.mousePressed(mc, mouseX, mouseY);
     }
 
     @Override
     public void mouseReleased(int mouseX, int mouseY) {
-        SilentLib.logHelper.debug("GuiDropDownElement#mouseReleased (parent {})", parent);
         if (parent != null) {
             parent.onElementSelected(this);
             action.accept(this);
