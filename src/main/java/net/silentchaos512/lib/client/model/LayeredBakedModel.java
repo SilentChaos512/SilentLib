@@ -7,12 +7,14 @@ import net.minecraft.client.renderer.vertex.VertexFormat;
 import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IModel;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public abstract class LayeredBakedModel implements ILayeredBakedModel {
     protected final IModel parent;
     protected final ImmutableList<ImmutableList<BakedQuad>> quads;
     protected final VertexFormat format;
+    private ImmutableList<BakedQuad> allQuadsCache;
 
     public LayeredBakedModel(IModel parent, ImmutableList<ImmutableList<BakedQuad>> immutableList, VertexFormat format) {
         this.quads = immutableList;
@@ -21,14 +23,29 @@ public abstract class LayeredBakedModel implements ILayeredBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(IBlockState state, EnumFacing side, long indexNotRand) {
-        if (side != null) return ImmutableList.of();
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long indexNotRand) {
+        if (side == null) {
+            int index = (int) indexNotRand;
+            // Check invalid index
+            if (index < 0) {
+                // Return everything in one? Better than nothing.
+                if (allQuadsCache == null) {
+                    ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+                    for (List<BakedQuad> list : quads) {
+                        for (BakedQuad quad : list) {
+                            builder.add(quad);
+                        }
+                    }
 
-        int index = (int) indexNotRand;
-        List<BakedQuad> list = this.quads.get(index);
-        if (list == null) return ImmutableList.of();
+                    allQuadsCache = builder.build();
+                }
 
-        return list;
+                return allQuadsCache;
+            } else if (index < quads.size()) {
+                return this.quads.get(index);
+            }
+        }
+        return ImmutableList.of();
     }
 
     @Override
