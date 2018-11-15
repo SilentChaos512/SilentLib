@@ -74,12 +74,10 @@ public class LogHelper {
     public void debug(String msg, Object... params) {
         this.logger.debug(msg, params);
 
-        // Also print to standard output for easy viewing if in dev environment
-        // TODO: Is there a better way to show debug-level logs in console?
         if (this.buildNumber == 0) {
             String newOutput = this.logger.getMessageFactory().newMessage(msg, params).getFormattedMessage();
             if (!newOutput.equals(lastDebugOutput)) {
-                System.out.println(newOutput);
+                info("[DEBUG] " + newOutput);
                 this.lastDebugOutput = newOutput;
             }
         }

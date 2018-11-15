@@ -18,8 +18,10 @@ import net.silentchaos512.lib.gui.GuiHandlerLibF;
 import net.silentchaos512.lib.network.NetworkHandlerSL;
 import net.silentchaos512.lib.network.internal.MessageLeftClick;
 import net.silentchaos512.lib.proxy.internal.SilentLibCommonProxy;
+import net.silentchaos512.lib.util.DebugLog;
 import net.silentchaos512.lib.util.I18nHelper;
 import net.silentchaos512.lib.util.LogHelper;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -29,11 +31,14 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public final class SilentLib implements IModBase {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "3.0.8";
+    public static final String VERSION = "3.0.9";
     public static final int BUILD_NUM = 0;
     public static final String DEPENDENCIES = "required-after:forge@[14.23.3.2669,);";
 
     public static NetworkHandlerSL network;
+    public static Logger logger;
+    public static DebugLog debug;
+    @Deprecated
     public static LogHelper logHelper = new LogHelper(MOD_NAME, BUILD_NUM);
     public static I18nHelper i18n = new I18nHelper(MOD_ID, logHelper, false);
 
@@ -50,6 +55,9 @@ public final class SilentLib implements IModBase {
         network = new NetworkHandlerSL(MOD_ID);
         network.register(MessageLeftClick.class, Side.SERVER);
         NetworkRegistry.INSTANCE.registerGuiHandler(this, new GuiHandlerLibF());
+
+        logger = event.getModLog();
+        debug = new DebugLog(logger, this);
 
         // Make sure advancement triggers get registered...
         LibTriggers.init();

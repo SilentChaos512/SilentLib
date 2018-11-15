@@ -6,7 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Silent Lib's changelog is not updated very frequently and most changes are not important for end-users.
 Only recent changes use the new format, the old format has been left alone for previous versions.
 
-## [Unreleased]
+## [3.0.9] - 2018-11-15
+### Added
+- Wildcard support for match lists (entity and item lists in configs). Wildcard character is '*' and may only be used at the end of the entered value (for now). Example: `modid:*` or `modid:something_*`
+### Fixed
+- Default min value on float and double configs were wrong, should allow negative values in all cases now
+- Silent Gear tool/armor crashes when on a Tinkers Construct table. See [Silent's Gems #348](https://github.com/SilentChaos512/SilentGems/issues/348)
+
+## [3.0.8] - 2018-10-31
 ### Added
 - Drop-down GUI element (usable, but needs some work)
 
