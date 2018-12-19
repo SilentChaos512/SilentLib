@@ -24,6 +24,7 @@ import net.minecraft.util.math.Vec3i;
 import java.util.Random;
 
 public final class MathUtils {
+    private static final double DOUBLES_EQUAL_PRECISION = 0.000000001;
     private static final Random RANDOM = new Random();
 
     private MathUtils() {
@@ -76,6 +77,38 @@ public final class MathUtils {
         int dx = to.getX() - from.getX();
         int dz = to.getZ() - from.getZ();
         return dx * dx + dz * dz;
+    }
+
+    /**
+     * Compare if two doubles are equal, using precision constant {@link #DOUBLES_EQUAL_PRECISION}.
+     */
+    public static boolean doublesEqual(double a, double b) {
+        return doublesEqual(a, b, DOUBLES_EQUAL_PRECISION);
+    }
+
+    /**
+     * Compare if two doubles are equal, within the given level of precision.
+     *
+     * @param precision Should be a small, positive number (like {@link #DOUBLES_EQUAL_PRECISION})
+     */
+    public static boolean doublesEqual(double a, double b, double precision) {
+        return Math.abs(b - a) < precision;
+    }
+
+    /**
+     * Compare if two floats are equal, using precision constant {@link #DOUBLES_EQUAL_PRECISION}.
+     */
+    public static boolean floatsEqual(float a, float b) {
+        return floatsEqual(a, b, (float) DOUBLES_EQUAL_PRECISION);
+    }
+
+    /**
+     * Compare if two floats are equal, within the given level of precision.
+     *
+     * @param precision Should be a small, positive number (like {@link #DOUBLES_EQUAL_PRECISION})
+     */
+    public static boolean floatsEqual(float a, float b, float precision) {
+        return Math.abs(b - a) < precision;
     }
 
     public static boolean inRangeExclusive(double value, double min, double max) {
