@@ -41,7 +41,7 @@ public final class ClientTicks {
     @Deprecated
     public static final ClientTicks INSTANCE = new ClientTicks();
 
-    private static final int QUEUE_OVERFLOW_LIMIT = 20;
+    private static final int QUEUE_OVERFLOW_LIMIT = 200;
 
     @SuppressWarnings("FieldMayBeFinal")
     private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
@@ -57,10 +57,15 @@ public final class ClientTicks {
         if (GameUtil.isClient())
             scheduledActions.add(action);
         else
-            SilentLib.logHelper.debug("Tried to add client tick action on server side? {}", action);
+            SilentLib.logHelper.error("Tried to add client tick action on server side? {}", action);
 
-        if (scheduledActions.size() > QUEUE_OVERFLOW_LIMIT)
-            SilentLib.logHelper.warn("Too many client tick actions queued! Currently at {} items.", scheduledActions.size());
+        if (scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
+            // Queue overflow?
+            SilentLib.logHelper.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
+                    scheduledActions.size(), action);
+            SilentLib.logHelper.catching(new IllegalStateException("ClientTicks queue overflow"));
+            scheduledActions.clear();
+        }
     }
 
     @SubscribeEvent
