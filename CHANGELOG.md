@@ -6,6 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Silent Lib's changelog is not updated very frequently and most changes are not important for end-users.
 Only recent changes use the new format, the old format has been left alone for previous versions.
 
+## [3.0.10] - 2018-12-18
+### Changed
+- Removed Patreon button from guide book
+- Possibly improve some logging (ClientTicks overflow)
+
 ## [3.0.9] - 2018-11-15
 ### Added
 - Wildcard support for match lists (entity and item lists in configs). Wildcard character is '*' and may only be used at the end of the entered value (for now). Example: `modid:*` or `modid:something_*`

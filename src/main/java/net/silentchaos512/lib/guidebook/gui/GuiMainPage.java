@@ -10,16 +10,13 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.gui.TexturedButton;
 import net.silentchaos512.lib.guidebook.GuideBook;
 import net.silentchaos512.lib.guidebook.IGuideEntry;
 import net.silentchaos512.lib.guidebook.button.EntryButton;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,8 +32,6 @@ public class GuiMainPage extends GuiGuide {
     private TexturedButton achievementButton;
     @Nullable
     private TexturedButton configButton;
-    @Nullable
-    private TexturedButton patreonButton;
 
     private GuiButton tutorialButton;
     private boolean showTutorial;
@@ -120,17 +115,6 @@ public class GuiMainPage extends GuiGuide {
             this.buttonList.add(this.achievementButton);
         }
 
-        // Patreon button
-        if (book.showPatreonButton) {
-            xPos += 20;
-            List<String> patreonText = new ArrayList<>();
-            patreonText.add(TextFormatting.GOLD + "Support the mod on Patreon!");
-            patreonText.add("(Opens a link in your web browser)");
-            this.patreonButton = new TexturedButton(book.getResourceGadgets(), -340, xPos,
-                    this.guiTop + this.ySize - 30, 16, 172, 16, 16, patreonText);
-            this.buttonList.add(this.patreonButton);
-        }
-
         // FIXME?
         // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
         // if (!data.didBookTutorial) {
@@ -194,14 +178,6 @@ public class GuiMainPage extends GuiGuide {
                 // PlayerSave data = PlayerData.getDataFromPlayer(this.mc.player);
                 // data.didBookTutorial = true;
                 // PacketHandlerHelper.sendPlayerDataToServer(false, 1);
-            }
-        } else if (button == this.patreonButton) {
-            if (Desktop.isDesktopSupported()) {
-                try {
-                    Desktop.getDesktop().browse(new URI("https://www.patreon.com/SilentChaos512"));
-                } catch (Exception ex) {
-                    SilentLib.logHelper.warn("Could not open web page.\n" + ex);
-                }
             }
         } else {
             super.actionPerformed(button);
