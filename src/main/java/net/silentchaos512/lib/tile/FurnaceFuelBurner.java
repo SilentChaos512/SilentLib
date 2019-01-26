@@ -35,7 +35,7 @@ public class FurnaceFuelBurner implements IFuelBurner {
 
     @Override
     public boolean feedFuel(ItemStack stack) {
-        int value = ForgeEventFactory.getItemBurnTime(stack);
+        int value = ForgeEventFactory.getItemBurnTime(stack, stack.getBurnTime());
         if (value > 0) {
             timeRemaining = currentItemMaxTime = value;
             return true;
@@ -58,21 +58,21 @@ public class FurnaceFuelBurner implements IFuelBurner {
     }
 
     private static FurnaceFuelBurner readFromNBT(NBTTagCompound tags) {
-        BurnCondition condition = EnumUtils.fromString(BurnCondition.class, tags.getString("Condition"))
-                .orElse(BurnCondition.DEFAULT);
+        BurnCondition condition = EnumUtils.byName(tags.getString("Condition"), BurnCondition.DEFAULT);
 
         FurnaceFuelBurner result = new FurnaceFuelBurner(condition);
-        result.timeRemaining = tags.getInteger("Time");
-        result.currentItemMaxTime = tags.getInteger("MaxTime");
+        result.timeRemaining = tags.getInt("Time");
+        result.currentItemMaxTime = tags.getInt("MaxTime");
 
         return result;
     }
 
     private static void writeToNBT(NBTTagCompound tags, FurnaceFuelBurner burner) {
-        if (burner.burnCondition != BurnCondition.DEFAULT)
+        if (burner.burnCondition != BurnCondition.DEFAULT) {
             tags.setString("Condition", burner.burnCondition.name());
-        tags.setInteger("Time", burner.timeRemaining);
-        tags.setInteger("MaxTime", burner.currentItemMaxTime);
+        }
+        tags.setInt("Time", burner.timeRemaining);
+        tags.setInt("MaxTime", burner.currentItemMaxTime);
     }
 
     static {

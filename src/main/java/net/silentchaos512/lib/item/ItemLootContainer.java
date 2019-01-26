@@ -18,24 +18,27 @@
 
 package net.silentchaos512.lib.item;
 
+import com.google.common.collect.ImmutableList;
 import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraft.world.storage.loot.LootContext;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.util.PlayerHelper;
+import net.silentchaos512.lib.util.PlayerUtils;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -55,6 +58,11 @@ public class ItemLootContainer extends Item {
     private final ResourceLocation defaultLootTable;
 
     public ItemLootContainer(ResourceLocation defaultLootTable) {
+        this(defaultLootTable, new Item.Builder());
+    }
+
+    public ItemLootContainer(ResourceLocation defaultLootTable, Item.Builder properties) {
+        super(properties);
         this.defaultLootTable = defaultLootTable;
     }
 
@@ -75,7 +83,7 @@ public class ItemLootContainer extends Item {
      */
     public ItemStack getStack(ResourceLocation lootTable) {
         ItemStack result = new ItemStack(this);
-        result.getOrCreateSubCompound(NBT_ROOT).setString(NBT_LOOT_TABLE, lootTable.toString());
+        result.getOrCreateChildTag(NBT_ROOT).setString(NBT_LOOT_TABLE, lootTable.toString());
         return result;
     }
 
@@ -90,26 +98,36 @@ public class ItemLootContainer extends Item {
      */
     protected Collection<ItemStack> getLootDrops(ItemStack heldItem, EntityPlayerMP player) {
         ResourceLocation lootTable = getLootTable(heldItem);
-        LootContext lootContext = (new LootContext.Builder(player.getServerWorld())).withLootedEntity(player)
-                .withPlayer(player).withLuck(player.getLuck()).build();
-        return new ArrayList<>(player.world.getLootTableManager().getLootTableFromLocation(lootTable)
+        MinecraftServer server = player.world.getServer();
+        if (server == null) return ImmutableList.of();
+
+        LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
+                .withLootedEntity(player)
+                .withPlayer(player)
+                .withLuck(player.getLuck())
+                .build();
+        return ImmutableList.copyOf(server.getLootTableManager().getLootTableFromLocation(lootTable)
                 .generateLootForPools(player.getRNG(), lootContext));
     }
 
     private ResourceLocation getLootTable(ItemStack stack) {
-        NBTTagCompound tags = stack.getOrCreateSubCompound(NBT_ROOT);
+        NBTTagCompound tags = stack.getOrCreateChildTag(NBT_ROOT);
         if (tags.hasKey(NBT_LOOT_TABLE)) {
-            // TODO: Does the string need to be validated? (I think I heard 1.13 will throw exceptions...)
-            return new ResourceLocation(tags.getString(NBT_LOOT_TABLE));
+            String str = tags.getString(NBT_LOOT_TABLE);
+            ResourceLocation table = ResourceLocation.makeResourceLocation(str);
+            if (table != null) {
+                return table;
+            }
         }
         return this.defaultLootTable;
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn) {
-        if (flagIn.isAdvanced()) {
-            tooltip.add(TextFormatting.DARK_GRAY + "Loot Table: " + this.getLootTable(stack));
-        }
+    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+        if (!flagIn.isAdvanced()) return;
+
+        tooltip.add(new TextComponentTranslation("misc.silentlib.lootContainerTable", this.getLootTable(stack))
+                .applyTextStyle(TextFormatting.DARK_GRAY));
     }
 
     @Override
@@ -122,8 +140,8 @@ public class ItemLootContainer extends Item {
         // Generate items from loot table, give to player.
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
         if (lootDrops.isEmpty())
-            SilentLib.logHelper.warn("ItemLootContainer has no drops? {}", heldItem);
-        lootDrops.forEach(stack -> PlayerHelper.giveItem(playerMP, stack));
+            SilentLib.LOGGER.warn("ItemLootContainer has no drops? {}", heldItem);
+        lootDrops.forEach(stack -> PlayerUtils.giveItem(playerMP, stack));
 
         // Play item pickup sound...
         playerMP.world.playSound(null, playerMP.posX, playerMP.posY, playerMP.posZ,
@@ -134,15 +152,18 @@ public class ItemLootContainer extends Item {
     }
 
     @Override
-    public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ) {
+    public EnumActionResult onItemUse(ItemUseContext context) {
         // Don't care if clicked on a block or empty space
-        this.onItemRightClick(worldIn, player, hand).getType();
+        EntityPlayer player = context.getPlayer();
+        EnumHand hand = player != null ? player.getActiveHand() : EnumHand.MAIN_HAND;
+        this.onItemRightClick(context.getWorld(), player, hand);
         return EnumActionResult.FAIL;
     }
 
     @Override
-    public void getSubItems(CreativeTabs tab, NonNullList<ItemStack> items) {
-        if (!this.isInCreativeTab(tab)) return;
-        items.add(this.getStack());
+    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.isInGroup(group)) {
+            items.add(this.getStack());
+        }
     }
 }

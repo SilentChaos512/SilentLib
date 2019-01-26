@@ -1,5 +1,5 @@
 /*
- * SilentLib - NetworkHandlerSL
+ * SilentLib - TimeUtils
  * Copyright (C) 2018 SilentChaos512
  *
  * This library is free software: you can redistribute it and/or modify
@@ -16,25 +16,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package net.silentchaos512.lib.network;
+package net.silentchaos512.lib.util;
 
-/**
- * Network handler class, mostly copied from Silents' Gems.
- *
- * @author SilentChaos512
- * @since 2.1.3
- */
-@Deprecated
-public class NetworkHandlerSL {
-//    public final SimpleNetworkWrapper wrapper;
-//
-//    private int lastMessageId = -1;
-//
-//    public NetworkHandlerSL(String modId) {
-//        wrapper = NetworkRegistry.INSTANCE.newSimpleChannel(modId);
-//    }
-//
-//    public void register(Class clazz, Side handlerSide) {
-//        wrapper.registerMessage(clazz, clazz, ++lastMessageId, handlerSide);
-//    }
+public final class TimeUtils {
+    public static final int TICKS_PER_SECOND = 20;
+    public static final int VANILLA_DAY_LENGTH = 24000;
+
+    private TimeUtils() {
+        throw new IllegalAccessError("Utility class");
+    }
+
+    public static int ticksFromSeconds(float seconds) {
+        return (int) (TICKS_PER_SECOND * seconds);
+    }
+
+    public static int ticksFromMinutes(float minutes) {
+        return (int) (TICKS_PER_SECOND * 60 * minutes);
+    }
+
+    public static int ticksFromHours(float hours) {
+        return (int) (TICKS_PER_SECOND * 60 * 60 * hours);
+    }
 }

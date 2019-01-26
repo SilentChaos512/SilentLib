@@ -18,13 +18,12 @@
 
 package net.silentchaos512.lib.event;
 
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.silentchaos512.lib.SilentLib;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Can schedule actions to run during {@link TickEvent.ServerTickEvent}, which is mainly useful for
@@ -32,29 +31,35 @@ import java.util.Queue;
  *
  * @since 2.3.12
  */
-@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class ServerTicks {
-    private static final int QUEUE_OVERFLOW_LIMIT = 30;
-    @SuppressWarnings("FieldMayBeFinal")
-    private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
+    private static final ServerTicks INSTANCE = new ServerTicks();
+    private static final int QUEUE_OVERFLOW_LIMIT = 200;
 
-    private ServerTicks() {}
+    @SuppressWarnings("FieldMayBeFinal")
+    private volatile Queue<Runnable> scheduledActions = new ConcurrentLinkedDeque<>();
+
+    private ServerTicks() {
+        MinecraftForge.EVENT_BUS.addListener(this::serverTicks);
+    }
 
     public static void scheduleAction(Runnable action) {
         // In SSP, this is still considered client side, so we can't check the side?
-        scheduledActions.add(action);
+        INSTANCE.scheduledActions.add(action);
 
-        if (scheduledActions.size() > QUEUE_OVERFLOW_LIMIT)
-            SilentLib.logHelper.warn("Too many server tick actions queued! Currently at {} items.", scheduledActions.size());
+        if (INSTANCE.scheduledActions.size() > QUEUE_OVERFLOW_LIMIT) {
+            SilentLib.LOGGER.warn("Too many server tick actions queued! Currently at {} items. Would have added '{}'.",
+                    INSTANCE.scheduledActions.size(), action);
+            SilentLib.LOGGER.catching(new IllegalStateException("ServerTicks queue overflow"));
+            INSTANCE.scheduledActions.clear();
+        }
     }
 
-    @SubscribeEvent
-    public static void serverTicks(TickEvent.ServerTickEvent event) {
+    private void serverTicks(TickEvent.ServerTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
             runScheduledActions();
     }
 
-    private static void runScheduledActions() {
+    private void runScheduledActions() {
         Runnable action = scheduledActions.poll();
         while (action != null) {
             action.run();

@@ -18,23 +18,25 @@
 
 package net.silentchaos512.lib.config;
 
-import net.silentchaos512.lib.util.LogHelper;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
 
 /**
  * Designed to make parsing strings into multiple values easier. Supports multiple data types in a single line. Handles
- * error logging if provided with a LogHelper.
+ * error logging if provided with a LogUtils.
  *
  * @author SilentChaos512
  * @since 2.2.16
+ * @deprecated Probably unneeded
  */
+@Deprecated
 public class ConfigMultiValueLineParser {
 
   /** Used for error logging. */
   final String configId;
   /** Used for error logging if not null. */
-  final @Nullable LogHelper log;
+  final @Nullable Logger log;
   /** The delimiter used to split each line. Matching whitespace with "\\s" is recommended. */
   final String delimiter;
   /** The data type of each value in each line. Only certain types are supported (see parse method) */
@@ -42,14 +44,14 @@ public class ConfigMultiValueLineParser {
   /** Strict mode. If true, lines with extra elements will error. */
   final boolean strict;
 
-  public ConfigMultiValueLineParser(String configId, @Nullable LogHelper log, String delimiter,
-      Class... valueClasses) {
+  public ConfigMultiValueLineParser(String configId, @Nullable Logger log, String delimiter,
+                                    Class... valueClasses) {
 
     this(configId, log, delimiter, false, valueClasses);
   }
 
-  public ConfigMultiValueLineParser(String configId, @Nullable LogHelper log, String delimiter,
-      boolean strict, Class... valueClasses) {
+  public ConfigMultiValueLineParser(String configId, @Nullable Logger log, String delimiter,
+                                    boolean strict, Class... valueClasses) {
 
     this.configId = configId;
     this.log = log;

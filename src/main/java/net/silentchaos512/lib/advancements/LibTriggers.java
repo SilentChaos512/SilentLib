@@ -19,16 +19,20 @@
 package net.silentchaos512.lib.advancements;
 
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
  * Some common advancement triggers for mods to use.
  *
  * @since 2.3.15
  */
-public class LibTriggers {
+public final class LibTriggers {
     /**
      * Represents an item being used (right-clicking a block, entity, or nothing). No need to
-     * trigger this yourself, it's handled in {@link net.silentchaos512.lib.event.SilentLibCommonEvents}.
+     * trigger this yourself, it's handled in {@link EventHandler}.
      */
     public static final UseItemTrigger USE_ITEM = CriteriaTriggers.register(new UseItemTrigger());
     /**
@@ -37,7 +41,43 @@ public class LibTriggers {
      */
     public static final GenericIntTrigger GENERIC_INT = CriteriaTriggers.register(new GenericIntTrigger());
 
+    private LibTriggers() {}
+
     public static void init() {
-        // NO-OP, just needed to initialize static fields in time.
+        EventHandler.init();
+    }
+
+    static final class EventHandler {
+        private static EventHandler INSTANCE;
+
+        private EventHandler() { }
+
+        static void init() {
+            if (INSTANCE != null) return;
+            INSTANCE = new EventHandler();
+            MinecraftForge.EVENT_BUS.addListener(EventHandler::onPlayerRightClickBlock);
+            MinecraftForge.EVENT_BUS.addListener(EventHandler::onPlayerRightClickEntity);
+            MinecraftForge.EVENT_BUS.addListener(EventHandler::onPlayerRightClickItem);
+        }
+
+        public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+            if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+                LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
+            if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+                LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
+            }
+        }
+
+        @SubscribeEvent
+        public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
+            if (event.getEntityPlayer() instanceof EntityPlayerMP) {
+                LibTriggers.USE_ITEM.trigger((EntityPlayerMP) event.getEntityPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
+            }
+        }
     }
 }

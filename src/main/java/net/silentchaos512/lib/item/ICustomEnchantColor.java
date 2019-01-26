@@ -50,19 +50,19 @@ public interface ICustomEnchantColor {
      * @return The effect color
      */
     default int getEffectColor(ItemStack stack) {
-        NBTTagCompound tagCompound = stack.getTagCompound();
+        NBTTagCompound tagCompound = stack.getTag();
 
         if (tagCompound != null) {
             if (tagCompound.hasKey(NBT_LIB_EFFECT_COLOR)) {
                 // Tag for possible future use
-                return tagCompound.getInteger(NBT_LIB_EFFECT_COLOR);
+                return tagCompound.getInt(NBT_LIB_EFFECT_COLOR);
             } else if (tagCompound.hasKey(NBT_QUARK_RUNE_ATTACHED) && tagCompound.hasKey(NBT_QUARK_RUNE_COLOR)) {
                 // Quark runes - stored int is either dye metadata or 16 for rainbow
-                int value = tagCompound.getInteger(NBT_QUARK_RUNE_COLOR);
+                int value = tagCompound.getInt(NBT_QUARK_RUNE_COLOR);
                 if (value > 15)
-                    return Color.HSBtoRGB(ClientTicks.totalTicks * 0.005f, 1f, 0.6f);
+                    return Color.HSBtoRGB(ClientTicks.totalTicks() * 0.005f, 1f, 0.6f);
                 else if (value >= 0)
-                    return EnumDyeColor.byMetadata(value).getColorValue();
+                    return EnumDyeColor.byId(value).func_196060_f();
             }
         }
 

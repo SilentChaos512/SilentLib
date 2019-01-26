@@ -20,9 +20,8 @@ package net.silentchaos512.lib.collection;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
+import net.minecraft.nbt.INBTBase;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -59,7 +58,7 @@ public final class StackList extends ArrayList<ItemStack> {
      * @return A new list of all non-empty stacks from the inventory
      * @since 3.0.6
      */
-    public static StackList fromInventory(IInventory inventory) {
+    public static StackList from(IInventory inventory) {
         StackList newList = new StackList();
         for (int i = 0; i < inventory.getSizeInventory(); ++i) {
             newList.add(inventory.getStackInSlot(i));
@@ -67,11 +66,11 @@ public final class StackList extends ArrayList<ItemStack> {
         return newList;
     }
 
-    public static StackList fromNBT(NBTTagList tagList) {
+    public static StackList from(Iterable<INBTBase> tagList) {
         StackList newList = new StackList();
-        for (NBTBase nbt : tagList) {
+        for (INBTBase nbt : tagList) {
             if (nbt instanceof NBTTagCompound) {
-                newList.add(new ItemStack((NBTTagCompound) nbt));
+                newList.add(ItemStack.read((NBTTagCompound) nbt));
             }
         }
         return newList;

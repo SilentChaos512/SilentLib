@@ -1,39 +1,25 @@
 package net.silentchaos512.lib.tile;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
 
-public abstract class TileInventorySL extends TileEntitySL implements IInventorySL {
+public abstract class TileInventorySL extends TileEntitySL implements IInventory {
     protected NonNullList<ItemStack> inventory;
 
-    public TileInventorySL() {
+    public TileInventorySL(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
     }
 
     @Override
-    public ITextComponent getDisplayName() {
-        String name = getName();
-        if (name == null)
-            return null;
-        return new TextComponentString(name);
-    }
-
-    @Override
-    public String getName() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
     public boolean hasCustomName() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -68,7 +54,7 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
     }
 
     @Override
-    public boolean isUsable(EntityPlayer player) {
+    public boolean isUsableByPlayer(EntityPlayer player) {
         return world.getTileEntity(pos) == this && player.getDistanceSq(pos) <= 64.0;
     }
 
@@ -105,15 +91,15 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tags) {
-        super.readFromNBT(tags);
+    public void read(NBTTagCompound tags) {
+        super.read(tags);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(tags, inventory);
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tags) {
-        super.writeToNBT(tags);
+    public NBTTagCompound write(NBTTagCompound tags) {
+        super.write(tags);
         ItemStackHelper.saveAllItems(tags, inventory);
         return tags;
     }

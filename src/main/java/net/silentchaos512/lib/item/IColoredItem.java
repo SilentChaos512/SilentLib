@@ -19,10 +19,10 @@
 package net.silentchaos512.lib.item;
 
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IColoredItem {
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     IItemColor getColorHandler();
 }

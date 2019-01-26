@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.Util;
 import net.silentchaos512.lib.client.model.ILayeredBakedModel;
 import net.silentchaos512.lib.item.ICustomEnchantColor;
 
@@ -39,6 +40,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Completely replaces the rendering of the enchanted glow effect. This mostly exists to fix the
@@ -67,12 +69,7 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
 
     @Override
     public void renderByItem(ItemStack stack) {
-        this.renderByItem(stack, 1f);
-    }
-
-    @Override
-    public void renderByItem(ItemStack stack, float partialTicks) {
-        IBakedModel model = Minecraft.getMinecraft().getRenderItem().getItemModelWithOverrides(stack, null, null);
+        IBakedModel model = Minecraft.getInstance().getItemRenderer().getItemModelWithOverrides(stack, null, null);
         if (!(model instanceof ILayeredBakedModel)) {
             throw new IllegalArgumentException("Model must be a ILayeredBakedModel");
         }
@@ -132,7 +129,7 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
             int k = color;
 
             if (flag && bakedquad.hasTintIndex()) {
-                k = Minecraft.getMinecraft().getItemColors().colorMultiplier(stack, bakedquad.getTintIndex());
+                k = Minecraft.getInstance().getItemColors().getColor(stack, bakedquad.getTintIndex());
 
 //                if (EntityRenderer.anaglyphEnable) {
 //                    k = TextureUtil.anaglyphColor(k);
@@ -149,7 +146,7 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
     private void renderEffectExcluding(IBakedModel model, int effectColor, int layerIndex, Collection<EnumFacing> excludeFaces) {
         int color = effectColor | 0xFF000000;
 
-        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+        TextureManager textureManager = Minecraft.getInstance().getTextureManager();
         GlStateManager.depthMask(false);
         GlStateManager.depthFunc(514);
         GlStateManager.disableLighting();
@@ -157,19 +154,19 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
         textureManager.bindTexture(RES_ITEM_GLINT);
         GlStateManager.matrixMode(5890);
         GlStateManager.pushMatrix();
-        GlStateManager.scale(8.0F, 8.0F, 8.0F);
-        float f = (float) (Minecraft.getSystemTime() % 3000L) / 3000.0F / 8.0F;
-        GlStateManager.translate(f, 0.0F, 0.0F);
-        GlStateManager.rotate(-50.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.scalef(8.0F, 8.0F, 8.0F);
+        float f = (float) (Util.milliTime() % 3000L) / 3000.0F / 8.0F;
+        GlStateManager.translatef(f, 0.0F, 0.0F);
+        GlStateManager.rotatef(-50.0F, 0.0F, 0.0F, 1.0F);
 
         this.renderModelExcluding(model, color, layerIndex, excludeFaces);
 
         GlStateManager.popMatrix();
         GlStateManager.pushMatrix();
-        GlStateManager.scale(8.0F, 8.0F, 8.0F);
-        float f1 = (float) (Minecraft.getSystemTime() % 4873L) / 4873.0F / 8.0F;
-        GlStateManager.translate(-f1, 0.0F, 0.0F);
-        GlStateManager.rotate(10.0F, 0.0F, 0.0F, 1.0F);
+        GlStateManager.scalef(8.0F, 8.0F, 8.0F);
+        float f1 = (float) (Util.milliTime() % 4873L) / 4873.0F / 8.0F;
+        GlStateManager.translatef(-f1, 0.0F, 0.0F);
+        GlStateManager.rotatef(10.0F, 0.0F, 0.0F, 1.0F);
 
         this.renderModelExcluding(model, color, layerIndex, excludeFaces);
 
@@ -187,6 +184,8 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
         this.renderModelExcluding(model, color, ItemStack.EMPTY, layerIndex, excludeFaces);
     }
 
+    private static final Random RANDOM = new Random();
+
     // Copied from RenderItem
     private void renderModelExcluding(IBakedModel model, int color, ItemStack stack, int layerIndex, Collection<EnumFacing> excludeFaces) {
         Tessellator tessellator = Tessellator.getInstance();
@@ -195,16 +194,17 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
 
         List<BakedQuad> quads = new ArrayList<>();
         if (layerIndex < 0) {
-            // FIXME
             for (int i = 0; i < ((ILayeredBakedModel) model).getLayerCount(); ++i) {
-                for (BakedQuad quad : model.getQuads(null, null, i)) {
+                // FIXME: third parameter was i
+                for (BakedQuad quad : model.getQuads(null, null, RANDOM)) {
                     if (!excludeFaces.contains(quad.getFace())) {
                         quads.add(quad);
                     }
                 }
             }
         } else {
-            for (BakedQuad quad : model.getQuads(null, null, layerIndex)) {
+            // FIXME: third paramter was layerIndex
+            for (BakedQuad quad : model.getQuads(null, null, RANDOM)) {
                 if (!excludeFaces.contains(quad.getFace())) {
                     quads.add(quad);
                 }

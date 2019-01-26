@@ -20,15 +20,17 @@ package net.silentchaos512.lib.block;
 
 import net.minecraft.client.renderer.color.IBlockColor;
 import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import javax.annotation.Nullable;
 
 public interface IColoredBlock {
-
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     IBlockColor getColorHandler();
 
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
+    @Nullable
     default IItemColor getItemColorHandler() {
         return null;
     }

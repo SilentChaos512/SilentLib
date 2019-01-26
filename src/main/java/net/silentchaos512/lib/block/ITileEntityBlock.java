@@ -1,9 +1,9 @@
 package net.silentchaos512.lib.block;
 
-import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
@@ -11,7 +11,6 @@ import javax.annotation.Nullable;
  * Allows a block to automatically register its TileEntity, and TESR if it has one.
  */
 public interface ITileEntityBlock {
-
     /**
      * Gets the class of the tile entity associated with this block
      *
@@ -24,9 +23,9 @@ public interface ITileEntityBlock {
      *
      * @return The TESR to bind, or null if nothing should be done.
      */
-    @SideOnly(Side.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Nullable
-    default TileEntitySpecialRenderer<?> getTileRenderer() {
+    default TileEntityRenderer<?> getTileRenderer() {
         return null;
     }
 }

@@ -9,6 +9,7 @@ import net.minecraftforge.client.model.IModel;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Random;
 
 public abstract class LayeredBakedModel implements ILayeredBakedModel {
     protected final IModel parent;
@@ -23,30 +24,36 @@ public abstract class LayeredBakedModel implements ILayeredBakedModel {
     }
 
     @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long indexNotRand) {
-        if (side == null) {
-            int index = (int) indexNotRand;
-            // Check invalid index
-            if (index < 0) {
-                // Return everything in one? Better than nothing.
-                if (allQuadsCache == null) {
-                    ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
-                    for (List<BakedQuad> list : quads) {
-                        for (BakedQuad quad : list) {
-                            builder.add(quad);
-                        }
-                    }
-
-                    allQuadsCache = builder.build();
-                }
-
-                return allQuadsCache;
-            } else if (index < quads.size()) {
-                return this.quads.get(index);
-            }
-        }
+    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, Random rand) {
         return ImmutableList.of();
     }
+
+    // FIXME index paramater is gone...
+//    @Override
+//    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, long indexNotRand) {
+//        if (side == null) {
+//            int index = (int) indexNotRand;
+//            // Check invalid index
+//            if (index < 0) {
+//                // Return everything in one? Better than nothing.
+//                if (allQuadsCache == null) {
+//                    ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
+//                    for (List<BakedQuad> list : quads) {
+//                        for (BakedQuad quad : list) {
+//                            builder.add(quad);
+//                        }
+//                    }
+//
+//                    allQuadsCache = builder.build();
+//                }
+//
+//                return allQuadsCache;
+//            } else if (index < quads.size()) {
+//                return this.quads.get(index);
+//            }
+//        }
+//        return ImmutableList.of();
+//    }
 
     @Override
     public boolean isBuiltInRenderer() {

@@ -18,19 +18,15 @@
 
 package net.silentchaos512.lib.util;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityList;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.MoverType;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.silentchaos512.lib.SilentLib;
 
-import java.util.List;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 @Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class EntityHelper {
@@ -38,24 +34,8 @@ public final class EntityHelper {
         throw new IllegalAccessError("Utility class");
     }
 
-    @Deprecated
-    public static void moveSelf(Entity entity, double x, double y, double z) {
-        entity.move(MoverType.SELF, x, y, z);
-    }
-
-    /**
-     * Simulates the 1.10.2 behavior of EntityList#getEntityNameList.
-     *
-     * @since 2.1.3
-     */
-    @Deprecated
-    public static List<String> getEntityNameList() {
-        List<String> list = Lists.newArrayList();
-        EntityList.getEntityNameList().forEach(res -> list.add(EntityList.getTranslationName(res)));
-        return list;
-    }
-
-    private static volatile Queue<Entity> entitiesToSpawn = Queues.newArrayDeque();
+    @SuppressWarnings("FieldMayBeFinal") // volatile may not be final
+    private static volatile Queue<Entity> entitiesToSpawn = new ConcurrentLinkedDeque<>();
 
     /**
      * Thread-safe spawning of entities. The queued entities will be spawned in the START (pre)
@@ -64,6 +44,7 @@ public final class EntityHelper {
      * @since 2.1.4
      */
     public static void safeSpawn(Entity entity) {
+        // TODO: Is this still needed? What about DeferredWorkQueue, what's that do?
         entitiesToSpawn.add(entity);
     }
 

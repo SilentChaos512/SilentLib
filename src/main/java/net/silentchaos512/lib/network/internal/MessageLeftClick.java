@@ -18,15 +18,10 @@
 
 package net.silentchaos512.lib.network.internal;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
-import net.minecraftforge.fml.relauncher.Side;
-import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.MessageSL;
 
+@Deprecated
 public final class MessageLeftClick extends MessageSL {
     public enum Type {
         EMPTY, BLOCK
@@ -45,24 +40,24 @@ public final class MessageLeftClick extends MessageSL {
         this.mainHand = hand == EnumHand.MAIN_HAND;
     }
 
-    @Override
-    public IMessage handleMessage(MessageContext context) {
-        if (context.side != Side.SERVER)
-            return null;
-
-        EnumHand hand = mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
-        EntityPlayer player = context.getServerHandler().player;
-        ItemStack heldItem = player.getHeldItem(hand);
-
-        if (!heldItem.isEmpty() && heldItem.getItem() instanceof ILeftClickItem) {
-            ILeftClickItem item = (ILeftClickItem) heldItem.getItem();
-            if (type == Type.EMPTY.ordinal()) {
-                item.onItemLeftClickSL(player.world, player, hand);
-            } else {
-                item.onItemLeftClickBlockSL(player.world, player, hand);
-            }
-        }
-
-        return null;
-    }
+//    @Override
+//    public IMessage handleMessage(MessageContext context) {
+//        if (context.side != Side.SERVER)
+//            return null;
+//
+//        EnumHand hand = mainHand ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+//        EntityPlayer player = context.getServerHandler().player;
+//        ItemStack heldItem = player.getHeldItem(hand);
+//
+//        if (!heldItem.isEmpty() && heldItem.getItem() instanceof ILeftClickItem) {
+//            ILeftClickItem item = (ILeftClickItem) heldItem.getItem();
+//            if (type == Type.EMPTY.ordinal()) {
+//                item.onItemLeftClickSL(player.world, player, hand);
+//            } else {
+//                item.onItemLeftClickBlockSL(player.world, player, hand);
+//            }
+//        }
+//
+//        return null;
+//    }
 }

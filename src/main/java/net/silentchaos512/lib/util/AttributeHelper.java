@@ -42,7 +42,7 @@ public class AttributeHelper {
         AttributeModifier currentMod = attributeInstance.getModifier(uuid);
         AttributeModifier newMod = new AttributeModifier(uuid, name, amount, op);
 
-        if (currentMod != null && (currentMod.getAmount() != amount || currentMod.getOperation() != op)) {
+        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), amount) || currentMod.getOperation() != op)) {
             // Modifier has changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
             attributeInstance.applyModifier(newMod);

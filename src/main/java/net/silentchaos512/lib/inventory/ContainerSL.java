@@ -8,43 +8,37 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerSL extends Container {
+    protected final IInventory tileInventory;
 
-  protected final IInventory tileInventory;
-
-  public ContainerSL(InventoryPlayer playerInventory, IInventory tileInventory) {
-
-    this.tileInventory = tileInventory;
-    addTileInventorySlots(tileInventory);
-    addPlayerInventorySlots(playerInventory);
-  }
-
-  protected void addTileInventorySlots(IInventory inv) {
-
-  }
-
-  protected void addPlayerInventorySlots(InventoryPlayer inv) {
-
-    int i;
-    for (i = 0; i < 3; ++i) {
-      for (int j = 0; j < 9; ++j) {
-        this.addSlotToContainer(new Slot(inv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-      }
+    public ContainerSL(InventoryPlayer playerInventory, IInventory tileInventory) {
+        this.tileInventory = tileInventory;
+        addTileInventorySlots(tileInventory);
+        addPlayerInventorySlots(playerInventory);
     }
 
-    for (i = 0; i < 9; ++i) {
-      this.addSlotToContainer(new Slot(inv, i, 8 + i * 18, 142));
+    protected void addTileInventorySlots(IInventory inv) {
     }
-  }
 
-  @Override
-  public boolean canInteractWith(EntityPlayer player) {
+    protected void addPlayerInventorySlots(InventoryPlayer inv) {
+        int i;
+        for (i = 0; i < 3; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                this.addSlot(new Slot(inv, j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+            }
+        }
 
-    return tileInventory.isUsableByPlayer(player);
-  }
+        for (i = 0; i < 9; ++i) {
+            this.addSlot(new Slot(inv, i, 8 + i * 18, 142));
+        }
+    }
 
-  @Deprecated
-  public static void onTakeFromSlot(Slot slot, EntityPlayer player, ItemStack stack) {
+    @Override
+    public boolean canInteractWith(EntityPlayer player) {
+        return tileInventory.isUsableByPlayer(player);
+    }
 
-    slot.onTake(player, stack);
-  }
+    @Deprecated
+    public static void onTakeFromSlot(Slot slot, EntityPlayer player, ItemStack stack) {
+        slot.onTake(player, stack);
+    }
 }

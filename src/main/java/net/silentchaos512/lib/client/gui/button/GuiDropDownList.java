@@ -18,7 +18,6 @@
 
 package net.silentchaos512.lib.client.gui.button;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 
 import javax.annotation.Nullable;
@@ -64,8 +63,9 @@ public class GuiDropDownList extends GuiButton {
     }
 
     @Override
-    public void mouseReleased(int mouseX, int mouseY) {
+    public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
         setExpanded(!expanded);
+        return true;
     }
 
     void onElementSelected(GuiDropDownElement child) {
@@ -85,12 +85,12 @@ public class GuiDropDownList extends GuiButton {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
+    public void render(int mouseX, int mouseY, float partialTicks) {
+        super.render(mouseX, mouseY, partialTicks);
 
         if (expanded) {
             for (GuiDropDownElement child : children) {
-                child.drawButton(mc, mouseX, mouseY, partialTicks);
+                child.render(mouseX, mouseY, partialTicks);
             }
         }
     }

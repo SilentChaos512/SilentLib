@@ -22,10 +22,6 @@ import io.netty.buffer.ByteBuf;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.common.network.ByteBufUtils;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.io.Serializable;
@@ -42,9 +38,10 @@ import java.util.HashMap;
  * @author SilentChaos512
  * @since 2.1.3
  */
-public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage, IMessageHandler<REQ, IMessage> {
-    private static final HashMap<Class, Pair<Reader, Writer>> handlers = new HashMap();
-    private static final HashMap<Class, Field[]> fieldCache = new HashMap();
+@Deprecated
+public class MessageSL<REQ extends MessageSL> implements Serializable {
+    private static final HashMap<Class, Pair<Reader, Writer>> handlers = new HashMap<>();
+    private static final HashMap<Class, Field[]> fieldCache = new HashMap<>();
 
     static {
         map(byte.class, MessageSL::readByte, MessageSL::writeByte);
@@ -61,46 +58,46 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
         map(BlockPos.class, MessageSL::readBlockPos, MessageSL::writeBlockPos);
     }
 
-    public IMessage handleMessage(MessageContext context) {
-        return null;
-    }
+//    public IMessage handleMessage(MessageContext context) {
+//        return null;
+//    }
+//
+//    @Override
+//    public final IMessage onMessage(REQ message, MessageContext context) {
+//        return message.handleMessage(context);
+//    }
+//
+//    @Override
+//    public void fromBytes(ByteBuf buf) {
+//        try {
+//            Class<?> clazz = getClass();
+//            Field[] clFields = getClassFields(clazz);
+//            for (Field f : clFields) {
+//                Class<?> type = f.getType();
+//                if (acceptField(f, type))
+//                    readField(f, type, buf);
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error at reading packet " + this, e);
+//        }
+//    }
+//
+//    @Override
+//    public void toBytes(ByteBuf buf) {
+//        try {
+//            Class<?> clazz = getClass();
+//            Field[] clFields = getClassFields(clazz);
+//            for (Field f : clFields) {
+//                Class<?> type = f.getType();
+//                if (acceptField(f, type))
+//                    writeField(f, type, buf);
+//            }
+//        } catch (Exception e) {
+//            throw new RuntimeException("Error at writing packet " + this, e);
+//        }
+//    }
 
-    @Override
-    public final IMessage onMessage(REQ message, MessageContext context) {
-        return message.handleMessage(context);
-    }
-
-    @Override
-    public void fromBytes(ByteBuf buf) {
-        try {
-            Class<?> clazz = getClass();
-            Field[] clFields = getClassFields(clazz);
-            for (Field f : clFields) {
-                Class<?> type = f.getType();
-                if (acceptField(f, type))
-                    readField(f, type, buf);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error at reading packet " + this, e);
-        }
-    }
-
-    @Override
-    public void toBytes(ByteBuf buf) {
-        try {
-            Class<?> clazz = getClass();
-            Field[] clFields = getClassFields(clazz);
-            for (Field f : clFields) {
-                Class<?> type = f.getType();
-                if (acceptField(f, type))
-                    writeField(f, type, buf);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Error at writing packet " + this, e);
-        }
-    }
-
-    @SuppressWarnings("unlikely-arg-type")
+//    @SuppressWarnings("unlikely-arg-type")
     private static Field[] getClassFields(Class<?> clazz) {
         if (fieldCache.containsValue(clazz))
             return fieldCache.get(clazz);
@@ -112,12 +109,12 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
         }
     }
 
-    private final void writeField(Field f, Class clazz, ByteBuf buf) throws IllegalArgumentException, IllegalAccessException {
+    private void writeField(Field f, Class clazz, ByteBuf buf) throws IllegalArgumentException, IllegalAccessException {
         Pair<Reader, Writer> handler = getHandler(clazz);
         handler.getRight().write(f.get(this), buf);
     }
 
-    private final void readField(Field f, Class clazz, ByteBuf buf) throws IllegalArgumentException, IllegalAccessException {
+    private void readField(Field f, Class clazz, ByteBuf buf) throws IllegalArgumentException, IllegalAccessException {
         Pair<Reader, Writer> handler = getHandler(clazz);
         f.set(this, handler.getLeft().read(buf));
     }
@@ -206,27 +203,30 @@ public class MessageSL<REQ extends MessageSL> implements Serializable, IMessage,
     }
 
     private static String readString(ByteBuf buf) {
-        return ByteBufUtils.readUTF8String(buf);
+//        return ByteBufUtils.readUTF8String(buf);
+        return "";
     }
 
     private static void writeString(String s, ByteBuf buf) {
-        ByteBufUtils.writeUTF8String(buf, s);
+//        ByteBufUtils.writeUTF8String(buf, s);
     }
 
     private static NBTTagCompound readNBT(ByteBuf buf) {
-        return ByteBufUtils.readTag(buf);
+//        return ByteBufUtils.readTag(buf);
+        return new NBTTagCompound();
     }
 
     private static void writeNBT(NBTTagCompound cmp, ByteBuf buf) {
-        ByteBufUtils.writeTag(buf, cmp);
+//        ByteBufUtils.writeTag(buf, cmp);
     }
 
     private static ItemStack readItemStack(ByteBuf buf) {
-        return ByteBufUtils.readItemStack(buf);
+//        return ByteBufUtils.readItemStack(buf);
+        return ItemStack.EMPTY;
     }
 
     private static void writeItemStack(ItemStack stack, ByteBuf buf) {
-        ByteBufUtils.writeItemStack(buf, stack);
+//        ByteBufUtils.writeItemStack(buf, stack);
     }
 
     private static BlockPos readBlockPos(ByteBuf buf) {

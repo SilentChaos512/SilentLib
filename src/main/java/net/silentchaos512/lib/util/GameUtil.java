@@ -18,10 +18,7 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.launchwrapper.Launch;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
-import net.minecraftforge.fml.common.LoaderState;
+import net.minecraftforge.forgespi.Environment;
 
 public final class GameUtil {
     private GameUtil() {
@@ -34,7 +31,7 @@ public final class GameUtil {
      * @return True if and only if we are on the client side
      */
     public static boolean isClient() {
-        return FMLCommonHandler.instance().getSide().isClient();
+        return Environment.get().getDist().isClient();
     }
 
     /**
@@ -43,7 +40,7 @@ public final class GameUtil {
      * @return True if and only if we are on the server side
      */
     public static boolean isServer() {
-        return FMLCommonHandler.instance().getSide().isServer();
+        return Environment.get().getDist().isDedicatedServer();
     }
 
     /**
@@ -52,7 +49,9 @@ public final class GameUtil {
      * @return True if and only if we are running in a deobfuscated environment
      */
     public static boolean isDeobfuscated() {
-        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        // FIXME
+//        return (Boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment");
+        return true;
     }
 
     /**
@@ -64,10 +63,12 @@ public final class GameUtil {
      * @since 3.0.8
      */
     public static boolean shouldCalculateTooltip() {
-        LoaderState state = Loader.instance().getLoaderState();
-        // These states have no reason to go through tooltips that I can tell, but they do.
-        return state != LoaderState.INITIALIZATION
-                && state != LoaderState.SERVER_ABOUT_TO_START
-                && state != LoaderState.SERVER_STOPPING;
+        // FIXME
+//        LoaderState state = Loader.instance().getLoaderState();
+//        // These states have no reason to go through tooltips that I can tell, but they do.
+//        return state != LoaderState.INITIALIZATION
+//                && state != LoaderState.SERVER_ABOUT_TO_START
+//                && state != LoaderState.SERVER_STOPPING;
+        return true;
     }
 }

@@ -20,13 +20,14 @@ package net.silentchaos512.lib.item;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBlock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.IStringSerializable;
-import net.silentchaos512.lib.registry.SRegistry;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Locale;
 import java.util.function.Function;
 
@@ -104,70 +105,69 @@ public interface IEnumItems<E extends Enum<E>, I extends Item> extends IStringSe
         return "";
     }
 
-    /**
-     * Registers items for the provided {@code IEnumItems} values. Call when registering your
-     * items.
-     *
-     * @param array    The values, typically {@code YourEnumClass.values()}
-     * @param registry The mod's SRegistry
-     * @deprecated Use {@link RegistrationHelper} instead
-     */
-    @Deprecated
-    static void registerItems(IEnumItems[] array, SRegistry registry) {
-        registerItems(Arrays.asList(array), registry);
-    }
-
-    /**
-     * Registers items for the provided {@code IEnumItems} values. Call when registering your
-     * items.
-     *
-     * @param list     The values
-     * @param registry The mod's SRegistry
-     * @deprecated Use {@link RegistrationHelper} instead
-     */
-    @Deprecated
-    static void registerItems(Collection<? extends IEnumItems> list, SRegistry registry) {
-        list.forEach(e -> registry.registerItem(e.getItem(), e.getName()));
-    }
-
     class RegistrationHelper {
-        private final SRegistry registry;
+        private final String modId;
 
-        public RegistrationHelper(SRegistry registry) {
-            this.registry = registry;
+        public RegistrationHelper(String modId) {
+            this.modId = modId;
         }
 
         /**
          * Registers items for the provided {@link IEnumItems} values.
+         *
          * @param items The {@link IEnumItems} values
          */
         public void registerItems(IEnumItems... items) {
-            for (IEnumItems item : items)
-                registry.registerItem(item.getItem(), item.getName());
+            for (IEnumItems item : items) {
+                safeSetRegistryName(item.getItem(), item.getName());
+                ForgeRegistries.ITEMS.register(item.getItem());
+            }
         }
 
         /**
          * Registers blocks for any enum type, using the given functions to get the block and name.
-         * @param block Function that returns the block for the enum
-         * @param name Function that returns the registry name (minus namespace/mod ID) of the block
-         * @param enumClass The enum type, E
-         * @param <E> Any enum type
+         *
+         * @param blockGetter Function that returns the block for the enum
+         * @param nameGetter  Function that returns the registry name (minus namespace/mod ID) of
+         *                    the block
+         * @param enumClass   The enum type, E
+         * @param <E>         Any enum type
          */
-        public <E extends Enum<E>> void registerBlocksGenericEnum(Function<E, Block> block, Function<E, String> name, Class<E> enumClass) {
-            for (E e : enumClass.getEnumConstants())
-                registry.registerBlock(block.apply(e), name.apply(e));
+        public <E extends Enum<E>> void registerBlocksGenericEnum(Function<E, Block> blockGetter, Function<E, String> nameGetter, Class<E> enumClass) {
+            for (E e : enumClass.getEnumConstants()) {
+                String name = nameGetter.apply(e);
+
+                Block block = blockGetter.apply(e);
+                safeSetRegistryName(block, name);
+                ForgeRegistries.BLOCKS.register(block);
+
+                Item item = new ItemBlock(block, new Item.Builder());
+                safeSetRegistryName(item, name);
+                ForgeRegistries.ITEMS.register(item);
+            }
         }
 
         /**
          * Registers items for any enum type, using the given functions to get the item and name.
-         * @param item Function that returns the item for the enum
-         * @param name Function that returns the registry name (minus namespace/mod ID) of the item
-         * @param enumClass The enum type, E
-         * @param <E> Any enum type
+         *
+         * @param itemGetter Function that returns the item for the enum
+         * @param name       Function that returns the registry name (minus namespace/mod ID) of the
+         *                   item
+         * @param enumClass  The enum type, E
+         * @param <E>        Any enum type
          */
-        public <E extends Enum<E>> void registerItemsGenericEnum(Function<E, Item> item, Function<E, String> name, Class<E> enumClass) {
-            for (E e : enumClass.getEnumConstants())
-                registry.registerItem(item.apply(e), name.apply(e));
+        public <E extends Enum<E>> void registerItemsGenericEnum(Function<E, Item> itemGetter, Function<E, String> name, Class<E> enumClass) {
+            for (E e : enumClass.getEnumConstants()) {
+                Item item = itemGetter.apply(e);
+                safeSetRegistryName(item, name.apply(e));
+                ForgeRegistries.ITEMS.register(item);
+            }
+        }
+
+        private void safeSetRegistryName(IForgeRegistryEntry<?> obj, String name) {
+            if (obj.getRegistryName() == null) {
+                obj.setRegistryName(new ResourceLocation(modId, name));
+            }
         }
     }
 }

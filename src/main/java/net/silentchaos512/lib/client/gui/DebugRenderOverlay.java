@@ -24,7 +24,6 @@ import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.silentchaos512.lib.util.Color;
 
@@ -48,11 +47,12 @@ public abstract class DebugRenderOverlay extends Gui {
     private int ticksPassed = 0;
 
     protected DebugRenderOverlay() {
-        MinecraftForge.EVENT_BUS.register(this);
+        MinecraftForge.EVENT_BUS.addListener(this::renderTick);
+        MinecraftForge.EVENT_BUS.addListener(this::clientTick);
     }
 
     protected DebugRenderOverlay(int startX, int startY) {
-        MinecraftForge.EVENT_BUS.register(this);
+        this();
         this.startX = startX;
         this.startY = startY;
     }
@@ -110,9 +110,8 @@ public abstract class DebugRenderOverlay extends Gui {
         return startY;
     }
 
-    @SubscribeEvent
     public void renderTick(RenderGameOverlayEvent.Post event) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = Minecraft.getInstance();
         if (isHidden() || debugText.isEmpty() || mc.isGamePaused() || mc.gameSettings.showDebugInfo || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
@@ -120,10 +119,10 @@ public abstract class DebugRenderOverlay extends Gui {
         float scale = getTextScale();
         if (scale <= 0f) return;
 
-        FontRenderer font = Minecraft.getMinecraft().fontRenderer;
+        FontRenderer font = mc.fontRenderer;
 
         GlStateManager.pushMatrix();
-        GlStateManager.scale(scale, scale, 1);
+        GlStateManager.scalef(scale, scale, 1);
 
         int x = getStartX();
         int y = getStartY();
@@ -135,7 +134,6 @@ public abstract class DebugRenderOverlay extends Gui {
         GlStateManager.popMatrix();
     }
 
-    @SubscribeEvent
     public void clientTick(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
             return;

@@ -20,15 +20,12 @@ package net.silentchaos512.lib.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.relauncher.Side;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.util.GameUtil;
 
-import java.util.ArrayDeque;
 import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
 /**
  * Can schedule actions to run during {@link TickEvent.ClientTickEvent}, which is mainly useful for
@@ -36,52 +33,50 @@ import java.util.Queue;
  *
  * @since 2.3.12
  */
-@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID, value = Side.CLIENT)
 public final class ClientTicks {
-    @Deprecated
-    public static final ClientTicks INSTANCE = new ClientTicks();
-
+    private static final ClientTicks INSTANCE = new ClientTicks();
     private static final int QUEUE_OVERFLOW_LIMIT = 200;
 
     @SuppressWarnings("FieldMayBeFinal")
-    private static volatile Queue<Runnable> scheduledActions = new ArrayDeque<>();
+    private volatile Queue<Runnable> scheduledActions = new ConcurrentLinkedDeque<>();
 
-    public static int ticksInGame = 0;
-    public static float partialTicks = 0f;
-    public static float deltaTicks = 0f;
-    public static float totalTicks = 0f;
+    public int ticksInGame = 0;
+    public float partialTicks = 0f;
+    public float deltaTicks = 0f;
+    public float totalTicks = 0f;
 
-    private ClientTicks() {}
+    private ClientTicks() {
+        MinecraftForge.EVENT_BUS.addListener(this::clientTickEnd);
+        MinecraftForge.EVENT_BUS.addListener(this::renderTick);
+    }
 
     public static void scheduleAction(Runnable action) {
-        if (GameUtil.isClient())
-            scheduledActions.add(action);
-        else
-            SilentLib.logHelper.error("Tried to add client tick action on server side? {}", action);
+//        if (GameUtil.isClient())
+            INSTANCE.scheduledActions.add(action);
+//        else
+//            SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
 
-        if (scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
+        if (INSTANCE.scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
             // Queue overflow?
-            SilentLib.logHelper.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
-                    scheduledActions.size(), action);
-            SilentLib.logHelper.catching(new IllegalStateException("ClientTicks queue overflow"));
-            scheduledActions.clear();
+            SilentLib.LOGGER.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
+                    INSTANCE.scheduledActions.size(), action);
+            SilentLib.LOGGER.catching(new IllegalStateException("ClientTicks queue overflow"));
+            INSTANCE.scheduledActions.clear();
         }
     }
 
-    @SubscribeEvent
-    public static void clientTickEnd(TickEvent.ClientTickEvent event) {
+    private void clientTickEnd(TickEvent.ClientTickEvent event) {
         if (event.phase != TickEvent.Phase.END) return;
         runScheduledActions();
         updateTickCounters();
     }
 
-    @SubscribeEvent
-    public static void renderTick(TickEvent.RenderTickEvent event) {
+    private void renderTick(TickEvent.RenderTickEvent event) {
         if (event.phase == TickEvent.Phase.START)
             partialTicks = event.renderTickTime;
     }
 
-    private static void runScheduledActions() {
+    private void runScheduledActions() {
         Runnable action = scheduledActions.poll();
         while (action != null) {
             action.run();
@@ -89,8 +84,8 @@ public final class ClientTicks {
         }
     }
 
-    private static void updateTickCounters() {
-        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+    private void updateTickCounters() {
+        GuiScreen gui = Minecraft.getInstance().currentScreen;
         if (gui == null || !gui.doesGuiPauseGame()) {
             ++ticksInGame;
             partialTicks = 0;
@@ -99,5 +94,21 @@ public final class ClientTicks {
         float oldTotal = totalTicks;
         totalTicks = ticksInGame + partialTicks;
         deltaTicks = totalTicks - oldTotal;
+    }
+
+    public static int ticksInGame() {
+        return INSTANCE.ticksInGame;
+    }
+
+    public static float partialTicks() {
+        return INSTANCE.partialTicks;
+    }
+
+    public static float deltaTicks() {
+        return INSTANCE.deltaTicks;
+    }
+
+    public static float totalTicks() {
+        return INSTANCE.totalTicks;
     }
 }

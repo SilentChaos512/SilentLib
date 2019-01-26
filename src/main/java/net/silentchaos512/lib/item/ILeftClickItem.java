@@ -24,6 +24,8 @@ import net.minecraft.util.ActionResult;
 import net.minecraft.util.EnumActionResult;
 import net.minecraft.util.EnumHand;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 
 public interface ILeftClickItem {
     /**
@@ -44,5 +46,45 @@ public interface ILeftClickItem {
      */
     default ActionResult<ItemStack> onItemLeftClickBlockSL(World world, EntityPlayer player, EnumHand hand) {
         return onItemLeftClickSL(world, player, hand);
+    }
+
+    // FIXME: Event handler packets
+    final class EventHandler {
+        private static EventHandler INSTANCE;
+
+        private EventHandler() { }
+
+        public static void init() {
+            if (INSTANCE != null) return;
+            INSTANCE = new EventHandler();
+            MinecraftForge.EVENT_BUS.addListener(EventHandler::onLeftClickBlock);
+            MinecraftForge.EVENT_BUS.addListener(EventHandler::onLeftClickEmpty);
+        }
+
+        private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
+            ItemStack stack = event.getItemStack();
+            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
+                // Client-side call
+                ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
+                        .onItemLeftClickBlockSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
+                // Server-side call
+                if (result.getType() == EnumActionResult.SUCCESS) {
+//                    SilentLib.network.wrapper.sendToServer(new MessageLeftClick(MessageLeftClick.Type.BLOCK, event.getHand()));
+                }
+            }
+        }
+
+        private static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
+            ItemStack stack = event.getItemStack();
+            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
+                // Client-side call
+                ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem())
+                        .onItemLeftClickSL(event.getWorld(), event.getEntityPlayer(), event.getHand());
+                // Server-side call
+                if (result.getType() == EnumActionResult.SUCCESS) {
+//                SilentLib.network.wrapper.sendToServer(new MessageLeftClick(MessageLeftClick.Type.EMPTY, event.getHand()));
+                }
+            }
+        }
     }
 }

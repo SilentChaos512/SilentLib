@@ -33,12 +33,12 @@ public @interface SyncVariable {
     String name();
 
     /**
-     * Should the variable be loaded in {@link TileEntity#readFromNBT}?
+     * Should the variable be loaded in {@link TileEntity#read}?
      */
     boolean onRead() default true;
 
     /**
-     * Should the variable be saved in {@link TileEntity#writeToNBT}?
+     * Should the variable be saved in {@link TileEntity#write}?
      */
     boolean onWrite() default true;
 
@@ -109,7 +109,7 @@ public @interface SyncVariable {
 
                             //noinspection ChainOfInstanceofChecks
                             if (field.getType() == int.class)
-                                field.setInt(obj, tags.getInteger(name));
+                                field.setInt(obj, tags.getInt(name));
                             else if (field.getType() == float.class)
                                 field.setFloat(obj, tags.getFloat(name));
                             else if (field.getType() == String.class)
@@ -126,7 +126,7 @@ public @interface SyncVariable {
                                 field.setByte(obj, tags.getByte(name));
                             else if (SERIALIZERS.containsKey(field.getType())) {
                                 NBTSerializer serializer = SERIALIZERS.get(field.getType());
-                                NBTTagCompound compound = tags.getCompoundTag(name);
+                                NBTTagCompound compound = tags.getCompound(name);
                                 field.set(obj, serializer.read(compound));
                             } else
                                 throw new UnsupportedDataTypeException(
@@ -168,7 +168,7 @@ public @interface SyncVariable {
 
                                 //noinspection ChainOfInstanceofChecks
                                 if (field.getType() == int.class)
-                                    tags.setInteger(name, field.getInt(obj));
+                                    tags.setInt(name, field.getInt(obj));
                                 else if (field.getType() == float.class)
                                     tags.setFloat(name, field.getFloat(obj));
                                 else if (field.getType() == String.class)

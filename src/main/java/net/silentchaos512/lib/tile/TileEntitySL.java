@@ -5,6 +5,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityType;
 
 /**
  * Basic TileEntity with SyncVariable support.
@@ -13,6 +14,10 @@ import net.minecraft.tileentity.TileEntity;
  * @since 2.0.6
  */
 public class TileEntitySL extends TileEntity {
+    public TileEntitySL(TileEntityType<?> tileEntityTypeIn) {
+        super(tileEntityTypeIn);
+    }
+
     public final void sendUpdate() {
         if (world != null && !world.isRemote) {
             IBlockState state = world.getBlockState(pos);
@@ -22,14 +27,14 @@ public class TileEntitySL extends TileEntity {
     }
 
     @Override
-    public void readFromNBT(NBTTagCompound tags) {
-        super.readFromNBT(tags);
+    public void read(NBTTagCompound tags) {
+        super.read(tags);
         readSyncVars(tags);
     }
 
     @Override
-    public NBTTagCompound writeToNBT(NBTTagCompound tags) {
-        super.writeToNBT(tags);
+    public NBTTagCompound write(NBTTagCompound tags) {
+        super.write(tags);
         writeSyncVars(tags, SyncVariable.Type.WRITE);
         return tags;
     }
@@ -52,11 +57,11 @@ public class TileEntitySL extends TileEntity {
         readSyncVars(packet.getNbtCompound());
     }
 
-    protected void readSyncVars(NBTTagCompound tags) {
+    private void readSyncVars(NBTTagCompound tags) {
         SyncVariable.Helper.readSyncVars(this, tags);
     }
 
-    protected NBTTagCompound writeSyncVars(NBTTagCompound tags, SyncVariable.Type syncType) {
+    private NBTTagCompound writeSyncVars(NBTTagCompound tags, SyncVariable.Type syncType) {
         return SyncVariable.Helper.writeSyncVars(this, tags, syncType);
     }
 }

@@ -20,16 +20,13 @@ package net.silentchaos512.lib.event;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
-import net.silentchaos512.lib.SilentLib;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Can be used to send messages to the player's chat log when they log in. Good for notifying the
@@ -37,24 +34,13 @@ import java.util.function.Supplier;
  *
  * @since 2.3.17
  */
-@Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class Greetings {
-    private static final List<Function<EntityPlayer, Optional<ITextComponent>>> messages = new ArrayList<>();
+    private static final Greetings INSTANCE = new Greetings();
 
-    private Greetings() {}
+    private final List<Function<EntityPlayer, Optional<ITextComponent>>> messages = new ArrayList<>();
 
-    /**
-     * Add a message to display to the player on login. If the supplier returns {@code null}, no
-     * message is displayed. Consider displaying your message only once per session or per day.
-     *
-     * @param message A text component supplier for your message. Using {@link
-     *                net.minecraft.util.text.TextComponentTranslation} may be ideal.
-     * @since 2.3.17
-     * @deprecated Use {@link #addMessage(Function)} instead
-     */
-    @Deprecated
-    public static void addMessage(Supplier<ITextComponent> message) {
-        messages.add(player -> Optional.ofNullable(message.get()));
+    private Greetings() {
+        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
     }
 
     /**
@@ -66,14 +52,10 @@ public final class Greetings {
      * @since 3.0.6
      */
     public static void addMessage(Function<EntityPlayer, ITextComponent> message) {
-        messages.add(player -> Optional.ofNullable(message.apply(player)));
+        INSTANCE.messages.add(player -> Optional.ofNullable(message.apply(player)));
     }
 
-    /**
-     * Event handler, DO NOT CALL.
-     */
-    @SubscribeEvent
-    public static void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
+    private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.player == null) return;
         messages.forEach(msg -> msg.apply(event.player).ifPresent(event.player::sendMessage));
     }

@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.silentchaos512.lib.util.InventoryUtils;
@@ -53,11 +54,12 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
     private int timer = MathUtils.nextInt(LONG_UPDATE_DELAY);
 
 
-    public TileEntityItemProcessor(int inputCount, int fuelCount, int outputCount) {
-        this(inputCount, fuelCount, outputCount, new FurnaceFuelBurner(FurnaceFuelBurner.BurnCondition.STANDARD));
+    public TileEntityItemProcessor(TileEntityType<?> tileEntityType, int inputCount, int fuelCount, int outputCount) {
+        this(tileEntityType, inputCount, fuelCount, outputCount, new FurnaceFuelBurner(FurnaceFuelBurner.BurnCondition.STANDARD));
     }
 
-    public TileEntityItemProcessor(int inputCount, int fuelCount, int outputCount, @Nullable IFuelBurner burner) {
+    public TileEntityItemProcessor(TileEntityType<?> tileEntityType, int inputCount, int fuelCount, int outputCount, @Nullable IFuelBurner burner) {
+        super(tileEntityType);
         if (inputCount < 1)
             throw new IllegalArgumentException("Input slot count must be greater than zero");
         if (outputCount < 1)
@@ -144,7 +146,7 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
     }
 
     @Override
-    public void update() {
+    public void tick() {
         ++timer;
 
         if (!world.isRemote) {
