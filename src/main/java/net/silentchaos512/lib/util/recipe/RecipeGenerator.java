@@ -46,7 +46,7 @@ public final class RecipeGenerator {
 
     private static void writeFile(ResourceLocation name, JsonObject json) {
         String fileName = name.getPath();
-        String dirPath = "output/" + name.getNamespace() + "/" + name.getNamespace();
+        String dirPath = "output/" + name.getNamespace() + "/recipes";
         File directory = new File(dirPath);
 
         if (!directory.exists() && !directory.mkdirs()) {
