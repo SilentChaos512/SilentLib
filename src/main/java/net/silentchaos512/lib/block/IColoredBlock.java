@@ -25,6 +25,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 
+@Deprecated
 public interface IColoredBlock {
     @OnlyIn(Dist.CLIENT)
     IBlockColor getColorHandler();

@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.color.IItemColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+@Deprecated
 public interface IColoredItem {
     @OnlyIn(Dist.CLIENT)
     IItemColor getColorHandler();

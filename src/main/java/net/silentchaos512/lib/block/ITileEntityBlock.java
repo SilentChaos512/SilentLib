@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 /**
  * Allows a block to automatically register its TileEntity, and TESR if it has one.
  */
+@Deprecated
 public interface ITileEntityBlock {
     /**
      * Gets the class of the tile entity associated with this block
