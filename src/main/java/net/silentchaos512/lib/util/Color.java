@@ -19,6 +19,8 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.primitives.UnsignedInts;
+import com.google.gson.JsonObject;
+import net.minecraft.util.JsonUtils;
 import net.minecraft.util.LazyLoadBase;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -250,6 +252,22 @@ public class Color {
     }
 
     /**
+     * Validator for ForgeConfigSpec. Accepts CSS color names or hex codes with optional leading '#'
+     * or '0x'.
+     *
+     * @param str The string to validate
+     * @return True if and only if the string can be parsed
+     */
+    public static boolean validate(String str) {
+        return NAMED_MAP.containsKey(str.toLowerCase(Locale.ROOT))
+                || PATTERN_HEX_CODE.matcher(str).matches();
+    }
+
+    //endregion
+
+    //region Parsing and Formatting
+
+    /**
      * Format the color as it would appear in a config file.
      *
      * @return A string in the form "#XXXXXX" or "#XXXXXXXX", where 'X' is a hex digit.
@@ -280,16 +298,9 @@ public class Color {
         return new Color(color);
     }
 
-    /**
-     * Validator for ForgeConfigSpec. Accepts CSS color names or hex codes with optional leading '#'
-     * or '0x'.
-     *
-     * @param str The string to validate
-     * @return True if and only if the string can be parsed
-     */
-    public static boolean validate(String str) {
-        return NAMED_MAP.containsKey(str.toLowerCase(Locale.ROOT))
-                || PATTERN_HEX_CODE.matcher(str).matches();
+    public static Color from(JsonObject json, String propertyName, int defaultValue) {
+        String defaultStr = Integer.toHexString(defaultValue);
+        return Color.parse(JsonUtils.getString(json, propertyName, defaultStr));
     }
 
     //endregion
