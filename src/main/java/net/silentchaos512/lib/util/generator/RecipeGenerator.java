@@ -1,4 +1,4 @@
-package net.silentchaos512.lib.util.recipe;
+package net.silentchaos512.lib.util.generator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
