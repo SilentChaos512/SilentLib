@@ -64,6 +64,7 @@ public final class ModelGenerator {
     public static final class BlockBuilder {
         private final Block block;
         private final ResourceLocation blockName;
+        private String comment = "";
 
         // BlockStates
         private Map<String, String> variants;
@@ -125,6 +126,11 @@ public final class ModelGenerator {
             return this;
         }
 
+        public BlockBuilder comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
         private String getDefaultModel() {
             return blockName.getNamespace() + ":block/" + blockName.getPath();
         }
@@ -140,6 +146,8 @@ public final class ModelGenerator {
 
         JsonObject buildBlockState() {
             JsonObject json = new JsonObject();
+            if (!comment.isEmpty()) json.addProperty("__comment__", comment);
+
             JsonObject variantsJson = new JsonObject();
 
             if (this.variants == null || this.variants.isEmpty()) {
@@ -187,6 +195,7 @@ public final class ModelGenerator {
         private final ResourceLocation itemName;
         private String parentModel = "item/generated";
         private final List<ResourceLocation> itemTextures = new ArrayList<>();
+        private String comment = "";
 
         private ItemBuilder(Item item) {
             this.item = item;
@@ -211,12 +220,19 @@ public final class ModelGenerator {
             return this;
         }
 
+        public ItemBuilder comment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
         private String getDefaultTexture() {
             return itemName.getNamespace() + ":item/" + itemName.getPath();
         }
 
         JsonObject build() {
             JsonObject json = new JsonObject();
+            if (!comment.isEmpty()) json.addProperty("__comment__", comment);
+
             json.addProperty("parent", this.parentModel);
 
             if (this.itemTextures.isEmpty() && !(item instanceof ItemBlock)) {
