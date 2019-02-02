@@ -31,6 +31,8 @@ libs/*
 !/libs/README.txt
 curse_logo.png
 image_test/
+output/
+logs/
 
 .DS_Store
 

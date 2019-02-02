@@ -4,6 +4,7 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.item.ILeftClickItem;
+import net.silentchaos512.lib.util.generator.TagGenerator;
 
 class SideProxy {
     SideProxy() {
@@ -19,7 +20,10 @@ class SideProxy {
 
     private void imcEnqueue(InterModEnqueueEvent event) { }
 
-    private void imcProcess(InterModProcessEvent event) { }
+    private void imcProcess(InterModProcessEvent event) {
+        //noinspection deprecation -- deprecated as a warning to modders, see javadoc
+        TagGenerator.generateFiles();
+    }
 
     static class Client extends SideProxy {
         Client() {
