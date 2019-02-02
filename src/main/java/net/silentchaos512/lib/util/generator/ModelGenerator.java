@@ -41,7 +41,7 @@ public final class ModelGenerator {
 
     private static void writeFile(JsonObject json, String subdir, ResourceLocation name) {
         String fileName = name.getPath();
-        final String dirPath = "output/" + name.getNamespace() + "/" + subdir;
+        final String dirPath = "output/assets/" + name.getNamespace() + "/" + subdir;
         final File directory = new File(dirPath);
 
         if (!directory.exists()) {
