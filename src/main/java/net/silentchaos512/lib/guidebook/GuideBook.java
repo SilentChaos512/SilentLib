@@ -107,12 +107,11 @@ public abstract class GuideBook {
         chapters.sort(Comparator.comparing(IGuideChapter::getSortingPriority, Comparator.reverseOrder()));
         pagesWithItemOrFluidData.sort(Comparator.comparing(IGuidePage::getSortingPriority, Comparator.reverseOrder()));
 
-        LogHelper log = SilentLib.logHelper;
-        log.info("Guide book for mod \"{}\" initialized!", modId);
-        log.info("    Entries:  {}", entries.size());
-        log.info("    Chapters: {}", countChapter);
-        log.info("    Pages:    {}", countPage);
-        log.info("    Info:     {}", countInfo);
+        SilentLib.LOGGER.info("Guide book for mod \"{}\" initialized!", modId);
+        SilentLib.LOGGER.info("    Entries:  {}", entries.size());
+        SilentLib.LOGGER.info("    Chapters: {}", countChapter);
+        SilentLib.LOGGER.info("    Pages:    {}", countPage);
+        SilentLib.LOGGER.info("    Info:     {}", countInfo);
     }
 
     // =======================================================================

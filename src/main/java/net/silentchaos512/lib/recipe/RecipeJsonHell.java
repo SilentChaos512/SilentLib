@@ -110,7 +110,7 @@ public final class RecipeJsonHell {
 
             // Warn about items with NBT, but go ahead and serialize what we can
             if (stack.hasTagCompound()) {
-                SilentLib.logHelper.warn("Recipe component contains NBT and cannot be serialized properly: {}", component);
+                SilentLib.LOGGER.warn("Recipe component contains NBT and cannot be serialized properly: {}", component);
             }
 
             return ret;

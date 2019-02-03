@@ -72,7 +72,7 @@ public final class InitialSpawnItems {
             if (!givenItems.getBoolean(nbtKey)) {
                 ItemStack stack = supplier.get();
                 if (!stack.isEmpty()) {
-                    SilentLib.logHelper.debug("Giving player {} spawn item \"{}\" = {}",
+                    SilentLib.LOGGER.debug("Giving player {} spawn item \"{}\" = {}",
                             player.getName(), nbtKey, stack);
                     PlayerHelper.giveItem(player, stack);
                     givenItems.setBoolean(nbtKey, true);

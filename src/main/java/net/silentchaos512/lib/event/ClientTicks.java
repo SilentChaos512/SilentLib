@@ -57,13 +57,13 @@ public final class ClientTicks {
         if (GameUtil.isClient())
             scheduledActions.add(action);
         else
-            SilentLib.logHelper.error("Tried to add client tick action on server side? {}", action);
+            SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
 
         if (scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
             // Queue overflow?
-            SilentLib.logHelper.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
+            SilentLib.LOGGER.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
                     scheduledActions.size(), action);
-            SilentLib.logHelper.catching(new IllegalStateException("ClientTicks queue overflow"));
+            SilentLib.LOGGER.catching(new IllegalStateException("ClientTicks queue overflow"));
             scheduledActions.clear();
         }
     }

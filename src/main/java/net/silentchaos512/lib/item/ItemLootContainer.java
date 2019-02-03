@@ -122,7 +122,7 @@ public class ItemLootContainer extends Item {
         // Generate items from loot table, give to player.
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
         if (lootDrops.isEmpty())
-            SilentLib.logHelper.warn("ItemLootContainer has no drops? {}", heldItem);
+            SilentLib.LOGGER.warn("ItemLootContainer has no drops? {}", heldItem);
         lootDrops.forEach(stack -> PlayerHelper.giveItem(playerMP, stack));
 
         // Play item pickup sound...

@@ -22,6 +22,7 @@ import lombok.Setter;
 import net.silentchaos512.lib.base.IModBase;
 import org.apache.logging.log4j.Logger;
 
+@Deprecated
 public class DebugLog {
     //region Constants
 

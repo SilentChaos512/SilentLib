@@ -81,7 +81,7 @@ public abstract class AbstractMatchList<T> implements IMatchList<T> {
     protected static boolean keyMatches(String pattern, String key) {
         if (pattern.endsWith("*")) {
             String regex = WILDCARD_PATTERN.matcher(pattern).replaceAll(Matcher.quoteReplacement(".*"));
-            SilentLib.debug.log("'{}' matches '{}' = {}", key, pattern, key.matches("(?i)" + regex));
+            SilentLib.LOGGER.debug("'{}' matches '{}' = {}", key, pattern, key.matches("(?i)" + regex));
             return key.matches("(?i)" + regex);
         }
         return pattern.equalsIgnoreCase(key);

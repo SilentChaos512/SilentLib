@@ -82,6 +82,8 @@ import net.silentchaos512.lib.item.ICustomEnchantColor;
 import net.silentchaos512.lib.item.ItemBlockMetaSubtypes;
 import net.silentchaos512.lib.util.GameUtil;
 import net.silentchaos512.lib.util.LogHelper;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,8 +108,9 @@ public class SRegistry {
     private final Map<Class<? extends IForgeRegistryEntry<?>>, Consumer<SRegistry>> registrationHandlers = new HashMap<>();
 
     private Object mod;
-    @Nullable
+    @Deprecated
     private final LogHelper logHelper;
+    private final Logger logger;
     private final String modId;
     private final String resourcePrefix;
 
@@ -129,6 +132,7 @@ public class SRegistry {
         this.modId = mod.getModId();
         this.resourcePrefix = this.modId + ":";
         this.logHelper = new LogHelper(mod.getName() + "/SRegistry", 1);
+        this.logger = LogManager.getLogger(mod.getName() + "/SRegistry");
         this.recipes = new RecipeMaker(modId);
         MinecraftForge.EVENT_BUS.register(new EventHandler(this));
     }
@@ -147,6 +151,7 @@ public class SRegistry {
     /**
      * Gets a {@link LogHelper} object to use. If {@link #logHelper} is null, uses Silent Lib's.
      */
+    @Deprecated
     private LogHelper logger() {
         return this.logHelper != null ? this.logHelper : SilentLib.logHelper;
     }
@@ -372,7 +377,7 @@ public class SRegistry {
         if (entry.getRegistryName() == null)
             entry.setRegistryName(name);
         else
-            logger().warn("Registry name for {} has already been set. Was trying to set it to {}.", entry.getRegistryName(), name);
+            logger.warn("Registry name for {} has already been set. Was trying to set it to {}.", entry.getRegistryName(), name);
     }
 
     /**
@@ -381,7 +386,7 @@ public class SRegistry {
      */
     private void validateRegistryName(String name) {
         if (PATTERN_REGISTRY_NAME.matcher(name).matches())
-            logger().warn("Invalid name for object: {}", name);
+            logger.warn("Invalid name for object: {}", name);
     }
 
     // Advancements
@@ -445,7 +450,7 @@ public class SRegistry {
      */
     public void preInit(FMLPreInitializationEvent event) {
         if (this.preInitDone) {
-            logger().warn("preInit called more than once!");
+            logger.warn("preInit called more than once!");
             return;
         }
 
@@ -456,13 +461,13 @@ public class SRegistry {
 
     private void verifyOrFindModObject() {
         if (mod == null) {
-            logger().warn("Mod {} did not manually set its mod object! This is bad and may cause crashes.", modId);
+            logger.warn("Mod {} did not manually set its mod object! This is bad and may cause crashes.", modId);
             ModContainer container = Loader.instance().getIndexedModList().get(modId);
             if (container != null) {
                 this.mod = container.getMod();
-                logger().warn("Automatically acquired mod object for {}", modId);
+                logger.warn("Automatically acquired mod object for {}", modId);
             } else {
-                logger().warn("Could not find mod object. The mod ID is likely incorrect.");
+                logger.warn("Could not find mod object. The mod ID is likely incorrect.");
             }
         }
     }
@@ -472,7 +477,7 @@ public class SRegistry {
      */
     public void init(FMLInitializationEvent event) {
         if (this.initDone) {
-            logger().warn("init called more than once!");
+            logger.warn("init called more than once!");
             return;
         }
         this.phasedInitializers.forEach(i -> i.init(this, event));
@@ -484,7 +489,7 @@ public class SRegistry {
      */
     public void postInit(FMLPostInitializationEvent event) {
         if (this.postInitDone) {
-            logger().warn("postInit called more than once!");
+            logger.warn("postInit called more than once!");
             return;
         }
 
@@ -494,7 +499,7 @@ public class SRegistry {
                     .map(ResourceLocation::getNamespace)
                     .filter(s -> s.equals(modId))
                     .count();
-            logger().warn("Mod '{}' is still registering recipes with RecipeMaker ({} recipes, out of {} total)",
+            logger.warn("Mod '{}' is still registering recipes with RecipeMaker ({} recipes, out of {} total)",
                     modId, oldRecipeRegisterCount, totalRecipes);
         }
 

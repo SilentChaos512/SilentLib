@@ -52,7 +52,7 @@ public class PageLinkButton extends GuidePage {
                 try {
                     Desktop.getDesktop().browse(new URI(this.link));
                 } catch (Exception e) {
-                    SilentLib.logHelper.warn("Couldn't open website from Link Button page!");
+                    SilentLib.LOGGER.warn("Couldn't open website from Link Button page!");
                     e.printStackTrace();
                 }
             }

@@ -45,7 +45,7 @@ public final class ServerTicks {
         scheduledActions.add(action);
 
         if (scheduledActions.size() > QUEUE_OVERFLOW_LIMIT)
-            SilentLib.logHelper.warn("Too many server tick actions queued! Currently at {} items.", scheduledActions.size());
+            SilentLib.LOGGER.warn("Too many server tick actions queued! Currently at {} items.", scheduledActions.size());
     }
 
     @SubscribeEvent

@@ -58,7 +58,7 @@ public final class SilentLibCommonEvents {
             if (!guideData.getBoolean(name.toString())) {
                 guideData.setBoolean(name.toString(), true);
                 PlayerHelper.giveItem(player, new ItemStack(item));
-                SilentLib.logHelper.info("Player has been given guide book {}", name);
+                SilentLib.LOGGER.info("Player has been given guide book {}", name);
             }
 
             item = ItemGuideBookSL.getBookById(++id);

@@ -116,6 +116,7 @@ public class PageCrafting extends GuidePage {
         }
     }
 
+    @SuppressWarnings("deprecation")
     private void setupRecipe(GuiGuideBase gui, IRecipe recipe, int startX, int startY) {
         NonNullList<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
         int width = 3;
@@ -143,7 +144,7 @@ public class PageCrafting extends GuidePage {
                 width = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shaped, 4);
                 height = ReflectionHelper.getPrivateValue(ShapedOreRecipe.class, shaped, 5);
             } catch (Exception e) {
-                SilentLib.logHelper.warn("Something went wrong trying to get the Crafting Recipe in the booklet to display!");
+                SilentLib.LOGGER.warn("Something went wrong trying to get the Crafting Recipe in the booklet to display!");
                 e.printStackTrace();
             }
             for (int i = 0; i < shaped.getIngredients().size(); i++) {
