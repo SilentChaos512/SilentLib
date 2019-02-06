@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 Silent Lib's changelog is not updated very frequently and most changes are not important for end-users.
 Only recent changes use the new format, the old format has been left alone for previous versions.
 
+## [3.0.12] - 2019-02-05
+Backports some changes to Color class from 1.13, which allows for more intelligent parsing of color codes.
+
 ## [3.0.11] - 2019-02-03
 Just pushing an update to make sure code is synced up with another source. You can continue to use 3.0.9 or 3.0.10 without issues.
 
