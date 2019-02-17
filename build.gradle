@@ -129,6 +129,11 @@ repositories {
     }
 }
 
+configurations {
+    // Dependencies to pack into the jar
+    extraLibs
+}
+
 dependencies {
     // lombok
     if (project.hasProperty('lombok_version')) {
@@ -141,6 +146,16 @@ dependencies {
         deobfProvided "mezz.jei:jei_${project.mc_version}:${project.jei_version}:api"
         //runtime "mezz.jei:jei_${project.mc_version}:${project.jei_version}"
     }
+    
+    extraLibs ("net.silentchaos512:silent-utils:1.+") {
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'log4j-core'
+        exclude module: 'log4j-api'
+        exclude module: 'jsr305'
+    }
+
+    configurations.implementation.extendsFrom(configurations.extraLibs)
 }
 
 processResources {
@@ -161,6 +176,9 @@ processResources {
 
 jar {
     appendix = "${project.mc_version}"
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 task apiJar(type: Jar) {
@@ -289,7 +307,7 @@ bintray {
 
     pkg {
         repo = 'silent-lib'
-        name = 'silent-lib'
+        name = 'silent-lib-1.12.2'
         licenses = ["LGPL-3.0"]
         vcsUrl = 'https://github.com/SilentChaos512/SilentLib.git'
 
