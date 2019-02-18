@@ -64,7 +64,7 @@ public final class DataDump {
 
     public static void dumpEnchantments() {
         SilentLib.LOGGER.info(SEPARATOR);
-        for (Enchantment ench : Enchantment.REGISTRY) {
+        for (Enchantment ench : ForgeRegistries.ENCHANTMENTS) {
             try {
                 ResourceLocation name = Objects.requireNonNull(ench.getRegistryName(), REGISTRY_NAME_IS_NULL);
                 String translatedName = ench.func_200305_d(1).getFormattedText().replaceFirst(" I$", "");
@@ -122,7 +122,7 @@ public final class DataDump {
 
     public static void dumpPotionEffects() {
         SilentLib.LOGGER.info(SEPARATOR);
-        for (Potion pot : Potion.REGISTRY) {
+        for (Potion pot : ForgeRegistries.POTIONS) {
             try {
                 ResourceLocation name = Objects.requireNonNull(pot.getRegistryName(), REGISTRY_NAME_IS_NULL);
                 SilentLib.LOGGER.info(String.format("%-30s %-40s", pot.getName(), name));

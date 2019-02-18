@@ -141,7 +141,7 @@ public interface IEnumItems<E extends Enum<E>, I extends Item> extends IStringSe
                 safeSetRegistryName(block, name);
                 ForgeRegistries.BLOCKS.register(block);
 
-                Item item = new ItemBlock(block, new Item.Builder());
+                Item item = new ItemBlock(block, new Item.Properties());
                 safeSetRegistryName(item, name);
                 ForgeRegistries.ITEMS.register(item);
             }

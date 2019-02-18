@@ -65,7 +65,7 @@ public final class InitialSpawnItems {
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        EntityPlayer player = event.player;
+        EntityPlayer player = event.getPlayer();
         NBTTagCompound givenItems = PlayerUtils.getPersistedDataSubcompound(player, NBT_KEY);
 
         spawnItems.forEach((key, supplier) -> {

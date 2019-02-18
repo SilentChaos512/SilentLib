@@ -53,7 +53,7 @@ public abstract class WorldGeneratorSL implements IWorldGenerator {
   public void generate(Random random, int chunkX, int chunkZ, World world,
       IChunkGenerator chunkGenerator, IChunkProvider chunkProvider) {
 
-    final int dim = world.getDimension().getId();
+    final int dim = world.getDimension().getType().getId();
     final int posX = chunkX * 16;
     final int posZ = chunkZ * 16;
 

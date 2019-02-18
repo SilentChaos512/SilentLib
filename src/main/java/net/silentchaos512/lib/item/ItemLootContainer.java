@@ -58,10 +58,10 @@ public class ItemLootContainer extends Item {
     private final ResourceLocation defaultLootTable;
 
     public ItemLootContainer(ResourceLocation defaultLootTable) {
-        this(defaultLootTable, new Item.Builder());
+        this(defaultLootTable, new Item.Properties());
     }
 
-    public ItemLootContainer(ResourceLocation defaultLootTable, Item.Builder properties) {
+    public ItemLootContainer(ResourceLocation defaultLootTable, Item.Properties properties) {
         super(properties);
         this.defaultLootTable = defaultLootTable;
     }
@@ -126,7 +126,7 @@ public class ItemLootContainer extends Item {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        tooltip.add(new TextComponentTranslation("misc.silentlib.lootContainerTable", this.getLootTable(stack))
+        tooltip.add(new TextComponentTranslation("item.silentlib.lootContainerTable", this.getLootTable(stack))
                 .applyTextStyle(TextFormatting.DARK_GRAY));
     }
 

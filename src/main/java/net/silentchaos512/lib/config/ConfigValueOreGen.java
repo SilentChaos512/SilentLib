@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+@Deprecated
 public final class ConfigValueOreGen {
     private DoubleValue veinCount;
     private DoubleValue veinSize;

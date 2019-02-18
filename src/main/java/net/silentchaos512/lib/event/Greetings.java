@@ -56,7 +56,8 @@ public final class Greetings {
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        if (event.player == null) return;
-        messages.forEach(msg -> msg.apply(event.player).ifPresent(event.player::sendMessage));
+        EntityPlayer player = event.getPlayer();
+        if (player == null) return;
+        messages.forEach(msg -> msg.apply(player).ifPresent(player::sendMessage));
     }
 }

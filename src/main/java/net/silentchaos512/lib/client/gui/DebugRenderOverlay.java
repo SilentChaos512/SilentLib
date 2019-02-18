@@ -25,7 +25,8 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.silentchaos512.lib.util.Color;
+import net.silentchaos512.utils.Anchor;
+import net.silentchaos512.utils.Color;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
@@ -40,9 +41,14 @@ public abstract class DebugRenderOverlay extends Gui {
 
     private static final int DEFAULT_UPDATE_FREQUENCY = 10;
     private static final int DEFAULT_SPLIT_WIDTH = 100;
+    private static final int LINE_HEIGHT = 10;
 
     private List<String> debugText = new ArrayList<>();
+    private int textWidth;
+    private int textHeight;
+    @Deprecated
     private int startX = 3;
+    @Deprecated
     private int startY = 3;
     private int ticksPassed = 0;
 
@@ -51,6 +57,7 @@ public abstract class DebugRenderOverlay extends Gui {
         MinecraftForge.EVENT_BUS.addListener(this::clientTick);
     }
 
+    @Deprecated
     protected DebugRenderOverlay(int startX, int startY) {
         this();
         this.startX = startX;
@@ -70,6 +77,14 @@ public abstract class DebugRenderOverlay extends Gui {
      * @return The text scale
      */
     public abstract float getTextScale();
+
+    public Anchor getAnchorPoint() {
+        return Anchor.TOP_LEFT;
+    }
+
+    public int getMarginSize() {
+        return 3;
+    }
 
     /**
      * The frequency (in ticks) that the debug text should be updated. Higher numbers mean less frequent.
@@ -102,10 +117,12 @@ public abstract class DebugRenderOverlay extends Gui {
         }
     }
 
+    @Deprecated
     public int getStartX() {
         return startX;
     }
 
+    @Deprecated
     public int getStartY() {
         return startY;
     }
@@ -124,20 +141,36 @@ public abstract class DebugRenderOverlay extends Gui {
         GlStateManager.pushMatrix();
         GlStateManager.scalef(scale, scale, 1);
 
-        int x = getStartX();
-        int y = getStartY();
+        // Divide by text scale to correct position. But it's still a bit off?
+        int x = (int) (getAnchorPoint().getX(mc.mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
+        int y = (int) (getAnchorPoint().getY(mc.mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
             drawLine(font, line, x, y, Color.VALUE_WHITE);
-            y += 10;
+            y += LINE_HEIGHT;
         }
 
         GlStateManager.popMatrix();
     }
 
     public void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START)
-            return;
-        if (getUpdateFrequency() == 0 || (++ticksPassed) % getUpdateFrequency() == 0)
+        if (event.phase == TickEvent.Phase.START) return;
+
+        if (getUpdateFrequency() == 0 || (++ticksPassed) % getUpdateFrequency() == 0) {
             debugText = getDebugText();
+
+            // Recalculate width and height
+            FontRenderer font = Minecraft.getInstance().fontRenderer;
+            textWidth = 0;
+            textHeight = LINE_HEIGHT * debugText.size();
+            for (String line : debugText) {
+                String[] array = line.split(SPLITTER);
+                if (array.length == 2) {
+                    int width = getSplitWidth() + font.getStringWidth(array[1]);
+                    textWidth = Math.max(textWidth, width);
+                } else {
+                    textWidth = Math.max(textWidth, font.getStringWidth(line));
+                }
+            }
+        }
     }
 }

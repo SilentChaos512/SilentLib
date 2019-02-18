@@ -30,7 +30,11 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+/**
+ * @deprecated Use silent-utils version
+ */
 @SuppressWarnings({"unused", "MagicNumber", "SpellCheckingInspection"})
+@Deprecated
 public class Color {
     private static final Map<String, Color> NAMED_MAP = new HashMap<>();
     private static final Pattern PATTERN_LEADING_JUNK = Pattern.compile("(#|0x)", Pattern.CASE_INSENSITIVE);
@@ -38,6 +42,7 @@ public class Color {
 
     public static final int VALUE_WHITE = 0xFFFFFF;
 
+    //region CSS Colors
     public static final Color ALICEBLUE = named("AliceBlue", 0xF0F8FF);
     public static final Color ANTIQUEWHITE = named("AntiqueWhite", 0xFAEBD7);
     public static final Color AQUA = named("Aqua", 0x00FFFF);
@@ -186,6 +191,7 @@ public class Color {
     public static final Color WHITESMOKE = named("WhiteSmoke", 0xF5F5F5);
     public static final Color YELLOW = named("Yellow", 0xFFFF00);
     public static final Color YELLOWGREEN = named("YellowGreen", 0x9ACD32);
+    //endregion
 
     private final int color;
     private final int red;
@@ -270,6 +276,7 @@ public class Color {
     /**
      * Format the color as it would appear in a config file.
      *
+     * @param color The color
      * @return A string in the form "#XXXXXX" or "#XXXXXXXX", where 'X' is a hex digit.
      */
     public static String format(int color) {
@@ -298,6 +305,29 @@ public class Color {
         return new Color(color);
     }
 
+    /**
+     * Attempt to parse a color, returning the default if it is not valid.
+     *
+     * @param str          The string to parse
+     * @param defaultValue The fallback value
+     * @return A color parsed from str, or from defaultValue if str is invalid
+     */
+    public static Color tryParse(String str, int defaultValue) {
+        if (!validate(str)) return new Color(defaultValue);
+        return parse(str);
+    }
+
+    /**
+     * Read a color from JSON. The property must be a string. If the JsonObject does not contain a
+     * property with the given name, a Color is created from defaultValue. If the valid from JSON is
+     * invalid, an exception will be thrown.
+     *
+     * @param json         The JSON object
+     * @param propertyName The property to read from json
+     * @param defaultValue A default value to use if json does not have the given property
+     * @return A color parsed from the value read from json
+     * @throws NumberFormatException If the value from json cannot be parsed
+     */
     public static Color from(JsonObject json, String propertyName, int defaultValue) {
         String defaultStr = Integer.toHexString(defaultValue);
         return Color.parse(JsonUtils.getString(json, propertyName, defaultStr));
