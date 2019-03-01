@@ -1,3 +1,4 @@
 {
-  "item.silentlib.lootContainerTable": "Loot Table: %s"
+  "item.silentlib.lootContainer.itemReceived": "Received: %dx %s",
+  "item.silentlib.lootContainer.table": "Loot Table: %s"
 }

@@ -26,11 +26,11 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
@@ -54,16 +54,27 @@ import java.util.List;
 public class ItemLootContainer extends Item {
     private static final String NBT_ROOT = SilentLib.MOD_ID + ".LootContainer";
     private static final String NBT_LOOT_TABLE = "LootTable";
+    private static final boolean DEFAULT_LIST_ITEMS_RECEIVED = true;
 
     private final ResourceLocation defaultLootTable;
+    private final boolean listItemsReceived;
 
     public ItemLootContainer(ResourceLocation defaultLootTable) {
-        this(defaultLootTable, new Item.Properties());
+        this(defaultLootTable, DEFAULT_LIST_ITEMS_RECEIVED, new Item.Properties());
+    }
+
+    public ItemLootContainer(ResourceLocation defaultLootTable, boolean listItemsReceived) {
+        this(defaultLootTable, listItemsReceived, new Item.Properties());
     }
 
     public ItemLootContainer(ResourceLocation defaultLootTable, Item.Properties properties) {
+        this(defaultLootTable, DEFAULT_LIST_ITEMS_RECEIVED, properties);
+    }
+
+    public ItemLootContainer(ResourceLocation defaultLootTable, boolean listItemsReceived, Item.Properties properties) {
         super(properties);
         this.defaultLootTable = defaultLootTable;
+        this.listItemsReceived = listItemsReceived;
     }
 
     /**
@@ -83,8 +94,41 @@ public class ItemLootContainer extends Item {
      */
     public ItemStack getStack(ResourceLocation lootTable) {
         ItemStack result = new ItemStack(this);
-        result.getOrCreateChildTag(NBT_ROOT).setString(NBT_LOOT_TABLE, lootTable.toString());
+        getData(result).setString(NBT_LOOT_TABLE, lootTable.toString());
         return result;
+    }
+
+    protected static NBTTagCompound getData(ItemStack stack) {
+        return stack.getOrCreateChildTag(NBT_ROOT);
+    }
+
+    /**
+     * Get the loot table the item will use. If a loot table if specified in NBT and it is valid,
+     * that table is returned. Otherwise, this returns {@link #defaultLootTable}.
+     *
+     * @param stack The item
+     * @return The loot table which will be used
+     */
+    protected ResourceLocation getLootTable(ItemStack stack) {
+        NBTTagCompound tags = getData(stack);
+        if (tags.hasKey(NBT_LOOT_TABLE)) {
+            String str = tags.getString(NBT_LOOT_TABLE);
+            ResourceLocation table = ResourceLocation.makeResourceLocation(str);
+            if (table != null) {
+                return table;
+            }
+        }
+        return this.defaultLootTable;
+    }
+
+    /**
+     * Set the loot table for the given item stack.
+     *
+     * @param stack     The item
+     * @param lootTable The loot table
+     */
+    public static void setLootTable(ItemStack stack, ResourceLocation lootTable) {
+        getData(stack).setString(NBT_LOOT_TABLE, lootTable.toString());
     }
 
     /**
@@ -110,24 +154,14 @@ public class ItemLootContainer extends Item {
                 .generateLootForPools(player.getRNG(), lootContext));
     }
 
-    private ResourceLocation getLootTable(ItemStack stack) {
-        NBTTagCompound tags = stack.getOrCreateChildTag(NBT_ROOT);
-        if (tags.hasKey(NBT_LOOT_TABLE)) {
-            String str = tags.getString(NBT_LOOT_TABLE);
-            ResourceLocation table = ResourceLocation.makeResourceLocation(str);
-            if (table != null) {
-                return table;
-            }
-        }
-        return this.defaultLootTable;
-    }
-
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        tooltip.add(new TextComponentTranslation("item.silentlib.lootContainerTable", this.getLootTable(stack))
-                .applyTextStyle(TextFormatting.DARK_GRAY));
+        ITextComponent textTableName = new TextComponentString(this.getLootTable(stack).toString())
+                .applyTextStyle(TextFormatting.WHITE);
+        tooltip.add(new TextComponentTranslation("item.silentlib.lootContainer.table", textTableName)
+                .applyTextStyle(TextFormatting.BLUE));
     }
 
     @Override
@@ -141,7 +175,12 @@ public class ItemLootContainer extends Item {
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
         if (lootDrops.isEmpty())
             SilentLib.LOGGER.warn("ItemLootContainer has no drops? {}", heldItem);
-        lootDrops.forEach(stack -> PlayerUtils.giveItem(playerMP, stack));
+        lootDrops.forEach(stack -> {
+            PlayerUtils.giveItem(playerMP, stack);
+            if (this.listItemsReceived) {
+                listItemReceivedInChat(playerMP, stack);
+            }
+        });
 
         // Play item pickup sound...
         playerMP.world.playSound(null, playerMP.posX, playerMP.posY, playerMP.posZ,
@@ -151,13 +190,12 @@ public class ItemLootContainer extends Item {
         return ActionResult.newResult(EnumActionResult.SUCCESS, heldItem);
     }
 
-    @Override
-    public EnumActionResult onItemUse(ItemUseContext context) {
-        // Don't care if clicked on a block or empty space
-        EntityPlayer player = context.getPlayer();
-        EnumHand hand = player != null ? player.getActiveHand() : EnumHand.MAIN_HAND;
-        this.onItemRightClick(context.getWorld(), player, hand);
-        return EnumActionResult.FAIL;
+    private static void listItemReceivedInChat(EntityPlayerMP playerMP, ItemStack stack) {
+        ITextComponent itemReceivedText = new TextComponentTranslation(
+                "item.silentlib.lootContainer.itemReceived",
+                stack.getCount(),
+                stack.getDisplayName());
+        playerMP.sendMessage(itemReceivedText);
     }
 
     @Override
