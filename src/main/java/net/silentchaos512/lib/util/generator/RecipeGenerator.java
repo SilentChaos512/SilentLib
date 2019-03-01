@@ -47,14 +47,14 @@ public final class RecipeGenerator {
     private static void writeFile(ResourceLocation name, JsonObject json) {
         String fileName = name.getPath();
         String dirPath = "output/data/" + name.getNamespace() + "/recipes";
-        File directory = new File(dirPath);
+        File output = new File(dirPath, fileName + ".json");
+        File directory = output.getParentFile();
 
         if (!directory.exists() && !directory.mkdirs()) {
-            SilentLib.LOGGER.error("Could not create directory: {}", dirPath);
+            SilentLib.LOGGER.error("Could not create directory: {}", output.getParent());
             return;
         }
 
-        File output = new File(directory, fileName + ".json");
 
         try (FileWriter writer = new FileWriter(output)) {
             GSON.toJson(json, writer);

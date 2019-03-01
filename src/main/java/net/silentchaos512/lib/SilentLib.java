@@ -10,12 +10,12 @@ import org.apache.logging.log4j.Logger;
 public final class SilentLib {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "4.0.0";
+    public static final String VERSION = "4.0.1";
     public static final int BUILD_NUM = 0;
 
     public static NetworkHandlerSL network;
 
-    public static final Logger LOGGER = LogManager.getLogger();
+    public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
     private static SilentLib INSTANCE;
     private static SideProxy PROXY;

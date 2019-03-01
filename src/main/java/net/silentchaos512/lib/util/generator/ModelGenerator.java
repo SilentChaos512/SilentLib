@@ -42,16 +42,13 @@ public final class ModelGenerator {
     private static void writeFile(JsonObject json, String subdir, ResourceLocation name) {
         String fileName = name.getPath();
         final String dirPath = "output/assets/" + name.getNamespace() + "/" + subdir;
-        final File directory = new File(dirPath);
+        File output = new File(dirPath, fileName + ".json");
+        File directory = output.getParentFile();
 
-        if (!directory.exists()) {
-            if (!directory.mkdirs()) {
-                SilentLib.LOGGER.error("Could not create directory: {}", dirPath);
-                return;
-            }
+        if (!directory.exists() && !directory.mkdirs()) {
+            SilentLib.LOGGER.error("Could not create directory: {}", output.getParent());
+            return;
         }
-
-        final File output = new File(directory, fileName + ".json");
 
         try (FileWriter writer = new FileWriter(output)) {
             GSON.toJson(json, writer);
