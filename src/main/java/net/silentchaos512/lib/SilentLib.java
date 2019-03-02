@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 public final class SilentLib {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "4.0.2";
+    public static final String VERSION = "4.0.3";
     public static final int BUILD_NUM = 0;
 
     public static NetworkHandlerSL network;

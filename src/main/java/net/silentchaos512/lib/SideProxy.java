@@ -2,6 +2,7 @@ package net.silentchaos512.lib;
 
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.util.generator.TagGenerator;
 
@@ -11,7 +12,7 @@ class SideProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcEnqueue);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
 
-//        LibTriggers.init();
+        LibTriggers.init();
         ILeftClickItem.EventHandler.init();
     }
 

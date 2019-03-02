@@ -196,7 +196,7 @@ bintray {
 
     pkg {
         repo = 'silent-lib'
-        name = 'silent-lib'
+        name = 'silent-lib-1.13.2'
         licenses = ["LGPL-3.0"]
         vcsUrl = 'https://github.com/SilentChaos512/SilentLib.git'
 
