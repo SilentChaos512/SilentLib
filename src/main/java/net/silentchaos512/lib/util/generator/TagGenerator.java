@@ -130,8 +130,11 @@ public final class TagGenerator {
     @SuppressWarnings("DeprecatedIsStillUsed")
     @Deprecated
     public static void generateFiles() {
-        BLOCKS.forEach((tag, blocks) -> writeFile(tag, "blocks", blocks));
-        ITEMS.forEach((tag, items) -> writeFile(tag, "items", items));
+        // FIXME: This will block all usages, because isDevBuild is kinda dumb right now
+        if (SilentLib.isDevBuild()) {
+            BLOCKS.forEach((tag, blocks) -> writeFile(tag, "blocks", blocks));
+            ITEMS.forEach((tag, items) -> writeFile(tag, "items", items));
+        }
         // Don't need these anymore, allow it to be garbage collected
         BLOCKS.clear();
         ITEMS.clear();
