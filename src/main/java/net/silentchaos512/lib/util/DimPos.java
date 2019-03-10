@@ -18,13 +18,17 @@
 
 package net.silentchaos512.lib.util;
 
+import lombok.Getter;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 
 public final class DimPos {
     public static final DimPos ZERO = new DimPos(0, 0, 0, 0);
 
-    private final int posX, posY, posZ, dimension;
+    @Getter private final int posX;
+    @Getter private final int posY;
+    @Getter private final int posZ;
+    @Getter private final int dimension;
 
     public static DimPos of(BlockPos pos, int dimension) {
         return new DimPos(pos, dimension);
