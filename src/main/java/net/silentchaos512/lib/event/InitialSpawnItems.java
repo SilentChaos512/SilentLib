@@ -74,7 +74,7 @@ public final class InitialSpawnItems {
                 ItemStack stack = supplier.get();
                 if (!stack.isEmpty()) {
                     SilentLib.LOGGER.debug("Giving player {} spawn item \"{}\" = {}",
-                            player.getName(), nbtKey, stack);
+                            player.getScoreboardName(), nbtKey, stack);
                     PlayerUtils.giveItem(player, stack);
                     givenItems.setBoolean(nbtKey, true);
                 }

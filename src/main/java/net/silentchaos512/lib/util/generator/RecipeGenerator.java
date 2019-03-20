@@ -168,7 +168,7 @@ public final class RecipeGenerator {
 
     //region Ingredient serializers
 
-    private static JsonObject serialize(Object obj) {
+    public static JsonObject serialize(Object obj) {
         Function<Object, JsonObject> function = null;
         for (Class<?> clazz : COMPONENT_SERIALIZERS.keySet()) {
             if (clazz.isInstance(obj)) {
@@ -183,7 +183,7 @@ public final class RecipeGenerator {
         return function.apply(obj);
     }
 
-    private static JsonObject serializeItemStack(Object o) {
+    public static JsonObject serializeItemStack(Object o) {
         final ItemStack stack = (ItemStack) o;
         final JsonObject json = new JsonObject();
         json.addProperty("item", Objects.requireNonNull(stack.getItem().getRegistryName()).toString());
@@ -199,7 +199,7 @@ public final class RecipeGenerator {
         return json;
     }
 
-    private static JsonObject serializeTag(Object o) {
+    public static JsonObject serializeTag(Object o) {
         String tag = o.toString();
         JsonObject json = new JsonObject();
         json.addProperty("tag", tag);

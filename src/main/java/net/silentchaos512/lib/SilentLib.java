@@ -14,7 +14,7 @@ import java.util.Optional;
 public final class SilentLib {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "4.0.5";
+    public static final String VERSION = "4.0.6";
     public static final int BUILD_NUM = 0;
 
     public static NetworkHandlerSL network;
