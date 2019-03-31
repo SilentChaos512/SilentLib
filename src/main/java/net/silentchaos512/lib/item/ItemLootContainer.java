@@ -94,7 +94,7 @@ public class ItemLootContainer extends Item {
      */
     public ItemStack getStack(ResourceLocation lootTable) {
         ItemStack result = new ItemStack(this);
-        getData(result).setString(NBT_LOOT_TABLE, lootTable.toString());
+        getData(result).putString(NBT_LOOT_TABLE, lootTable.toString());
         return result;
     }
 
@@ -111,9 +111,9 @@ public class ItemLootContainer extends Item {
      */
     protected ResourceLocation getLootTable(ItemStack stack) {
         NBTTagCompound tags = getData(stack);
-        if (tags.hasKey(NBT_LOOT_TABLE)) {
+        if (tags.contains(NBT_LOOT_TABLE)) {
             String str = tags.getString(NBT_LOOT_TABLE);
-            ResourceLocation table = ResourceLocation.makeResourceLocation(str);
+            ResourceLocation table = ResourceLocation.tryCreate(str);
             if (table != null) {
                 return table;
             }
@@ -128,7 +128,7 @@ public class ItemLootContainer extends Item {
      * @param lootTable The loot table
      */
     public static void setLootTable(ItemStack stack, ResourceLocation lootTable) {
-        getData(stack).setString(NBT_LOOT_TABLE, lootTable.toString());
+        getData(stack).putString(NBT_LOOT_TABLE, lootTable.toString());
     }
 
     /**

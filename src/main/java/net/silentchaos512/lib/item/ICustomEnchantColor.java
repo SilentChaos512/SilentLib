@@ -29,8 +29,7 @@ import java.awt.*;
  * Implement on items to override the rendering of the enchanted effect. In addition to allowing the
  * control of the effect color, this fixes the "stacking effect" bug that has existed for
  * multi-layer models since Minecraft 1.8, if the item model extends {@link
- * net.silentchaos512.lib.client.model.LayeredBakedModel}. The mod's {@link
- * net.silentchaos512.lib.registry.SRegistry} will set the TEISR automatically.
+ * net.silentchaos512.lib.client.model.LayeredBakedModel}.
  * <p>Also see {@link net.silentchaos512.lib.client.render.TEISRCustomEnchantedEffect}</p>
  *
  * @author SilentChaos512
@@ -53,16 +52,16 @@ public interface ICustomEnchantColor {
         NBTTagCompound tagCompound = stack.getTag();
 
         if (tagCompound != null) {
-            if (tagCompound.hasKey(NBT_LIB_EFFECT_COLOR)) {
+            if (tagCompound.contains(NBT_LIB_EFFECT_COLOR)) {
                 // Tag for possible future use
                 return tagCompound.getInt(NBT_LIB_EFFECT_COLOR);
-            } else if (tagCompound.hasKey(NBT_QUARK_RUNE_ATTACHED) && tagCompound.hasKey(NBT_QUARK_RUNE_COLOR)) {
+            } else if (tagCompound.contains(NBT_QUARK_RUNE_ATTACHED) && tagCompound.contains(NBT_QUARK_RUNE_COLOR)) {
                 // Quark runes - stored int is either dye metadata or 16 for rainbow
                 int value = tagCompound.getInt(NBT_QUARK_RUNE_COLOR);
                 if (value > 15)
                     return Color.HSBtoRGB(ClientTicks.totalTicks() * 0.005f, 1f, 0.6f);
                 else if (value >= 0)
-                    return EnumDyeColor.byId(value).func_196060_f();
+                    return EnumDyeColor.byId(value).func_196057_c();
             }
         }
 

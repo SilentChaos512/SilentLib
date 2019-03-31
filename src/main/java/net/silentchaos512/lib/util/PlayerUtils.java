@@ -70,14 +70,14 @@ public final class PlayerUtils {
      * @return The tag compound, creating it if it does not exist.
      */
     public static NBTTagCompound getPersistedDataSubcompound(EntityPlayer player, String subcompoundKey) {
-        NBTTagCompound forgeData = player.serializeNBT();
-        if (!forgeData.hasKey(EntityPlayer.PERSISTED_NBT_TAG)) {
-            forgeData.setTag(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+        NBTTagCompound forgeData = player.getEntityData();
+        if (!forgeData.contains(EntityPlayer.PERSISTED_NBT_TAG)) {
+            forgeData.put(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
         }
 
         NBTTagCompound persistedData = forgeData.getCompound(EntityPlayer.PERSISTED_NBT_TAG);
-        if (!persistedData.hasKey(subcompoundKey)) {
-            persistedData.setTag(subcompoundKey, new NBTTagCompound());
+        if (!persistedData.contains(subcompoundKey)) {
+            persistedData.put(subcompoundKey, new NBTTagCompound());
         }
 
         return persistedData.getCompound(subcompoundKey);

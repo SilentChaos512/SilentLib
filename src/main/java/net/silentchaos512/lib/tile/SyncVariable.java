@@ -168,26 +168,26 @@ public @interface SyncVariable {
 
                                 //noinspection ChainOfInstanceofChecks
                                 if (field.getType() == int.class)
-                                    tags.setInt(name, field.getInt(obj));
+                                    tags.putInt(name, field.getInt(obj));
                                 else if (field.getType() == float.class)
-                                    tags.setFloat(name, field.getFloat(obj));
+                                    tags.putFloat(name, field.getFloat(obj));
                                 else if (field.getType() == String.class)
-                                    tags.setString(name, (String) field.get(obj));
+                                    tags.putString(name, (String) field.get(obj));
                                 else if (field.getType() == boolean.class)
-                                    tags.setBoolean(name, field.getBoolean(obj));
+                                    tags.putBoolean(name, field.getBoolean(obj));
                                 else if (field.getType() == double.class)
-                                    tags.setDouble(name, field.getDouble(obj));
+                                    tags.putDouble(name, field.getDouble(obj));
                                 else if (field.getType() == long.class)
-                                    tags.setLong(name, field.getLong(obj));
+                                    tags.putLong(name, field.getLong(obj));
                                 else if (field.getType() == short.class)
-                                    tags.setShort(name, field.getShort(obj));
+                                    tags.putShort(name, field.getShort(obj));
                                 else if (field.getType() == byte.class)
-                                    tags.setByte(name, field.getByte(obj));
+                                    tags.putByte(name, field.getByte(obj));
                                 else if (SERIALIZERS.containsKey(field.getType())) {
                                     NBTTagCompound compound = new NBTTagCompound();
                                     NBTSerializer serializer = SERIALIZERS.get(field.getType());
                                     serializer.write(compound, field.get(obj));
-                                    tags.setTag(name, compound);
+                                    tags.put(name, compound);
                                 } else
                                     throw new UnsupportedDataTypeException(
                                             "Don't know how to write type " + field.getType() + " to NBT!");

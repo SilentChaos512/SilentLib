@@ -67,7 +67,7 @@ public final class DataDump {
         for (Enchantment ench : ForgeRegistries.ENCHANTMENTS) {
             try {
                 ResourceLocation name = Objects.requireNonNull(ench.getRegistryName(), REGISTRY_NAME_IS_NULL);
-                String translatedName = ench.func_200305_d(1).getFormattedText().replaceFirst(" I$", "");
+                String translatedName = ench.getDisplayName(1).getFormattedText().replaceFirst(" I$", "");
                 String type = ench.type == null ? "null" : ench.type.name();
                 SilentLib.LOGGER.info(String.format("%-30s %-40s type=%-10s", translatedName, name, type));
             } catch (Exception ex) {

@@ -69,10 +69,10 @@ public class FurnaceFuelBurner implements IFuelBurner {
 
     private static void writeToNBT(NBTTagCompound tags, FurnaceFuelBurner burner) {
         if (burner.burnCondition != BurnCondition.DEFAULT) {
-            tags.setString("Condition", burner.burnCondition.name());
+            tags.putString("Condition", burner.burnCondition.name());
         }
-        tags.setInt("Time", burner.timeRemaining);
-        tags.setInt("MaxTime", burner.currentItemMaxTime);
+        tags.putInt("Time", burner.timeRemaining);
+        tags.putInt("MaxTime", burner.currentItemMaxTime);
     }
 
     static {

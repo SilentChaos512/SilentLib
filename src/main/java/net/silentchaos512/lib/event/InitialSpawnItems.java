@@ -76,7 +76,7 @@ public final class InitialSpawnItems {
                     SilentLib.LOGGER.debug("Giving player {} spawn item \"{}\" = {}",
                             player.getScoreboardName(), nbtKey, stack);
                     PlayerUtils.giveItem(player, stack);
-                    givenItems.setBoolean(nbtKey, true);
+                    givenItems.putBoolean(nbtKey, true);
                 }
             }
         });

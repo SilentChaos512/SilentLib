@@ -73,10 +73,10 @@ public final class DimPos {
     }
 
     public void write(NBTTagCompound tags) {
-        tags.setInt("posX", posX);
-        tags.setInt("posY", posY);
-        tags.setInt("posZ", posZ);
-        tags.setInt("dim", dimension);
+        tags.putInt("posX", posX);
+        tags.putInt("posY", posY);
+        tags.putInt("posZ", posZ);
+        tags.putInt("dim", dimension);
     }
 
     public BlockPos getPos() {
