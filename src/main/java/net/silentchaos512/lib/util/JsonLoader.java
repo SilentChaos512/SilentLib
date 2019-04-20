@@ -27,6 +27,7 @@ import net.minecraft.util.ResourceLocation;
 import javax.annotation.Nullable;
 import java.io.*;
 
+@Deprecated
 public class JsonLoader {
     private static final Gson GSON = (new GsonBuilder()).create();
 

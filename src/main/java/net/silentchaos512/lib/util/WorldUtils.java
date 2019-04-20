@@ -1,4 +1,4 @@
-package net.silentchaos512.lib.world;
+package net.silentchaos512.lib.util;
 
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.math.BlockPos;
@@ -21,7 +21,7 @@ public final class WorldUtils {
      * @param getter The method to get desired objects. Return empty optionals if the object at the
      *               given position is not wanted.
      * @param <T>    The type of object being collected
-     * @return A map of BlockPos -> T produced by getter
+     * @return A map of BlockPos to T produced by getter
      */
     public static <T> Map<BlockPos, T> getBlocksInArea(World world, BlockPos pos, int range, BiFunction<World, BlockPos, Optional<T>> getter) {
         int xMin = pos.getX() - range;
@@ -42,7 +42,7 @@ public final class WorldUtils {
      * @param getter The method to get desired objects. Return empty optionals if the object at the
      *               given position is not wanted.
      * @param <T>    The type of object being collected
-     * @return A map of BlockPos -> T produced by getter
+     * @return A map of BlockPos to T produced by getter
      */
     public static <T> Map<BlockPos, T> getBlocksInSphere(World world, BlockPos pos, int radius, BiFunction<World, BlockPos, Optional<T>> getter) {
         int xMin = pos.getX() - radius;
@@ -72,7 +72,7 @@ public final class WorldUtils {
      * @param getter The method to get desired objects. Return empty optionals if the object at the
      *               given position is not wanted.
      * @param <T>    The type of object being collected
-     * @return A map of BlockPos -> T produced by getter
+     * @return A map of BlockPos to T produced by getter
      */
     @SuppressWarnings("MethodWithTooManyParameters")
     public static <T> Map<BlockPos, T> getBlocks(World world, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, BiFunction<World, BlockPos, Optional<T>> getter) {

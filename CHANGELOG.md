@@ -1,10 +1,8 @@
 # Changelog
 
-Changelog format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-[4.0.8] - 2019-04-19
-- Add WorldUtils
+[4.0.8] - 2019-04-20
+- Updated Night Config for compatibility with Forge 149 (updates silent-utils to 1.0.5)
+- Added WorldUtils
 
 [4.0.7] - 2019-03-31
 - May fix Silent Gear giving blueprint packages on each login

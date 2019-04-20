@@ -26,6 +26,7 @@ import net.minecraftforge.fml.common.IWorldGenerator;
 
 import java.util.Random;
 
+@Deprecated
 public abstract class WorldGeneratorSL implements IWorldGenerator {
 
   public final boolean allowRetrogen;

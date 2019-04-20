@@ -10,16 +10,21 @@ buildscript {
 }
 
 plugins {
-    id 'java'
-    id 'net.ltgt.apt' version '0.10' // for lombok
-    id 'java-library'
+    id 'io.franzbecker.gradle-lombok' version '2.0'
+    id 'maven'
     id 'maven-publish'
     id "com.jfrog.bintray" version "1.8.4"
+    id "com.matthewprenger.cursegradle" version "1.2.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 //Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+
+lombok {
+    version = '1.18.4'
+    sha256 = ""
+}
 
 javadoc {
     failOnError = false
@@ -67,9 +72,6 @@ configurations {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${project.forge_version}"
-
-    compile "org.projectlombok:lombok:1.18.0"
-    apt "org.projectlombok:lombok:1.18.0"
 
     extraLibs("net.silentchaos512:silent-utils:1.+") {
         exclude module: 'guava'

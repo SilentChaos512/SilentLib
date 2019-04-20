@@ -8,8 +8,17 @@ import net.minecraft.util.EnumFacing;
 import javax.annotation.Nullable;
 
 public abstract class TileSidedInventorySL extends TileInventorySL implements ISidedInventory {
+    /**
+     * @param tileEntityTypeIn The TileEntityType
+     * @deprecated Use other constructor
+     */
+    @Deprecated
     public TileSidedInventorySL(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
+    }
+
+    public TileSidedInventorySL(TileEntityType<?> tileEntityType, int inventorySize) {
+        super(tileEntityType, inventorySize);
     }
 
     @Override

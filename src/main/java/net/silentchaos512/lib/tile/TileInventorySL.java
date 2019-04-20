@@ -13,9 +13,19 @@ import net.minecraft.util.NonNullList;
 public abstract class TileInventorySL extends TileEntitySL implements IInventory {
     protected NonNullList<ItemStack> inventory;
 
+    /**
+     * @param tileEntityTypeIn The TileEntityType
+     * @deprecated Use other constructor
+     */
+    @Deprecated
     public TileInventorySL(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    }
+
+    public TileInventorySL(TileEntityType<?> tileEntityType, int inventorySize) {
+        super(tileEntityType);
+        inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
     }
 
     @Override
@@ -58,10 +68,12 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
         return world.getTileEntity(pos) == this && player.getDistanceSq(pos) <= 64.0;
     }
 
+    @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
     public void openInventory(EntityPlayer player) {
     }
 
+    @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
     public void closeInventory(EntityPlayer player) {
     }
@@ -76,6 +88,7 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
         return 0;
     }
 
+    @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
     public void setField(int id, int value) {
     }
