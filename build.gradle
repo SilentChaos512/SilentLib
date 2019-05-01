@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.0.104', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
 
@@ -18,12 +18,25 @@ plugins {
 }
 
 apply plugin: 'net.minecraftforge.gradle'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
+
+repositories {
+    flatDir {
+        name "fileRepo"
+        dirs "repo"
+    }
+    mavenLocal()
+    jcenter()
+}
 
 lombok {
     version = '1.18.4'
     sha256 = ""
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+    options.compilerArgs = ['-Xlint:deprecation']
 }
 
 javadoc {
@@ -33,7 +46,6 @@ javadoc {
 def versionInfo = getModVersion()
 System.out.println(versionInfo)
 version = "${versionInfo['version']}"
-def build_num = getBuildNumber()
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
@@ -98,7 +110,7 @@ sourceSets {
 }
 
 jar {
-    appendix = "${project.mc_version}"
+    appendix = project.mc_version.toString()
     manifest {
         attributes(["Specification-Title": project.mod_id,
                     "Specification-Vendor": "SilentChaos512",
@@ -178,9 +190,9 @@ if (secretFile.exists()) {
 
 publishing {
     publications {
-        silentLib(MavenPublication) {
-            groupId 'net.silentchaos512'
-            artifactId 'silent-lib'
+        publication(MavenPublication) {
+            groupId project.group
+            artifactId project.repoName
             version "${versionInfo['version_short']}".toString()
 
             from components.java
@@ -194,17 +206,17 @@ publishing {
 bintray {
     user = secret.BINTRAY_USER ?: System.getenv('BINTRAY_USER')
     key = secret.BINTRAY_KEY ?: System.getenv('BINTRAY_KEY')
-    publications = ['silentLib']
+    publications = ['publication']
 
     pkg {
-        repo = 'silent-lib'
-        name = 'silent-lib-1.13.2'
+        repo = project.repoName
+        name = "${project.repoName}-${project.mc_version}"
         licenses = ["LGPL-3.0"]
-        vcsUrl = 'https://github.com/SilentChaos512/SilentLib.git'
+        vcsUrl = project.vcsUrl
 
         version {
             name = "${versionInfo['version_short']}".toString()
-            desc = "Silent Lib (${project.mc_version}) ${versionInfo['version_short']}".toString()
+            desc = "${project.name} (${project.mc_version}) ${versionInfo['version_short']}".toString()
             released = new Date()
             vcsTag = "v${versionInfo['version_short']}".toString()
         }
