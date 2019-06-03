@@ -1,5 +1,9 @@
 # Changelog
 
+[4.0.10]
+- Add zh_cn translation (XuyuEre)
+- Implement ILeftClickItem
+
 [4.0.8] - 2019-04-20
 - Updated Night Config for compatibility with Forge 149 (updates silent-utils to 1.0.5)
 - Added WorldUtils
