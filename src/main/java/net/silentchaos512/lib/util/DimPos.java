@@ -19,14 +19,19 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
-public final class DimPos {
+/**
+ * A {@link BlockPos} which also stores a dimension ID. This extends BlockPos as of 4.0.10, so it
+ * has many of the same methods.
+ */
+public final class DimPos extends BlockPos {
+    /**
+     * Origin (0, 0, 0) in dimension 0
+     */
     public static final DimPos ZERO = new DimPos(0, 0, 0, 0);
 
-    private final int posX;
-    private final int posY;
-    private final int posZ;
     private final int dimension;
 
     public static DimPos of(BlockPos pos, int dimension) {
@@ -42,22 +47,8 @@ public final class DimPos {
     }
 
     private DimPos(int x, int y, int z, int dimension) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
+        super(x, y, z);
         this.dimension = dimension;
-    }
-
-    public int getX() {
-        return this.posX;
-    }
-
-    public int getY() {
-        return this.posY;
-    }
-
-    public int getZ() {
-        return this.posZ;
     }
 
     public int getDimension() {
@@ -73,27 +64,60 @@ public final class DimPos {
     }
 
     public void write(NBTTagCompound tags) {
-        tags.putInt("posX", posX);
-        tags.putInt("posY", posY);
-        tags.putInt("posZ", posZ);
+        tags.putInt("posX", this.getX());
+        tags.putInt("posY", this.getY());
+        tags.putInt("posZ", this.getZ());
         tags.putInt("dim", dimension);
     }
 
+    /**
+     * Converts to a BlockPos
+     *
+     * @return A BlockPos with the same coordinates
+     * @deprecated DimPos now extends BlockPos, so conversion is unnecessary
+     */
+    @Deprecated
     public BlockPos getPos() {
-        return new BlockPos(posX, posY, posZ);
+        return this;
+    }
+
+    /**
+     * Offset the DimPos in the given direction by the given distance.
+     * <p>
+     * This is called by the {@link #offset(EnumFacing, int)} override. This is a convenience method
+     * to avoid casting.
+     *
+     * @param facing The direction to offset
+     * @param n      The distance
+     * @return A new DimPos with offset coordinates.
+     * @since 4.0.10
+     */
+    public DimPos offsetDimPos(EnumFacing facing, int n) {
+        if (n == 0) {
+            return this;
+        }
+        return new DimPos(this.getX() + facing.getXOffset() * n, this.getY() + facing.getYOffset() * n, this.getZ() + facing.getZOffset() * n, this.dimension);
+    }
+
+    @Override
+    public BlockPos offset(EnumFacing facing, int n) {
+        return offsetDimPos(facing, n);
     }
 
     @Override
     public String toString() {
-        return String.format("(%d, %d, %d) in dimension %d", posX, posY, posZ, dimension);
+        return String.format("(%d, %d, %d) in dimension %d", this.getX(), this.getY(), this.getZ(), dimension);
     }
 
     @Override
     public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
         if (!(other instanceof DimPos)) {
             return false;
         }
         DimPos pos = (DimPos) other;
-        return posX == pos.posX && posY == pos.posY && posZ == pos.posZ && dimension == pos.dimension;
+        return this.dimension == pos.dimension && super.equals(other);
     }
 }
