@@ -186,6 +186,42 @@ if (secretFile.exists()) {
     }
 }
 
+curseforge {
+    if (project.hasProperty('cf_project_id') && project.hasProperty('cf_release_type') && project.hasProperty('cf_changelog_filename') &&
+            ((project.cf_release_type == 'alpha') || (project.cf_release_type == 'beta') || (project.cf_release_type == 'release'))) {
+        apiKey = secret.curseforgeAPIKey
+        project {
+            id = project.cf_project_id
+            changelog = file(project.cf_changelog_filename)
+            releaseType = project.cf_release_type
+            addGameVersion(project.mc_version)
+            mainArtifact(jar) {
+//                displayName = "$project.description $display_version"
+            }
+//            if (project.hasProperty('doAPIJar')) {
+//                addArtifact(apiJar) {
+//                    displayName = "$project.description $display_version API"
+//                }
+//            }
+//            if (project.hasProperty('doSourceJar')) {
+//                addArtifact(sourceJar) {
+//                    displayName = "$project.description $display_version Sources"
+//                }
+//            }
+//            if (project.hasProperty('doDeobfJar')) {
+//                addArtifact(deobfJar) {
+//                    displayName = "$project.description $display_version Development"
+//                }
+//            }
+//            if (project.hasProperty('doJavadocJar')) {
+//                addArtifact(javadocJar) {
+//                    displayName = "$project.description $display_version Javadoc"
+//                }
+//            }
+        }
+    }
+}
+
 // Bintray/Maven publishing
 
 publishing {
