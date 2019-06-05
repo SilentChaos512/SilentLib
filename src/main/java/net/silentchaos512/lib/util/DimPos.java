@@ -18,21 +18,30 @@
 
 package net.silentchaos512.lib.util;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.math.BlockPos;
 
 /**
- * A {@link BlockPos} which also stores a dimension ID. This extends BlockPos as of 4.0.10, so it
- * has many of the same methods.
+ * Basically a BlockPos with a dimension coordinate.
+ * <p>
+ * I tried to extend BlockPos here, but that caused some strange issues with Silent's Gems'
+ * teleporters. They would apparently fail to link, but would work correctly after reloading the
+ * world. No idea why this happens, but extending BlockPos seems to be the cause.
  */
-public final class DimPos extends BlockPos {
+public final class DimPos {
     /**
      * Origin (0, 0, 0) in dimension 0
      */
     public static final DimPos ZERO = new DimPos(0, 0, 0, 0);
 
+    private final int posX;
+    private final int posY;
+    private final int posZ;
     private final int dimension;
+
+    //region Static factory methods
 
     public static DimPos of(BlockPos pos, int dimension) {
         return new DimPos(pos, dimension);
@@ -42,13 +51,33 @@ public final class DimPos extends BlockPos {
         return new DimPos(x, y, z, dimension);
     }
 
+    public static DimPos of(Entity entity) {
+        return new DimPos(entity.getPosition(), entity.dimension.getId());
+    }
+
+    //endregion
+
     private DimPos(BlockPos pos, int dimension) {
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
     private DimPos(int x, int y, int z, int dimension) {
-        super(x, y, z);
+        this.posX = x;
+        this.posY = y;
+        this.posZ = z;
         this.dimension = dimension;
+    }
+
+    public int getX() {
+        return this.posX;
+    }
+
+    public int getY() {
+        return this.posY;
+    }
+
+    public int getZ() {
+        return this.posZ;
     }
 
     public int getDimension() {
@@ -64,9 +93,9 @@ public final class DimPos extends BlockPos {
     }
 
     public void write(NBTTagCompound tags) {
-        tags.putInt("posX", this.getX());
-        tags.putInt("posY", this.getY());
-        tags.putInt("posZ", this.getZ());
+        tags.putInt("posX", this.posX);
+        tags.putInt("posY", this.posY);
+        tags.putInt("posZ", this.posZ);
         tags.putInt("dim", dimension);
     }
 
@@ -74,39 +103,33 @@ public final class DimPos extends BlockPos {
      * Converts to a BlockPos
      *
      * @return A BlockPos with the same coordinates
-     * @deprecated DimPos now extends BlockPos, so conversion is unnecessary
      */
-    @Deprecated
     public BlockPos getPos() {
-        return this;
+        return new BlockPos(posX, posY, posZ);
     }
 
     /**
      * Offset the DimPos in the given direction by the given distance.
-     * <p>
-     * This is called by the {@link #offset(EnumFacing, int)} override. This is a convenience method
-     * to avoid casting.
      *
      * @param facing The direction to offset
      * @param n      The distance
      * @return A new DimPos with offset coordinates.
      * @since 4.0.10
      */
-    public DimPos offsetDimPos(EnumFacing facing, int n) {
+    public DimPos offset(EnumFacing facing, int n) {
         if (n == 0) {
             return this;
         }
-        return new DimPos(this.getX() + facing.getXOffset() * n, this.getY() + facing.getYOffset() * n, this.getZ() + facing.getZOffset() * n, this.dimension);
-    }
-
-    @Override
-    public BlockPos offset(EnumFacing facing, int n) {
-        return offsetDimPos(facing, n);
+        return new DimPos(
+                this.posX + facing.getXOffset() * n,
+                this.posY + facing.getYOffset() * n,
+                this.posZ + facing.getZOffset() * n,
+                this.dimension);
     }
 
     @Override
     public String toString() {
-        return String.format("(%d, %d, %d) in dimension %d", this.getX(), this.getY(), this.getZ(), dimension);
+        return String.format("(%d, %d, %d, d%d)", this.posX, this.posY, this.posZ, dimension);
     }
 
     @Override
@@ -118,6 +141,11 @@ public final class DimPos extends BlockPos {
             return false;
         }
         DimPos pos = (DimPos) other;
-        return this.dimension == pos.dimension && super.equals(other);
+        return pos.dimension == dimension && pos.posX == posX && pos.posY == posY && pos.posZ == posZ;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * (31 * (31 * posX + posY) + posZ) + dimension;
     }
 }
