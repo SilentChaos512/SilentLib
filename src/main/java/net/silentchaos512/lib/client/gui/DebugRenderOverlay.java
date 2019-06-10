@@ -18,10 +18,10 @@
 
 package net.silentchaos512.lib.client.gui;
 
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.Gui;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -36,7 +36,7 @@ import java.util.List;
 /**
  * Draws text directly to the screen for debugging purposes
  */
-public abstract class DebugRenderOverlay extends Gui {
+public abstract class DebugRenderOverlay extends AbstractGui {
     protected static final String SPLITTER = "=";
 
     private static final int DEFAULT_UPDATE_FREQUENCY = 10;

@@ -4,11 +4,11 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.AbstractCriterionInstance;
+import net.minecraft.advancements.criterion.CriterionInstance;
 import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.SilentLib;
 
@@ -52,11 +52,11 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
     @Override
     public UseItemTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
         ItemPredicate itempredicate = ItemPredicate.deserialize(json.get("item"));
-        Target target = Target.fromString(JsonUtils.getString(json, "target", "any"));
+        Target target = Target.fromString(JSONUtils.getString(json, "target", "any"));
         return new UseItemTrigger.Instance(itempredicate, target);
     }
 
-    public static class Instance extends AbstractCriterionInstance {
+    public static class Instance extends CriterionInstance {
         ItemPredicate itempredicate;
         Target target;
 
@@ -71,7 +71,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         }
     }
 
-    public void trigger(EntityPlayerMP player, ItemStack stack, Target target) {
+    public void trigger(ServerPlayerEntity player, ItemStack stack, Target target) {
         UseItemTrigger.Listeners triggerListeners = this.listeners.get(player.getAdvancements());
         if (triggerListeners != null)
             triggerListeners.trigger(stack, target);

@@ -19,7 +19,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.silentchaos512.lib.SilentLib;
@@ -85,8 +85,8 @@ public final class ClientTicks {
     }
 
     private void updateTickCounters() {
-        GuiScreen gui = Minecraft.getInstance().currentScreen;
-        if (gui == null || !gui.doesGuiPauseGame()) {
+        Screen gui = Minecraft.getInstance().field_71462_r;
+        if (gui == null || !gui.isPauseScreen()) {
             ++ticksInGame;
             partialTicks = 0;
         }

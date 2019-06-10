@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.collection.StackList;
+import net.silentchaos512.utils.MathUtils;
 
 import java.util.Collection;
 import java.util.function.Predicate;

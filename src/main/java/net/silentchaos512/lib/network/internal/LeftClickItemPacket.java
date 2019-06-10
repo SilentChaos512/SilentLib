@@ -1,26 +1,26 @@
 package net.silentchaos512.lib.network.internal;
 
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.EnumHand;
+import net.minecraft.util.Hand;
 import net.minecraftforge.fml.network.NetworkEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ILeftClickItem;
-import net.silentchaos512.lib.util.EnumUtils;
+import net.silentchaos512.utils.EnumUtils;
 
 import java.util.function.Supplier;
 
 public class LeftClickItemPacket {
     private ILeftClickItem.ClickType clickType;
-    private EnumHand hand;
+    private Hand hand;
 
     public LeftClickItemPacket() {
         this.clickType = ILeftClickItem.ClickType.EMPTY;
-        this.hand = EnumHand.MAIN_HAND;
+        this.hand = Hand.MAIN_HAND;
     }
 
-    public LeftClickItemPacket(ILeftClickItem.ClickType clickType, EnumHand hand) {
+    public LeftClickItemPacket(ILeftClickItem.ClickType clickType, Hand hand) {
         this.clickType = clickType;
         this.hand = hand;
     }
@@ -29,24 +29,24 @@ public class LeftClickItemPacket {
         return clickType;
     }
 
-    public EnumHand getHand() {
+    public Hand getHand() {
         return hand;
     }
 
     public static LeftClickItemPacket fromBytes(PacketBuffer buffer) {
         LeftClickItemPacket packet = new LeftClickItemPacket();
         packet.clickType = EnumUtils.byOrdinal(buffer.readByte(), ILeftClickItem.ClickType.EMPTY);
-        packet.hand = buffer.readBoolean() ? EnumHand.MAIN_HAND : EnumHand.OFF_HAND;
+        packet.hand = buffer.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer) {
         buffer.writeByte(this.clickType.ordinal());
-        buffer.writeBoolean(this.hand == EnumHand.MAIN_HAND);
+        buffer.writeBoolean(this.hand == Hand.MAIN_HAND);
     }
 
     public static void handle(LeftClickItemPacket packet, Supplier<NetworkEvent.Context> context) {
-        EntityPlayerMP player = context.get().getSender();
+        ServerPlayerEntity player = context.get().getSender();
 
         if (player != null) {
             ItemStack heldItem = player.getHeldItem(packet.hand);

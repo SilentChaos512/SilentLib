@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import net.minecraft.block.Block;
+import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
-import net.minecraft.item.ItemBlock;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.SilentLib;
 
@@ -232,7 +232,7 @@ public final class ModelGenerator {
 
             json.addProperty("parent", this.parentModel);
 
-            if (this.itemTextures.isEmpty() && !(item instanceof ItemBlock)) {
+            if (this.itemTextures.isEmpty() && !(item instanceof BlockItem)) {
                 // No specified texture, not a block -> use default
                 JsonObject textures = new JsonObject();
                 textures.addProperty("layer0", getDefaultTexture());

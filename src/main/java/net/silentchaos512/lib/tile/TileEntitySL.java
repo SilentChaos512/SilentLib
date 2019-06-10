@@ -1,9 +1,9 @@
 package net.silentchaos512.lib.tile;
 
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.block.BlockState;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 
@@ -20,48 +20,48 @@ public class TileEntitySL extends TileEntity {
 
     public final void sendUpdate() {
         if (world != null && !world.isRemote) {
-            IBlockState state = world.getBlockState(pos);
+            BlockState state = world.getBlockState(pos);
             world.notifyBlockUpdate(pos, state, state, 3);
             markDirty();
         }
     }
 
     @Override
-    public void read(NBTTagCompound tags) {
+    public void read(CompoundNBT tags) {
         super.read(tags);
         readSyncVars(tags);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound tags) {
+    public CompoundNBT write(CompoundNBT tags) {
         super.write(tags);
         writeSyncVars(tags, SyncVariable.Type.WRITE);
         return tags;
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound tags = getUpdateTag();
-        return new SPacketUpdateTileEntity(pos, 1, tags);
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        CompoundNBT tags = getUpdateTag();
+        return new SUpdateTileEntityPacket(pos, 1, tags);
     }
 
     @Override
-    public NBTTagCompound getUpdateTag() {
-        NBTTagCompound tags = super.getUpdateTag();
+    public CompoundNBT getUpdateTag() {
+        CompoundNBT tags = super.getUpdateTag();
         writeSyncVars(tags, SyncVariable.Type.PACKET);
         return tags;
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         readSyncVars(packet.getNbtCompound());
     }
 
-    private void readSyncVars(NBTTagCompound tags) {
+    private void readSyncVars(CompoundNBT tags) {
         SyncVariable.Helper.readSyncVars(this, tags);
     }
 
-    private NBTTagCompound writeSyncVars(NBTTagCompound tags, SyncVariable.Type syncType) {
+    private CompoundNBT writeSyncVars(CompoundNBT tags, SyncVariable.Type syncType) {
         return SyncVariable.Helper.writeSyncVars(this, tags, syncType);
     }
 }

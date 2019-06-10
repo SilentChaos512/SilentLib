@@ -1,7 +1,8 @@
 package net.silentchaos512.lib.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ResourceLocation;
@@ -45,7 +46,7 @@ public class TileEntityContainerType<T extends Container> implements ContainerTy
     }
 
     @Nullable
-    public TileEntity getTileEntity(EntityPlayer entity) {
+    public TileEntity getTileEntity(PlayerEntity entity) {
         return entity.world.getTileEntity(pos);
     }
 }

@@ -20,9 +20,9 @@ package net.silentchaos512.lib.tile;
 
 import lombok.Getter;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.silentchaos512.lib.util.EnumUtils;
+import net.silentchaos512.utils.EnumUtils;
 
 public class FurnaceFuelBurner implements IFuelBurner {
     private final BurnCondition burnCondition;
@@ -57,7 +57,7 @@ public class FurnaceFuelBurner implements IFuelBurner {
         return false;
     }
 
-    private static FurnaceFuelBurner readFromNBT(NBTTagCompound tags) {
+    private static FurnaceFuelBurner readFromNBT(CompoundNBT tags) {
         BurnCondition condition = EnumUtils.byName(tags.getString("Condition"), BurnCondition.DEFAULT);
 
         FurnaceFuelBurner result = new FurnaceFuelBurner(condition);
@@ -67,7 +67,7 @@ public class FurnaceFuelBurner implements IFuelBurner {
         return result;
     }
 
-    private static void writeToNBT(NBTTagCompound tags, FurnaceFuelBurner burner) {
+    private static void writeToNBT(CompoundNBT tags, FurnaceFuelBurner burner) {
         if (burner.burnCondition != BurnCondition.DEFAULT) {
             tags.putString("Condition", burner.burnCondition.name());
         }

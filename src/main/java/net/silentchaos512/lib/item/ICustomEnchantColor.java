@@ -18,9 +18,9 @@
 
 package net.silentchaos512.lib.item;
 
-import net.minecraft.item.EnumDyeColor;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.silentchaos512.lib.event.ClientTicks;
 
 import java.awt.*;
@@ -49,7 +49,7 @@ public interface ICustomEnchantColor {
      * @return The effect color
      */
     default int getEffectColor(ItemStack stack) {
-        NBTTagCompound tagCompound = stack.getTag();
+        CompoundNBT tagCompound = stack.getTag();
 
         if (tagCompound != null) {
             if (tagCompound.contains(NBT_LIB_EFFECT_COLOR)) {
@@ -61,7 +61,7 @@ public interface ICustomEnchantColor {
                 if (value > 15)
                     return Color.HSBtoRGB(ClientTicks.totalTicks() * 0.005f, 1f, 0.6f);
                 else if (value >= 0)
-                    return EnumDyeColor.byId(value).func_196057_c();
+                    return DyeColor.byId(value).func_196057_c();
             }
         }
 

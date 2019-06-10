@@ -4,13 +4,13 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.resources.IResource;
 import net.minecraft.resources.IResourceManager;
 import net.minecraft.resources.IResourceManagerReloadListener;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -55,7 +55,7 @@ public abstract class ResourceManagerBase<T extends IReloadableResource<T>> impl
     }
 
     public T deserialize(ResourceLocation id, JsonObject json) {
-        String typeStr = JsonUtils.getString(json, "type", "");
+        String typeStr = JSONUtils.getString(json, "type", "");
         if (typeStr.isEmpty()) {
             throw new JsonParseException("Missing required property 'type' in resource " + id);
         } else {
@@ -124,7 +124,7 @@ public abstract class ResourceManagerBase<T extends IReloadableResource<T>> impl
                 ResourceLocation name = new ResourceLocation(id.getNamespace(), path);
                 this.logger.debug(this.logMarker, "Found resource file '{}', reading as '{}'", id, name);
 
-                JsonObject json = JsonUtils.fromJson(gson, IOUtils.toString(iResource.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
+                JsonObject json = JSONUtils.fromJson(gson, IOUtils.toString(iResource.getInputStream(), StandardCharsets.UTF_8), JsonObject.class);
                 if (json == null) {
                     this.logger.error(this.logMarker, "Could not load resource '{}' as it's null or empty", name);
                 } else {
@@ -159,7 +159,7 @@ public abstract class ResourceManagerBase<T extends IReloadableResource<T>> impl
 
     protected abstract SyncResourcesPacket<T> getSyncPacket();
 
-    private void sendResourcesToClient(EntityPlayerMP player) {
+    private void sendResourcesToClient(ServerPlayerEntity player) {
         Collection<T> objects = this.getValues();
         this.logger.info(this.logMarker, "Sending {} objects to {}", objects.size(), player.getScoreboardName());
         SyncResourcesPacket<T> packet = this.getSyncPacket();
@@ -181,10 +181,10 @@ public abstract class ResourceManagerBase<T extends IReloadableResource<T>> impl
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event) {
-        EntityPlayer player = event.getPlayer();
-        if (!(player instanceof EntityPlayerMP)) return;
+        PlayerEntity player = event.getPlayer();
+        if (!(player instanceof ServerPlayerEntity)) return;
 
-        EntityPlayerMP playerMP = (EntityPlayerMP) player;
+        ServerPlayerEntity playerMP = (ServerPlayerEntity) player;
         // FIXME: This is sent too late!
         sendResourcesToClient(playerMP);
     }

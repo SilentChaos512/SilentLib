@@ -18,9 +18,10 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 
 public interface NBTSerializer<T> {
-    T read(NBTTagCompound tags);
-    void write(NBTTagCompound tags, T obj);
+    T read(CompoundNBT tags);
+
+    void write(CompoundNBT tags, T obj);
 }

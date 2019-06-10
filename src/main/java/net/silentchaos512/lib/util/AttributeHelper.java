@@ -18,11 +18,13 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.IAttribute;
 import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.silentchaos512.utils.MathUtils;
 
+import javax.annotation.Nullable;
 import java.util.UUID;
 
 /**
@@ -31,33 +33,31 @@ import java.util.UUID;
  * @author SilentChaos512
  * @since 2.3.2
  */
-public class AttributeHelper {
-    public static void apply(EntityLivingBase entity, IAttribute attribute, UUID uuid, String name, double amount, int op) {
-        IAttributeInstance instance = entity.getAttributeMap().getAttributeInstance(attribute);
-        apply(instance, uuid, name, amount, op);
+public final class AttributeHelper {
+    private AttributeHelper() {throw new IllegalAccessError("Utility class");}
+
+    public static void apply(LivingEntity entity, IAttribute attribute, AttributeModifier modifier) {
+        IAttributeInstance instance = entity.getAttribute(attribute);
+        apply(instance, modifier);
     }
 
-    public static void apply(IAttributeInstance attributeInstance, UUID uuid, String name, double amount, int op) {
+    public static void apply(@Nullable IAttributeInstance attributeInstance, AttributeModifier modifier) {
         if (attributeInstance == null) return;
-        AttributeModifier currentMod = attributeInstance.getModifier(uuid);
-        AttributeModifier newMod = new AttributeModifier(uuid, name, amount, op);
+        AttributeModifier currentMod = attributeInstance.getModifier(modifier.getID());
 
-        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), amount) || currentMod.getOperation() != op)) {
-            // Modifier has changed, so it needs to be reapplied
+        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.func_220375_c() != modifier.func_220375_c())) {
+            // Modifier changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
-            attributeInstance.applyModifier(newMod);
-        } else if (currentMod == null) {
-            // Modifier has not been applied yet
-            attributeInstance.applyModifier(newMod);
         }
+        attributeInstance.applyModifier(modifier);
     }
 
-    public static void remove(EntityLivingBase entity, IAttribute attribute, UUID uuid) {
+    public static void remove(LivingEntity entity, IAttribute attribute, UUID uuid) {
         IAttributeInstance instance = entity.getAttributeMap().getAttributeInstance(attribute);
         remove(instance, uuid);
     }
 
-    public static void remove(IAttributeInstance attributeInstance, UUID uuid) {
+    public static void remove(@Nullable IAttributeInstance attributeInstance, UUID uuid) {
         if (attributeInstance == null) return;
         attributeInstance.removeModifier(uuid);
     }

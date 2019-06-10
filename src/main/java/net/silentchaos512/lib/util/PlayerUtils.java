@@ -19,10 +19,10 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 
 import javax.annotation.Nonnull;
@@ -36,20 +36,20 @@ public final class PlayerUtils {
      * Gives the player an item. If it can't be given directly, it spawns an EntityItem. Spawns 1
      * block above player's feet.
      */
-    public static void giveItem(EntityPlayer player, ItemStack stack) {
+    public static void giveItem(PlayerEntity player, ItemStack stack) {
         ItemStack copy = stack.copy();
         if (!player.inventory.addItemStackToInventory(copy)) {
-            EntityItem entityItem = new EntityItem(player.world, player.posX, player.posY + 1.0, player.posZ, copy);
+            ItemEntity entityItem = new ItemEntity(player.world, player.posX, player.posY + 1.0, player.posZ, copy);
             entityItem.setNoPickupDelay();
             entityItem.setOwnerId(player.getUniqueID());
-            player.world.spawnEntity(entityItem);
+            player.world.func_217376_c(entityItem);
         }
     }
 
     /**
      * Removes the stack from the player's inventory, if it exists.
      */
-    public static void removeItem(EntityPlayer player, ItemStack stack) {
+    public static void removeItem(PlayerEntity player, ItemStack stack) {
         List<NonNullList<ItemStack>> inventories = ImmutableList.of(player.inventory.mainInventory, player.inventory.offHandInventory, player.inventory.armorInventory);
         for (NonNullList<ItemStack> inv : inventories) {
             for (int i = 0; i < inv.size(); ++i) {
@@ -69,37 +69,37 @@ public final class PlayerUtils {
      * @param subcompoundKey The key for the tag compound (ideally should contain mod ID)
      * @return The tag compound, creating it if it does not exist.
      */
-    public static NBTTagCompound getPersistedDataSubcompound(EntityPlayer player, String subcompoundKey) {
-        NBTTagCompound forgeData = player.getEntityData();
-        if (!forgeData.contains(EntityPlayer.PERSISTED_NBT_TAG)) {
-            forgeData.put(EntityPlayer.PERSISTED_NBT_TAG, new NBTTagCompound());
+    public static CompoundNBT getPersistedDataSubcompound(PlayerEntity player, String subcompoundKey) {
+        CompoundNBT forgeData = player.getEntityData();
+        if (!forgeData.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
+            forgeData.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
         }
 
-        NBTTagCompound persistedData = forgeData.getCompound(EntityPlayer.PERSISTED_NBT_TAG);
+        CompoundNBT persistedData = forgeData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
         if (!persistedData.contains(subcompoundKey)) {
-            persistedData.put(subcompoundKey, new NBTTagCompound());
+            persistedData.put(subcompoundKey, new CompoundNBT());
         }
 
         return persistedData.getCompound(subcompoundKey);
     }
 
     @Nonnull
-    public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player) {
+    public static NonNullList<ItemStack> getNonEmptyStacks(PlayerEntity player) {
         return getNonEmptyStacks(player, true, true, true, s -> true);
     }
 
     @Nonnull
-    public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, Predicate<ItemStack> predicate) {
+    public static NonNullList<ItemStack> getNonEmptyStacks(PlayerEntity player, Predicate<ItemStack> predicate) {
         return getNonEmptyStacks(player, true, true, true, predicate);
     }
 
     @Nonnull
-    public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain, boolean includeOffHand, boolean includeArmor) {
+    public static NonNullList<ItemStack> getNonEmptyStacks(PlayerEntity player, boolean includeMain, boolean includeOffHand, boolean includeArmor) {
         return getNonEmptyStacks(player, includeMain, includeOffHand, includeArmor, s -> true);
     }
 
     @Nonnull
-    public static NonNullList<ItemStack> getNonEmptyStacks(EntityPlayer player, boolean includeMain, boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
+    public static NonNullList<ItemStack> getNonEmptyStacks(PlayerEntity player, boolean includeMain, boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
         NonNullList<ItemStack> list = NonNullList.create();
 
         if (includeMain)
@@ -134,7 +134,7 @@ public final class PlayerUtils {
      * @since 2.3.1
      */
     @Nonnull
-    public static ItemStack getFirstValidStack(EntityPlayer player, boolean includeMain, boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
+    public static ItemStack getFirstValidStack(PlayerEntity player, boolean includeMain, boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
         if (includeOffHand)
             for (ItemStack stack : player.inventory.offHandInventory)
                 if (!stack.isEmpty() && predicate.test(stack))

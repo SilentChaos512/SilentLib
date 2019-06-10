@@ -20,8 +20,8 @@ package net.silentchaos512.lib.collection;
 
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.INBTBase;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -66,11 +66,11 @@ public final class StackList extends ArrayList<ItemStack> {
         return newList;
     }
 
-    public static StackList from(Iterable<INBTBase> tagList) {
+    public static StackList from(Iterable<INBT> tagList) {
         StackList newList = new StackList();
-        for (INBTBase nbt : tagList) {
-            if (nbt instanceof NBTTagCompound) {
-                newList.add(ItemStack.read((NBTTagCompound) nbt));
+        for (INBT nbt : tagList) {
+            if (nbt instanceof CompoundNBT) {
+                newList.add(ItemStack.read((CompoundNBT) nbt));
             }
         }
         return newList;

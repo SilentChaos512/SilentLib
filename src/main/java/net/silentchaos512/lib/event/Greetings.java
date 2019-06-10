@@ -18,7 +18,7 @@
 
 package net.silentchaos512.lib.event;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -37,7 +37,7 @@ import java.util.function.Function;
 public final class Greetings {
     private static final Greetings INSTANCE = new Greetings();
 
-    private final List<Function<EntityPlayer, Optional<ITextComponent>>> messages = new ArrayList<>();
+    private final List<Function<PlayerEntity, Optional<ITextComponent>>> messages = new ArrayList<>();
 
     private Greetings() {
         MinecraftForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
@@ -47,16 +47,16 @@ public final class Greetings {
      * Add a message to display to the player on login. If the function returns {@code null}, no
      * message is displayed. Consider displaying your message only once per session or per day.
      *
-     * @param message A function to create the message. Using {@link net.minecraft.util.text.TextComponentTranslation}
+     * @param message A function to create the message. Using {@link net.minecraft.util.text.TranslationTextComponent}
      *                may be ideal.
      * @since 3.0.6
      */
-    public static void addMessage(Function<EntityPlayer, ITextComponent> message) {
+    public static void addMessage(Function<PlayerEntity, ITextComponent> message) {
         INSTANCE.messages.add(player -> Optional.ofNullable(message.apply(player)));
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        EntityPlayer player = event.getPlayer();
+        PlayerEntity player = event.getPlayer();
         if (player == null) return;
         messages.forEach(msg -> msg.apply(player).ifPresent(player::sendMessage));
     }

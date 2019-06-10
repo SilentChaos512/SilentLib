@@ -18,24 +18,23 @@
 
 package net.silentchaos512.lib.client.gui.button;
 
-import net.minecraft.client.gui.GuiButton;
-
-import java.util.function.Consumer;
+import net.minecraft.client.gui.widget.button.Button;
 
 /**
  * Drop down list element. Still needs some cleanup. Also see {@link GuiDropDownList}.
  *
  * @since 3.0.8
  */
-public class GuiDropDownElement extends GuiButton {
+public class GuiDropDownElement extends Button {
     GuiDropDownList parent;
-    private final Consumer<GuiDropDownElement> action;
+//    private final Consumer<GuiDropDownElement> action;
 
-    public GuiDropDownElement(int buttonId, String buttonText, Consumer<GuiDropDownElement> action) {
-        super(buttonId, 0, 0, GuiDropDownList.ELEMENT_WIDTH, GuiDropDownList.ELEMENT_HEIGHT, buttonText);
-        this.action = action;
+    public GuiDropDownElement(String buttonText, IPressable action) {
+        super(0, 0, GuiDropDownList.ELEMENT_WIDTH, GuiDropDownList.ELEMENT_HEIGHT, buttonText, action);
+//        this.action = action;
     }
 
+    /*
     @Override
     public boolean mouseClicked(double p_mouseClicked_1_, double p_mouseClicked_3_, int p_mouseClicked_5_) {
         return this.visible && super.mouseClicked(p_mouseClicked_1_, p_mouseClicked_3_, p_mouseClicked_5_);
@@ -50,4 +49,5 @@ public class GuiDropDownElement extends GuiButton {
         }
         return false;
     }
+    */
 }

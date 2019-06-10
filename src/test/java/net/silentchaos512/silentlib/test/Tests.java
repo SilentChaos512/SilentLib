@@ -1,6 +1,6 @@
 package net.silentchaos512.silentlib.test;
 
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.Tags;
 import net.silentchaos512.lib.util.DimPos;
@@ -14,7 +14,7 @@ public class Tests {
         Assert.assertEquals(DimPos.of(0, 0, 0, 0), DimPos.ZERO);
 
         DimPos pos = DimPos.of(1, 2, 3, 0);
-        NBTTagCompound tag = new NBTTagCompound();
+        CompoundNBT tag = new CompoundNBT();
         pos.write(tag);
         Assert.assertEquals(1, tag.getInt("posX"));
         Assert.assertEquals(2, tag.getInt("posY"));

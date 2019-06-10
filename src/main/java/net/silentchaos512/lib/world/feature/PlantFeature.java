@@ -1,29 +1,30 @@
 package net.silentchaos512.lib.world.feature;
 
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.IWorld;
-import net.minecraft.world.gen.IChunkGenSettings;
-import net.minecraft.world.gen.IChunkGenerator;
-import net.minecraft.world.gen.feature.AbstractFlowersFeature;
+import net.minecraft.world.gen.ChunkGenerator;
+import net.minecraft.world.gen.GenerationSettings;
+import net.minecraft.world.gen.feature.FlowersFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import java.util.Random;
 
-public class PlantFeature extends AbstractFlowersFeature {
-    private final IBlockState plant;
+public class PlantFeature extends FlowersFeature {
+    private final BlockState plant;
     private final int tryCount;
     private final int maxCount;
 
-    public PlantFeature(IBlockState plant, int tryCount, int maxCount) {
+    public PlantFeature(BlockState plant, int tryCount, int maxCount) {
+        super(NoFeatureConfig::func_214639_a);
         this.plant = plant;
         this.tryCount = tryCount;
         this.maxCount = maxCount;
     }
 
     @Override
-    public boolean place(IWorld worldIn, IChunkGenerator<? extends IChunkGenSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        IBlockState toPlace = getRandomFlower(rand, pos);
+    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+        BlockState toPlace = getRandomFlower(rand, pos);
         int placedCount = 0;
 
         // Same as super, but different number of iterations and a placement count cap
@@ -43,7 +44,7 @@ public class PlantFeature extends AbstractFlowersFeature {
     }
 
     @Override
-    public IBlockState getRandomFlower(Random rand, BlockPos pos) {
+    public BlockState getRandomFlower(Random rand, BlockPos pos) {
         return this.plant;
     }
 }

@@ -1,16 +1,18 @@
 package net.silentchaos512.lib.inventory;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.inventory.Container;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.ContainerType;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
 public class ContainerSL extends Container {
     protected final IInventory tileInventory;
 
-    public ContainerSL(InventoryPlayer playerInventory, IInventory tileInventory) {
+    public ContainerSL(ContainerType<?> type, PlayerInventory playerInventory, IInventory tileInventory) {
+        super(type, 0);
         this.tileInventory = tileInventory;
         addTileInventorySlots(tileInventory);
         addPlayerInventorySlots(playerInventory);
@@ -19,7 +21,7 @@ public class ContainerSL extends Container {
     protected void addTileInventorySlots(IInventory inv) {
     }
 
-    protected void addPlayerInventorySlots(InventoryPlayer inv) {
+    protected void addPlayerInventorySlots(PlayerInventory inv) {
         int i;
         for (i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -33,12 +35,12 @@ public class ContainerSL extends Container {
     }
 
     @Override
-    public boolean canInteractWith(EntityPlayer player) {
+    public boolean canInteractWith(PlayerEntity player) {
         return tileInventory.isUsableByPlayer(player);
     }
 
     @Deprecated
-    public static void onTakeFromSlot(Slot slot, EntityPlayer player, ItemStack stack) {
+    public static void onTakeFromSlot(Slot slot, PlayerEntity player, ItemStack stack) {
         slot.onTake(player, stack);
     }
 }

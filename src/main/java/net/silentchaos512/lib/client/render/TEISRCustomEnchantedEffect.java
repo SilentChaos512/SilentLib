@@ -19,18 +19,18 @@
 package net.silentchaos512.lib.client.render;
 
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.platform.GlStateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.texture.AtlasTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.renderer.texture.TextureMap;
-import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
+import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.Util;
 import net.silentchaos512.lib.client.model.ILayeredBakedModel;
@@ -53,16 +53,16 @@ import java.util.Random;
  * @since 3.0.4
  */
 @ParametersAreNonnullByDefault
-public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
+public class TEISRCustomEnchantedEffect extends ItemStackTileEntityRenderer {
     public static final TEISRCustomEnchantedEffect INSTANCE = new TEISRCustomEnchantedEffect();
 
     private static final ResourceLocation RES_ITEM_GLINT = new ResourceLocation("textures/misc/enchanted_item_glint.png");
     // Empty set stored for convenience (could pass nulls, but I don't like that)
-    private static final ImmutableSet<EnumFacing> EMPTY = ImmutableSet.of();
+    private static final ImmutableSet<Direction> EMPTY = ImmutableSet.of();
     // The "front" and "back" of the item model. For the enchanted effect to display correctly, we
     // must render it on all faces for the first layer, then all faces EXCEPT THESE on all other
     // layers. I have no idea how I figured this out.
-    private static final ImmutableSet<EnumFacing> STUPID_FACES = ImmutableSet.of(EnumFacing.SOUTH, EnumFacing.NORTH);
+    private static final ImmutableSet<Direction> STUPID_FACES = ImmutableSet.of(Direction.SOUTH, Direction.NORTH);
 
     private TEISRCustomEnchantedEffect() {
     }
@@ -143,7 +143,7 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
     }
 
     // Copied from RenderItem
-    private void renderEffectExcluding(IBakedModel model, int effectColor, int layerIndex, Collection<EnumFacing> excludeFaces) {
+    private void renderEffectExcluding(IBakedModel model, int effectColor, int layerIndex, Collection<Direction> excludeFaces) {
         int color = effectColor | 0xFF000000;
 
         TextureManager textureManager = Minecraft.getInstance().getTextureManager();
@@ -176,18 +176,18 @@ public class TEISRCustomEnchantedEffect extends TileEntityItemStackRenderer {
         GlStateManager.enableLighting();
         GlStateManager.depthFunc(515);
         GlStateManager.depthMask(true);
-        textureManager.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
+        textureManager.bindTexture(AtlasTexture.LOCATION_BLOCKS_TEXTURE);
     }
 
     // Copied from RenderItem
-    private void renderModelExcluding(IBakedModel model, int color, int layerIndex, Collection<EnumFacing> excludeFaces) {
+    private void renderModelExcluding(IBakedModel model, int color, int layerIndex, Collection<Direction> excludeFaces) {
         this.renderModelExcluding(model, color, ItemStack.EMPTY, layerIndex, excludeFaces);
     }
 
     private static final Random RANDOM = new Random();
 
     // Copied from RenderItem
-    private void renderModelExcluding(IBakedModel model, int color, ItemStack stack, int layerIndex, Collection<EnumFacing> excludeFaces) {
+    private void renderModelExcluding(IBakedModel model, int color, ItemStack stack, int layerIndex, Collection<Direction> excludeFaces) {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         bufferbuilder.begin(7, DefaultVertexFormats.ITEM);

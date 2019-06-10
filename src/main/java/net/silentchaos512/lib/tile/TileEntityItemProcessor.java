@@ -19,19 +19,19 @@
 package net.silentchaos512.lib.tile;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.silentchaos512.lib.util.InventoryUtils;
-import net.silentchaos512.lib.util.MathUtils;
+import net.silentchaos512.utils.MathUtils;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 
-public abstract class TileEntityItemProcessor extends TileSidedInventorySL implements ITickable {
+public abstract class TileEntityItemProcessor extends TileSidedInventorySL implements ITickableTileEntity {
     private static final int LONG_UPDATE_DELAY = 20;
 
     @SyncVariable(name = "Progress")
@@ -59,7 +59,7 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
     }
 
     public TileEntityItemProcessor(TileEntityType<?> tileEntityType, int inputCount, int fuelCount, int outputCount, @Nullable IFuelBurner burner) {
-        super(tileEntityType);
+        super(tileEntityType, inputCount + fuelCount + outputCount);
         if (inputCount < 1)
             throw new IllegalArgumentException("Input slot count must be greater than zero");
         if (outputCount < 1)
@@ -161,7 +161,7 @@ public abstract class TileEntityItemProcessor extends TileSidedInventorySL imple
             }
 
             if (requiresClientSync) {
-                IBlockState state = world.getBlockState(pos);
+                BlockState state = world.getBlockState(pos);
                 world.notifyBlockUpdate(pos, state, state, 3);
             }
         }

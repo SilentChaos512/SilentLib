@@ -19,8 +19,8 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
 
 /**
@@ -84,7 +84,7 @@ public final class DimPos {
         return this.dimension;
     }
 
-    public static DimPos read(NBTTagCompound tags) {
+    public static DimPos read(CompoundNBT tags) {
         return DimPos.of(
                 tags.getInt("posX"),
                 tags.getInt("posY"),
@@ -92,7 +92,7 @@ public final class DimPos {
                 tags.getInt("dim"));
     }
 
-    public void write(NBTTagCompound tags) {
+    public void write(CompoundNBT tags) {
         tags.putInt("posX", this.posX);
         tags.putInt("posY", this.posY);
         tags.putInt("posZ", this.posZ);
@@ -116,7 +116,7 @@ public final class DimPos {
      * @return A new DimPos with offset coordinates.
      * @since 4.0.10
      */
-    public DimPos offset(EnumFacing facing, int n) {
+    public DimPos offset(Direction facing, int n) {
         if (n == 0) {
             return this;
         }

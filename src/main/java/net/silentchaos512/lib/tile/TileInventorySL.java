@@ -1,36 +1,22 @@
 package net.silentchaos512.lib.tile;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SPacketUpdateTileEntity;
+import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.NonNullList;
+import net.silentchaos512.lib.util.MCMathUtils;
 
 public abstract class TileInventorySL extends TileEntitySL implements IInventory {
     protected NonNullList<ItemStack> inventory;
 
-    /**
-     * @param tileEntityTypeIn The TileEntityType
-     * @deprecated Use other constructor
-     */
-    @Deprecated
-    public TileInventorySL(TileEntityType<?> tileEntityTypeIn) {
-        super(tileEntityTypeIn);
-        inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-    }
-
     public TileInventorySL(TileEntityType<?> tileEntityType, int inventorySize) {
         super(tileEntityType);
         inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
-    }
-
-    @Override
-    public boolean hasCustomName() {
-        return false;
     }
 
     @Override
@@ -64,18 +50,18 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
     }
 
     @Override
-    public boolean isUsableByPlayer(EntityPlayer player) {
-        return world.getTileEntity(pos) == this && player.getDistanceSq(pos) <= 64.0;
+    public boolean isUsableByPlayer(PlayerEntity player) {
+        return world != null && world.getTileEntity(pos) == this && MCMathUtils.distanceSq(player, pos) <= 64.0;
     }
 
     @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
-    public void openInventory(EntityPlayer player) {
+    public void openInventory(PlayerEntity player) {
     }
 
     @SuppressWarnings("NoopMethodInAbstractClass")
     @Override
-    public void closeInventory(EntityPlayer player) {
+    public void closeInventory(PlayerEntity player) {
     }
 
     @Override
@@ -84,48 +70,33 @@ public abstract class TileInventorySL extends TileEntitySL implements IInventory
     }
 
     @Override
-    public int getField(int id) {
-        return 0;
-    }
-
-    @SuppressWarnings("NoopMethodInAbstractClass")
-    @Override
-    public void setField(int id, int value) {
-    }
-
-    @Override
-    public int getFieldCount() {
-        return 0;
-    }
-
-    @Override
     public void clear() {
         inventory.clear();
     }
 
     @Override
-    public void read(NBTTagCompound tags) {
+    public void read(CompoundNBT tags) {
         super.read(tags);
         inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(tags, inventory);
     }
 
     @Override
-    public NBTTagCompound write(NBTTagCompound tags) {
+    public CompoundNBT write(CompoundNBT tags) {
         super.write(tags);
         ItemStackHelper.saveAllItems(tags, inventory);
         return tags;
     }
 
     @Override
-    public SPacketUpdateTileEntity getUpdatePacket() {
-        NBTTagCompound tags = getUpdateTag();
+    public SUpdateTileEntityPacket getUpdatePacket() {
+        CompoundNBT tags = getUpdateTag();
         ItemStackHelper.saveAllItems(tags, inventory);
-        return new SPacketUpdateTileEntity(pos, 1, tags);
+        return new SUpdateTileEntityPacket(pos, 1, tags);
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SPacketUpdateTileEntity packet) {
+    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         super.onDataPacket(net, packet);
         ItemStackHelper.loadAllItems(packet.getNbtCompound(), inventory);
     }

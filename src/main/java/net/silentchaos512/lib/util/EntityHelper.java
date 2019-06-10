@@ -19,7 +19,7 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.LivingEntity;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -51,7 +51,7 @@ public final class EntityHelper {
     private static void handleSpawns() {
         Entity entity;
         while ((entity = entitiesToSpawn.poll()) != null) {
-            entity.world.spawnEntity(entity);
+            entity.world.func_217346_i(entity);
         }
     }
 
@@ -61,7 +61,7 @@ public final class EntityHelper {
      *
      * @since 2.2.9
      */
-    public static void heal(EntityLivingBase entityLiving, float healAmount, boolean cancelable) {
+    public static void heal(LivingEntity entityLiving, float healAmount, boolean cancelable) {
         if (cancelable) {
             entityLiving.heal(healAmount);
         } else {

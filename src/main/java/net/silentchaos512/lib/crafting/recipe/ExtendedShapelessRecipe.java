@@ -1,14 +1,14 @@
 package net.silentchaos512.lib.crafting.recipe;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.RecipeSerializers;
 import net.minecraft.item.crafting.ShapelessRecipe;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -18,6 +18,8 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shapeless crafting.
  */
 public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
+    private static final IRecipeSerializer<ShapelessRecipe> BASE_SERIALIZER = IRecipeSerializer.field_222158_b;
+
     private final ShapelessRecipe recipe;
 
     public ExtendedShapelessRecipe(ShapelessRecipe recipe) {
@@ -33,12 +35,12 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     public abstract IRecipeSerializer<?> getSerializer();
 
     @Override
-    public abstract boolean matches(IInventory inv, World worldIn);
+    public abstract boolean matches(CraftingInventory inv, World worldIn);
 
     @Override
-    public abstract ItemStack getCraftingResult(IInventory inv);
+    public abstract ItemStack getCraftingResult(CraftingInventory inv);
 
-    public static class Serializer<T extends ExtendedShapelessRecipe> implements IRecipeSerializer<T> {
+    public static class Serializer<T extends ExtendedShapelessRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
         private final ResourceLocation serializerId;
         private final Function<ShapelessRecipe, T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
@@ -63,7 +65,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
 
         @Override
         public T read(ResourceLocation recipeId, JsonObject json) {
-            ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, json);
+            ShapelessRecipe recipe = BASE_SERIALIZER.read(recipeId, json);
             T result = this.recipeFactory.apply(recipe);
             if (this.readJson != null) {
                 this.readJson.accept(json, result);
@@ -73,7 +75,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
 
         @Override
         public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-            ShapelessRecipe recipe = RecipeSerializers.CRAFTING_SHAPELESS.read(recipeId, buffer);
+            ShapelessRecipe recipe = BASE_SERIALIZER.read(recipeId, buffer);
             T result = this.recipeFactory.apply(recipe);
             if (this.readBuffer != null) {
                 this.readBuffer.accept(buffer, result);
@@ -83,15 +85,10 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
 
         @Override
         public void write(PacketBuffer buffer, T recipe) {
-            RecipeSerializers.CRAFTING_SHAPELESS.write(buffer, recipe.getBaseRecipe());
+            BASE_SERIALIZER.write(buffer, recipe.getBaseRecipe());
             if (this.writeBuffer != null) {
                 this.writeBuffer.accept(buffer, recipe);
             }
-        }
-
-        @Override
-        public ResourceLocation getName() {
-            return this.serializerId;
         }
     }
 }

@@ -45,6 +45,7 @@ public final class WorldUtils {
      * @return A map of BlockPos to T produced by getter
      */
     public static <T> Map<BlockPos, T> getBlocksInSphere(World world, BlockPos pos, int radius, BiFunction<World, BlockPos, Optional<T>> getter) {
+        final int radiusSq = radius * radius;
         int xMin = pos.getX() - radius;
         int xMax = pos.getX() + radius;
         int yMin = pos.getY() - radius;
@@ -52,7 +53,7 @@ public final class WorldUtils {
         int zMin = pos.getZ() - radius;
         int zMax = pos.getZ() + radius;
         return getBlocks(world, xMin, yMin, zMin, xMax, yMax, zMax, (world1, pos1) -> {
-            if (pos1.getDistance(pos) <= radius) {
+            if (MCMathUtils.distanceSq(pos, pos1) <= radiusSq) {
                 return getter.apply(world1, pos1);
             }
             return Optional.empty();
@@ -77,7 +78,8 @@ public final class WorldUtils {
     @SuppressWarnings("MethodWithTooManyParameters")
     public static <T> Map<BlockPos, T> getBlocks(World world, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, BiFunction<World, BlockPos, Optional<T>> getter) {
         Map<BlockPos, T> map = new LinkedHashMap<>();
-        if (!world.isAreaLoaded(xMin, yMin, zMin, xMax, yMax, zMax, true)) {
+        //noinspection deprecation
+        if (!world.isAreaLoaded(xMin, yMin, zMin, xMax, yMax, zMax)) {
             return map;
         }
 
@@ -106,6 +108,7 @@ public final class WorldUtils {
     }
 
     public static <T extends TileEntity> Map<BlockPos, T> getTileEntitiesInSphere(Class<? extends T> clazz, World world, BlockPos pos, int radius) {
+        final int radiusSq = radius * radius;
         int xMin = pos.getX() - radius;
         int xMax = pos.getX() + radius;
         int yMin = pos.getY() - radius;
@@ -113,7 +116,7 @@ public final class WorldUtils {
         int zMin = pos.getZ() - radius;
         int zMax = pos.getZ() + radius;
         return getBlocks(world, xMin, yMin, zMin, xMax, yMax, zMax, (world1, pos1) -> {
-            if (pos1.getDistance(pos) <= radius) {
+            if (MCMathUtils.distanceSq(pos, pos1) <= radiusSq) {
                 return getTileEntityOfType(clazz, pos, world1);
             }
             return Optional.empty();

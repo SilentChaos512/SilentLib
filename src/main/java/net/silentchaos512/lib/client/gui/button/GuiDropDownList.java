@@ -18,7 +18,7 @@
 
 package net.silentchaos512.lib.client.gui.button;
 
-import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.widget.button.Button;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ import java.util.function.Consumer;
  * @since 3.0.8
  */
 // FIXME: direction UP stacks the elements upside-down.
-public class GuiDropDownList extends GuiButton {
+public class GuiDropDownList extends Button {
     static final int ELEMENT_WIDTH = 100;
     static final int ELEMENT_HEIGHT = 12;
 
@@ -41,12 +41,17 @@ public class GuiDropDownList extends GuiButton {
     private final List<Consumer<GuiDropDownElement>> listeners = new ArrayList<>();
     private boolean expanded = false;
 
-    public GuiDropDownList(int buttonId, int x, int y, String buttonText, ExpandDirection direction) {
-        super(buttonId, x, y, ELEMENT_WIDTH, 20, buttonText); // add overload
+    public GuiDropDownList(int x, int y, String buttonText, ExpandDirection direction) {
+        super(x, y, ELEMENT_WIDTH, 20, buttonText, b -> {
+            if (b instanceof GuiDropDownList) {
+                GuiDropDownList b1 = (GuiDropDownList) b;
+                b1.setExpanded(!b1.expanded);
+            }
+        });
         this.expandDirection = direction;
     }
 
-    public void addElement(GuiDropDownElement element, @Nullable Collection<GuiButton> buttonList) {
+    public void addElement(GuiDropDownElement element, @Nullable Collection<Button> buttonList) {
         element.parent = this;
         element.visible = expanded;
         element.x = this.x + expandDirection.offsetX(this);
@@ -62,11 +67,13 @@ public class GuiDropDownList extends GuiButton {
         this.listeners.add(listener);
     }
 
+    /*
     @Override
     public boolean mouseReleased(double p_mouseReleased_1_, double p_mouseReleased_3_, int p_mouseReleased_5_) {
         setExpanded(!expanded);
         return true;
     }
+    */
 
     void onElementSelected(GuiDropDownElement child) {
         listeners.forEach(listener -> listener.accept(child));
@@ -81,7 +88,7 @@ public class GuiDropDownList extends GuiButton {
             // Should positions be adjusted?
         }
 
-        this.enabled = !expanded;
+        this.active = !expanded;
     }
 
     @Override

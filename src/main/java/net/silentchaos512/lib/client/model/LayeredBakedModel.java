@@ -1,15 +1,9 @@
 package net.silentchaos512.lib.client.model;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.renderer.model.BakedQuad;
 import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.EnumFacing;
 import net.minecraftforge.client.model.IModel;
-
-import javax.annotation.Nullable;
-import java.util.List;
-import java.util.Random;
 
 public abstract class LayeredBakedModel implements ILayeredBakedModel {
     protected final IModel parent;
@@ -23,10 +17,11 @@ public abstract class LayeredBakedModel implements ILayeredBakedModel {
         this.parent = parent;
     }
 
-    @Override
-    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, Random rand) {
-        return ImmutableList.of();
-    }
+    // FIXME
+//    @Override
+//    public List<BakedQuad> getQuads(@Nullable IBlockState state, @Nullable EnumFacing side, Random rand) {
+//        return ImmutableList.of();
+//    }
 
     // FIXME index paramater is gone...
 //    @Override

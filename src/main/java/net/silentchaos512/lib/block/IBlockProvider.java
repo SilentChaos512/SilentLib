@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.block;
 
 import net.minecraft.block.Block;
-import net.minecraft.block.state.IBlockState;
+import net.minecraft.block.BlockState;
 import net.minecraft.util.IItemProvider;
 
 /**
@@ -20,5 +20,7 @@ public interface IBlockProvider extends IItemProvider {
      *
      * @return Default block state
      */
-    default IBlockState asBlockState() { return asBlock().getDefaultState(); }
+    default BlockState asBlockState() {
+        return asBlock().getDefaultState();
+    }
 }

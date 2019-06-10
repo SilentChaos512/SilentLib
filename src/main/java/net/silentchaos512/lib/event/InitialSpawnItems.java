@@ -18,9 +18,9 @@
 
 package net.silentchaos512.lib.event;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
@@ -65,8 +65,8 @@ public final class InitialSpawnItems {
     }
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        EntityPlayer player = event.getPlayer();
-        NBTTagCompound givenItems = PlayerUtils.getPersistedDataSubcompound(player, NBT_KEY);
+        PlayerEntity player = event.getPlayer();
+        CompoundNBT givenItems = PlayerUtils.getPersistedDataSubcompound(player, NBT_KEY);
 
         spawnItems.forEach((key, supplier) -> {
             String nbtKey = key.toString().replace(':', '.');

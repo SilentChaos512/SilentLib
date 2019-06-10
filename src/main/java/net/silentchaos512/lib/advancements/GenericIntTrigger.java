@@ -22,9 +22,9 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.AbstractCriterionInstance;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.SilentLib;
 
@@ -66,12 +66,12 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
 
     @Override
     public GenericIntTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
-        String type = JsonUtils.getString(json, "type", "unknown");
-        int value = JsonUtils.getInt(json, "value", 0);
+        String type = JSONUtils.getString(json, "type", "unknown");
+        int value = JSONUtils.getInt(json, "value", 0);
         return new Instance(type, value);
     }
 
-    public static class Instance extends AbstractCriterionInstance {
+    public static class Instance extends CriterionInstance {
         String type;
         int value;
 
@@ -86,7 +86,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
         }
     }
 
-    public void trigger(EntityPlayerMP player, ResourceLocation type, int value) {
+    public void trigger(ServerPlayerEntity player, ResourceLocation type, int value) {
         GenericIntTrigger.Listeners triggerListeners = this.listeners.get(player.getAdvancements());
         if (triggerListeners != null)
             triggerListeners.trigger(type.toString(), value);
