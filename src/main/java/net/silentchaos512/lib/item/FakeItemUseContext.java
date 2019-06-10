@@ -13,7 +13,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
  */
 public class FakeItemUseContext extends ItemUseContext {
     public FakeItemUseContext(ItemUseContext original, ItemStack fakeItem) {
-        super(original.getWorld(), original.getPlayer(), original.func_221531_n(), original.getItem(),
+        super(original.getWorld(), original.getPlayer(), original.func_221531_n(), fakeItem,
                 new BlockRayTraceResult(original.func_221532_j(), original.getFace(), original.getPos(), original.func_221533_k()));
     }
 }
