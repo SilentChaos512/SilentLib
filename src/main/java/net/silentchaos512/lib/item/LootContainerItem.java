@@ -1,5 +1,5 @@
 /*
- * Silent Lib -- ItemLootContainer
+ * Silent Lib -- LootContainerItem
  * Copyright (C) 2018 SilentChaos512
  *
  * This library is free software; you can redistribute it and/or
@@ -52,7 +52,7 @@ import java.util.List;
  * @author SilentChaos512
  * @since 3.0.2
  */
-public class ItemLootContainer extends Item {
+public class LootContainerItem extends Item {
     private static final String NBT_ROOT = SilentLib.MOD_ID + ".LootContainer";
     private static final String NBT_LOOT_TABLE = "LootTable";
     private static final boolean DEFAULT_LIST_ITEMS_RECEIVED = true;
@@ -60,19 +60,19 @@ public class ItemLootContainer extends Item {
     private final ResourceLocation defaultLootTable;
     private final boolean listItemsReceived;
 
-    public ItemLootContainer(ResourceLocation defaultLootTable) {
+    public LootContainerItem(ResourceLocation defaultLootTable) {
         this(defaultLootTable, DEFAULT_LIST_ITEMS_RECEIVED, new Item.Properties());
     }
 
-    public ItemLootContainer(ResourceLocation defaultLootTable, boolean listItemsReceived) {
+    public LootContainerItem(ResourceLocation defaultLootTable, boolean listItemsReceived) {
         this(defaultLootTable, listItemsReceived, new Item.Properties());
     }
 
-    public ItemLootContainer(ResourceLocation defaultLootTable, Item.Properties properties) {
+    public LootContainerItem(ResourceLocation defaultLootTable, Item.Properties properties) {
         this(defaultLootTable, DEFAULT_LIST_ITEMS_RECEIVED, properties);
     }
 
-    public ItemLootContainer(ResourceLocation defaultLootTable, boolean listItemsReceived, Item.Properties properties) {
+    public LootContainerItem(ResourceLocation defaultLootTable, boolean listItemsReceived, Item.Properties properties) {
         super(properties);
         this.defaultLootTable = defaultLootTable;
         this.listItemsReceived = listItemsReceived;
@@ -148,9 +148,9 @@ public class ItemLootContainer extends Item {
 
         LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
                 .withParameter(LootParameters.field_216281_a, player)
-                .withParameter(LootParameters.field_216284_d, player)
+                .withParameter(LootParameters.field_216286_f, player.getPosition())
                 .withLuck(player.getLuck())
-                .build(LootParameterSets.field_216263_d);
+                .build(LootParameterSets.field_216264_e);
         return server.getLootTableManager().getLootTableFromLocation(lootTable).func_216113_a(lootContext);
     }
 
@@ -169,12 +169,14 @@ public class ItemLootContainer extends Item {
         ItemStack heldItem = playerIn.getHeldItem(handIn);
         if (!(playerIn instanceof ServerPlayerEntity))
             return ActionResult.newResult(ActionResultType.SUCCESS, heldItem);
-        ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
 
         // Generate items from loot table, give to player.
+        ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
+
         if (lootDrops.isEmpty())
-            SilentLib.LOGGER.warn("ItemLootContainer has no drops? {}", heldItem);
+            SilentLib.LOGGER.warn("LootContainerItem has no drops? {}, table={}", heldItem, getLootTable(heldItem));
+
         lootDrops.forEach(stack -> {
             PlayerUtils.giveItem(playerMP, stack);
             if (this.listItemsReceived) {
