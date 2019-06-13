@@ -18,7 +18,7 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shaped crafting.
  */
 public abstract class ExtendedShapedRecipe extends ShapedRecipe {
-    private static final IRecipeSerializer<ShapedRecipe> BASE_SERIALIZER = IRecipeSerializer.field_222157_a;
+    private static final IRecipeSerializer<ShapedRecipe> BASE_SERIALIZER = IRecipeSerializer.CRAFTING_SHAPED;
 
     private final ShapedRecipe recipe;
 
@@ -41,31 +41,33 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     public abstract ItemStack getCraftingResult(CraftingInventory inv);
 
     public static class Serializer<T extends ExtendedShapedRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
-        private final ResourceLocation serializerId;
         private final Function<ShapedRecipe, T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
         @Nullable private final BiConsumer<PacketBuffer, T> readBuffer;
         @Nullable private final BiConsumer<PacketBuffer, T> writeBuffer;
 
-        public Serializer(ResourceLocation serializerId,
-                          Function<ShapedRecipe, T> recipeFactory,
+        public Serializer(Function<ShapedRecipe, T> recipeFactory,
                           @Nullable BiConsumer<JsonObject, T> readJson,
                           @Nullable BiConsumer<PacketBuffer, T> readBuffer,
                           @Nullable BiConsumer<PacketBuffer, T> writeBuffer) {
-            this.serializerId = serializerId;
             this.recipeFactory = recipeFactory;
             this.readJson = readJson;
             this.readBuffer = readBuffer;
             this.writeBuffer = writeBuffer;
         }
 
+        public static <S extends ExtendedShapedRecipe> Serializer<S> basic(Function<ShapedRecipe, S> recipeFactory) {
+            return new Serializer<>(recipeFactory, null, null, null);
+        }
+
+        @Deprecated
         public static <S extends ExtendedShapedRecipe> Serializer<S> basic(ResourceLocation serializerId, Function<ShapedRecipe, S> recipeFactory) {
-            return new Serializer<>(serializerId, recipeFactory, null, null, null);
+            return new Serializer<>(recipeFactory, null, null, null);
         }
 
         @Override
         public T read(ResourceLocation recipeId, JsonObject json) {
-            ShapedRecipe recipe = IRecipeSerializer.field_222157_a.read(recipeId, json);
+            ShapedRecipe recipe = BASE_SERIALIZER.read(recipeId, json);
             T result = this.recipeFactory.apply(recipe);
             if (this.readJson != null) {
                 this.readJson.accept(json, result);

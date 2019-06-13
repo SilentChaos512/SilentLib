@@ -18,7 +18,7 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shapeless crafting.
  */
 public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
-    private static final IRecipeSerializer<ShapelessRecipe> BASE_SERIALIZER = IRecipeSerializer.field_222158_b;
+    private static final IRecipeSerializer<ShapelessRecipe> BASE_SERIALIZER = IRecipeSerializer.CRAFTING_SHAPELESS;
 
     private final ShapelessRecipe recipe;
 
@@ -41,26 +41,28 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     public abstract ItemStack getCraftingResult(CraftingInventory inv);
 
     public static class Serializer<T extends ExtendedShapelessRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
-        private final ResourceLocation serializerId;
         private final Function<ShapelessRecipe, T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
         @Nullable private final BiConsumer<PacketBuffer, T> readBuffer;
         @Nullable private final BiConsumer<PacketBuffer, T> writeBuffer;
 
-        public Serializer(ResourceLocation serializerId,
-                          Function<ShapelessRecipe, T> recipeFactory,
+        public Serializer(Function<ShapelessRecipe, T> recipeFactory,
                           @Nullable BiConsumer<JsonObject, T> readJson,
                           @Nullable BiConsumer<PacketBuffer, T> readBuffer,
                           @Nullable BiConsumer<PacketBuffer, T> writeBuffer) {
-            this.serializerId = serializerId;
             this.recipeFactory = recipeFactory;
             this.readJson = readJson;
             this.readBuffer = readBuffer;
             this.writeBuffer = writeBuffer;
         }
 
+        public static <S extends ExtendedShapelessRecipe> Serializer<S> basic(Function<ShapelessRecipe, S> recipeFactory) {
+            return new Serializer<>(recipeFactory, null, null, null);
+        }
+
+        @Deprecated
         public static <S extends ExtendedShapelessRecipe> Serializer<S> basic(ResourceLocation serializerId, Function<ShapelessRecipe, S> recipeFactory) {
-            return new Serializer<>(serializerId, recipeFactory, null, null, null);
+            return new Serializer<>(recipeFactory, null, null, null);
         }
 
         @Override
