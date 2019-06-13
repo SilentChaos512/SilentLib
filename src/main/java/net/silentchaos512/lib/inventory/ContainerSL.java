@@ -8,6 +8,7 @@ import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 
+@Deprecated
 public class ContainerSL extends Container {
     protected final IInventory tileInventory;
 

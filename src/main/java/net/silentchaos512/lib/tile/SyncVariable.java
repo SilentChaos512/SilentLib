@@ -64,15 +64,11 @@ public @interface SyncVariable {
      * @since 2.1.1
      */
     final class Helper {
-        static final Map<Class, Function<CompoundNBT, ?>> READERS = new HashMap<>();
-        static final Map<Class, Function<?, CompoundNBT>> WRITERS = new HashMap<>();
         static final Map<Class, NBTSerializer> SERIALIZERS = new HashMap<>();
 
         private Helper() {}
 
-        public static <T> void registerSerializer(Class<T> clazz,
-                                                  Function<CompoundNBT, T> reader,
-                                                  BiConsumer<CompoundNBT, T> writer) {
+        public static <T> void registerSerializer(Class<T> clazz, Function<CompoundNBT, T> reader, BiConsumer<CompoundNBT, T> writer) {
             SERIALIZERS.put(clazz, new NBTSerializer<T>() {
                 @Override
                 public T read(CompoundNBT tags) {
@@ -94,7 +90,6 @@ public @interface SyncVariable {
          * @param tags The NBT to read values from.
          */
         public static void readSyncVars(Object obj, CompoundNBT tags) {
-
             // Try to read from NBT for fields marked with SyncVariable.
             for (Field field : obj.getClass().getDeclaredFields()) {
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
@@ -129,8 +124,7 @@ public @interface SyncVariable {
                                 CompoundNBT compound = tags.getCompound(name);
                                 field.set(obj, serializer.read(compound));
                             } else
-                                throw new UnsupportedDataTypeException(
-                                        "Don't know how to read type " + field.getType() + " from NBT!");
+                                throw new UnsupportedDataTypeException("Don't know how to read type " + field.getType() + " from NBT!");
                         } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
                             ex.printStackTrace();
                         }
@@ -189,8 +183,7 @@ public @interface SyncVariable {
                                     serializer.write(compound, field.get(obj));
                                     tags.put(name, compound);
                                 } else
-                                    throw new UnsupportedDataTypeException(
-                                            "Don't know how to write type " + field.getType() + " to NBT!");
+                                    throw new UnsupportedDataTypeException("Don't know how to write type " + field.getType() + " to NBT!");
                             } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
                                 ex.printStackTrace();
                             }

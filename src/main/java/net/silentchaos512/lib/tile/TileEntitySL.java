@@ -13,6 +13,7 @@ import net.minecraft.tileentity.TileEntityType;
  * @author Silent
  * @since 2.0.6
  */
+@Deprecated
 public class TileEntitySL extends TileEntity {
     public TileEntitySL(TileEntityType<?> tileEntityTypeIn) {
         super(tileEntityTypeIn);

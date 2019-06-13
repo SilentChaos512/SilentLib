@@ -28,6 +28,7 @@ import java.util.function.Supplier;
  *
  * @param <T> Container type
  */
+@Deprecated
 public interface ContainerType<T extends Container> extends INamedContainerProvider /*extends IInteractionObject*/ {
     ResourceLocation getId();
 

@@ -20,6 +20,7 @@ package net.silentchaos512.lib.tile;
 
 import net.minecraft.item.ItemStack;
 
+@Deprecated
 public interface IFuelBurner {
     boolean feedFuel(ItemStack stack);
 

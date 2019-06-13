@@ -24,6 +24,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.silentchaos512.utils.EnumUtils;
 
+@Deprecated
 public class FurnaceFuelBurner implements IFuelBurner {
     private final BurnCondition burnCondition;
     @Getter private int timeRemaining;

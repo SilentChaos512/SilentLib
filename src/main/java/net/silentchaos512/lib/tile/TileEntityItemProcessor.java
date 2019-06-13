@@ -31,6 +31,7 @@ import net.silentchaos512.utils.MathUtils;
 import javax.annotation.Nullable;
 import java.util.Collection;
 
+@Deprecated
 public abstract class TileEntityItemProcessor extends TileSidedInventorySL implements ITickableTileEntity {
     private static final int LONG_UPDATE_DELAY = 20;
 

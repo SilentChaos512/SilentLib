@@ -7,6 +7,7 @@ import net.minecraft.util.Direction;
 
 import javax.annotation.Nullable;
 
+@Deprecated
 public abstract class TileSidedInventorySL extends TileInventorySL implements ISidedInventory {
     public TileSidedInventorySL(TileEntityType<?> tileEntityType, int inventorySize) {
         super(tileEntityType, inventorySize);

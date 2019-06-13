@@ -1,7 +1,6 @@
 package net.silentchaos512.lib.inventory;
 
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
@@ -17,6 +16,7 @@ import javax.annotation.Nullable;
  *
  * @param <T> Container type
  */
+@Deprecated
 public class TileEntityContainerType<T extends Container> implements ContainerType<T> {
     public BlockPos pos;
     private final ResourceLocation id;
