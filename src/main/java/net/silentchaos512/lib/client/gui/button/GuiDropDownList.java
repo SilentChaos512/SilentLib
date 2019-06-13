@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.client.gui.button;
 
+import net.minecraft.client.gui.widget.Widget;
 import net.minecraft.client.gui.widget.button.Button;
 
 import javax.annotation.Nullable;
@@ -51,7 +52,7 @@ public class GuiDropDownList extends Button {
         this.expandDirection = direction;
     }
 
-    public void addElement(GuiDropDownElement element, @Nullable Collection<Button> buttonList) {
+    public void addElement(GuiDropDownElement element, @Nullable Collection<Widget> buttonList) {
         element.parent = this;
         element.visible = expanded;
         element.x = this.x + expandDirection.offsetX(this);
