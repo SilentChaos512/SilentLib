@@ -45,7 +45,7 @@ public final class AttributeHelper {
         if (attributeInstance == null) return;
         AttributeModifier currentMod = attributeInstance.getModifier(modifier.getID());
 
-        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.func_220375_c() != modifier.func_220375_c())) {
+        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.getOperation() != modifier.getOperation())) {
             // Modifier changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
         }
@@ -53,7 +53,7 @@ public final class AttributeHelper {
     }
 
     public static void remove(LivingEntity entity, IAttribute attribute, UUID uuid) {
-        IAttributeInstance instance = entity.getAttributeMap().getAttributeInstance(attribute);
+        IAttributeInstance instance = entity.getAttribute(attribute);
         remove(instance, uuid);
     }
 

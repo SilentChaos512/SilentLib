@@ -16,7 +16,7 @@ public class PlantFeature extends FlowersFeature {
     private final int maxCount;
 
     public PlantFeature(BlockState plant, int tryCount, int maxCount) {
-        super(NoFeatureConfig::func_214639_a);
+        super(NoFeatureConfig::deserialize);
         this.plant = plant;
         this.tryCount = tryCount;
         this.maxCount = maxCount;

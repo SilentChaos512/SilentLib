@@ -147,21 +147,19 @@ public class LootContainerItem extends Item {
         if (server == null) return ImmutableList.of();
 
         LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
-                .withParameter(LootParameters.field_216281_a, player)
-                .withParameter(LootParameters.field_216286_f, player.getPosition())
+                .withParameter(LootParameters.THIS_ENTITY, player)
+                .withParameter(LootParameters.POSITION, player.getPosition())
                 .withLuck(player.getLuck())
-                .build(LootParameterSets.field_216264_e);
-        return server.getLootTableManager().getLootTableFromLocation(lootTable).func_216113_a(lootContext);
+                .build(LootParameterSets.GIFT);
+        return server.getLootTableManager().getLootTableFromLocation(lootTable).generate(lootContext);
     }
 
     @Override
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString())
-                .applyTextStyle(TextFormatting.WHITE);
-        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName)
-                .applyTextStyle(TextFormatting.BLUE));
+        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).applyTextStyle(TextFormatting.WHITE);
+        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).applyTextStyle(TextFormatting.BLUE));
     }
 
     @Override

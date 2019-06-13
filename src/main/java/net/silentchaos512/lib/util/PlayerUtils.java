@@ -42,7 +42,7 @@ public final class PlayerUtils {
             ItemEntity entityItem = new ItemEntity(player.world, player.posX, player.posY + 1.0, player.posZ, copy);
             entityItem.setNoPickupDelay();
             entityItem.setOwnerId(player.getUniqueID());
-            player.world.func_217376_c(entityItem);
+            player.world.addEntity(entityItem);
         }
     }
 
