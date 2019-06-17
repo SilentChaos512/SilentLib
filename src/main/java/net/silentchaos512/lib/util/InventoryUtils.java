@@ -19,16 +19,45 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.Container;
+import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
 import net.silentchaos512.lib.collection.StackList;
 import net.silentchaos512.utils.MathUtils;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Predicate;
 
 public final class InventoryUtils {
     private InventoryUtils() {throw new IllegalAccessError("Utility class");}
+
+    /**
+     * Creates slots for the player's inventory for a {@link Container}. Convenience method to
+     * improve readability of Container code.
+     *
+     * @param playerInventory Player's inventory
+     * @param startX          X-position of top-left slot
+     * @param startY          Y-position of top-left slot
+     * @return A collection of slots to be added
+     * @since 4.1.1
+     */
+    public static Collection<Slot> createPlayerSlots(PlayerInventory playerInventory, int startX, int startY) {
+        Collection<Slot> list = new ArrayList<>();
+        // Backpack
+        for (int y = 0; y < 3; ++y) {
+            for (int x = 0; x < 9; ++x) {
+                list.add(new Slot(playerInventory, x + y * 9 + 9, startX + x * 18, startY + y * 18));
+            }
+        }
+        // Hotbar
+        for (int x = 0; x < 9; ++x) {
+            list.add(new Slot(playerInventory, x, 8 + x * 18, startY + 58));
+        }
+        return list;
+    }
 
     public static boolean canItemsStack(ItemStack a, ItemStack b) {
         if (a.isEmpty() || !a.isItemEqual(b) || a.getTag() != b.getTag()) {

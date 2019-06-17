@@ -22,23 +22,23 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class LockableSidedInventoryTileEntity extends LockableTileEntity implements ISidedInventory {
-    protected NonNullList<ItemStack> inventory;
+    protected NonNullList<ItemStack> items;
     private final LazyOptional<? extends IItemHandler>[] handlers =
             SidedInvWrapper.create(this, Direction.UP, Direction.DOWN, Direction.NORTH);
 
     protected LockableSidedInventoryTileEntity(TileEntityType<?> typeIn, int inventorySize) {
         super(typeIn);
-        this.inventory = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
+        this.items = NonNullList.withSize(inventorySize, ItemStack.EMPTY);
     }
 
     @Override
     public int getSizeInventory() {
-        return inventory.size();
+        return items.size();
     }
 
     @Override
     public boolean isEmpty() {
-        for (ItemStack stack : inventory) {
+        for (ItemStack stack : items) {
             if (!stack.isEmpty()) {
                 return false;
             }
@@ -48,25 +48,25 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
 
     @Override
     public ItemStack getStackInSlot(int index) {
-        if (index < 0 || index >= inventory.size()) {
+        if (index < 0 || index >= items.size()) {
             return ItemStack.EMPTY;
         }
-        return inventory.get(index);
+        return items.get(index);
     }
 
     @Override
     public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(inventory, index, count);
+        return ItemStackHelper.getAndSplit(items, index, count);
     }
 
     @Override
     public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(inventory, index);
+        return ItemStackHelper.getAndRemove(items, index);
     }
 
     @Override
     public void setInventorySlotContents(int index, ItemStack stack) {
-        inventory.set(index, stack);
+        items.set(index, stack);
         if (stack.getCount() > getInventoryStackLimit()) {
             stack.setCount(getInventoryStackLimit());
         }
@@ -79,34 +79,34 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
 
     @Override
     public void clear() {
-        inventory.clear();
+        items.clear();
     }
 
     @Override
     public void read(CompoundNBT tags) {
         super.read(tags);
-        inventory = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
-        ItemStackHelper.loadAllItems(tags, inventory);
+        items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+        ItemStackHelper.loadAllItems(tags, items);
     }
 
     @Override
     public CompoundNBT write(CompoundNBT tags) {
         super.write(tags);
-        ItemStackHelper.saveAllItems(tags, inventory);
+        ItemStackHelper.saveAllItems(tags, items);
         return tags;
     }
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT tags = getUpdateTag();
-        ItemStackHelper.saveAllItems(tags, inventory);
+        ItemStackHelper.saveAllItems(tags, items);
         return new SUpdateTileEntityPacket(pos, 1, tags);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         super.onDataPacket(net, packet);
-        ItemStackHelper.loadAllItems(packet.getNbtCompound(), inventory);
+        ItemStackHelper.loadAllItems(packet.getNbtCompound(), items);
     }
 
     @Nullable
@@ -120,5 +120,13 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
             return handlers[2].cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    @Override
+    public void remove() {
+        super.remove();
+        for (LazyOptional<? extends IItemHandler> handler : handlers) {
+            handler.invalidate();
+        }
     }
 }
