@@ -42,7 +42,12 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         this.dim = dimension;
     }
 
-//    @Override
+    @Override
+    public boolean func_222268_a(Entity p_222268_1_, float p_222268_2_) {
+        return super.func_222268_a(p_222268_1_, p_222268_2_);
+    }
+
+    //    @Override
     public void placeEntity(World world, Entity entity, float yaw) {
         entity.setMotion(Vec3d.ZERO);
         entity.fallDistance = 0;

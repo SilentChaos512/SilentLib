@@ -33,7 +33,7 @@ public final class DimensionUtils {
         if ("default".equalsIgnoreCase(str) || "overworld".equalsIgnoreCase(str))
             return DimensionType.OVERWORLD;
         if ("nether".equalsIgnoreCase(str))
-            return DimensionType.NETHER;
+            return DimensionType.THE_NETHER;
         if ("end".equalsIgnoreCase(str))
             return DimensionType.THE_END;
 
@@ -49,7 +49,7 @@ public final class DimensionUtils {
         // Get by integer ID
         String trimmed = NAME_PATTERN.matcher(str).replaceFirst("");
         try {
-            int k = Integer.parseInt(str);
+            int k = Integer.parseInt(trimmed);
             return DimensionType.getById(k);
         } catch (NumberFormatException ex) {
             return null;

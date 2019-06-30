@@ -13,7 +13,7 @@ import java.util.Optional;
 public final class SilentLib {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "4.1.1";
+    public static final String VERSION = "4.2.0";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 

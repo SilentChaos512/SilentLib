@@ -2,6 +2,7 @@ package net.silentchaos512.lib.block;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.item.Item;
 import net.minecraft.util.IItemProvider;
 
 /**
@@ -22,5 +23,10 @@ public interface IBlockProvider extends IItemProvider {
      */
     default BlockState asBlockState() {
         return asBlock().getDefaultState();
+    }
+
+    @Override
+    default Item asItem() {
+        return asBlock().asItem();
     }
 }
