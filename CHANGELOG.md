@@ -1,5 +1,12 @@
 # Changelog
 
+[4.2.0]
+- Port to 1.14.3
+- Update silent-utils to 1.0.7
+
+[4.1.0]
+- Port to 1.14.2
+
 [4.0.10]
 - Add zh_cn translation (XuyuEre)
 - Implement ILeftClickItem

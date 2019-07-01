@@ -52,6 +52,8 @@ sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = co
 minecraft {
     mappings channel: project.mcp_channel.toString(), version: project.mcp_mappings.toString()
 
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+
     runs {
         client = {
             // recommended logging data for a userdev environment

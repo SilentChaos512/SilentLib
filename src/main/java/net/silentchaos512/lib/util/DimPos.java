@@ -22,6 +22,10 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.dimension.DimensionType;
+
+import javax.annotation.Nullable;
 
 /**
  * Basically a BlockPos with a dimension coordinate.
@@ -42,6 +46,10 @@ public final class DimPos {
     private final int dimension;
 
     //region Static factory methods
+
+    public static DimPos of(BlockPos pos, DimensionType dimension) {
+        return new DimPos(pos, dimension.getId());
+    }
 
     public static DimPos of(BlockPos pos, int dimension) {
         return new DimPos(pos, dimension);
@@ -84,6 +92,11 @@ public final class DimPos {
         return this.dimension;
     }
 
+    @Nullable
+    public DimensionType getDimensionType() {
+        return DimensionType.getById(this.dimension);
+    }
+
     public static DimPos read(CompoundNBT tags) {
         return DimPos.of(
                 tags.getInt("posX"),
@@ -106,6 +119,10 @@ public final class DimPos {
      */
     public BlockPos getPos() {
         return new BlockPos(posX, posY, posZ);
+    }
+
+    public Vec3d getPosCentered(double yOffset) {
+        return new Vec3d(posX + 0.5, posY + yOffset, posZ + 0.5);
     }
 
     /**
