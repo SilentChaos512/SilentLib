@@ -37,6 +37,7 @@ import net.minecraft.world.storage.loot.LootContext;
 import net.minecraft.world.storage.loot.LootParameterSets;
 import net.minecraft.world.storage.loot.LootParameters;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.util.LootUtils;
 import net.silentchaos512.lib.util.PlayerUtils;
 
 import javax.annotation.Nullable;
@@ -142,16 +143,7 @@ public class LootContainerItem extends Item {
      * @return A collection of items to give to the player
      */
     protected Collection<ItemStack> getLootDrops(ItemStack heldItem, ServerPlayerEntity player) {
-        ResourceLocation lootTable = getLootTable(heldItem);
-        MinecraftServer server = player.world.getServer();
-        if (server == null) return ImmutableList.of();
-
-        LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
-                .withParameter(LootParameters.THIS_ENTITY, player)
-                .withParameter(LootParameters.POSITION, player.getPosition())
-                .withLuck(player.getLuck())
-                .build(LootParameterSets.GIFT);
-        return server.getLootTableManager().getLootTableFromLocation(lootTable).generate(lootContext);
+        return LootUtils.gift(getLootTable(heldItem), player);
     }
 
     @Override

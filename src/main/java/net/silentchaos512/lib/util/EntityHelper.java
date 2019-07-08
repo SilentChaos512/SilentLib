@@ -51,7 +51,7 @@ public final class EntityHelper {
     private static void handleSpawns() {
         Entity entity;
         while ((entity = entitiesToSpawn.poll()) != null) {
-            entity.world.func_217346_i(entity);
+            entity.world.addEntity(entity);
         }
     }
 
