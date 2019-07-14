@@ -25,6 +25,11 @@ public class SilentLibNetwork {
                 .encoder(LeftClickItemPacket::toBytes)
                 .consumer(LeftClickItemPacket::handle)
                 .add();
+        channel.messageBuilder(DisplayNBTPacket.class, 2)
+                .decoder(DisplayNBTPacket::fromBytes)
+                .encoder(DisplayNBTPacket::toBytes)
+                .consumer(DisplayNBTPacket::handle)
+                .add();
     }
 
     public static void init() {
