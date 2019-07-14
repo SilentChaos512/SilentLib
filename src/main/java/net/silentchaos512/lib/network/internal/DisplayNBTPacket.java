@@ -35,13 +35,18 @@ public class DisplayNBTPacket {
     }
 
     public static void handle(DisplayNBTPacket packet, Supplier<NetworkEvent.Context> context) {
-        ClientPlayerEntity player = Minecraft.getInstance().player;
-
-        if (player != null) {
-            DisplayNBTScreen screen = new DisplayNBTScreen(packet.nbt, packet.title);
-            Minecraft.getInstance().displayGuiScreen(screen);
-        }
-
+        ClientWrapper.handle(packet);
         context.get().setPacketHandled(true);
+    }
+
+    private static class ClientWrapper {
+        private static void handle(DisplayNBTPacket packet) {
+            ClientPlayerEntity player = Minecraft.getInstance().player;
+
+            if (player != null) {
+                DisplayNBTScreen screen = new DisplayNBTScreen(packet.nbt, packet.title);
+                Minecraft.getInstance().displayGuiScreen(screen);
+            }
+        }
     }
 }
