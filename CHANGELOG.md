@@ -1,7 +1,7 @@
 # Changelog
 
 [4.2.3] - 2019-07-14
-- Added `sl_nbt` command. Can target a block, entity, or item. Displays the object's NBT in an easy to read format.
+- Added `sl_nbt` command. Can target a block, entity, or item. Displays the object's NBT in an easy to read format. You can also export the NBT to a JSON file.
 
 [4.2.0]
 - Port to 1.14.3
