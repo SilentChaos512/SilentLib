@@ -13,7 +13,6 @@ import java.util.Optional;
 public final class SilentLib {
     public static final String MOD_ID = "silentlib";
     public static final String MOD_NAME = "Silent Lib";
-    public static final String VERSION = "4.2.0";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
 
@@ -26,23 +25,14 @@ public final class SilentLib {
     }
 
     public static String getVersion() {
-        return getVersion(false);
-    }
-
-    public static String getVersion(boolean correctInDev) {
         Optional<? extends ModContainer> o = ModList.get().getModContainerById(MOD_ID);
         if (o.isPresent()) {
-            String str = o.get().getModInfo().getVersion().toString();
-            if (correctInDev && "NONE".equals(str))
-                return VERSION;
-            return str;
+            return o.get().getModInfo().getVersion().toString();
         }
         return "0.0.0";
     }
 
     public static boolean isDevBuild() {
-        // TODO: Is there a better way? Guess it works though...
-        String version = getVersion(false);
-        return "NONE".equals(version);
+        return "NONE".equals(getVersion());
     }
 }

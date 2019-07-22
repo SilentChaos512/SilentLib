@@ -14,6 +14,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@Deprecated
 public final class ModelGenerator {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 

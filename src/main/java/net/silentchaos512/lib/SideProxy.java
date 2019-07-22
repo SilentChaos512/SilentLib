@@ -10,7 +10,6 @@ import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
-import net.silentchaos512.lib.util.generator.TagGenerator;
 
 class SideProxy {
     SideProxy() {
@@ -25,14 +24,11 @@ class SideProxy {
         ILeftClickItem.EventHandler.init();
     }
 
-    private void commonSetup(FMLCommonSetupEvent event) { }
+    private void commonSetup(FMLCommonSetupEvent event) {}
 
-    private void imcEnqueue(InterModEnqueueEvent event) { }
+    private void imcEnqueue(InterModEnqueueEvent event) {}
 
-    private void imcProcess(InterModProcessEvent event) {
-        //noinspection deprecation -- deprecated as a warning to modders, see javadoc
-        TagGenerator.generateFiles();
-    }
+    private void imcProcess(InterModProcessEvent event) {}
 
     private void onServerStarting(FMLServerStartingEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
@@ -44,7 +40,7 @@ class SideProxy {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         }
 
-        private void clientSetup(FMLClientSetupEvent event) { }
+        private void clientSetup(FMLClientSetupEvent event) {}
     }
 
     static class Server extends SideProxy {
@@ -52,6 +48,6 @@ class SideProxy {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverSetup);
         }
 
-        private void serverSetup(FMLDedicatedServerSetupEvent event) { }
+        private void serverSetup(FMLDedicatedServerSetupEvent event) {}
     }
 }

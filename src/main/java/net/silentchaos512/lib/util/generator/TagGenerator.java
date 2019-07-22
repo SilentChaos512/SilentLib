@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Deprecated
 public final class TagGenerator {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Map<ResourceLocation, Collection<String>> BLOCKS = new ConcurrentHashMap<>();

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
+@Deprecated
 public final class RecipeGenerator {
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private static final Map<Class<?>, Function<Object, JsonObject>> COMPONENT_SERIALIZERS = new HashMap<>();
