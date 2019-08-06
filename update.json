@@ -1,14 +1,15 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/silent-lib",
     "1.14.4": {
+        "4.3.1": "https://github.com/SilentChaos512/SilentLib/blob/1.14/CHANGELOG.md",
         "4.3.0": "https://github.com/SilentChaos512/SilentLib/blob/1.14/CHANGELOG.md"
     },
     "1.14.3": {
         "4.2.4": "https://github.com/SilentChaos512/SilentLib/blob/1.14/CHANGELOG.md"
     },
     "promos": {
-        "1.14.4-latest": "4.3.0",
-        "1.14.4-recommended": "4.3.0",
+        "1.14.4-latest": "4.3.1",
+        "1.14.4-recommended": "4.3.1",
         "1.14.3-latest": "4.2.4",
         "1.14.3-recommended": "4.2.4"
     }

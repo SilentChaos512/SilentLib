@@ -21,8 +21,9 @@ package net.silentchaos512.lib.event;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.util.GameUtil;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -51,10 +52,10 @@ public final class ClientTicks {
     }
 
     public static void scheduleAction(Runnable action) {
-//        if (GameUtil.isClient())
+        if (GameUtil.isClient())
             INSTANCE.scheduledActions.add(action);
-//        else
-//            SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
+        else
+            SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
 
         if (INSTANCE.scheduledActions.size() >= QUEUE_OVERFLOW_LIMIT) {
             // Queue overflow?

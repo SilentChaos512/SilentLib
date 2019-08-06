@@ -19,7 +19,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.event.TickEvent;
 import net.silentchaos512.lib.SilentLib;
 
 import java.util.Queue;

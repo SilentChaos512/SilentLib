@@ -1,5 +1,8 @@
 # Changelog
 
+[4.3.1] - 2019-08-06
+- Update for Forge 28.0.45
+
 [4.3.0] - 2019-07-22
 - Update to 1.14.4
 
