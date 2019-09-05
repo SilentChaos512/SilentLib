@@ -58,10 +58,11 @@ public final class GameUtil {
      * Determine if tooltips should be calculated, call in {@link net.minecraftforge.event.entity.player.ItemTooltipEvent}
      * handlers. This can prevent tooltip events from being processed at unnecessary times (world
      * loading/closing), while still allowing JEI to build its cache. JEI tooltip caches are done in
-     * {@link LoaderState#AVAILABLE}, in-game is {@link LoaderState#SERVER_STARTED}.
+     * LoaderState#AVAILABLE, in-game is LoaderState#SERVER_STARTED (this info is outdated)
      *
      * @since 3.0.8
      */
+    @Deprecated
     public static boolean shouldCalculateTooltip() {
         // FIXME
 //        LoaderState state = Loader.instance().getLoaderState();

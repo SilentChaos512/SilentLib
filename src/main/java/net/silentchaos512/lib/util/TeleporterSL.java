@@ -20,7 +20,7 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 import javax.annotation.Nullable;
 
 /**
- * {@link ITeleporter} which can move entities across dimensions to any given point.
+ * ITeleporter which can move entities across dimensions to any given point.
  *
  * FIXME: Why is ITeleporter gone?
  *
