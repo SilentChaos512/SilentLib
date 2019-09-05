@@ -61,7 +61,7 @@ public interface ICustomEnchantColor {
                 if (value > 15)
                     return Color.HSBtoRGB(ClientTicks.totalTicks() * 0.005f, 1f, 0.6f);
                 else if (value >= 0)
-                    return DyeColor.byId(value).func_196057_c();
+                    return DyeColor.byId(value).getFireworkColor();
             }
         }
 
