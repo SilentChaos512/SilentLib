@@ -60,7 +60,7 @@ public class DisplayNBTCommand {
         BlockPos pos = BlockPosArgument.getBlockPos(context, "pos");
         ServerWorld world = context.getSource().getWorld();
         TileEntity tileEntity = world.getTileEntity(pos);
-        ITextComponent title = world.getBlockState(pos).getBlock().getNameTextComponent();
+        ITextComponent title = new TranslationTextComponent(world.getBlockState(pos).getBlock().getTranslationKey());
 
         if (tileEntity != null) {
             sendPacket(context, tileEntity.write(new CompoundNBT()), title);
