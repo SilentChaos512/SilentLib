@@ -70,7 +70,7 @@ public final class PlayerUtils {
      * @return The tag compound, creating it if it does not exist.
      */
     public static CompoundNBT getPersistedDataSubcompound(PlayerEntity player, String subcompoundKey) {
-        CompoundNBT forgeData = player.getPersistantData();
+        CompoundNBT forgeData = player.getPersistentData();
         if (!forgeData.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
             forgeData.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
         }

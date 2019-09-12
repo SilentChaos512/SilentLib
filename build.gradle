@@ -87,6 +87,9 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+    maven {
+        url  "https://dl.bintray.com/silentchaos512/silent-utils"
+    }
 }
 
 configurations {
