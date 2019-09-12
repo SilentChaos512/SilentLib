@@ -1,5 +1,8 @@
 # Changelog
 
+[4.3.3] - 2019-09-12
+- Fix crash caused by javax reference in SyncVariable
+
 [4.3.1] - 2019-08-06
 - Update for Forge 28.0.45
 

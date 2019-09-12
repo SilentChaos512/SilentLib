@@ -4,7 +4,6 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.silentchaos512.lib.util.NBTSerializer;
 
-import javax.activation.UnsupportedDataTypeException;
 import java.lang.annotation.Annotation;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
@@ -124,8 +123,8 @@ public @interface SyncVariable {
                                 CompoundNBT compound = tags.getCompound(name);
                                 field.set(obj, serializer.read(compound));
                             } else
-                                throw new UnsupportedDataTypeException("Don't know how to read type " + field.getType() + " from NBT!");
-                        } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
+                                throw new IllegalArgumentException("Don't know how to read type " + field.getType() + " from NBT!");
+                        } catch (IllegalAccessException | IllegalArgumentException ex) {
                             ex.printStackTrace();
                         }
                     }
@@ -183,8 +182,8 @@ public @interface SyncVariable {
                                     serializer.write(compound, field.get(obj));
                                     tags.put(name, compound);
                                 } else
-                                    throw new UnsupportedDataTypeException("Don't know how to write type " + field.getType() + " to NBT!");
-                            } catch (IllegalAccessException | UnsupportedDataTypeException ex) {
+                                    throw new IllegalArgumentException("Don't know how to write type " + field.getType() + " to NBT!");
+                            } catch (IllegalAccessException | IllegalArgumentException ex) {
                                 ex.printStackTrace();
                             }
                         }
