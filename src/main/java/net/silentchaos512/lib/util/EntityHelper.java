@@ -41,6 +41,7 @@ public final class EntityHelper {
      * Thread-safe spawning of entities. The queued entities will be spawned in the START (pre)
      * phase of WorldTickEvent.
      *
+     * @param entity The entity to spawn
      * @since 2.1.4
      */
     public static void safeSpawn(Entity entity) {
@@ -59,13 +60,16 @@ public final class EntityHelper {
      * Heals the player by the given amount. If cancelable is true, this calls the heal method
      * (which fires a cancelable event). If cancelable is false, this uses setHealth instead.
      *
+     * @param entity     The entity to heal
+     * @param healAmount Amount of health to restore
+     * @param cancelable Whether or not to fire a healing event
      * @since 2.2.9
      */
-    public static void heal(LivingEntity entityLiving, float healAmount, boolean cancelable) {
+    public static void heal(LivingEntity entity, float healAmount, boolean cancelable) {
         if (cancelable) {
-            entityLiving.heal(healAmount);
+            entity.heal(healAmount);
         } else {
-            entityLiving.setHealth(entityLiving.getHealth() + healAmount);
+            entity.setHealth(entity.getHealth() + healAmount);
         }
     }
 

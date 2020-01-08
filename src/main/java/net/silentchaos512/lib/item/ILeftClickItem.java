@@ -38,6 +38,9 @@ public interface ILeftClickItem {
      * Networked left-click handler. Called in SilentLibEventHandlers on both the client- and
      * server-side (via packet) when a player left-clicks on nothing (in the air).
      *
+     * @param world  The world
+     * @param player The player
+     * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
     default ActionResult<ItemStack> onItemLeftClickSL(World world, PlayerEntity player, Hand hand) {
@@ -48,6 +51,9 @@ public interface ILeftClickItem {
      * Called when the player left-clicks on a block. Defaults to the same behavior as an empty
      * click (onItemLeftClickSL).
      *
+     * @param world  The world
+     * @param player The player
+     * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
     default ActionResult<ItemStack> onItemLeftClickBlockSL(World world, PlayerEntity player, Hand hand) {

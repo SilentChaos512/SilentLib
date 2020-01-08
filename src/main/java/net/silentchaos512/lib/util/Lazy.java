@@ -3,7 +3,7 @@ package net.silentchaos512.lib.util;
 import java.util.function.Supplier;
 
 /**
- * A lazy object, very similar to {@link net.minecraft.util.LazyLoadBase}. Use the {@link #of}
+ * A lazy object, very similar to {@link net.minecraft.util.LazyValue}. Use the {@link #of}
  * methods to create instances. Lazy objects store a {@link Supplier} at first, then the object
  * produced by the {@link Supplier}. Call {@link #get} to acquire the object.
  *

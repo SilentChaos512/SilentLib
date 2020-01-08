@@ -28,22 +28,28 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface SyncVariable {
     /**
      * The name to read/write to NBT.
+     * @return The variables NBT key
      */
     String name();
 
     /**
      * Should the variable be loaded in {@link TileEntity#read}?
+     * @return True if we should load on read
      */
     boolean onRead() default true;
 
     /**
      * Should the variable be saved in {@link TileEntity#write}?
+     *
+     * @return True if we should save on write
      */
     boolean onWrite() default true;
 
     /**
      * Should the variable be saved in {@link TileEntity#getUpdatePacket} and {@link
      * TileEntity#getUpdateTag}?
+     *
+     * @return True if we should save on sync packet
      */
     boolean onPacket() default true;
 

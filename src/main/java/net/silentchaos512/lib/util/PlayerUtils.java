@@ -35,6 +35,9 @@ public final class PlayerUtils {
     /**
      * Gives the player an item. If it can't be given directly, it spawns an EntityItem. Spawns 1
      * block above player's feet.
+     *
+     * @param player The player
+     * @param stack  The item
      */
     public static void giveItem(PlayerEntity player, ItemStack stack) {
         ItemStack copy = stack.copy();
@@ -48,6 +51,9 @@ public final class PlayerUtils {
 
     /**
      * Removes the stack from the player's inventory, if it exists.
+     *
+     * @param player The player
+     * @param stack  The item
      */
     public static void removeItem(PlayerEntity player, ItemStack stack) {
         List<NonNullList<ItemStack>> inventories = ImmutableList.of(player.inventory.mainInventory, player.inventory.offHandInventory, player.inventory.armorInventory);
@@ -66,21 +72,21 @@ public final class PlayerUtils {
      * not exist. This can be used to save additional data to a player.
      *
      * @param player         The player
-     * @param subcompoundKey The key for the tag compound (ideally should contain mod ID)
+     * @param subCompoundKey The key for the tag compound (ideally should contain mod ID)
      * @return The tag compound, creating it if it does not exist.
      */
-    public static CompoundNBT getPersistedDataSubcompound(PlayerEntity player, String subcompoundKey) {
+    public static CompoundNBT getPersistedDataSubcompound(PlayerEntity player, String subCompoundKey) {
         CompoundNBT forgeData = player.getPersistentData();
         if (!forgeData.contains(PlayerEntity.PERSISTED_NBT_TAG)) {
             forgeData.put(PlayerEntity.PERSISTED_NBT_TAG, new CompoundNBT());
         }
 
         CompoundNBT persistedData = forgeData.getCompound(PlayerEntity.PERSISTED_NBT_TAG);
-        if (!persistedData.contains(subcompoundKey)) {
-            persistedData.put(subcompoundKey, new CompoundNBT());
+        if (!persistedData.contains(subCompoundKey)) {
+            persistedData.put(subCompoundKey, new CompoundNBT());
         }
 
-        return persistedData.getCompound(subcompoundKey);
+        return persistedData.getCompound(subCompoundKey);
     }
 
     @Nonnull

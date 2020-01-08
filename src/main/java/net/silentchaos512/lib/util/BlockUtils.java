@@ -28,6 +28,7 @@ public final class BlockUtils {
      * @param modId The mod ID
      * @param world World reference (needed to get {@link LootTableManager})
      * @return A list of missing loot tables, or an empty collection if there are none
+     * @since 4.5.0
      */
     public static Collection<ResourceLocation> getMissingLootTables(String modId, ServerWorld world) {
         LootTableManager lootTableManager = world.getServer().getLootTableManager();
@@ -55,6 +56,7 @@ public final class BlockUtils {
      *               affect the return value.
      * @return An {@link ITextComponent} if there are missing block loot tables, or null if none are
      * missing.
+     * @since 4.5.0
      */
     @Nullable
     public static ITextComponent checkAndReportMissingLootTables(String modId, ServerWorld world, @Nullable Logger logger) {
