@@ -18,7 +18,8 @@
 
 package net.silentchaos512.lib.client.gui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
 import net.minecraft.client.gui.FontRenderer;
@@ -138,18 +139,19 @@ public abstract class DebugRenderOverlay extends AbstractGui {
 
         FontRenderer font = mc.fontRenderer;
 
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(scale, scale, 1);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scale, scale, 1);
 
         // Divide by text scale to correct position. But it's still a bit off?
-        int x = (int) (getAnchorPoint().getX(mc.mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
-        int y = (int) (getAnchorPoint().getY(mc.mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
+        MainWindow mainWindow = mc.func_228018_at_();
+        int x = (int) (getAnchorPoint().getX(mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
+        int y = (int) (getAnchorPoint().getY(mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
             drawLine(font, line, x, y, Color.VALUE_WHITE);
             y += LINE_HEIGHT;
         }
 
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public void clientTick(TickEvent.ClientTickEvent event) {

@@ -158,7 +158,7 @@ public class LootContainerItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack heldItem = playerIn.getHeldItem(handIn);
         if (!(playerIn instanceof ServerPlayerEntity))
-            return ActionResult.newResult(ActionResultType.SUCCESS, heldItem);
+            return ActionResult.func_226248_a_(heldItem);
 
         // Generate items from loot table, give to player.
         ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
@@ -175,11 +175,10 @@ public class LootContainerItem extends Item {
         });
 
         // Play item pickup sound...
-        playerMP.world.playSound(null, playerMP.posX, playerMP.posY, playerMP.posZ,
-                SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F,
-                ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+        float pitch = ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F;
+        playerMP.world.playSound(null, playerMP.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
-        return ActionResult.newResult(ActionResultType.SUCCESS, heldItem);
+        return ActionResult.func_226248_a_(heldItem);
     }
 
     private static void listItemReceivedInChat(ServerPlayerEntity playerMP, ItemStack stack) {

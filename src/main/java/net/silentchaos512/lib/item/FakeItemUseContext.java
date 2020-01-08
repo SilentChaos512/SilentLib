@@ -14,6 +14,6 @@ import net.minecraft.util.math.BlockRayTraceResult;
 public class FakeItemUseContext extends ItemUseContext {
     public FakeItemUseContext(ItemUseContext original, ItemStack fakeItem) {
         super(original.getWorld(), original.getPlayer(), original.getHand(), fakeItem,
-                new BlockRayTraceResult(original.getHitVec(), original.getFace(), original.getPos(), original.func_221533_k()));
+                new BlockRayTraceResult(original.getHitVec(), original.getFace(), original.getPos(), original.isInside()));
     }
 }

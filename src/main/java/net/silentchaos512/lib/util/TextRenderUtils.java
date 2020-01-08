@@ -1,6 +1,6 @@
 package net.silentchaos512.lib.util;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraftforge.api.distmarker.Dist;
@@ -23,8 +23,8 @@ public final class TextRenderUtils {
     }
 
     public static void renderScaled(FontRenderer fontRenderer, String text, int x, int y, float scale, int color, boolean shadow) {
-        GlStateManager.pushMatrix();
-        GlStateManager.scalef(scale, scale, scale);
+        RenderSystem.pushMatrix();
+        RenderSystem.scalef(scale, scale, scale);
         // Is this right? Was 'UnicodeFlag'
         boolean oldUnicode = fontRenderer.getBidiFlag();
         fontRenderer.setBidiFlag(false);
@@ -32,7 +32,7 @@ public final class TextRenderUtils {
         render(fontRenderer, text, x / scale, y / scale, color, shadow);
 
         fontRenderer.setBidiFlag(oldUnicode);
-        GlStateManager.popMatrix();
+        RenderSystem.popMatrix();
     }
 
     public static void renderSplit(FontRenderer fontRenderer, String text, int x, int y, int width, int color, boolean shadow) {

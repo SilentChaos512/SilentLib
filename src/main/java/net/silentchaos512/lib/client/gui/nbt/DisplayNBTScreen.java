@@ -37,7 +37,7 @@ public class DisplayNBTScreen extends Screen {
             this.header = new StringTextComponent(message);
         }));
 
-        int scaledWidth = minecraft.mainWindow.getScaledWidth();
+        int scaledWidth = minecraft.func_228018_at_().getScaledWidth();
         this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, this.height - 12, 11);
         this.children.add(this.displayList);
     }
@@ -47,7 +47,7 @@ public class DisplayNBTScreen extends Screen {
         assert minecraft != null;
         this.displayList.render(mouseX, mouseY, partialTicks);
         String titleStr = this.header.getFormattedText();
-        int scaledWidth = minecraft.mainWindow.getScaledWidth();
+        int scaledWidth = minecraft.func_228018_at_().getScaledWidth();
         TextRenderUtils.renderScaled(font, titleStr, (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
         super.render(mouseX, mouseY, partialTicks);
     }

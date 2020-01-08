@@ -10,7 +10,8 @@ import net.minecraft.world.gen.feature.NoFeatureConfig;
 
 import java.util.Random;
 
-public class PlantFeature extends FlowersFeature {
+// TODO: May need to rethink this since FlowersFeature has changed significantly
+public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     private final BlockState plant;
     private final int tryCount;
     private final int maxCount;
@@ -24,7 +25,7 @@ public class PlantFeature extends FlowersFeature {
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        BlockState toPlace = getRandomFlower(rand, pos);
+        BlockState toPlace = func_225562_b_(rand, pos, config);
         int placedCount = 0;
 
         // Same as super, but different number of iterations and a placement count cap
@@ -44,7 +45,25 @@ public class PlantFeature extends FlowersFeature {
     }
 
     @Override
-    public BlockState getRandomFlower(Random rand, BlockPos pos) {
+    public BlockState func_225562_b_(Random random, BlockPos pos, NoFeatureConfig config) {
         return this.plant;
+    }
+
+    @Override
+    public boolean func_225559_a_(IWorld world, BlockPos pos, NoFeatureConfig config) {
+        return this.plant.equals(world.getBlockState(pos));
+    }
+
+    @Override
+    public int func_225560_a_(NoFeatureConfig config) {
+        return this.maxCount;
+    }
+
+    @Override
+    public BlockPos func_225561_a_(Random random, BlockPos pos, NoFeatureConfig config) {
+        return pos.add(
+                random.nextInt(8) - random.nextInt(8),
+                random.nextInt(4) - random.nextInt(4),
+                random.nextInt(8) - random.nextInt(8));
     }
 }

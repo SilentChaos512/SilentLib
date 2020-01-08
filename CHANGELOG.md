@@ -1,5 +1,11 @@
 # Changelog
 
+[4.5.0]
+- Updated to Minecraft 1.15.1
+
+[4.4.0] - 2019-09-12
+- Fix Entity.getPersistentData name in Forge 28.1.0
+
 [4.3.3] - 2019-09-12
 - Fix crash caused by javax reference in SyncVariable
 

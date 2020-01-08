@@ -39,7 +39,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
     }
 
     @Override
-    public boolean func_222268_a(Entity p_222268_1_, float p_222268_2_) {
+    public boolean placeInPortal(Entity p_222268_1_, float p_222268_2_) {
         return true;
     }
 
@@ -101,7 +101,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         player.dimension = newDimension;
         ServerWorld serverworld1 = player.server.getWorld(newDimension);
         WorldInfo worldinfo = player.world.getWorldInfo();
-        player.connection.sendPacket(new SRespawnPacket(newDimension, worldinfo.getGenerator(), player.interactionManager.getGameType()));
+        player.connection.sendPacket(new SRespawnPacket(newDimension, serverworld1.getSeed(), worldinfo.getGenerator(), player.interactionManager.getGameType()));
         player.connection.sendPacket(new SServerDifficultyPacket(worldinfo.getDifficulty(), worldinfo.isDifficultyLocked()));
         PlayerList playerlist = player.server.getPlayerList();
         playerlist.updatePermissionLevel(player);

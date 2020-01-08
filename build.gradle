@@ -117,9 +117,9 @@ dependencies {
     // JEI
     if (project.hasProperty("jei_version")) {
         // compile against the JEI API but do not include it at runtime
-        compileOnly fg.deobf("mezz.jei:jei-1.14.4:${project.jei_version}:api")
+        compileOnly fg.deobf("mezz.jei:jei-${project.jei_version}:api")
         // at runtime, use the full JEI jar
-        runtimeOnly fg.deobf("mezz.jei:jei-1.14.4:${project.jei_version}")
+        runtimeOnly fg.deobf("mezz.jei:jei-${project.jei_version}")
     }
 
     configurations.implementation.extendsFrom(configurations.extraLibs)
