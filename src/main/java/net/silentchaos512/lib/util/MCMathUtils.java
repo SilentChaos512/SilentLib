@@ -66,9 +66,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}
      */
     public static double distance(Entity entity, Vec3i pos) {
-        double dx = pos.getX() + 0.5 - entity.func_226277_ct_();
-        double dy = pos.getY() + 0.5 - entity.func_226278_cu_();
-        double dz = pos.getZ() + 0.5 - entity.func_226281_cx_();
+        double dx = pos.getX() + 0.5 - entity.getPosX();
+        double dy = pos.getY() + 0.5 - entity.getPosY();
+        double dz = pos.getZ() + 0.5 - entity.getPosZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
@@ -81,9 +81,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}
      */
     public static double distance(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.func_226277_ct_();
-        double dy = pos.getY() - entity.func_226278_cu_();
-        double dz = pos.getZ() - entity.func_226281_cx_();
+        double dx = pos.getX() - entity.getPosX();
+        double dy = pos.getY() - entity.getPosY();
+        double dz = pos.getZ() - entity.getPosZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
@@ -125,9 +125,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared
      */
     public static double distanceSq(Entity entity, Vec3i pos) {
-        double dx = pos.getX() + 0.5 - entity.func_226277_ct_();
-        double dy = pos.getY() + 0.5 - entity.func_226278_cu_();
-        double dz = pos.getZ() + 0.5 - entity.func_226281_cx_();
+        double dx = pos.getX() + 0.5 - entity.getPosX();
+        double dy = pos.getY() + 0.5 - entity.getPosY();
+        double dz = pos.getZ() + 0.5 - entity.getPosZ();
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -139,9 +139,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared
      */
     public static double distanceSq(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.func_226277_ct_();
-        double dy = pos.getY() - entity.func_226278_cu_();
-        double dz = pos.getZ() - entity.func_226281_cx_();
+        double dx = pos.getX() - entity.getPosX();
+        double dy = pos.getY() - entity.getPosY();
+        double dz = pos.getZ() - entity.getPosZ();
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -181,8 +181,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}, ignoring Y-axis
      */
     public static double distanceHorizontal(Entity entity, Vec3i pos) {
-        double dx = pos.getX() + 0.5 - entity.func_226277_ct_();
-        double dz = pos.getZ() + 0.5 - entity.func_226281_cx_();
+        double dx = pos.getX() + 0.5 - entity.getPosX();
+        double dz = pos.getZ() + 0.5 - entity.getPosZ();
         return Math.sqrt(dx * dx + dz * dz);
     }
 
@@ -194,8 +194,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}, ignoring Y-axis
      */
     public static double distanceHorizontal(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.func_226277_ct_();
-        double dz = pos.getZ() - entity.func_226281_cx_();
+        double dx = pos.getX() - entity.getPosX();
+        double dz = pos.getZ() - entity.getPosZ();
         return Math.sqrt(dx * dx + dz * dz);
     }
 
@@ -236,8 +236,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared, ignoring Y-axis
      */
     public static double distanceHorizontalSq(Entity entity, Vec3i pos) {
-        double dx = pos.getX() + 0.5 - entity.func_226277_ct_();
-        double dz = pos.getZ() + 0.5 - entity.func_226281_cx_();
+        double dx = pos.getX() + 0.5 - entity.getPosX();
+        double dz = pos.getZ() + 0.5 - entity.getPosZ();
         return dx * dx + dz * dz;
     }
 
@@ -250,8 +250,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared, ignoring Y-axis
      */
     public static double distanceHorizontalSq(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.func_226277_ct_();
-        double dz = pos.getZ() - entity.func_226281_cx_();
+        double dx = pos.getX() - entity.getPosX();
+        double dz = pos.getZ() - entity.getPosZ();
         return dx * dx + dz * dz;
     }
 }

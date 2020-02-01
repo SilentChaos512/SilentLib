@@ -143,7 +143,7 @@ public abstract class DebugRenderOverlay extends AbstractGui {
         RenderSystem.scalef(scale, scale, 1);
 
         // Divide by text scale to correct position. But it's still a bit off?
-        MainWindow mainWindow = mc.func_228018_at_();
+        MainWindow mainWindow = mc.getMainWindow();
         int x = (int) (getAnchorPoint().getX(mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
         int y = (int) (getAnchorPoint().getY(mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {

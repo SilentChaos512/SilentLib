@@ -42,7 +42,7 @@ public final class PlayerUtils {
     public static void giveItem(PlayerEntity player, ItemStack stack) {
         ItemStack copy = stack.copy();
         if (!player.inventory.addItemStackToInventory(copy)) {
-            ItemEntity entityItem = new ItemEntity(player.world, player.func_226277_ct_(), player.func_226283_e_(0.5), player.func_226281_cx_(), copy);
+            ItemEntity entityItem = new ItemEntity(player.world, player.getPosX(), player.getPosYHeight(0.5), player.getPosZ(), copy);
             entityItem.setNoPickupDelay();
             entityItem.setOwnerId(player.getUniqueID());
             player.world.addEntity(entityItem);
