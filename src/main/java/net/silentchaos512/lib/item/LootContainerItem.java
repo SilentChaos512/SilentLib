@@ -18,7 +18,6 @@
 
 package net.silentchaos512.lib.item;
 
-import com.google.common.collect.ImmutableList;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -26,16 +25,12 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.*;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootParameters;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.LootUtils;
 import net.silentchaos512.lib.util.PlayerUtils;
@@ -158,7 +153,7 @@ public class LootContainerItem extends Item {
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
         ItemStack heldItem = playerIn.getHeldItem(handIn);
         if (!(playerIn instanceof ServerPlayerEntity))
-            return ActionResult.func_226248_a_(heldItem);
+            return ActionResult.resultSuccess(heldItem);
 
         // Generate items from loot table, give to player.
         ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
@@ -178,7 +173,7 @@ public class LootContainerItem extends Item {
         float pitch = ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F;
         playerMP.world.playSound(null, playerMP.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
-        return ActionResult.func_226248_a_(heldItem);
+        return ActionResult.resultSuccess(heldItem);
     }
 
     private static void listItemReceivedInChat(ServerPlayerEntity playerMP, ItemStack stack) {

@@ -118,7 +118,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
 
         serverworld.getProfiler().endSection();
         player.setWorld(serverworld1);
-        serverworld1.func_217447_b(player);
+        serverworld1.addDuringPortalTeleport(player);
         player.connection.setPlayerLocation(position.x, position.y, position.z, f1, f);
         player.interactionManager.setWorld(serverworld1);
         player.connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
@@ -164,7 +164,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
             entity.copyDataFromOld(entityIn);
             entity.moveToBlockPosAndAngles(pos.getPos(), entity.rotationYaw + f, entity.rotationPitch);
             entity.setMotion(vec3d);
-            serverworld1.func_217460_e(entity);
+            serverworld1.addFromAnotherDimension(entity);
         }
 
         this.world.getProfiler().endSection();

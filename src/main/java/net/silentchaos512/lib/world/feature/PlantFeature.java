@@ -25,7 +25,7 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
 
     @Override
     public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        BlockState toPlace = func_225562_b_(rand, pos, config);
+        BlockState toPlace = getFlowerToPlace(rand, pos, config);
         int placedCount = 0;
 
         // Same as super, but different number of iterations and a placement count cap
@@ -45,7 +45,7 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public BlockState func_225562_b_(Random random, BlockPos pos, NoFeatureConfig config) {
+    public BlockState getFlowerToPlace(Random random, BlockPos pos, NoFeatureConfig config) {
         return this.plant;
     }
 
@@ -60,7 +60,7 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public BlockPos func_225561_a_(Random random, BlockPos pos, NoFeatureConfig config) {
+    public BlockPos getNearbyPos(Random random, BlockPos pos, NoFeatureConfig config) {
         return pos.add(
                 random.nextInt(8) - random.nextInt(8),
                 random.nextInt(4) - random.nextInt(4),
