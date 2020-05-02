@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.6.1]
+### Fixed
+- Export to JSON button covering first entry in `/sl_nbt` command [#21]
+
 ## [4.5.0] - 2019-01-08
 - Updated to Minecraft 1.15.1
 

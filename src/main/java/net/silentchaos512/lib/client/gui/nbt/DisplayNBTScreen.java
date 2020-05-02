@@ -31,13 +31,16 @@ public class DisplayNBTScreen extends Screen {
     protected void init() {
         if (minecraft == null) minecraft = Minecraft.getInstance();
 
-        this.addButton(new Button(5, 5, 100, 20, "Export to JSON", b -> {
+        int scaledWidth = minecraft.getMainWindow().getScaledWidth();
+        int scaledHeight = minecraft.getMainWindow().getScaledHeight();
+        int width = 100;
+        int height = 20;
+        this.addButton(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, "Export to JSON", b -> {
             JsonObject json = NBTToJson.toJsonObject(this.nbtCompound);
             String message = NBTToJson.writeFile(json);
             this.header = new StringTextComponent(message);
         }));
 
-        int scaledWidth = minecraft.getMainWindow().getScaledWidth();
         this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, this.height - 12, 11);
         this.children.add(this.displayList);
     }
