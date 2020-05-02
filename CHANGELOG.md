@@ -1,7 +1,8 @@
 # Changelog
 
-## [4.6.1]
+## [4.6.1] - 2020-05-02
 ### Fixed
+- Error in log when typing just `/sl_nbt` with no further arguments [#22]
 - Export to JSON button covering first entry in `/sl_nbt` command [#21]
 
 ## [4.5.0] - 2019-01-08

@@ -46,13 +46,6 @@ public class DisplayNBTCommand {
                                 DisplayNBTCommand::runForItem
                         )
                 )
-                .executes(context -> {
-                    SilentLibNetwork.channel.sendTo(
-                            new DisplayNBTPacket(),
-                            context.getSource().asPlayer().connection.netManager,
-                            NetworkDirection.PLAY_TO_CLIENT);
-                    return 1;
-                })
         );
     }
 
