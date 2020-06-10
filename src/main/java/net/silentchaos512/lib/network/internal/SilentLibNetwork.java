@@ -30,6 +30,11 @@ public class SilentLibNetwork {
                 .encoder(DisplayNBTPacket::toBytes)
                 .consumer(DisplayNBTPacket::handle)
                 .add();
+        channel.messageBuilder(SpawnEntityPacket.class, 3)
+                .decoder(SpawnEntityPacket::decode)
+                .encoder(SpawnEntityPacket::encode)
+                .consumer(SpawnEntityPacket::handle)
+                .add();
     }
 
     public static void init() {

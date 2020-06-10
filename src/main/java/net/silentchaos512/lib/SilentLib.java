@@ -1,5 +1,6 @@
 package net.silentchaos512.lib;
 
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Mod(SilentLib.MOD_ID)
 public final class SilentLib {
@@ -15,6 +17,7 @@ public final class SilentLib {
     public static final String MOD_NAME = "Silent Lib";
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
+    public static final Random RANDOM = new Random();
 
     private static SilentLib INSTANCE;
     private static SideProxy PROXY;
@@ -34,5 +37,9 @@ public final class SilentLib {
 
     public static boolean isDevBuild() {
         return "NONE".equals(getVersion());
+    }
+
+    public static ResourceLocation getId(String path) {
+        return new ResourceLocation(MOD_ID, path);
     }
 }

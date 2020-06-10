@@ -2,12 +2,15 @@ package net.silentchaos512.lib;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
+import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 
@@ -16,6 +19,7 @@ class SideProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcEnqueue);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
 
         MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
 
@@ -33,6 +37,10 @@ class SideProxy {
     private void onServerStarting(FMLServerStartingEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
         DisplayNBTCommand.register(dispatcher);
+    }
+
+    private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+        event.getRegistry().register(DamageItemRecipe.SERIALIZER.setRegistryName(SilentLib.getId("damage_item")));
     }
 
     static class Client extends SideProxy {

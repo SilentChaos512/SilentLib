@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.6.2] - 2020-06-10
+### Added
+- `DamageItemRecipe`
+- `EntityHelper.spawnWithClientPacket`
+
 ## [4.6.1] - 2020-05-02
 ### Fixed
 - Error in log when typing just `/sl_nbt` with no further arguments [#22]

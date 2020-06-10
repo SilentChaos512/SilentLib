@@ -20,13 +20,20 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.IWorldWriter;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.network.internal.SilentLibNetwork;
+import net.silentchaos512.lib.network.internal.SpawnEntityPacket;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class EntityHelper {
@@ -47,6 +54,18 @@ public final class EntityHelper {
     public static void safeSpawn(Entity entity) {
         // TODO: Is this still needed? What about DeferredWorkQueue, what's that do?
         entitiesToSpawn.add(entity);
+    }
+
+    public static void spawnWithClientPacket(IWorldWriter world, Entity entity) {
+        spawnWithClientPacket(world, entity, 4096);
+    }
+
+    public static void spawnWithClientPacket(IWorldWriter world, Entity entity, double r2) {
+        world.addEntity(entity);
+        if (world instanceof ServerWorld) {
+            SpawnEntityPacket message = new SpawnEntityPacket(entity);
+            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.dimension)), message);
+        }
     }
 
     private static void handleSpawns() {
