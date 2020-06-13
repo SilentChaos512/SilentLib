@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.6.3] - 2020-06-13
+### Fixed
+- `InventoryUtils.canItemsStack`
+
 ## [4.6.2] - 2020-06-10
 ### Added
 - `DamageItemRecipe`

@@ -60,11 +60,11 @@ public final class InventoryUtils {
     }
 
     public static boolean canItemsStack(ItemStack a, ItemStack b) {
-        if (a.isEmpty() || !a.isItemEqual(b) || a.getTag() != b.getTag()) {
+        if (a.getItem() != b.getItem())
             return false;
-        }
-        //noinspection ConstantConditions
-        return (!a.hasTag() || a.getTag().equals(b.getTag())) && a.areCapsCompatible(b);
+        if (a.getTag() == null && b.getTag() != null)
+            return false;
+        return a.getTag() == null || a.getTag().equals(b.getTag()) && a.areCapsCompatible(b);
     }
 
     /**
