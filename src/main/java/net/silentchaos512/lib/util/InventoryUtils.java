@@ -64,7 +64,7 @@ public final class InventoryUtils {
             return false;
         if (a.getTag() == null && b.getTag() != null)
             return false;
-        return a.getTag() == null || a.getTag().equals(b.getTag()) && a.areCapsCompatible(b);
+        return (a.getTag() == null || a.getTag().equals(b.getTag())) && a.areCapsCompatible(b);
     }
 
     /**

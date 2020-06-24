@@ -37,7 +37,7 @@ public final class NameUtils {
      * @return A new ResourceLocation
      * @throws net.minecraft.util.ResourceLocationException if path is invalid
      */
-    public static ResourceLocation forgeLocation(String path) {
+    public static ResourceLocation forgeId(String path) {
         return new ResourceLocation("forge", path);
     }
 
@@ -59,7 +59,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation from(IItemProvider item) {
+    public static ResourceLocation fromItem(IItemProvider item) {
         Preconditions.checkNotNull(item.asItem(), "asItem() is null, has object not been fully constructed?");
         return checkNotNull(item.asItem().getRegistryName());
     }
@@ -71,7 +71,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation from(ItemStack stack) {
+    public static ResourceLocation fromItem(ItemStack stack) {
         return checkNotNull(stack.getItem().getRegistryName());
     }
 }

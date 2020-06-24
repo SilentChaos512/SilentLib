@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.6.4] - 2020-06-23
+### Changed
+- Add `BlockRegistryObject` and `ItemRegistryObject`. These are wrappers for Forge's `RegistryObject`s which provide some additional interfaces for convenience.
+- Rename a couple conflicting methods in `NameUtils` (hope I wasn't using those...)
+
 ## [4.6.3] - 2020-06-13
 ### Fixed
 - `InventoryUtils.canItemsStack`
