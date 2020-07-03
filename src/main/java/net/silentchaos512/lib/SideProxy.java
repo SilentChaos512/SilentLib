@@ -2,6 +2,7 @@ package net.silentchaos512.lib;
 
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.command.CommandSource;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
@@ -11,11 +12,13 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
+import net.silentchaos512.lib.data.TestRecipeProvider;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 
 class SideProxy {
     SideProxy() {
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::gatherData);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcEnqueue);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
@@ -26,6 +29,11 @@ class SideProxy {
         SilentLibNetwork.init();
         LibTriggers.init();
         ILeftClickItem.EventHandler.init();
+    }
+
+    private void gatherData(GatherDataEvent event) {
+        DataGenerator gen = event.getGenerator();
+        gen.addProvider(new TestRecipeProvider(gen));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {}

@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.6.5]
+### Added
+- Extended recipe builders (used by data generators)
+
 ## [4.6.4] - 2020-06-23
 ### Changed
 - Add `BlockRegistryObject` and `ItemRegistryObject`. These are wrappers for Forge's `RegistryObject`s which provide some additional interfaces for convenience.
