@@ -1,8 +1,9 @@
 # Changelog
 
-## [4.6.5]
+## [4.6.5] - 2020-07-10
 ### Added
 - Extended recipe builders (used by data generators)
+- More methods to RegistryObjectWrapper to make it easier to use
 
 ## [4.6.4] - 2020-06-23
 ### Changed
