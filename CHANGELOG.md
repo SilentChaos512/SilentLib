@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.6.6] - 2020-07-13
+### Added
+- GenericIntTrigger and UseItemTrigger: static factory methods and override serialize
+
 ## [4.6.5] - 2020-07-10
 ### Added
 - Extended recipe builders (used by data generators)
