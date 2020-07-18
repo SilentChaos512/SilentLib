@@ -1,5 +1,14 @@
 # Changelog
 
+## [4.6.6] - 2020-07-13
+### Added
+- GenericIntTrigger and UseItemTrigger: static factory methods and override serialize
+
+## [4.6.5] - 2020-07-10
+### Added
+- Extended recipe builders (used by data generators)
+- More methods to RegistryObjectWrapper to make it easier to use
+
 ## [4.6.4] - 2020-06-23
 ### Changed
 - Add `BlockRegistryObject` and `ItemRegistryObject`. These are wrappers for Forge's `RegistryObject`s which provide some additional interfaces for convenience.

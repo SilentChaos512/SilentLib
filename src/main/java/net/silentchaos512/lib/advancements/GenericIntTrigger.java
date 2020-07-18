@@ -19,6 +19,7 @@
 package net.silentchaos512.lib.advancements;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -81,8 +82,20 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
             this.value = value;
         }
 
+        public static Instance instance(ResourceLocation type, int value) {
+            return new Instance(type.toString(), value);
+        }
+
         public boolean test(String typeIn, int valueIn) {
             return this.type.equals(typeIn) && this.value <= valueIn;
+        }
+
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.addProperty("type", this.type);
+            json.addProperty("value", this.value);
+            return json;
         }
     }
 

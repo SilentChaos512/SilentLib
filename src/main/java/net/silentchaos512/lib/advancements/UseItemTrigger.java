@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.advancements;
 
 import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -66,8 +67,20 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
             this.target = target;
         }
 
+        public static Instance instance(ItemPredicate predicate, Target target) {
+            return new Instance(predicate, target);
+        }
+
         public boolean test(ItemStack stack, Target target) {
             return itempredicate.test(stack) && (this.target == target || this.target == Target.ANY);
+        }
+
+        @Override
+        public JsonElement serialize() {
+            JsonObject json = new JsonObject();
+            json.add("item", this.itempredicate.serialize());
+            json.addProperty("target", this.target.name());
+            return json;
         }
     }
 
