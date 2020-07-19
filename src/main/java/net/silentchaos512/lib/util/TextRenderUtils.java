@@ -1,8 +1,9 @@
 package net.silentchaos512.lib.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -17,38 +18,38 @@ public final class TextRenderUtils {
         return Minecraft.getInstance().fontRenderer;
     }
 
-    private static void render(FontRenderer fontRenderer, String text, float x, float y, int color, boolean shadow) {
-        if (shadow) fontRenderer.drawStringWithShadow(text, x, y, color);
-        else fontRenderer.drawString(text, x, y, color);
+    private static void render(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, float x, float y, int color, boolean shadow) {
+        if (shadow) fontRenderer.drawStringWithShadow(matrix, text.getString(), x, y, color);
+        else fontRenderer.drawString(matrix, text.getString(), x, y, color);
     }
 
-    public static void renderScaled(FontRenderer fontRenderer, String text, int x, int y, float scale, int color, boolean shadow) {
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(scale, scale, scale);
-        // Is this right? Was 'UnicodeFlag'
-        boolean oldUnicode = fontRenderer.getBidiFlag();
-        fontRenderer.setBidiFlag(false);
+    public static void renderScaled(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, float scale, int color, boolean shadow) {
+        matrix.push();
+        matrix.scale(scale, scale, scale);
+        // FIXME?
+//        boolean oldUnicode = fontRenderer.getBidiFlag();
+//        fontRenderer.setBidiFlag(false);
 
-        render(fontRenderer, text, x / scale, y / scale, color, shadow);
+        render(matrix, fontRenderer, text, x / scale, y / scale, color, shadow);
 
-        fontRenderer.setBidiFlag(oldUnicode);
-        RenderSystem.popMatrix();
+//        fontRenderer.setBidiFlag(oldUnicode);
+        matrix.pop();
     }
 
-    public static void renderSplit(FontRenderer fontRenderer, String text, int x, int y, int width, int color, boolean shadow) {
-        List list = fontRenderer.listFormattedStringToWidth(text, width);
+    public static void renderSplit(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, int width, int color, boolean shadow) {
+        List<ITextProperties> list = fontRenderer.func_238425_b_(text, width);
         for (int i = 0; i < list.size(); i++) {
-            String line = (String) list.get(i);
+            ITextProperties line = list.get(i);
             int yTranslated = y + (i * fontRenderer.FONT_HEIGHT);
-            render(fontRenderer, line, x, yTranslated, color, shadow);
+            render(matrix, fontRenderer, line, x, yTranslated, color, shadow);
         }
     }
 
-    public static void renderSplitScaled(FontRenderer fontRenderer, String text, int x, int y, float scale, int color, boolean shadow, int length) {
-        List<String> lines = fontRenderer.listFormattedStringToWidth(text, (int) (length / scale));
+    public static void renderSplitScaled(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, float scale, int color, boolean shadow, int length) {
+        List<ITextProperties> lines = fontRenderer.func_238425_b_(text, (int) (length / scale));
         for (int i = 0; i < lines.size(); i++) {
             int yTranslated = y + (i * (int) (fontRenderer.FONT_HEIGHT * scale + 3));
-            renderScaled(fontRenderer, lines.get(i), x, yTranslated, scale, color, shadow);
+            renderScaled(matrix, fontRenderer, lines.get(i), x, yTranslated, scale, color, shadow);
         }
     }
 }

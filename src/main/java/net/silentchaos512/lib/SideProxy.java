@@ -5,9 +5,9 @@ import net.minecraft.command.CommandSource;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.*;
-import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
@@ -24,7 +24,7 @@ class SideProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
         FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
 
-        MinecraftForge.EVENT_BUS.addListener(this::onServerStarting);
+        MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
         SilentLibNetwork.init();
         LibTriggers.init();
@@ -42,8 +42,8 @@ class SideProxy {
 
     private void imcProcess(InterModProcessEvent event) {}
 
-    private void onServerStarting(FMLServerStartingEvent event) {
-        CommandDispatcher<CommandSource> dispatcher = event.getCommandDispatcher();
+    private void onRegisterCommands(RegisterCommandsEvent event) {
+        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
         DisplayNBTCommand.register(dispatcher);
     }
 

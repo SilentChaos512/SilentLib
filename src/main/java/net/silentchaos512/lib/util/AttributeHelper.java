@@ -19,9 +19,9 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.IAttribute;
-import net.minecraft.entity.ai.attributes.IAttributeInstance;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.silentchaos512.utils.MathUtils;
 
 import javax.annotation.Nullable;
@@ -36,12 +36,12 @@ import java.util.UUID;
 public final class AttributeHelper {
     private AttributeHelper() {throw new IllegalAccessError("Utility class");}
 
-    public static void apply(LivingEntity entity, IAttribute attribute, AttributeModifier modifier) {
-        IAttributeInstance instance = entity.getAttribute(attribute);
+    public static void apply(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
         apply(instance, modifier);
     }
 
-    public static void apply(@Nullable IAttributeInstance attributeInstance, AttributeModifier modifier) {
+    public static void apply(@Nullable ModifiableAttributeInstance attributeInstance, AttributeModifier modifier) {
         if (attributeInstance == null) return;
         AttributeModifier currentMod = attributeInstance.getModifier(modifier.getID());
 
@@ -49,16 +49,16 @@ public final class AttributeHelper {
             // Modifier changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
         } else {
-            attributeInstance.applyModifier(modifier);
+            attributeInstance.func_233769_c_(modifier);
         }
     }
 
-    public static void remove(LivingEntity entity, IAttribute attribute, UUID uuid) {
-        IAttributeInstance instance = entity.getAttribute(attribute);
+    public static void remove(LivingEntity entity, Attribute attribute, UUID uuid) {
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
         remove(instance, uuid);
     }
 
-    public static void remove(@Nullable IAttributeInstance attributeInstance, UUID uuid) {
+    public static void remove(@Nullable ModifiableAttributeInstance attributeInstance, UUID uuid) {
         if (attributeInstance == null) return;
         attributeInstance.removeModifier(uuid);
     }

@@ -21,7 +21,6 @@ package net.silentchaos512.lib.util;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.world.IWorldWriter;
-import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -33,7 +32,6 @@ import net.silentchaos512.lib.network.internal.SpawnEntityPacket;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
-import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = SilentLib.MOD_ID)
 public final class EntityHelper {
@@ -64,7 +62,7 @@ public final class EntityHelper {
         world.addEntity(entity);
         if (world instanceof ServerWorld) {
             SpawnEntityPacket message = new SpawnEntityPacket(entity);
-            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.dimension)), message);
+            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.world.func_234923_W_())), message);
         }
     }
 

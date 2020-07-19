@@ -85,13 +85,12 @@ public final class WorldUtils {
             return map;
         }
 
-        try (BlockPos.PooledMutable blockPos = BlockPos.PooledMutable.retain()) {
-            for (int x = xMin; x <= xMax; ++x) {
-                for (int y = yMin; y <= yMax; ++y) {
-                    for (int z = zMin; z <= zMax; ++z) {
-                        BlockPos pos = new BlockPos(x, y, z);
-                        getter.apply(world, blockPos.setPos(x, y, z)).ifPresent(t -> map.put(pos, t));
-                    }
+        BlockPos.Mutable blockPos = new BlockPos.Mutable();
+        for (int x = xMin; x <= xMax; ++x) {
+            for (int y = yMin; y <= yMax; ++y) {
+                for (int z = zMin; z <= zMax; ++z) {
+                    BlockPos pos = new BlockPos(x, y, z);
+                    getter.apply(world, blockPos.setPos(x, y, z)).ifPresent(t -> map.put(pos, t));
                 }
             }
         }

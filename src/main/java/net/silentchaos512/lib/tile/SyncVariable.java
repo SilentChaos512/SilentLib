@@ -18,7 +18,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Marks variables that should be automatically synced with the client. Currently, this is used just
- * for tile entities, but could have other uses I guess? See {@link TileEntitySL} for usage.
+ * for tile entities, but could have other uses I guess?
  *
  * @author SilentChaos512
  * @since 2.0.6
@@ -28,12 +28,14 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 public @interface SyncVariable {
     /**
      * The name to read/write to NBT.
+     *
      * @return The variables NBT key
      */
     String name();
 
     /**
      * Should the variable be loaded in {@link TileEntity#read}?
+     *
      * @return True if we should load on read
      */
     boolean onRead() default true;

@@ -1,7 +1,9 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.widget.list.ExtendedList;
+import net.minecraft.util.text.StringTextComponent;
 import net.silentchaos512.lib.util.TextRenderUtils;
 
 public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
@@ -28,8 +30,8 @@ public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
         }
 
         @Override
-        public void render(int p_render_1_, int p_render_2_, int p_render_3_, int p_render_4_, int p_render_5_, int p_render_6_, int p_render_7_, boolean p_render_8_, float p_render_9_) {
-            TextRenderUtils.renderScaled(this.mc.fontRenderer, this.text, p_render_3_, p_render_2_, 1.0f, 0xFFFFFF, true);
+        public void render(MatrixStack matrix, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            TextRenderUtils.renderScaled(matrix, this.mc.fontRenderer, new StringTextComponent(this.text), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
         }
     }
 }

@@ -6,9 +6,12 @@ import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
 import net.minecraft.advancements.criterion.CriterionInstance;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.ConditionArrayParser;
+import net.minecraft.loot.ConditionArraySerializer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.SilentLib;
@@ -50,8 +53,9 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         this.listeners.remove(playerAdvancementsIn);
     }
 
+    // deserializeInstance
     @Override
-    public UseItemTrigger.Instance deserializeInstance(JsonObject json, JsonDeserializationContext context) {
+    public Instance func_230307_a_(JsonObject json, ConditionArrayParser p_230307_2_) {
         ItemPredicate itempredicate = ItemPredicate.deserialize(json.get("item"));
         Target target = Target.fromString(JSONUtils.getString(json, "target", "any"));
         return new UseItemTrigger.Instance(itempredicate, target);
@@ -62,7 +66,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         Target target;
 
         Instance(ItemPredicate itempredicate, Target target) {
-            super(UseItemTrigger.ID);
+            super(UseItemTrigger.ID, EntityPredicate.AndPredicate.field_234582_a_);
             this.itempredicate = itempredicate;
             this.target = target;
         }
@@ -76,7 +80,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         }
 
         @Override
-        public JsonElement serialize() {
+        public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_) {
             JsonObject json = new JsonObject();
             json.add("item", this.itempredicate.serialize());
             json.addProperty("target", this.target.name());

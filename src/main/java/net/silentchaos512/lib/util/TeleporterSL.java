@@ -2,20 +2,12 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.*;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.management.PlayerList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.Teleporter;
 import net.minecraft.world.World;
-import net.minecraft.world.dimension.DimensionType;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.WorldInfo;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fml.hooks.BasicEventHooks;
 
 import javax.annotation.Nullable;
 
@@ -45,9 +37,9 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
 
     //    @Override
     public void placeEntity(World world, Entity entity, float yaw) {
-        entity.setMotion(Vec3d.ZERO);
+        entity.setMotion(Vector3d.ZERO);
         entity.fallDistance = 0;
-        Vec3d position = this.pos.getPosCentered(0.1);
+        Vector3d position = this.pos.getPosCentered(0.1);
 
         if (entity instanceof ServerPlayerEntity && ((ServerPlayerEntity) entity).connection != null) {
             ServerPlayerEntity player = (ServerPlayerEntity) entity;
@@ -63,7 +55,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
 
         // TODO: Logging?
 
-        if (this.pos.getDimension() != entity.dimension.getId()) {
+        if (this.pos.getDimension() != entity.world.func_230315_m_()) {
             return entity instanceof ServerPlayerEntity
                     ? changeDimension((ServerPlayerEntity) entity, this.pos)
                     : changeDimensionEntity(entity, this.pos);
@@ -89,7 +81,8 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
     @Nullable
     public static ServerPlayerEntity changeDimension(ServerPlayerEntity player, DimPos pos) {
         // Very similar to ServerPlayerEntity#changeDimension
-        DimensionType newDimension = pos.getDimensionType();
+        // FIXME
+        /*DimensionType newDimension = pos.getDimension();
         if (newDimension == null || !ForgeHooks.onTravelToDimension(player, newDimension)) return null;
 
         if (player.world.isRemote || !player.isAlive()) return null;
@@ -100,7 +93,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         ServerWorld serverworld = player.server.getWorld(dimensiontype);
         player.dimension = newDimension;
         ServerWorld serverworld1 = player.server.getWorld(newDimension);
-        WorldInfo worldinfo = player.world.getWorldInfo();
+        IWorldInfo worldinfo = player.world.getWorldInfo();
         player.connection.sendPacket(new SRespawnPacket(newDimension, serverworld1.getSeed(), worldinfo.getGenerator(), player.interactionManager.getGameType()));
         player.connection.sendPacket(new SServerDifficultyPacket(worldinfo.getDifficulty(), worldinfo.isDifficultyLocked()));
         PlayerList playerlist = player.server.getPlayerList();
@@ -110,7 +103,7 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         float f = player.rotationPitch;
         float f1 = player.rotationYaw;
 
-        Vec3d position = pos.getPosCentered(0.1);
+        Vector3d position = pos.getPosCentered(0.1);
         player.setLocationAndAngles(position.x, position.y, position.z, f1, f);
         serverworld.getProfiler().endSection();
         serverworld.getProfiler().startSection("placing");
@@ -133,14 +126,15 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         player.lastExperience = -1;
         player.lastHealth = -1F;
         player.lastFoodLevel = -1;
-        BasicEventHooks.firePlayerChangedDimensionEvent(player, dimensiontype, newDimension);
+        BasicEventHooks.firePlayerChangedDimensionEvent(player, dimensiontype, newDimension);*/
 
         return player;
     }
 
     @Nullable
     public Entity changeDimensionEntity(Entity entityIn, DimPos pos) {
-        DimensionType newDimension = pos.getDimensionType();
+        // FIXME
+        /*DimensionType newDimension = pos.getDimension();
         if (newDimension == null || !ForgeHooks.onTravelToDimension(entityIn, newDimension)) return null;
 
         if (entityIn.world.isRemote || !entityIn.isAlive()) return null;
@@ -171,8 +165,8 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
         serverworld.resetUpdateEntityTick();
         serverworld1.resetUpdateEntityTick();
         this.world.getProfiler().endSection();
-        return entity;
-
+        return entity;*/
+        return entityIn;
     }
 
     public static boolean isSafePosition(IBlockReader worldIn, Entity entityIn, BlockPos pos) {

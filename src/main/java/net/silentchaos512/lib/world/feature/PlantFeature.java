@@ -2,11 +2,12 @@ package net.silentchaos512.lib.world.feature;
 
 import net.minecraft.block.BlockState;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.ISeedReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.GenerationSettings;
 import net.minecraft.world.gen.feature.FlowersFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
+import net.minecraft.world.gen.feature.structure.StructureManager;
 
 import java.util.Random;
 
@@ -17,14 +18,14 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     private final int maxCount;
 
     public PlantFeature(BlockState plant, int tryCount, int maxCount) {
-        super(NoFeatureConfig::deserialize);
+        super(NoFeatureConfig.field_236558_a_);
         this.plant = plant;
         this.tryCount = tryCount;
         this.maxCount = maxCount;
     }
 
     @Override
-    public boolean place(IWorld worldIn, ChunkGenerator<? extends GenerationSettings> generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    public boolean func_230362_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
         BlockState toPlace = getFlowerToPlace(rand, pos, config);
         int placedCount = 0;
 

@@ -7,11 +7,13 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.ICriterionInstance;
 import net.minecraft.advancements.IRequirementsStrategy;
+import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ITag;
 import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -86,7 +88,7 @@ public class ExtendedShapedRecipeBuilder {
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
+    public ExtendedShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
         return this.key(symbol, Ingredient.fromTag(tagIn));
     }
 
@@ -133,7 +135,7 @@ public class ExtendedShapedRecipeBuilder {
         this.validate(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(id))
+                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, id))
                     .withRewards(AdvancementRewards.Builder.recipe(id))
                     .withRequirementsStrategy(IRequirementsStrategy.OR);
         }

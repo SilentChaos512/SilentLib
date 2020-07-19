@@ -19,6 +19,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Util;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -58,6 +59,6 @@ public final class Greetings {
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player == null) return;
-        messages.forEach(msg -> msg.apply(player).ifPresent(player::sendMessage));
+        messages.forEach(msg -> msg.apply(player).ifPresent(text -> player.sendMessage(text, Util.DUMMY_UUID)));
     }
 }

@@ -2,12 +2,12 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
+import net.minecraft.loot.LootTableManager;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.server.ServerWorld;
-import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
 
@@ -68,7 +68,7 @@ public final class BlockUtils {
                 missing.forEach(id -> logger.error("Missing block loot table '{}'", id));
             }
             String list = missing.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "));
-            return new StringTextComponent("The following block loot tables are missing: " + list).applyTextStyle(TextFormatting.RED);
+            return new StringTextComponent("The following block loot tables are missing: " + list).func_240699_a_(TextFormatting.RED);
         }
 
         return null;

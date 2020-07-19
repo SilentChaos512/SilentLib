@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.ISidedInventory;
 import net.minecraft.inventory.ItemStackHelper;
@@ -83,8 +84,8 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     }
 
     @Override
-    public void read(CompoundNBT tags) {
-        super.read(tags);
+    public void read(BlockState stateIn, CompoundNBT tags) {
+        super.read(stateIn, tags);
         items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(tags, items);
     }

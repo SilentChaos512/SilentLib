@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
 import com.google.gson.JsonObject;
+import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.button.Button;
@@ -35,7 +36,7 @@ public class DisplayNBTScreen extends Screen {
         int scaledHeight = minecraft.getMainWindow().getScaledHeight();
         int width = 100;
         int height = 20;
-        this.addButton(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, "Export to JSON", b -> {
+        this.addButton(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, new StringTextComponent("Export to JSON"), b -> {
             JsonObject json = NBTToJson.toJsonObject(this.nbtCompound);
             String message = NBTToJson.writeFile(json);
             this.header = new StringTextComponent(message);
@@ -46,13 +47,13 @@ public class DisplayNBTScreen extends Screen {
     }
 
     @Override
-    public void render(int mouseX, int mouseY, float partialTicks) {
+    public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
         assert minecraft != null;
-        this.displayList.render(mouseX, mouseY, partialTicks);
-        String titleStr = this.header.getFormattedText();
+        this.displayList.render(matrix, mouseX, mouseY, partialTicks);
+        String titleStr = this.header.getString();
         int scaledWidth = minecraft.getMainWindow().getScaledWidth();
-        TextRenderUtils.renderScaled(font, titleStr, (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
-        super.render(mouseX, mouseY, partialTicks);
+        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr), (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
+        super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
     private static List<String> formatNbt(CompoundNBT nbt, int depth) {

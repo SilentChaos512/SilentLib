@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -108,13 +109,13 @@ public abstract class DebugRenderOverlay extends AbstractGui {
     public abstract boolean isHidden();
 
     @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    protected void drawLine(FontRenderer font, String line, int x, int y, int color) {
+    protected void drawLine(MatrixStack matrix, FontRenderer font, String line, int x, int y, int color) {
         String[] array = line.split(SPLITTER);
         if (array.length == 2) {
-            font.drawStringWithShadow(array[0].trim(), x, y, color);
-            font.drawStringWithShadow(array[1].trim(), x + getSplitWidth(), y, color);
+            font.drawStringWithShadow(matrix, array[0].trim(), x, y, color);
+            font.drawStringWithShadow(matrix, array[1].trim(), x + getSplitWidth(), y, color);
         } else {
-            font.drawStringWithShadow(line, x, y, color);
+            font.drawStringWithShadow(matrix, line, x, y, color);
         }
     }
 
@@ -138,20 +139,21 @@ public abstract class DebugRenderOverlay extends AbstractGui {
         if (scale <= 0f) return;
 
         FontRenderer font = mc.fontRenderer;
+        MatrixStack matrix = event.getMatrixStack();
 
-        RenderSystem.pushMatrix();
-        RenderSystem.scalef(scale, scale, 1);
+        matrix.push();
+        matrix.scale(scale, scale, 1);
 
         // Divide by text scale to correct position. But it's still a bit off?
         MainWindow mainWindow = mc.getMainWindow();
         int x = (int) (getAnchorPoint().getX(mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
         int y = (int) (getAnchorPoint().getY(mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
-            drawLine(font, line, x, y, Color.VALUE_WHITE);
+            drawLine(matrix, font, line, x, y, Color.VALUE_WHITE);
             y += LINE_HEIGHT;
         }
 
-        RenderSystem.popMatrix();
+        matrix.pop();
     }
 
     public void clientTick(TickEvent.ClientTickEvent event) {

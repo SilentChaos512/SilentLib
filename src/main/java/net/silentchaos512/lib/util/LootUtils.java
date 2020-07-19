@@ -5,11 +5,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
+import net.minecraft.loot.LootParameterSets;
+import net.minecraft.loot.LootParameters;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.storage.loot.LootContext;
-import net.minecraft.world.storage.loot.LootParameterSets;
-import net.minecraft.world.storage.loot.LootParameters;
 
 import java.util.Collection;
 
@@ -39,7 +39,7 @@ public final class LootUtils {
 
         LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
                 .withParameter(LootParameters.THIS_ENTITY, player)
-                .withParameter(LootParameters.POSITION, player.getPosition())
+                .withParameter(LootParameters.POSITION, player.func_233580_cy_())
                 .withLuck(player.getLuck())
                 .build(LootParameterSets.GIFT);
         return server.getLootTableManager().getLootTableFromLocation(lootTable).generate(lootContext);

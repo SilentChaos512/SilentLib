@@ -24,7 +24,7 @@ public final class SilentLib {
 
     public SilentLib() {
         INSTANCE = this;
-        PROXY = DistExecutor.runForDist(() -> () -> new SideProxy.Client(), () -> () -> new SideProxy.Server());
+        PROXY = DistExecutor.safeRunForDist(() -> SideProxy.Client::new, () -> SideProxy.Server::new);
     }
 
     public static String getVersion() {
