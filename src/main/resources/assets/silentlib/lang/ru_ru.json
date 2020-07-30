@@ -1,0 +1,7 @@
+{
+  "command.silentlib.nbt.noItemInHand": "В основной руке нет предметов",
+  "command.silentlib.nbt.noItemTag": "%s не имеет NBT",
+  "command.silentlib.nbt.notBlockEntity": "%s не является блочной сущностью",
+  "item.silentlib.lootContainer.itemReceived": "Получено: %dx %s",
+  "item.silentlib.lootContainer.table": "Стол добычи: %s"
+}
