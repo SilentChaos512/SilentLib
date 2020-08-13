@@ -11,6 +11,7 @@ import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
+import net.silentchaos512.lib.command.internal.TeleportCommand;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
 import net.silentchaos512.lib.data.TestRecipeProvider;
 import net.silentchaos512.lib.item.ILeftClickItem;
@@ -45,6 +46,7 @@ class SideProxy {
     private void onRegisterCommands(RegisterCommandsEvent event) {
         CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
         DisplayNBTCommand.register(dispatcher);
+        TeleportCommand.register(dispatcher);
     }
 
     private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
