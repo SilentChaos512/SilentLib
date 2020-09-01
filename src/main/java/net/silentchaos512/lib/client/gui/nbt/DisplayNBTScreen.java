@@ -52,7 +52,7 @@ public class DisplayNBTScreen extends Screen {
         this.displayList.render(matrix, mouseX, mouseY, partialTicks);
         String titleStr = this.header.getString();
         int scaledWidth = minecraft.getMainWindow().getScaledWidth();
-        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr), (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
+        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr).func_241878_f(), (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 

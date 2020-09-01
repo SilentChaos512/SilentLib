@@ -49,7 +49,7 @@ public final class AttributeHelper {
             // Modifier changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
         } else {
-            attributeInstance.func_233769_c_(modifier);
+            attributeInstance.applyPersistentModifier(modifier);
         }
     }
 

@@ -53,9 +53,8 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         this.listeners.remove(playerAdvancementsIn);
     }
 
-    // deserializeInstance
     @Override
-    public Instance func_230307_a_(JsonObject json, ConditionArrayParser p_230307_2_) {
+    public Instance deserialize(JsonObject json, ConditionArrayParser p_230307_2_) {
         ItemPredicate itempredicate = ItemPredicate.deserialize(json.get("item"));
         Target target = Target.fromString(JSONUtils.getString(json, "target", "any"));
         return new UseItemTrigger.Instance(itempredicate, target);
@@ -66,7 +65,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         Target target;
 
         Instance(ItemPredicate itempredicate, Target target) {
-            super(UseItemTrigger.ID, EntityPredicate.AndPredicate.field_234582_a_);
+            super(UseItemTrigger.ID, EntityPredicate.AndPredicate.ANY_AND);
             this.itempredicate = itempredicate;
             this.target = target;
         }
@@ -80,7 +79,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         }
 
         @Override
-        public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_) {
+        public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
             JsonObject json = new JsonObject();
             json.add("item", this.itempredicate.serialize());
             json.addProperty("target", this.target.name());

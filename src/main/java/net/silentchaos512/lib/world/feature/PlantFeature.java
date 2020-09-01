@@ -25,7 +25,7 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_230362_a_(ISeedReader worldIn, StructureManager structureManager, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
         BlockState toPlace = getFlowerToPlace(rand, pos, config);
         int placedCount = 0;
 
@@ -51,12 +51,12 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_225559_a_(IWorld world, BlockPos pos, NoFeatureConfig config) {
+    public boolean isValidPosition(IWorld world, BlockPos pos, NoFeatureConfig config) {
         return this.plant.equals(world.getBlockState(pos));
     }
 
     @Override
-    public int func_225560_a_(NoFeatureConfig config) {
+    public int getFlowerCount(NoFeatureConfig config) {
         return this.maxCount;
     }
 

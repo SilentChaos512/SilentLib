@@ -10,9 +10,9 @@ import org.junit.Test;
 public class Tests {
     @Test
     public void testDimPos() {
-        Assert.assertEquals(DimPos.of(BlockPos.ZERO, DimensionType.func_236019_a_()), DimPos.ZERO);
+        Assert.assertEquals(DimPos.of(BlockPos.ZERO, DimensionType.OVERWORLD_TYPE), DimPos.ZERO);
 
-        DimPos pos = DimPos.of(new BlockPos(1, 2, 3), DimensionType.func_236019_a_());
+        DimPos pos = DimPos.of(new BlockPos(1, 2, 3), DimensionType.OVERWORLD_TYPE);
         CompoundNBT tag = new CompoundNBT();
         pos.write(tag);
         Assert.assertEquals(1, tag.getInt("posX"));

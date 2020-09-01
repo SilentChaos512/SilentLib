@@ -37,7 +37,7 @@ public final class DimPos {
     /**
      * Origin (0, 0, 0) in dimension 0
      */
-    public static final DimPos ZERO = new DimPos(0, 0, 0, DimensionType.func_236019_a_());
+    public static final DimPos ZERO = new DimPos(0, 0, 0, DimensionType.OVERWORLD_TYPE);
 
     private final int posX;
     private final int posY;
@@ -65,7 +65,7 @@ public final class DimPos {
     }
 
     public static DimPos of(Entity entity) {
-        return new DimPos(entity.func_233580_cy_(), entity.world.func_230315_m_());
+        return new DimPos(entity.getPosition(), entity.world.func_230315_m_());
     }
 
     //endregion
@@ -108,7 +108,7 @@ public final class DimPos {
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
                 // FIXME
-                DimensionType.func_236019_a_() /*tags.getInt("dim")*/);
+                DimensionType.OVERWORLD_TYPE /*tags.getInt("dim")*/);
     }
 
     public void write(CompoundNBT tags) {
