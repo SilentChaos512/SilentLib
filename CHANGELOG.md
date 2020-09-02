@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.8.0] - 2020-09-02
+- Ported to Minecraft 1.16.2 (Cyborgmas) [#26]
+
 ## [4.7.1] - 2020-09-02
 - Partially fix teleporting... still doesn't quite work right across dimensions
 

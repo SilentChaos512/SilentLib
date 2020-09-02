@@ -68,9 +68,8 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
         this.listeners.remove(playerAdvancementsIn);
     }
 
-    // deserializeInstance
     @Override
-    public Instance func_230307_a_(JsonObject json, ConditionArrayParser p_230307_2_) {
+    public Instance deserialize(JsonObject json, ConditionArrayParser p_230307_2_) {
         String type = JSONUtils.getString(json, "type", "unknown");
         int value = JSONUtils.getInt(json, "value", 0);
         return new Instance(type, value);
@@ -81,7 +80,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
         int value;
 
         Instance(String type, int value) {
-            super(GenericIntTrigger.ID, EntityPredicate.AndPredicate.field_234582_a_);
+            super(GenericIntTrigger.ID, EntityPredicate.AndPredicate.ANY_AND);
             this.type = type;
             this.value = value;
         }
@@ -94,9 +93,8 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
             return this.type.equals(typeIn) && this.value <= valueIn;
         }
 
-        // serialize
         @Override
-        public JsonObject func_230240_a_(ConditionArraySerializer p_230240_1_) {
+        public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
             JsonObject json = new JsonObject();
             json.addProperty("type", this.type);
             json.addProperty("value", this.value);

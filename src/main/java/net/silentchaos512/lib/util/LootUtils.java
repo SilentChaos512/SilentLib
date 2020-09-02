@@ -39,7 +39,7 @@ public final class LootUtils {
 
         LootContext lootContext = (new LootContext.Builder(player.getServerWorld()))
                 .withParameter(LootParameters.THIS_ENTITY, player)
-                .withParameter(LootParameters.POSITION, player.func_233580_cy_())
+                .withParameter(LootParameters.field_237457_g_, player.getPositionVec())
                 .withLuck(player.getLuck())
                 .build(LootParameterSets.GIFT);
         return server.getLootTableManager().getLootTableFromLocation(lootTable).generate(lootContext);

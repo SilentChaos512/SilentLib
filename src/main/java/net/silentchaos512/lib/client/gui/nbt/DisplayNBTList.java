@@ -31,7 +31,7 @@ public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
 
         @Override
         public void render(MatrixStack matrix, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            TextRenderUtils.renderScaled(matrix, this.mc.fontRenderer, new StringTextComponent(this.text), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
+            TextRenderUtils.renderScaled(matrix, this.mc.fontRenderer, new StringTextComponent(this.text).func_241878_f(), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
         }
     }
 }

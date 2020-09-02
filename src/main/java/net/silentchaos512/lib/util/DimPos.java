@@ -57,7 +57,7 @@ public final class DimPos {
     }
 
     public static DimPos of(Entity entity) {
-        return new DimPos(entity.func_233580_cy_(), entity.world.func_234923_W_());
+        return new DimPos(entity.getPosition(), entity.world.func_234923_W_());
     }
 
     //endregion

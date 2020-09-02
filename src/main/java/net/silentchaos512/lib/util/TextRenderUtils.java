@@ -3,6 +3,7 @@ package net.silentchaos512.lib.util;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.text.ITextProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -18,12 +19,12 @@ public final class TextRenderUtils {
         return Minecraft.getInstance().fontRenderer;
     }
 
-    private static void render(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, float x, float y, int color, boolean shadow) {
-        if (shadow) fontRenderer.drawStringWithShadow(matrix, text.getString(), x, y, color);
-        else fontRenderer.drawString(matrix, text.getString(), x, y, color);
+    private static void render(MatrixStack matrix, FontRenderer fontRenderer, IReorderingProcessor text, float x, float y, int color, boolean shadow) {
+        if (shadow) fontRenderer.func_238407_a_(matrix, text, x, y, color);
+        else fontRenderer.func_238422_b_(matrix, text, x, y, color);
     }
 
-    public static void renderScaled(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, float scale, int color, boolean shadow) {
+    public static void renderScaled(MatrixStack matrix, FontRenderer fontRenderer, IReorderingProcessor text, int x, int y, float scale, int color, boolean shadow) {
         matrix.push();
         matrix.scale(scale, scale, scale);
         // FIXME?
@@ -37,16 +38,16 @@ public final class TextRenderUtils {
     }
 
     public static void renderSplit(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, int width, int color, boolean shadow) {
-        List<ITextProperties> list = fontRenderer.func_238425_b_(text, width);
+        List<IReorderingProcessor> list = fontRenderer.func_238425_b_(text, width);
         for (int i = 0; i < list.size(); i++) {
-            ITextProperties line = list.get(i);
+            IReorderingProcessor line = list.get(i);
             int yTranslated = y + (i * fontRenderer.FONT_HEIGHT);
             render(matrix, fontRenderer, line, x, yTranslated, color, shadow);
         }
     }
 
     public static void renderSplitScaled(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, float scale, int color, boolean shadow, int length) {
-        List<ITextProperties> lines = fontRenderer.func_238425_b_(text, (int) (length / scale));
+        List<IReorderingProcessor> lines = fontRenderer.func_238425_b_(text, (int) (length / scale));
         for (int i = 0; i < lines.size(); i++) {
             int yTranslated = y + (i * (int) (fontRenderer.FONT_HEIGHT * scale + 3));
             renderScaled(matrix, fontRenderer, lines.get(i), x, yTranslated, scale, color, shadow);
