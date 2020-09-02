@@ -1,5 +1,8 @@
 # Changelog
 
+## [4.7.1] - 2020-09-02
+- Partially fix teleporting... still doesn't quite work right across dimensions
+
 ## [4.6.6] - 2020-07-13
 ### Added
 - GenericIntTrigger and UseItemTrigger: static factory methods and override serialize
