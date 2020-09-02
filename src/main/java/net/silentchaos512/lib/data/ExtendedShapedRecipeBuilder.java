@@ -135,7 +135,7 @@ public class ExtendedShapedRecipeBuilder {
         this.validate(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.field_234582_a_, id))
+                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
                     .withRewards(AdvancementRewards.Builder.recipe(id))
                     .withRequirementsStrategy(IRequirementsStrategy.OR);
         }

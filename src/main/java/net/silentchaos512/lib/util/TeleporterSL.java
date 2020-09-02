@@ -10,6 +10,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.server.ServerWorld;
 
 import javax.annotation.Nullable;
+import java.util.function.Function;
 
 /**
  * ITeleporter which can move entities across dimensions to any given point.
@@ -28,11 +29,6 @@ public class TeleporterSL extends Teleporter /*implements ITeleporter*/ {
     public TeleporterSL(ServerWorld world, DimPos pos) {
         super(world);
         this.pos = DimPos.of(pos.getPos(), pos.getDimension());
-    }
-
-    @Override
-    public boolean placeInPortal(Entity p_222268_1_, float p_222268_2_) {
-        return true;
     }
 
     //    @Override

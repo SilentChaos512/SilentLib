@@ -145,8 +145,8 @@ public class LootContainerItem extends Item {
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).func_240699_a_(TextFormatting.WHITE);
-        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).func_240699_a_(TextFormatting.BLUE));
+        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).mergeStyle(TextFormatting.WHITE);
+        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).mergeStyle(TextFormatting.BLUE));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class LootContainerItem extends Item {
 
         // Play item pickup sound...
         float pitch = ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F;
-        playerMP.world.playSound(null, playerMP.func_233580_cy_(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
+        playerMP.world.playSound(null, playerMP.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
         return ActionResult.resultSuccess(heldItem);
     }

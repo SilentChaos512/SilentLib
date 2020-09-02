@@ -68,7 +68,7 @@ public final class BlockUtils {
                 missing.forEach(id -> logger.error("Missing block loot table '{}'", id));
             }
             String list = missing.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "));
-            return new StringTextComponent("The following block loot tables are missing: " + list).func_240699_a_(TextFormatting.RED);
+            return new StringTextComponent("The following block loot tables are missing: " + list).mergeStyle(TextFormatting.RED);
         }
 
         return null;

@@ -1,5 +1,6 @@
 modLoader="javafml"
 loaderVersion="[30,)"
+license="GNU GPL v3.0"
 issueTrackerURL="https://github.com/SilentChaos512/SilentLib"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/silent-lib"
 #logoFile="examplemod.png"
