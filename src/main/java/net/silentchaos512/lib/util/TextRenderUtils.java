@@ -38,7 +38,7 @@ public final class TextRenderUtils {
     }
 
     public static void renderSplit(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, int width, int color, boolean shadow) {
-        List<IReorderingProcessor> list = fontRenderer.func_238425_b_(text, width);
+        List<IReorderingProcessor> list = fontRenderer.trimStringToWidth(text, width);
         for (int i = 0; i < list.size(); i++) {
             IReorderingProcessor line = list.get(i);
             int yTranslated = y + (i * fontRenderer.FONT_HEIGHT);
@@ -47,7 +47,7 @@ public final class TextRenderUtils {
     }
 
     public static void renderSplitScaled(MatrixStack matrix, FontRenderer fontRenderer, ITextProperties text, int x, int y, float scale, int color, boolean shadow, int length) {
-        List<IReorderingProcessor> lines = fontRenderer.func_238425_b_(text, (int) (length / scale));
+        List<IReorderingProcessor> lines = fontRenderer.trimStringToWidth(text, (int) (length / scale));
         for (int i = 0; i < lines.size(); i++) {
             int yTranslated = y + (i * (int) (fontRenderer.FONT_HEIGHT * scale + 3));
             renderScaled(matrix, fontRenderer, lines.get(i), x, yTranslated, scale, color, shadow);

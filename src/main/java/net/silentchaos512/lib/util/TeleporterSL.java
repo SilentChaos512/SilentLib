@@ -25,7 +25,7 @@ public class TeleporterSL implements ITeleporter {
     private final DimPos pos;
 
     public static TeleporterSL of(ServerWorld world, BlockPos pos) {
-        return new TeleporterSL(world, DimPos.of(pos, world.func_234923_W_()));
+        return new TeleporterSL(world, DimPos.of(pos, world.getDimensionKey()));
     }
 
     public static TeleporterSL of(ServerWorld world, DimPos pos) {
@@ -58,7 +58,7 @@ public class TeleporterSL implements ITeleporter {
                 player.connection.sendPacket(new SPlayEntityEffectPacket(player.getEntityId(), effect));
             }
 
-            BasicEventHooks.firePlayerChangedDimensionEvent(player, currentWorld.func_234923_W_(), destWorld.func_234923_W_());
+            BasicEventHooks.firePlayerChangedDimensionEvent(player, currentWorld.getDimensionKey(), destWorld.getDimensionKey());
         } else {
             entity.setLocationAndAngles(position.x, position.y, position.z, yaw, entity.rotationPitch);
         }

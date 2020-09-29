@@ -39,7 +39,7 @@ public final class DimPos {
     /**
      * Origin (0, 0, 0) in dimension 0
      */
-    public static final DimPos ZERO = new DimPos(0, 0, 0, World.field_234918_g_);
+    public static final DimPos ZERO = new DimPos(0, 0, 0, World.OVERWORLD);
 
     private final int posX;
     private final int posY;
@@ -57,7 +57,7 @@ public final class DimPos {
     }
 
     public static DimPos of(Entity entity) {
-        return new DimPos(entity.getPosition(), entity.world.func_234923_W_());
+        return new DimPos(entity.getPosition(), entity.world.getDimensionKey());
     }
 
     //endregion
@@ -99,14 +99,14 @@ public final class DimPos {
                 tags.getInt("posX"),
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
-                RegistryKey.func_240903_a_(Registry.WORLD_KEY, new ResourceLocation(tags.getString("dim"))));
+                RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(tags.getString("dim"))));
     }
 
     public void write(CompoundNBT tags) {
         tags.putInt("posX", this.posX);
         tags.putInt("posY", this.posY);
         tags.putInt("posZ", this.posZ);
-        tags.putString("dim", dimension.func_240901_a_().toString());
+        tags.putString("dim", dimension.getRegistryName().toString());
     }
 
     /**
@@ -160,6 +160,6 @@ public final class DimPos {
 
     @Override
     public int hashCode() {
-        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.func_240901_a_().hashCode();
+        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.getRegistryName().hashCode();
     }
 }

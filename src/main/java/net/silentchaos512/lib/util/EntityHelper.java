@@ -62,7 +62,7 @@ public final class EntityHelper {
         world.addEntity(entity);
         if (world instanceof ServerWorld) {
             SpawnEntityPacket message = new SpawnEntityPacket(entity);
-            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.world.func_234923_W_())), message);
+            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.world.getDimensionKey())), message);
         }
     }
 

@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.8.1] - 2020-09-29
+- Compatible with 1.16.2 and 1.16.3
+- Update to 20200916-1.16.2 mappings
+
 ## [4.8.0] - 2020-09-02
 - Ported to Minecraft 1.16.2 (Cyborgmas) [#26]
 
