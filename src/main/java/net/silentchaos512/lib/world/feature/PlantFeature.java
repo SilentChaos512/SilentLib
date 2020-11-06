@@ -7,11 +7,11 @@ import net.minecraft.world.IWorld;
 import net.minecraft.world.gen.ChunkGenerator;
 import net.minecraft.world.gen.feature.FlowersFeature;
 import net.minecraft.world.gen.feature.NoFeatureConfig;
-import net.minecraft.world.gen.feature.structure.StructureManager;
 
 import java.util.Random;
 
 // TODO: May need to rethink this since FlowersFeature has changed significantly
+@Deprecated
 public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     private final BlockState plant;
     private final int tryCount;
