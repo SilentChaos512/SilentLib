@@ -19,7 +19,9 @@ import java.util.function.Function;
  * ITeleporter which can move entities across dimensions to any given point.
  *
  * @since 4.0.10
+ * @deprecated Use {@link TeleportUtils} instead
  */
+@Deprecated
 public class TeleporterSL implements ITeleporter {
     private final ServerWorld world;
     private final DimPos pos;

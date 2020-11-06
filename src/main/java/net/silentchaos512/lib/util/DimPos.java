@@ -44,7 +44,7 @@ public final class DimPos {
     private final int posX;
     private final int posY;
     private final int posZ;
-    private final RegistryKey<World> dimension;
+    private final DimensionId dimension;
 
     //region Static factory methods
 
@@ -67,6 +67,10 @@ public final class DimPos {
     }
 
     private DimPos(int x, int y, int z, RegistryKey<World> dimension) {
+        this(x, y, z, DimensionId.fromId(dimension));
+    }
+
+    private DimPos(int x, int y, int z, DimensionId dimension) {
         this.posX = x;
         this.posY = y;
         this.posZ = z;
@@ -85,14 +89,13 @@ public final class DimPos {
         return this.posZ;
     }
 
-    public RegistryKey<World> getDimension() {
-        return this.dimension;
+    public DimensionId getDimensionId() {
+        return dimension;
     }
 
-    /*@Nullable
-    public RegistryKey<World> getRegistryKey<World>() {
-        return RegistryKey<World>.getById(this.dimension);
-    }*/
+    public RegistryKey<World> getDimension() {
+        return this.dimension.getId();
+    }
 
     public static DimPos read(CompoundNBT tags) {
         return DimPos.of(
