@@ -146,7 +146,7 @@ public final class DimPos {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d, %d, d%d)", this.posX, this.posY, this.posZ, dimension);
+        return String.format("(%d, %d, %s) in %s", this.posX, this.posY, this.posZ, dimension.getRegistryName());
     }
 
     @Override

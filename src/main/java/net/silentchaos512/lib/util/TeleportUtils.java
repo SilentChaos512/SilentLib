@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 public class TeleportUtils {
     public static void teleport(PlayerEntity player, DimPos pos, @Nullable Direction direction) {
-        teleport(player, pos.getDimensionId(), pos.getX(), pos.getY(), pos.getZ(), direction);
+        teleport(player, pos.getDimensionId(), pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, direction);
     }
 
     public static void teleport(PlayerEntity player, DimensionId dimension, double destX, double destY, double destZ, @Nullable Direction direction) {
@@ -68,7 +68,7 @@ public class TeleportUtils {
     }
 
     public static Entity teleportEntity(Entity entity, DimPos pos, @Nullable Direction facing) {
-        return teleportEntity(entity, pos.getDimensionId().getWorld(), pos.getX(), pos.getY(), pos.getZ(), facing);
+        return teleportEntity(entity, pos.getDimensionId().getWorld(), pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing);
     }
 
     /**

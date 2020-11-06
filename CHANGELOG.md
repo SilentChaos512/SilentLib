@@ -1,5 +1,10 @@
 # Changelog
 
+## [4.9.0] - 2020-11-06
+- The `sl_tp` command can now correctly teleport to other dimensions (no safety checks, use with caution)
+- Add new TeleportUtils class (for Silent's Gems teleporter fix)
+- Move Silent's Gems' DimensionFilterPlacement into Lib
+
 ## [4.8.1] - 2020-09-29
 - Compatible with 1.16.2 and 1.16.3
 - Update to 20200916-1.16.2 mappings
