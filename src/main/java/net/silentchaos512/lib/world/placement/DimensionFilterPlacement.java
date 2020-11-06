@@ -14,9 +14,9 @@ public class DimensionFilterPlacement extends Placement<DimensionFilterConfig> {
     }
 
     @Override
-    public Stream<BlockPos> func_241857_a(WorldDecoratingHelper worldDecoratingHelper, Random random, DimensionFilterConfig config, BlockPos pos) {
+    public Stream<BlockPos> getPositions(WorldDecoratingHelper helper, Random rand, DimensionFilterConfig config, BlockPos pos) {
         // AT'd visibility of field_242889_a
-        if (config.matches(worldDecoratingHelper.field_242889_a.getWorld().getDimensionKey())) {
+        if (config.matches(helper.field_242889_a.getWorld().getDimensionKey())) {
             return Stream.of(pos);
         }
         return Stream.empty();

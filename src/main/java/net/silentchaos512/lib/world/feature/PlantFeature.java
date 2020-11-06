@@ -25,7 +25,7 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public boolean func_241855_a(ISeedReader worldIn, ChunkGenerator chunkGenerator, Random rand, BlockPos pos, NoFeatureConfig config) {
+    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
         BlockState toPlace = getFlowerToPlace(rand, pos, config);
         int placedCount = 0;
 
