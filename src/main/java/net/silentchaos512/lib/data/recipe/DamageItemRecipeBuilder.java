@@ -1,14 +1,10 @@
-package net.silentchaos512.lib.data;
+package net.silentchaos512.lib.data.recipe;
 
 import com.google.gson.JsonObject;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.util.IItemProvider;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
 
-/**
- * @deprecated Use {@link net.silentchaos512.lib.data.recipe.DamageItemRecipeBuilder} instead
- */
-@Deprecated
 public class DamageItemRecipeBuilder extends ExtendedShapelessRecipeBuilder {
     protected int damage = 1;
 

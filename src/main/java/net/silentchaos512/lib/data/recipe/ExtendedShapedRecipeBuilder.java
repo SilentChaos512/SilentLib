@@ -1,4 +1,4 @@
-package net.silentchaos512.lib.data;
+package net.silentchaos512.lib.data.recipe;
 
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
@@ -30,11 +30,8 @@ import java.util.function.Consumer;
  * <p>
  * If an advancement criterion is not added, no advancement is generated, instead of throwing an
  * exception.
- *
- * @deprecated Use {@link net.silentchaos512.lib.data.recipe.ExtendedShapedRecipeBuilder} instead
  */
 @SuppressWarnings("WeakerAccess")
-@Deprecated
 public class ExtendedShapedRecipeBuilder {
     private final IRecipeSerializer<?> serializer;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();

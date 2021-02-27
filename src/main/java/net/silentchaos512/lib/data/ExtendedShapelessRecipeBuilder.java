@@ -14,7 +14,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.tags.ITag;
-import net.minecraft.tags.Tag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.util.NameUtils;
@@ -34,8 +33,10 @@ import java.util.function.Consumer;
  * <p>
  * If an advancement criterion is not added, no advancement is generated, instead of throwing an
  * exception.
+ * @deprecated Use {@link net.silentchaos512.lib.data.recipe.ExtendedShapelessRecipeBuilder} instead
  */
 @SuppressWarnings("WeakerAccess")
+@Deprecated
 public class ExtendedShapelessRecipeBuilder {
     private final IRecipeSerializer<?> serializer;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();

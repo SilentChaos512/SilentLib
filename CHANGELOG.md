@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Added
+- Some base classes for mod data generators, to reduce code duplication
+
 ## [4.9.1] - 2021-01-11
 - Attempt to fix an occasional crash when registering compostable items [Silent Gear #307](https://github.com/SilentChaos512/Silent-Gear/issues/307)
 - Update zh_cn.json (XuyuEre) [#27]

@@ -13,7 +13,7 @@ import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.command.internal.TeleportCommand;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
-import net.silentchaos512.lib.data.TestRecipeProvider;
+import net.silentchaos512.lib.data.recipe.test.TestRecipeProvider;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 

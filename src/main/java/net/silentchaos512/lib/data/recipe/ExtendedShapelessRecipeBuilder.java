@@ -1,6 +1,6 @@
-package net.silentchaos512.lib.data;
+package net.silentchaos512.lib.data.recipe;
 
-import com.google.common.collect.Sets;
+import com.google.common.collect.Lists;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
@@ -19,53 +19,52 @@ import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Very similar to {@link net.minecraft.data.ShapedRecipeBuilder}, but with a couple of changes.
- * Intended to generate {@link net.silentchaos512.lib.crafting.recipe.ExtendedShapedRecipe}s. Extra
- * data can be quickly added to serialization by either calling {@link #addExtraData(Consumer)} or
- * extending this class and overriding {@link #serializeExtra(JsonObject)}.
+ * Very similar to {@link net.minecraft.data.ShapelessRecipeBuilder}, but with a couple of changes.
+ * Intended to generate {@link net.silentchaos512.lib.crafting.recipe.ExtendedShapelessRecipe}s.
+ * Extra data can be quickly added to serialization by either calling {@link
+ * #addExtraData(Consumer)} or extending this class and overriding {@link
+ * #serializeExtra(JsonObject)}.
  * <p>
  * If an advancement criterion is not added, no advancement is generated, instead of throwing an
  * exception.
- *
- * @deprecated Use {@link net.silentchaos512.lib.data.recipe.ExtendedShapedRecipeBuilder} instead
  */
 @SuppressWarnings("WeakerAccess")
-@Deprecated
-public class ExtendedShapedRecipeBuilder {
+public class ExtendedShapelessRecipeBuilder {
     private final IRecipeSerializer<?> serializer;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Item result;
     private final int count;
-    private final List<String> pattern = new ArrayList<>();
-    private final Map<Character, Ingredient> key = new LinkedHashMap<>();
+    private final List<Ingredient> ingredients = Lists.newArrayList();
     private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    private ExtendedShapedRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
+    protected ExtendedShapelessRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
         this.serializer = serializer;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedShapedRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result) {
+    public static ExtendedShapelessRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result) {
         return builder(serializer, result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
-        return new ExtendedShapedRecipeBuilder(serializer, result, count);
+    public static ExtendedShapelessRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
+        return new ExtendedShapelessRecipeBuilder(serializer, result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(IItemProvider result) {
+    public static ExtendedShapelessRecipeBuilder vanillaBuilder(IItemProvider result) {
         return vanillaBuilder(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(IItemProvider result, int count) {
-        return new ExtendedShapedRecipeBuilder(IRecipeSerializer.CRAFTING_SHAPED, result, count);
+    public static ExtendedShapelessRecipeBuilder vanillaBuilder(IItemProvider result, int count) {
+        return new ExtendedShapelessRecipeBuilder(IRecipeSerializer.CRAFTING_SHAPELESS, result, count);
     }
 
     /**
@@ -85,47 +84,46 @@ public class ExtendedShapedRecipeBuilder {
      * @param extraDataIn Changes to make to the recipe JSON (called after base JSON is generated)
      * @return The recipe builder
      */
-    public ExtendedShapedRecipeBuilder addExtraData(Consumer<JsonObject> extraDataIn) {
+    public ExtendedShapelessRecipeBuilder addExtraData(Consumer<JsonObject> extraDataIn) {
         this.extraData.add(extraDataIn);
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
-        return this.key(symbol, Ingredient.fromTag(tagIn));
+    public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag) {
+        return addIngredient(tag, 1);
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, IItemProvider itemIn) {
-        return this.key(symbol, Ingredient.fromItems(itemIn));
+    public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag, int quantity) {
+        return addIngredient(Ingredient.fromTag(tag), quantity);
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
-        if (this.key.containsKey(symbol)) {
-            throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
-        } else if (symbol == ' ') {
-            throw new IllegalArgumentException("Symbol ' ' (whitespace) is reserved and cannot be defined");
-        } else {
-            this.key.put(symbol, ingredientIn);
-            return this;
+    public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item) {
+        return addIngredient(item, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item, int quantity) {
+        return addIngredient(Ingredient.fromItems(item), quantity);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {
+        return addIngredient(ingredient, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient, int quantity) {
+        for (int i = 0; i < quantity; ++i) {
+            this.ingredients.add(ingredient);
         }
+        return this;
     }
 
-    public ExtendedShapedRecipeBuilder patternLine(String patternIn) {
-        if (!this.pattern.isEmpty() && patternIn.length() != this.pattern.get(0).length()) {
-            throw new IllegalArgumentException("Pattern must be the same width on every line!");
-        } else {
-            this.pattern.add(patternIn);
-            return this;
-        }
-    }
-
-    public ExtendedShapedRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-        this.advancementBuilder.withCriterion(name, criterionIn);
+    public ExtendedShapelessRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
+        this.advancementBuilder.withCriterion(name, criterion);
         this.hasAdvancementCriterion = true;
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder setGroup(String groupIn) {
-        this.group = groupIn;
+    public ExtendedShapelessRecipeBuilder setGroup(String group) {
+        this.group = group;
         return this;
     }
 
@@ -134,7 +132,6 @@ public class ExtendedShapedRecipeBuilder {
     }
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
-        this.validate(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
                     .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
@@ -145,39 +142,12 @@ public class ExtendedShapedRecipeBuilder {
         consumer.accept(new Result(id, this, advancementId));
     }
 
-    private void validate(ResourceLocation id) {
-        // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
-        if (this.pattern.isEmpty()) {
-            throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
-        } else {
-            Set<Character> set = Sets.newHashSet(this.key.keySet());
-            set.remove(' ');
-
-            for (String s : this.pattern) {
-                for (int i = 0; i < s.length(); ++i) {
-                    char c0 = s.charAt(i);
-                    if (!this.key.containsKey(c0) && c0 != ' ') {
-                        throw new IllegalStateException("Pattern in recipe " + id + " uses undefined symbol '" + c0 + "'");
-                    }
-
-                    set.remove(c0);
-                }
-            }
-
-            if (!set.isEmpty()) {
-                throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + id);
-            } else if (this.pattern.size() == 1 && this.pattern.get(0).length() == 1) {
-                throw new IllegalStateException("Shaped recipe " + id + " only takes in a single item - should it be a shapeless recipe instead?");
-            }
-        }
-    }
-
     public static class Result implements IFinishedRecipe {
         private final ResourceLocation id;
-        private final ExtendedShapedRecipeBuilder builder;
+        private final ExtendedShapelessRecipeBuilder builder;
         private final ResourceLocation advancementId;
 
-        public Result(ResourceLocation id, ExtendedShapedRecipeBuilder builder, ResourceLocation advancementId) {
+        public Result(ResourceLocation id, ExtendedShapelessRecipeBuilder builder, ResourceLocation advancementId) {
             this.id = id;
             this.builder = builder;
             this.advancementId = advancementId;
@@ -189,13 +159,11 @@ public class ExtendedShapedRecipeBuilder {
                 json.addProperty("group", builder.group);
             }
 
-            JsonArray pattern = new JsonArray();
-            builder.pattern.forEach(pattern::add);
-            json.add("pattern", pattern);
-
-            JsonObject key = new JsonObject();
-            builder.key.forEach((c, ingredient) -> key.add(String.valueOf(c), ingredient.serialize()));
-            json.add("key", key);
+            JsonArray ingredients = new JsonArray();
+            for (Ingredient ingredient : builder.ingredients) {
+                ingredients.add(ingredient.serialize());
+            }
+            json.add("ingredients", ingredients);
 
             JsonObject result = new JsonObject();
             result.addProperty("item", NameUtils.from(builder.result).toString());
