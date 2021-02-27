@@ -6,9 +6,11 @@ import net.minecraft.block.Blocks;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Items;
+import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.Tags;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.data.recipe.ExtendedSingleItemRecipeBuilder;
 import net.silentchaos512.lib.data.recipe.LibRecipeProvider;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -55,6 +57,10 @@ public class TestRecipeProvider extends LibRecipeProvider {
         compressionRecipes(consumer, Items.EMERALD, Items.MAGMA_CREAM, Items.APPLE);
 
         smeltingAndBlastingRecipes(consumer, "reverse_glass_test", Tags.Items.GLASS_COLORLESS, Items.SAND, 0.625f);
+
+        ExtendedSingleItemRecipeBuilder.stonecuttingBuilder(Ingredient.fromItems(Items.COAL_BLOCK), Items.COAL, 9)
+                .addExtraData(json -> json.addProperty("extra_test", "testing extra data!"))
+                .build(consumer);
     }
 
     private void addLore(JsonObject json, String... lore) {
