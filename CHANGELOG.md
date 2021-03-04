@@ -1,8 +1,13 @@
 # Changelog
 
-## [Unreleased]
+## [4.9.3] - 2021-03-04
 ### Added
-- Some base classes for mod data generators, to reduce code duplication
+- ExtendedSingleItemRecipe class and data builder
+- TagUtils class, with a copy of the "tag not bound" workaround hack
+
+## [4.9.2] - 2021-02-27
+### Added
+- LibRecipeProvider class (reduces code duplication for data generators)
 
 ## [4.9.1] - 2021-01-11
 - Attempt to fix an occasional crash when registering compostable items [Silent Gear #307](https://github.com/SilentChaos512/Silent-Gear/issues/307)
