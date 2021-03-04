@@ -20,7 +20,7 @@ public final class SilentLib {
     public static final Random RANDOM = new Random();
 
     private static SilentLib INSTANCE;
-    private static SideProxy PROXY;
+    public static SideProxy PROXY;
 
     public SilentLib() {
         INSTANCE = this;
