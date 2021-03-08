@@ -7,9 +7,12 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.JSONUtils;
 import net.minecraftforge.common.Tags;
 import net.silentchaos512.lib.SilentLib;
+import net.silentchaos512.lib.crafting.ingredient.ExclusionIngredient;
+import net.silentchaos512.lib.data.recipe.ExtendedShapedRecipeBuilder;
 import net.silentchaos512.lib.data.recipe.ExtendedSingleItemRecipeBuilder;
 import net.silentchaos512.lib.data.recipe.LibRecipeProvider;
 
@@ -24,7 +27,7 @@ public class TestRecipeProvider extends LibRecipeProvider {
 
     @Override
     protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
-        SilentLib.LOGGER.warn("Running test recipe provider! These files should NOT be included in release!");
+        SilentLib.LOGGER.fatal("Running test recipe provider! These files should NOT be included in release!");
 
         damageItemBuilder(Items.DIAMOND, 9)
                 .damageToItems(3)
@@ -60,6 +63,12 @@ public class TestRecipeProvider extends LibRecipeProvider {
 
         ExtendedSingleItemRecipeBuilder.stonecuttingBuilder(Ingredient.fromItems(Items.COAL_BLOCK), Items.COAL, 9)
                 .addExtraData(json -> json.addProperty("extra_test", "testing extra data!"))
+                .build(consumer);
+
+        ExtendedShapedRecipeBuilder.vanillaBuilder(Items.APPLE, 3)
+                .key('#', ExclusionIngredient.of(ItemTags.PLANKS, Items.OAK_PLANKS))
+                .patternLine("###")
+                .patternLine("# #")
                 .build(consumer);
     }
 

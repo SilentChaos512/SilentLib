@@ -1,5 +1,9 @@
 # Changelog
 
+## [4.9.4] - 2021-03-08
+### Added
+- ExclusionIngredient (moving to Lib from Silent Gear with some small changes)
+
 ## [4.9.3] - 2021-03-04
 ### Added
 - ExtendedSingleItemRecipe class and data builder

@@ -6,6 +6,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.tags.TagRegistryManager;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.*;
@@ -13,6 +14,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.command.internal.TeleportCommand;
+import net.silentchaos512.lib.crafting.ingredient.ExclusionIngredient;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
 import net.silentchaos512.lib.data.recipe.test.TestRecipeProvider;
 import net.silentchaos512.lib.item.ILeftClickItem;
@@ -31,6 +33,7 @@ public class SideProxy {
         SilentLibNetwork.init();
         LibTriggers.init();
         ILeftClickItem.EventHandler.init();
+        registerIngredientSerializers();
     }
 
     private void gatherData(GatherDataEvent event) {
@@ -52,6 +55,10 @@ public class SideProxy {
 
     private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
         event.getRegistry().register(DamageItemRecipe.SERIALIZER.setRegistryName(SilentLib.getId("damage_item")));
+    }
+
+    private void registerIngredientSerializers() {
+        CraftingHelper.register(ExclusionIngredient.Serializer.NAME, ExclusionIngredient.Serializer.INSTANCE);
     }
 
     public void tryFetchTagsHack() {}
