@@ -1,5 +1,9 @@
 # Changelog
 
+## [Unreleased]
+### Changed
+- More methods in TagUtils, deprecate `isInSafe` to rename for consistency
+
 ## [4.9.4] - 2021-03-08
 ### Added
 - ExclusionIngredient (moving to Lib from Silent Gear with some small changes)
