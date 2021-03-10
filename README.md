@@ -12,27 +12,54 @@ A common library for my Minecraft mods to use, to make updating and creating new
 
 **I only upload builds to Minecraft CurseForge.** If you downloaded the mod from somewhere other than Curse/CurseForge or the Twitch launcher (or as part of a modpack in some cases), I cannot make any guarantees about the file or its contents, as it was uploaded without my permission.
 
-## Making an Add-on
+## Developers
 
-I currently upload to Bintray and will switch to GitHub Packages sometime soon.
+To use Silent Lib in your project, add the following to your `build.gradle`.
 
-### Bintray Instructions
+You alse need to generate a GitHub token and add it along with your GitHub username to your personal `gradle.properties` file in `C:\Users\YOUR_USERNAME\.gradle` or `~/.gradle/gradle.properties`. This file may not exist, and you would have to create it yourself.
 
-If you want to use Silent Lib in your mod, add Silent Lib and silent-utils to your dependencies:
+GitHub tokens can be generated [here](https://github.com/settings/tokens). Click _Generate New Token_ and click the checkmark for _read:packages_
 
-```groovy
+Example of `gradle.properties` file in `C:\Users\YOUR_USERNAME\.gradle` or `~/.gradle/gradle.properties`
+
+```gradle
+//Your GitHub username
+gpr.username=SilentChaos512
+
+// Your GitHub generated token (bunch of hex digits) with read permission
+gpr.token=paste_your_token_here
+```
+
+-----------------------------------
+
+Code to add to `build.gradle`
+
+```gradle
 repositories {
     maven {
-        url "https://dl.bintray.com/silentchaos512/silent-lib"
+        url = uri("https://maven.pkg.github.com/silentchaos512/silentlib")
+        credentials {
+            username = property('gpr.username')
+            password = property('gpr.token')
+        }
     }
     maven {
-        url "https://dl.bintray.com/silentchaos512/silent-utils"
+        url = uri("https://maven.pkg.github.com/silentchaos512/silent-utils")
+        credentials {
+            username = property('gpr.username')
+            password = property('gpr.token')
+        }
     }
-}
-
-dependencies {
-    compile("net.silentchaos512:silent-lib-{mc-version}:{version}")
-    compile("net.silentchaos512:silent-utils:{version}")
 }
 ```
 
+```gradle
+dependencies {
+    // Replace VERSION with the version you need, in the form of "MC_VERSION:MOD_VERSION"
+    // Example: compile fg.deobf("net.silentchaos512:silentlib:1.16.3-4.+")
+    // Available builds can be found here: https://github.com/SilentChaos512/silentlib/packages
+    compile fg.deobf("net.silentchaos512:silent-lib-VERSION") {
+        exclude module: "forge"
+    }
+}
+```
