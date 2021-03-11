@@ -5,6 +5,7 @@ import net.minecraft.data.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
@@ -82,6 +83,14 @@ public abstract class LibRecipeProvider extends RecipeProvider {
 
     protected DamageItemRecipeBuilder damageItemBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
         return DamageItemRecipeBuilder.builder(serializer, result, count);
+    }
+
+    protected void registerCustomRecipe(Consumer<IFinishedRecipe> consumer, SpecialRecipeSerializer<?> serializer) {
+        registerCustomRecipe(consumer, serializer, NameUtils.from(serializer));
+    }
+
+    protected void registerCustomRecipe(Consumer<IFinishedRecipe> consumer, SpecialRecipeSerializer<?> serializer, ResourceLocation recipeId) {
+        CustomRecipeBuilder.customRecipe(serializer).build(consumer, recipeId.toString());
     }
 
     /**

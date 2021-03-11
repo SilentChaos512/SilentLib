@@ -1,6 +1,12 @@
 # Changelog
 
-## [Unreleased]
+## [4.9.6] - 2021-03-11
+- Also contains changes from unreleased 4.9.5 build
+### Added
+- LibRecipeProvider registerCustomRecipe methods (for SpecialRecipes)
+
+## [4.9.5] - 2021-03-10
+- Not released on Curse. Bumped version when diagnosing GitHub Packages errors.
 ### Changed
 - More methods in TagUtils, deprecate `isInSafe` to rename for consistency
 
