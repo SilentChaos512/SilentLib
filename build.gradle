@@ -39,6 +39,7 @@ javadoc {
 archivesBaseName = project.archivesBaseName
 def versionInfo = getModVersion()
 System.out.println(versionInfo)
+def version_short = "${versionInfo['version_short']}"
 version = "${versionInfo['version']}"
 
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
@@ -164,7 +165,7 @@ jar {
                     "Specification-Vendor"    : "SilentChaos512",
                     "Specification-Version"   : "1.0",
                     "Implementation-Title"    : project.name,
-                    "Implementation-Version"  : "${version}",
+                    "Implementation-Version"  : version_short,
                     "Implementation-Vendor"   : "SilentChaos512",
                     "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")],)
     }
