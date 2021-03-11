@@ -58,7 +58,7 @@ dependencies {
     // Replace VERSION with the version you need, in the form of "MC_VERSION:MOD_VERSION"
     // Example: compile fg.deobf("net.silentchaos512:silentlib:1.16.3-4.+")
     // Available builds can be found here: https://github.com/SilentChaos512/silentlib/packages
-    compile fg.deobf("net.silentchaos512:silent-lib-VERSION") {
+    compile fg.deobf("net.silentchaos512:silent-lib:VERSION") {
         exclude module: "forge"
     }
 }
