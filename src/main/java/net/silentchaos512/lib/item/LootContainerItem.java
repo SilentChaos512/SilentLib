@@ -131,7 +131,7 @@ public class LootContainerItem extends Item {
     /**
      * Get the items to give the player when used. By default, this uses the loot table specified in
      * the NBT of {@code heldItem}. Can be overridden for different behavior. This implementation is
-     * similar to {@link net.minecraft.advancements.AdvancementRewards#apply(ServerPlayerEntity)}.
+     * similar to {@link net.minecraft.advancements.AdvancementRewards#grant(ServerPlayerEntity)}.
      *
      * @param heldItem The loot container item being used
      * @param player   The player using the item
