@@ -23,7 +23,7 @@ public class DimensionFilterConfig implements IPlacementConfig {
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
                 Collection<RegistryKey<World>> dims = strList.stream()
-                        .map(str -> RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(str)))
+                        .map(str -> RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(str)))
                         .collect(Collectors.toList());
                 return new DimensionFilterConfig(isWhitelist, dims);
             }));

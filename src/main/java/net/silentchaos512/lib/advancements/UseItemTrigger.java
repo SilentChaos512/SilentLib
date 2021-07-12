@@ -1,7 +1,5 @@
 package net.silentchaos512.lib.advancements;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -29,7 +27,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
     }
 
     @Override
-    public void addListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listenerIn) {
+    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listenerIn) {
         Listeners triggerListeners = this.listeners.get(playerAdvancementsIn);
         if (triggerListeners == null) {
             triggerListeners = new UseItemTrigger.Listeners(playerAdvancementsIn);
@@ -39,7 +37,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
     }
 
     @Override
-    public void removeListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listenerIn) {
+    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<Instance> listenerIn) {
         Listeners triggerListeners = this.listeners.get(playerAdvancementsIn);
         if (triggerListeners != null) {
             triggerListeners.remove(listenerIn);
@@ -49,14 +47,14 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
     }
 
     @Override
-    public void removeAllListeners(PlayerAdvancements playerAdvancementsIn) {
+    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn) {
         this.listeners.remove(playerAdvancementsIn);
     }
 
     @Override
-    public Instance deserialize(JsonObject json, ConditionArrayParser p_230307_2_) {
-        ItemPredicate itempredicate = ItemPredicate.deserialize(json.get("item"));
-        Target target = Target.fromString(JSONUtils.getString(json, "target", "any"));
+    public Instance createInstance(JsonObject json, ConditionArrayParser p_230307_2_) {
+        ItemPredicate itempredicate = ItemPredicate.fromJson(json.get("item"));
+        Target target = Target.fromString(JSONUtils.getAsString(json, "target", "any"));
         return new UseItemTrigger.Instance(itempredicate, target);
     }
 
@@ -65,7 +63,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         Target target;
 
         Instance(ItemPredicate itempredicate, Target target) {
-            super(UseItemTrigger.ID, EntityPredicate.AndPredicate.ANY_AND);
+            super(UseItemTrigger.ID, EntityPredicate.AndPredicate.ANY);
             this.itempredicate = itempredicate;
             this.target = target;
         }
@@ -75,13 +73,13 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
         }
 
         public boolean test(ItemStack stack, Target target) {
-            return itempredicate.test(stack) && (this.target == target || this.target == Target.ANY);
+            return itempredicate.matches(stack) && (this.target == target || this.target == Target.ANY);
         }
 
         @Override
-        public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
+        public JsonObject serializeToJson(ConditionArraySerializer p_230240_1_) {
             JsonObject json = new JsonObject();
-            json.add("item", this.itempredicate.serialize());
+            json.add("item", this.itempredicate.serializeToJson());
             json.addProperty("target", this.target.name());
             return json;
         }
@@ -117,7 +115,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
             List<Listener<Instance>> list = null;
 
             for (Listener<Instance> listener : this.listeners) {
-                if (listener.getCriterionInstance().test(stack, target)) {
+                if (listener.getTriggerInstance().test(stack, target)) {
                     if (list == null) list = new ArrayList<>();
                     list.add(listener);
                 }
@@ -125,7 +123,7 @@ public class UseItemTrigger implements ICriterionTrigger<UseItemTrigger.Instance
 
             if (list != null) {
                 for (ICriterionTrigger.Listener<UseItemTrigger.Instance> listener1 : list)
-                    listener1.grantCriterion(this.playerAdvancements);
+                    listener1.run(this.playerAdvancements);
             }
         }
     }

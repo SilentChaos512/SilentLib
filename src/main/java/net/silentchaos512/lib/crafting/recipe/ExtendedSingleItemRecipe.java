@@ -24,7 +24,7 @@ public class ExtendedSingleItemRecipe extends SingleItemRecipe {
 
     @Override
     public boolean matches(IInventory inv, World worldIn) {
-        return this.ingredient.test(inv.getStackInSlot(0));
+        return this.ingredient.test(inv.getItem(0));
     }
 
     @FunctionalInterface
@@ -53,10 +53,10 @@ public class ExtendedSingleItemRecipe extends SingleItemRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, JsonObject json) {
-            Ingredient ingredient = Ingredient.deserialize(json.get("ingredient"));
-            ResourceLocation itemId = new ResourceLocation(JSONUtils.getString(json, "result"));
-            int count = JSONUtils.getInt(json, "count");
+        public T fromJson(ResourceLocation recipeId, JsonObject json) {
+            Ingredient ingredient = Ingredient.fromJson(json.get("ingredient"));
+            ResourceLocation itemId = new ResourceLocation(JSONUtils.getAsString(json, "result"));
+            int count = JSONUtils.getAsInt(json, "count");
             ItemStack result = new ItemStack(ForgeRegistries.ITEMS.getValue(itemId), count);
 
             T ret = this.recipeFactory.create(recipeId, ingredient, result);
@@ -69,9 +69,9 @@ public class ExtendedSingleItemRecipe extends SingleItemRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-            Ingredient ingredient = Ingredient.read(buffer);
-            ItemStack result = buffer.readItemStack();
+        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+            Ingredient ingredient = Ingredient.fromNetwork(buffer);
+            ItemStack result = buffer.readItem();
 
             T ret = this.recipeFactory.create(recipeId, ingredient, result);
 
@@ -83,9 +83,9 @@ public class ExtendedSingleItemRecipe extends SingleItemRecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, T recipe) {
-            recipe.ingredient.write(buffer);
-            buffer.writeItemStack(recipe.result);
+        public void toNetwork(PacketBuffer buffer, T recipe) {
+            recipe.ingredient.toNetwork(buffer);
+            buffer.writeItem(recipe.result);
 
             if (this.writeBuffer != null) {
                 this.writeBuffer.accept(buffer, recipe);

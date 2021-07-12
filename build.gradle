@@ -45,7 +45,7 @@ version = "${versionInfo['version']}"
 sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 
 minecraft {
-    mappings channel: project.mcp_channel.toString(), version: project.mcp_mappings.toString()
+    mappings channel: project.mappings_channel.toString(), version: project.mappings_version.toString()
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -198,9 +198,8 @@ curseforge {
             changelog = file(project.cf_changelog_filename)
             releaseType = project.cf_release_type
             addGameVersion(project.mc_version)
-            addGameVersion("1.16.2")
+            addGameVersion("1.16.3")
             addGameVersion("1.16.4")
-            addGameVersion("1.16.5")
             mainArtifact(jar) {
 //                displayName = "$project.description $display_version"
             }

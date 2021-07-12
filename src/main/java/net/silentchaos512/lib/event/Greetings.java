@@ -59,6 +59,6 @@ public final class Greetings {
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         PlayerEntity player = event.getPlayer();
         if (player == null) return;
-        messages.forEach(msg -> msg.apply(player).ifPresent(text -> player.sendMessage(text, Util.DUMMY_UUID)));
+        messages.forEach(msg -> msg.apply(player).ifPresent(text -> player.sendMessage(text, Util.NIL_UUID)));
     }
 }

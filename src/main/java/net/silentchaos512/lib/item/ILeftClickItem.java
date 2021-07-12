@@ -44,7 +44,7 @@ public interface ILeftClickItem {
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
     default ActionResult<ItemStack> onItemLeftClickSL(World world, PlayerEntity player, Hand hand) {
-        return new ActionResult<>(ActionResultType.PASS, player.getHeldItem(hand));
+        return new ActionResult<>(ActionResultType.PASS, player.getItemInHand(hand));
     }
 
     /**
@@ -78,7 +78,7 @@ public interface ILeftClickItem {
                 // Client-side call
                 ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getWorld(), event.getPlayer(), event.getHand());
                 // Server-side call
-                if (result.getType() == ActionResultType.SUCCESS) {
+                if (result.getResult() == ActionResultType.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.BLOCK, event.getHand()));
                 }
             }
@@ -90,7 +90,7 @@ public interface ILeftClickItem {
                 // Client-side call
                 ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getWorld(), event.getPlayer(), event.getHand());
                 // Server-side call
-                if (result.getType() == ActionResultType.SUCCESS) {
+                if (result.getResult() == ActionResultType.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.EMPTY, event.getHand()));
                 }
             }

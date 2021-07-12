@@ -96,7 +96,7 @@ public class LootContainerItem extends Item {
     }
 
     protected static CompoundNBT getData(ItemStack stack) {
-        return stack.getOrCreateChildTag(NBT_ROOT);
+        return stack.getOrCreateTagElement(NBT_ROOT);
     }
 
     /**
@@ -110,7 +110,7 @@ public class LootContainerItem extends Item {
         CompoundNBT tags = getData(stack);
         if (tags.contains(NBT_LOOT_TABLE)) {
             String str = tags.getString(NBT_LOOT_TABLE);
-            ResourceLocation table = ResourceLocation.tryCreate(str);
+            ResourceLocation table = ResourceLocation.tryParse(str);
             if (table != null) {
                 return table;
             }
@@ -142,18 +142,18 @@ public class LootContainerItem extends Item {
     }
 
     @Override
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).mergeStyle(TextFormatting.WHITE);
-        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).mergeStyle(TextFormatting.BLUE));
+        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).withStyle(TextFormatting.WHITE);
+        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).withStyle(TextFormatting.BLUE));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn) {
-        ItemStack heldItem = playerIn.getHeldItem(handIn);
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+        ItemStack heldItem = playerIn.getItemInHand(handIn);
         if (!(playerIn instanceof ServerPlayerEntity))
-            return ActionResult.resultSuccess(heldItem);
+            return ActionResult.success(heldItem);
 
         // Generate items from loot table, give to player.
         ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
@@ -170,23 +170,23 @@ public class LootContainerItem extends Item {
         });
 
         // Play item pickup sound...
-        float pitch = ((playerMP.getRNG().nextFloat() - playerMP.getRNG().nextFloat()) * 0.7F + 1.0F) * 2.0F;
-        playerMP.world.playSound(null, playerMP.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
+        float pitch = ((playerMP.getRandom().nextFloat() - playerMP.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F;
+        playerMP.level.playSound(null, playerMP.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
-        return ActionResult.resultSuccess(heldItem);
+        return ActionResult.success(heldItem);
     }
 
     private static void listItemReceivedInChat(ServerPlayerEntity playerMP, ItemStack stack) {
         ITextComponent itemReceivedText = new TranslationTextComponent(
                 "item.silentlib.lootContainer.itemReceived",
                 stack.getCount(),
-                stack.getDisplayName());
-        playerMP.sendMessage(itemReceivedText, Util.DUMMY_UUID);
+                stack.getHoverName());
+        playerMP.sendMessage(itemReceivedText, Util.NIL_UUID);
     }
 
     @Override
-    public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items) {
-        if (this.isInGroup(group)) {
+    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+        if (this.allowdedIn(group)) {
             items.add(this.getStack());
         }
     }

@@ -24,14 +24,14 @@ public class DisplayNBTPacket {
 
     public static DisplayNBTPacket fromBytes(PacketBuffer buffer) {
         DisplayNBTPacket packet = new DisplayNBTPacket();
-        packet.nbt = buffer.readCompoundTag();
-        packet.title = buffer.readTextComponent();
+        packet.nbt = buffer.readNbt();
+        packet.title = buffer.readComponent();
         return packet;
     }
 
     public void toBytes(PacketBuffer buffer) {
-        buffer.writeCompoundTag(this.nbt);
-        buffer.writeTextComponent(this.title);
+        buffer.writeNbt(this.nbt);
+        buffer.writeComponent(this.title);
     }
 
     public static void handle(DisplayNBTPacket packet, Supplier<NetworkEvent.Context> context) {
@@ -45,7 +45,7 @@ public class DisplayNBTPacket {
 
             if (player != null) {
                 DisplayNBTScreen screen = new DisplayNBTScreen(packet.nbt, packet.title);
-                Minecraft.getInstance().displayGuiScreen(screen);
+                Minecraft.getInstance().setScreen(screen);
             }
         }
     }

@@ -18,12 +18,12 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shapeless crafting.
  */
 public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
-    private static final IRecipeSerializer<ShapelessRecipe> BASE_SERIALIZER = IRecipeSerializer.CRAFTING_SHAPELESS;
+    private static final IRecipeSerializer<ShapelessRecipe> BASE_SERIALIZER = IRecipeSerializer.SHAPELESS_RECIPE;
 
     private final ShapelessRecipe recipe;
 
     public ExtendedShapelessRecipe(ShapelessRecipe recipe) {
-        super(recipe.getId(), recipe.getGroup(), recipe.getRecipeOutput(), recipe.getIngredients());
+        super(recipe.getId(), recipe.getGroup(), recipe.getResultItem(), recipe.getIngredients());
         this.recipe = recipe;
     }
 
@@ -38,7 +38,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     public abstract boolean matches(CraftingInventory inv, World worldIn);
 
     @Override
-    public abstract ItemStack getCraftingResult(CraftingInventory inv);
+    public abstract ItemStack assemble(CraftingInventory inv);
 
     public static class Serializer<T extends ExtendedShapelessRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
         private final Function<ShapelessRecipe, T> recipeFactory;
@@ -66,8 +66,8 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, JsonObject json) {
-            ShapelessRecipe recipe = BASE_SERIALIZER.read(recipeId, json);
+        public T fromJson(ResourceLocation recipeId, JsonObject json) {
+            ShapelessRecipe recipe = BASE_SERIALIZER.fromJson(recipeId, json);
             T result = this.recipeFactory.apply(recipe);
             if (this.readJson != null) {
                 this.readJson.accept(json, result);
@@ -76,8 +76,8 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-            ShapelessRecipe recipe = BASE_SERIALIZER.read(recipeId, buffer);
+        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+            ShapelessRecipe recipe = BASE_SERIALIZER.fromNetwork(recipeId, buffer);
             T result = this.recipeFactory.apply(recipe);
             if (this.readBuffer != null) {
                 this.readBuffer.accept(buffer, result);
@@ -86,8 +86,8 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, T recipe) {
-            BASE_SERIALIZER.write(buffer, recipe.getBaseRecipe());
+        public void toNetwork(PacketBuffer buffer, T recipe) {
+            BASE_SERIALIZER.toNetwork(buffer, recipe.getBaseRecipe());
             if (this.writeBuffer != null) {
                 this.writeBuffer.accept(buffer, recipe);
             }

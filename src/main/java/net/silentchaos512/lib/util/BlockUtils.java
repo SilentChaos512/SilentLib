@@ -31,13 +31,13 @@ public final class BlockUtils {
      * @since 4.5.0
      */
     public static Collection<ResourceLocation> getMissingLootTables(String modId, ServerWorld world) {
-        LootTableManager lootTableManager = world.getServer().getLootTableManager();
+        LootTableManager lootTableManager = world.getServer().getLootTables();
         Collection<ResourceLocation> missing = new ArrayList<>();
 
         for (Block block : ForgeRegistries.BLOCKS.getValues()) {
             ResourceLocation lootTable = block.getLootTable();
             // The AirBlock check filters out removed blocks
-            if (lootTable.getNamespace().equals(modId) && !(block instanceof AirBlock) && !lootTableManager.getLootTableKeys().contains(lootTable)) {
+            if (lootTable.getNamespace().equals(modId) && !(block instanceof AirBlock) && !lootTableManager.getIds().contains(lootTable)) {
                 missing.add(lootTable);
             }
         }
@@ -60,7 +60,7 @@ public final class BlockUtils {
      */
     @Nullable
     public static ITextComponent checkAndReportMissingLootTables(String modId, ServerWorld world, @Nullable Logger logger) {
-        LootTableManager lootTableManager = world.getServer().getLootTableManager();
+        LootTableManager lootTableManager = world.getServer().getLootTables();
         Collection<ResourceLocation> missing = getMissingLootTables(modId, world);
 
         if (!missing.isEmpty()) {
@@ -68,7 +68,7 @@ public final class BlockUtils {
                 missing.forEach(id -> logger.error("Missing block loot table '{}'", id));
             }
             String list = missing.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "));
-            return new StringTextComponent("The following block loot tables are missing: " + list).mergeStyle(TextFormatting.RED);
+            return new StringTextComponent("The following block loot tables are missing: " + list).withStyle(TextFormatting.RED);
         }
 
         return null;

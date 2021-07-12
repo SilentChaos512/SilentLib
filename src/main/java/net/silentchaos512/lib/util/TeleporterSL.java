@@ -27,7 +27,7 @@ public class TeleporterSL implements ITeleporter {
     private final DimPos pos;
 
     public static TeleporterSL of(ServerWorld world, BlockPos pos) {
-        return new TeleporterSL(world, DimPos.of(pos, world.getDimensionKey()));
+        return new TeleporterSL(world, DimPos.of(pos, world.dimension()));
     }
 
     public static TeleporterSL of(ServerWorld world, DimPos pos) {
@@ -41,28 +41,28 @@ public class TeleporterSL implements ITeleporter {
 
     @Override
     public Entity placeEntity(Entity entity, ServerWorld currentWorld, ServerWorld destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-        entity.setMotion(Vector3d.ZERO);
+        entity.setDeltaMovement(Vector3d.ZERO);
         entity.fallDistance = 0;
-        entity.setWorld(destWorld);
+        entity.setLevel(destWorld);
 
         Vector3d position = this.pos.getPosCentered(0.1);
 
         if (entity instanceof ServerPlayerEntity && ((ServerPlayerEntity) entity).connection != null) {
             ServerPlayerEntity player = (ServerPlayerEntity) entity;
-            player.connection.setPlayerLocation(position.x, position.y, position.z, yaw, entity.rotationPitch);
+            player.connection.teleport(position.x, position.y, position.z, yaw, entity.xRot);
 
-            player.interactionManager.setWorld(destWorld);
-            player.connection.sendPacket(new SPlayerAbilitiesPacket(player.abilities));
-            player.server.getPlayerList().sendWorldInfo(player, destWorld);
-            player.server.getPlayerList().sendInventory(player);
+            player.gameMode.setLevel(destWorld);
+            player.connection.send(new SPlayerAbilitiesPacket(player.abilities));
+            player.server.getPlayerList().sendLevelInfo(player, destWorld);
+            player.server.getPlayerList().sendAllPlayerInfo(player);
 
-            for (EffectInstance effect : player.getActivePotionEffects()) {
-                player.connection.sendPacket(new SPlayEntityEffectPacket(player.getEntityId(), effect));
+            for (EffectInstance effect : player.getActiveEffects()) {
+                player.connection.send(new SPlayEntityEffectPacket(player.getId(), effect));
             }
 
-            BasicEventHooks.firePlayerChangedDimensionEvent(player, currentWorld.getDimensionKey(), destWorld.getDimensionKey());
+            BasicEventHooks.firePlayerChangedDimensionEvent(player, currentWorld.dimension(), destWorld.dimension());
         } else {
-            entity.setLocationAndAngles(position.x, position.y, position.z, yaw, entity.rotationPitch);
+            entity.moveTo(position.x, position.y, position.z, yaw, entity.xRot);
         }
 
         return entity;
@@ -70,14 +70,14 @@ public class TeleporterSL implements ITeleporter {
 
     @Nullable
     public Entity teleport(Entity entity) {
-        if (entity.world.isRemote) return entity;
-        ServerWorld destWorld = this.world.getServer().getWorld(this.pos.getDimension());
-        return placeEntity(entity, (ServerWorld) entity.world, destWorld, entity.rotationYaw, unused -> entity);
+        if (entity.level.isClientSide) return entity;
+        ServerWorld destWorld = this.world.getServer().getLevel(this.pos.getDimension());
+        return placeEntity(entity, (ServerWorld) entity.level, destWorld, entity.yRot, unused -> entity);
     }
 
     @Nullable
     public Entity teleportWithMount(Entity entity) {
-        Entity mount = entity.getRidingEntity();
+        Entity mount = entity.getVehicle();
         if (mount != null) {
             entity.stopRiding();
             this.teleport(mount);
@@ -89,8 +89,8 @@ public class TeleporterSL implements ITeleporter {
 
     public static boolean isSafePosition(IBlockReader worldIn, Entity entityIn, BlockPos pos) {
         // TODO: This doesn't consider wide entities
-        for (int i = 1; i < Math.ceil(entityIn.getHeight()); ++i) {
-            BlockPos up = pos.up(i);
+        for (int i = 1; i < Math.ceil(entityIn.getBbHeight()); ++i) {
+            BlockPos up = pos.above(i);
             if (!worldIn.getBlockState(up).isAir(worldIn, up)) {
                 return false;
             }

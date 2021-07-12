@@ -18,26 +18,26 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     private final int maxCount;
 
     public PlantFeature(BlockState plant, int tryCount, int maxCount) {
-        super(NoFeatureConfig.field_236558_a_);
+        super(NoFeatureConfig.CODEC);
         this.plant = plant;
         this.tryCount = tryCount;
         this.maxCount = maxCount;
     }
 
     @Override
-    public boolean generate(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
-        BlockState toPlace = getFlowerToPlace(rand, pos, config);
+    public boolean place(ISeedReader worldIn, ChunkGenerator generator, Random rand, BlockPos pos, NoFeatureConfig config) {
+        BlockState toPlace = getRandomFlower(rand, pos, config);
         int placedCount = 0;
 
         // Same as super, but different number of iterations and a placement count cap
         for(int j = 0; j < this.tryCount && placedCount < this.maxCount; ++j) {
-            BlockPos pos1 = pos.add(
+            BlockPos pos1 = pos.offset(
                     rand.nextInt(8) - rand.nextInt(8),
                     rand.nextInt(4) - rand.nextInt(4),
                     rand.nextInt(8) - rand.nextInt(8)
             );
-            if (worldIn.isAirBlock(pos1) && pos1.getY() < 255 && toPlace.isValidPosition(worldIn, pos1)) {
-                worldIn.setBlockState(pos1, toPlace, 2);
+            if (worldIn.isEmptyBlock(pos1) && pos1.getY() < 255 && toPlace.canSurvive(worldIn, pos1)) {
+                worldIn.setBlock(pos1, toPlace, 2);
                 ++placedCount;
             }
         }
@@ -46,23 +46,23 @@ public class PlantFeature extends FlowersFeature<NoFeatureConfig> {
     }
 
     @Override
-    public BlockState getFlowerToPlace(Random random, BlockPos pos, NoFeatureConfig config) {
+    public BlockState getRandomFlower(Random random, BlockPos pos, NoFeatureConfig config) {
         return this.plant;
     }
 
     @Override
-    public boolean isValidPosition(IWorld world, BlockPos pos, NoFeatureConfig config) {
+    public boolean isValid(IWorld world, BlockPos pos, NoFeatureConfig config) {
         return this.plant.equals(world.getBlockState(pos));
     }
 
     @Override
-    public int getFlowerCount(NoFeatureConfig config) {
+    public int getCount(NoFeatureConfig config) {
         return this.maxCount;
     }
 
     @Override
-    public BlockPos getNearbyPos(Random random, BlockPos pos, NoFeatureConfig config) {
-        return pos.add(
+    public BlockPos getPos(Random random, BlockPos pos, NoFeatureConfig config) {
+        return pos.offset(
                 random.nextInt(8) - random.nextInt(8),
                 random.nextInt(4) - random.nextInt(4),
                 random.nextInt(8) - random.nextInt(8));

@@ -36,8 +36,7 @@ import java.util.stream.Collectors;
  * @since 3.0.0(?)
  */
 public final class StackList extends ArrayList<ItemStack> {
-    private StackList() {
-    }
+    private StackList() {}
 
     /**
      * Create a StackList of the provided stacks, automatically removing any empty stacks.
@@ -60,8 +59,8 @@ public final class StackList extends ArrayList<ItemStack> {
      */
     public static StackList from(IInventory inventory) {
         StackList newList = new StackList();
-        for (int i = 0; i < inventory.getSizeInventory(); ++i) {
-            newList.add(inventory.getStackInSlot(i));
+        for (int i = 0; i < inventory.getContainerSize(); ++i) {
+            newList.add(inventory.getItem(i));
         }
         return newList;
     }
@@ -70,7 +69,7 @@ public final class StackList extends ArrayList<ItemStack> {
         StackList newList = new StackList();
         for (INBT nbt : tagList) {
             if (nbt instanceof CompoundNBT) {
-                newList.add(ItemStack.read((CompoundNBT) nbt));
+                newList.add(ItemStack.of((CompoundNBT) nbt));
             }
         }
         return newList;

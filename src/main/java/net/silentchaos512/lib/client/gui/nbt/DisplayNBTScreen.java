@@ -32,8 +32,8 @@ public class DisplayNBTScreen extends Screen {
     protected void init() {
         if (minecraft == null) minecraft = Minecraft.getInstance();
 
-        int scaledWidth = minecraft.getMainWindow().getScaledWidth();
-        int scaledHeight = minecraft.getMainWindow().getScaledHeight();
+        int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
+        int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
         int width = 100;
         int height = 20;
         this.addButton(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, new StringTextComponent("Export to JSON"), b -> {
@@ -51,15 +51,15 @@ public class DisplayNBTScreen extends Screen {
         assert minecraft != null;
         this.displayList.render(matrix, mouseX, mouseY, partialTicks);
         String titleStr = this.header.getString();
-        int scaledWidth = minecraft.getMainWindow().getScaledWidth();
-        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr).func_241878_f(), (scaledWidth - font.getStringWidth(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
+        int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
+        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
     private static List<String> formatNbt(CompoundNBT nbt, int depth) {
         List<String> list = new ArrayList<>();
 
-        for (String key : nbt.keySet()) {
+        for (String key : nbt.getAllKeys()) {
             INBT inbt = nbt.get(key);
             list.addAll(formatNbt(key, inbt, depth + 1));
         }
@@ -79,7 +79,7 @@ public class DisplayNBTScreen extends Screen {
         } else if (nbt instanceof NumberNBT) {
             formatNumber(key, (NumberNBT) nbt, list, indentStr);
         } else if (nbt instanceof StringNBT) {
-            String value = nbt.getString();
+            String value = nbt.getAsString();
             list.add(indentStr + format(key, value, TextFormatting.GREEN));
         }
 

@@ -59,17 +59,17 @@ public final class EntityHelper {
     }
 
     public static void spawnWithClientPacket(IWorldWriter world, Entity entity, double r2) {
-        world.addEntity(entity);
+        world.addFreshEntity(entity);
         if (world instanceof ServerWorld) {
             SpawnEntityPacket message = new SpawnEntityPacket(entity);
-            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getPosX(), entity.getPosY(), entity.getPosZ(), r2, entity.world.getDimensionKey())), message);
+            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getX(), entity.getY(), entity.getZ(), r2, entity.level.dimension())), message);
         }
     }
 
     private static void handleSpawns() {
         Entity entity;
         while ((entity = entitiesToSpawn.poll()) != null) {
-            entity.world.addEntity(entity);
+            entity.level.addFreshEntity(entity);
         }
     }
 

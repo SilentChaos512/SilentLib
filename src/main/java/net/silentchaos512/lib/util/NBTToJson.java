@@ -23,14 +23,14 @@ public final class NBTToJson {
         } else if (nbt instanceof NumberNBT) {
             return new JsonPrimitive(((NumberNBT) nbt).getAsNumber());
         } else if (nbt instanceof StringNBT) {
-            return new JsonPrimitive(nbt.getString());
+            return new JsonPrimitive(nbt.getAsString());
         }
         return JsonNull.INSTANCE;
     }
 
     public static JsonObject toJsonObject(CompoundNBT nbt) {
         JsonObject json = new JsonObject();
-        for (String key : nbt.keySet()) {
+        for (String key : nbt.getAllKeys()) {
             INBT element = nbt.get(key);
             if (element != null) {
                 json.add(key, toJson(element));

@@ -19,7 +19,6 @@
 package net.silentchaos512.lib.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.AbstractGui;
@@ -112,10 +111,10 @@ public abstract class DebugRenderOverlay extends AbstractGui {
     protected void drawLine(MatrixStack matrix, FontRenderer font, String line, int x, int y, int color) {
         String[] array = line.split(SPLITTER);
         if (array.length == 2) {
-            font.drawStringWithShadow(matrix, array[0].trim(), x, y, color);
-            font.drawStringWithShadow(matrix, array[1].trim(), x + getSplitWidth(), y, color);
+            font.drawShadow(matrix, array[0].trim(), x, y, color);
+            font.drawShadow(matrix, array[1].trim(), x + getSplitWidth(), y, color);
         } else {
-            font.drawStringWithShadow(matrix, line, x, y, color);
+            font.drawShadow(matrix, line, x, y, color);
         }
     }
 
@@ -131,29 +130,29 @@ public abstract class DebugRenderOverlay extends AbstractGui {
 
     public void renderTick(RenderGameOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (isHidden() || debugText.isEmpty() || mc.isGamePaused() || mc.gameSettings.showDebugInfo || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
+        if (isHidden() || debugText.isEmpty() || mc.isPaused() || mc.options.renderDebug || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
             return;
 
         // Get text scale, sanity-check the value
         float scale = getTextScale();
         if (scale <= 0f) return;
 
-        FontRenderer font = mc.fontRenderer;
+        FontRenderer font = mc.font;
         MatrixStack matrix = event.getMatrixStack();
 
-        matrix.push();
+        matrix.pushPose();
         matrix.scale(scale, scale, 1);
 
         // Divide by text scale to correct position. But it's still a bit off?
-        MainWindow mainWindow = mc.getMainWindow();
-        int x = (int) (getAnchorPoint().getX(mainWindow.getScaledWidth(), textWidth, getMarginSize()) / getTextScale());
-        int y = (int) (getAnchorPoint().getY(mainWindow.getScaledHeight(), textHeight, getMarginSize()) / getTextScale());
+        MainWindow mainWindow = mc.getWindow();
+        int x = (int) (getAnchorPoint().getX(mainWindow.getGuiScaledWidth(), textWidth, getMarginSize()) / getTextScale());
+        int y = (int) (getAnchorPoint().getY(mainWindow.getGuiScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
             drawLine(matrix, font, line, x, y, Color.VALUE_WHITE);
             y += LINE_HEIGHT;
         }
 
-        matrix.pop();
+        matrix.popPose();
     }
 
     public void clientTick(TickEvent.ClientTickEvent event) {
@@ -163,16 +162,16 @@ public abstract class DebugRenderOverlay extends AbstractGui {
             debugText = getDebugText();
 
             // Recalculate width and height
-            FontRenderer font = Minecraft.getInstance().fontRenderer;
+            FontRenderer font = Minecraft.getInstance().font;
             textWidth = 0;
             textHeight = LINE_HEIGHT * debugText.size();
             for (String line : debugText) {
                 String[] array = line.split(SPLITTER);
                 if (array.length == 2) {
-                    int width = getSplitWidth() + font.getStringWidth(array[1]);
+                    int width = getSplitWidth() + font.width(array[1]);
                     textWidth = Math.max(textWidth, width);
                 } else {
-                    textWidth = Math.max(textWidth, font.getStringWidth(line));
+                    textWidth = Math.max(textWidth, font.width(line));
                 }
             }
         }

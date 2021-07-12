@@ -1,5 +1,7 @@
 package net.silentchaos512.lib.data.recipe;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.data.*;
 import net.minecraft.item.Item;
@@ -9,6 +11,8 @@ import net.minecraft.item.crafting.SpecialRecipeSerializer;
 import net.minecraft.tags.ITag;
 import net.minecraft.util.IItemProvider;
 import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
@@ -24,7 +28,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected abstract void registerRecipes(Consumer<IFinishedRecipe> consumer);
+    protected abstract void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer);
 
     /**
      * Gets a {@link ResourceLocation} with {@link #modId} as the namespace. This is used
@@ -35,6 +39,26 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      */
     protected ResourceLocation modId(String path) {
         return new ResourceLocation(this.modId, path);
+    }
+
+    /**
+     * Add recipe conditions to recipe JSON. This can be called from the {@code #addExtraData}
+     * methods of some extended recipe builders.
+     * <p>
+     * Example: {@code shapedBuilder(...).addExtraData(json -> writeConditions(json, condition1,
+     * conditions2...)...;}
+     *
+     * @param json       The recipe JSON
+     * @param conditions The conditions to serialize
+     */
+    protected void writeConditions(JsonObject json, ICondition... conditions) {
+        if (conditions.length > 0) {
+            JsonArray array = new JsonArray();
+            for (ICondition condition : conditions) {
+                array.add(CraftingHelper.serialize(condition));
+            }
+            json.add("conditions", array);
+        }
     }
 
     protected ExtendedShapedRecipeBuilder shapedBuilder(IItemProvider result) {
@@ -90,7 +114,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     }
 
     protected void registerCustomRecipe(Consumer<IFinishedRecipe> consumer, SpecialRecipeSerializer<?> serializer, ResourceLocation recipeId) {
-        CustomRecipeBuilder.customRecipe(serializer).build(consumer, recipeId.toString());
+        CustomRecipeBuilder.special(serializer).save(consumer, recipeId.toString());
     }
 
     /**
@@ -101,14 +125,14 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #registerRecipes(Consumer)}
+     * @param consumer     Consumer from {@link #buildShapelessRecipes(Consumer)}
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
     protected void smeltingAndBlastingRecipes(Consumer<IFinishedRecipe> consumer, String id, IItemProvider ingredientIn, IItemProvider result, float experienceIn) {
-        smeltingAndBlastingRecipes(consumer, id, Ingredient.fromItems(ingredientIn), result, experienceIn);
+        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
     }
 
     /**
@@ -119,14 +143,14 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #registerRecipes(Consumer)}
+     * @param consumer     Consumer from {@link #buildShapelessRecipes(Consumer)}
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
     protected void smeltingAndBlastingRecipes(Consumer<IFinishedRecipe> consumer, String id, ITag<Item> ingredientIn, IItemProvider result, float experienceIn) {
-        smeltingAndBlastingRecipes(consumer, id, Ingredient.fromTag(ingredientIn), result, experienceIn);
+        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
     }
 
     /**
@@ -137,19 +161,19 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #registerRecipes(Consumer)}
+     * @param consumer     Consumer from {@link #buildShapelessRecipes(Consumer)}
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
     protected void smeltingAndBlastingRecipes(Consumer<IFinishedRecipe> consumer, String id, Ingredient ingredientIn, IItemProvider result, float experienceIn) {
-        CookingRecipeBuilder.blastingRecipe(ingredientIn, result, experienceIn, 100)
-                .addCriterion("impossible", new ImpossibleTrigger.Instance())
-                .build(consumer, modId("blasting/" + id));
-        CookingRecipeBuilder.smeltingRecipe(ingredientIn, result, experienceIn, 200)
-                .addCriterion("impossible", new ImpossibleTrigger.Instance())
-                .build(consumer, modId("smelting/" + id));
+        CookingRecipeBuilder.blasting(ingredientIn, result, experienceIn, 100)
+                .unlockedBy("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, modId("blasting/" + id));
+        CookingRecipeBuilder.smelting(ingredientIn, result, experienceIn, 200)
+                .unlockedBy("impossible", new ImpossibleTrigger.Instance())
+                .save(consumer, modId("smelting/" + id));
     }
 
     /**
@@ -160,7 +184,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * If the {@code nugget} parameter is null, block/item recipes will still generate, but the
      * nugget recipes will not.
      *
-     * @param consumer Consumer from {@link #registerRecipes(Consumer)}
+     * @param consumer Consumer from {@link #buildShapelessRecipes(Consumer)}
      * @param block    The block item (mandatory). Does not need to be a block, but is assumed to be
      *                 one.
      * @param item     The normal item (ingot, gem, etc.) Again, this can be any item.
@@ -170,32 +194,32 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         String blockName = NameUtils.fromItem(block).getPath();
         String itemName = NameUtils.fromItem(item).getPath();
 
-        ShapedRecipeBuilder.shapedRecipe(block, 1)
-                .patternLine("###")
-                .patternLine("###")
-                .patternLine("###")
-                .key('#', item)
-                .addCriterion("has_item", hasItem(item))
-                .build(consumer, modId(itemName + "_from_block"));
-        ShapelessRecipeBuilder.shapelessRecipe(item, 9)
-                .addIngredient(block)
-                .addCriterion("has_item", hasItem(item))
-                .build(consumer, modId(blockName));
+        ShapedRecipeBuilder.shaped(block, 1)
+                .pattern("###")
+                .pattern("###")
+                .pattern("###")
+                .define('#', item)
+                .unlockedBy("has_item", has(item))
+                .save(consumer, modId(itemName + "_from_block"));
+        ShapelessRecipeBuilder.shapeless(item, 9)
+                .requires(block)
+                .unlockedBy("has_item", has(item))
+                .save(consumer, modId(blockName));
 
         if (nugget != null) {
             String nuggetName = NameUtils.fromItem(nugget).getPath();
 
-            ShapedRecipeBuilder.shapedRecipe(item, 1)
-                    .patternLine("###")
-                    .patternLine("###")
-                    .patternLine("###")
-                    .key('#', nugget)
-                    .addCriterion("has_item", hasItem(item))
-                    .build(consumer, modId(itemName + "_from_nugget"));
-            ShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
-                    .addIngredient(item)
-                    .addCriterion("has_item", hasItem(item))
-                    .build(consumer, modId(nuggetName));
+            ShapedRecipeBuilder.shaped(item, 1)
+                    .pattern("###")
+                    .pattern("###")
+                    .pattern("###")
+                    .define('#', nugget)
+                    .unlockedBy("has_item", has(item))
+                    .save(consumer, modId(itemName + "_from_nugget"));
+            ShapelessRecipeBuilder.shapeless(nugget, 9)
+                    .requires(item)
+                    .unlockedBy("has_item", has(item))
+                    .save(consumer, modId(nuggetName));
         }
     }
 }

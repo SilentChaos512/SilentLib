@@ -20,9 +20,9 @@ public final class TeleportCommand {
 
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("sl_tp")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("entity", EntityArgument.entities())
-                        .then(Commands.argument("dimension", DimensionArgument.getDimension())
+                        .then(Commands.argument("dimension", DimensionArgument.dimension())
                                 .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                         .executes(TeleportCommand::run)
                                 )
@@ -32,8 +32,8 @@ public final class TeleportCommand {
     }
 
     private static int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        BlockPos target = BlockPosArgument.getBlockPos(context, "pos");
-        ServerWorld world = DimensionArgument.getDimensionArgument(context, "dimension");
+        BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "pos");
+        ServerWorld world = DimensionArgument.getDimension(context, "dimension");
 
         for (Entity entity : EntityArgument.getEntities(context, "entity")) {
             if (entity instanceof PlayerEntity)

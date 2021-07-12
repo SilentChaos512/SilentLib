@@ -41,7 +41,7 @@ public class ExtendedShapelessRecipeBuilder {
     private final Item result;
     private final int count;
     private final List<Ingredient> ingredients = Lists.newArrayList();
-    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
@@ -64,7 +64,7 @@ public class ExtendedShapelessRecipeBuilder {
     }
 
     public static ExtendedShapelessRecipeBuilder vanillaBuilder(IItemProvider result, int count) {
-        return new ExtendedShapelessRecipeBuilder(IRecipeSerializer.CRAFTING_SHAPELESS, result, count);
+        return new ExtendedShapelessRecipeBuilder(IRecipeSerializer.SHAPELESS_RECIPE, result, count);
     }
 
     /**
@@ -94,7 +94,7 @@ public class ExtendedShapelessRecipeBuilder {
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(ITag<Item> tag, int quantity) {
-        return addIngredient(Ingredient.fromTag(tag), quantity);
+        return addIngredient(Ingredient.of(tag), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item) {
@@ -102,7 +102,7 @@ public class ExtendedShapelessRecipeBuilder {
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(IItemProvider item, int quantity) {
-        return addIngredient(Ingredient.fromItems(item), quantity);
+        return addIngredient(Ingredient.of(item), quantity);
     }
 
     public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {
@@ -117,7 +117,7 @@ public class ExtendedShapelessRecipeBuilder {
     }
 
     public ExtendedShapelessRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
-        this.advancementBuilder.withCriterion(name, criterion);
+        this.advancementBuilder.addCriterion(name, criterion);
         this.hasAdvancementCriterion = true;
         return this;
     }
@@ -133,12 +133,12 @@ public class ExtendedShapelessRecipeBuilder {
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
-            this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
-                    .withRewards(AdvancementRewards.Builder.recipe(id))
-                    .withRequirementsStrategy(IRequirementsStrategy.OR);
+            this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
+                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY, id))
+                    .rewards(AdvancementRewards.Builder.recipe(id))
+                    .requirements(IRequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
         consumer.accept(new Result(id, this, advancementId));
     }
 
@@ -154,14 +154,14 @@ public class ExtendedShapelessRecipeBuilder {
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             if (!builder.group.isEmpty()) {
                 json.addProperty("group", builder.group);
             }
 
             JsonArray ingredients = new JsonArray();
             for (Ingredient ingredient : builder.ingredients) {
-                ingredients.add(ingredient.serialize());
+                ingredients.add(ingredient.toJson());
             }
             json.add("ingredients", ingredients);
 
@@ -176,24 +176,24 @@ public class ExtendedShapelessRecipeBuilder {
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return builder.serializer;
         }
 
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return id;
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
-            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serialize() : null;
+        public JsonObject serializeAdvancement() {
+            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serializeToJson() : null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return builder.hasAdvancementCriterion ? advancementId : null;
         }
     }

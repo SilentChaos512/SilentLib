@@ -43,13 +43,13 @@ public final class AttributeHelper {
 
     public static void apply(@Nullable ModifiableAttributeInstance attributeInstance, AttributeModifier modifier) {
         if (attributeInstance == null) return;
-        AttributeModifier currentMod = attributeInstance.getModifier(modifier.getID());
+        AttributeModifier currentMod = attributeInstance.getModifier(modifier.getId());
 
         if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.getOperation() != modifier.getOperation())) {
             // Modifier changed, so it needs to be reapplied
             attributeInstance.removeModifier(currentMod);
         } else {
-            attributeInstance.applyPersistentModifier(modifier);
+            attributeInstance.addPermanentModifier(modifier);
         }
     }
 

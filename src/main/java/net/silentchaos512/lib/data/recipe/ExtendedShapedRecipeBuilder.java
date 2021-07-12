@@ -39,7 +39,7 @@ public class ExtendedShapedRecipeBuilder {
     private final int count;
     private final List<String> pattern = new ArrayList<>();
     private final Map<Character, Ingredient> key = new LinkedHashMap<>();
-    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
@@ -62,7 +62,7 @@ public class ExtendedShapedRecipeBuilder {
     }
 
     public static ExtendedShapedRecipeBuilder vanillaBuilder(IItemProvider result, int count) {
-        return new ExtendedShapedRecipeBuilder(IRecipeSerializer.CRAFTING_SHAPED, result, count);
+        return new ExtendedShapedRecipeBuilder(IRecipeSerializer.SHAPED_RECIPE, result, count);
     }
 
     /**
@@ -88,11 +88,11 @@ public class ExtendedShapedRecipeBuilder {
     }
 
     public ExtendedShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
-        return this.key(symbol, Ingredient.fromTag(tagIn));
+        return this.key(symbol, Ingredient.of(tagIn));
     }
 
     public ExtendedShapedRecipeBuilder key(Character symbol, IItemProvider itemIn) {
-        return this.key(symbol, Ingredient.fromItems(itemIn));
+        return this.key(symbol, Ingredient.of(itemIn));
     }
 
     public ExtendedShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
@@ -116,7 +116,7 @@ public class ExtendedShapedRecipeBuilder {
     }
 
     public ExtendedShapedRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
-        this.advancementBuilder.withCriterion(name, criterionIn);
+        this.advancementBuilder.addCriterion(name, criterionIn);
         this.hasAdvancementCriterion = true;
         return this;
     }
@@ -133,12 +133,12 @@ public class ExtendedShapedRecipeBuilder {
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         this.validate(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
-            this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
-                    .withRewards(AdvancementRewards.Builder.recipe(id))
-                    .withRequirementsStrategy(IRequirementsStrategy.OR);
+            this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
+                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY, id))
+                    .rewards(AdvancementRewards.Builder.recipe(id))
+                    .requirements(IRequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
         consumer.accept(new Result(id, this, advancementId));
     }
 
@@ -181,7 +181,7 @@ public class ExtendedShapedRecipeBuilder {
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             if (!builder.group.isEmpty()) {
                 json.addProperty("group", builder.group);
             }
@@ -191,7 +191,7 @@ public class ExtendedShapedRecipeBuilder {
             json.add("pattern", pattern);
 
             JsonObject key = new JsonObject();
-            builder.key.forEach((c, ingredient) -> key.add(String.valueOf(c), ingredient.serialize()));
+            builder.key.forEach((c, ingredient) -> key.add(String.valueOf(c), ingredient.toJson()));
             json.add("key", key);
 
             JsonObject result = new JsonObject();
@@ -205,24 +205,24 @@ public class ExtendedShapedRecipeBuilder {
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return builder.serializer;
         }
 
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return id;
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
-            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serialize() : null;
+        public JsonObject serializeAdvancement() {
+            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serializeToJson() : null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return builder.hasAdvancementCriterion ? advancementId : null;
         }
     }

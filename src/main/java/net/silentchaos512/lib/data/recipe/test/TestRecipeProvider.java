@@ -26,14 +26,14 @@ public class TestRecipeProvider extends LibRecipeProvider {
     }
 
     @Override
-    protected void registerRecipes(Consumer<IFinishedRecipe> consumer) {
+    protected void buildShapelessRecipes(Consumer<IFinishedRecipe> consumer) {
         SilentLib.LOGGER.fatal("Running test recipe provider! These files should NOT be included in release!");
 
         damageItemBuilder(Items.DIAMOND, 9)
                 .damageToItems(3)
                 .addIngredient(Items.DIAMOND_PICKAXE)
                 .addIngredient(Blocks.DIAMOND_BLOCK)
-                .addCriterion("has_item", hasItem(Blocks.DIAMOND_BLOCK))
+                .addCriterion("has_item", has(Blocks.DIAMOND_BLOCK))
                 .build(consumer, SilentLib.getId("damage_item_test1"));
 
         damageItemBuilder(Items.EMERALD, 9)
@@ -61,7 +61,7 @@ public class TestRecipeProvider extends LibRecipeProvider {
 
         smeltingAndBlastingRecipes(consumer, "reverse_glass_test", Tags.Items.GLASS_COLORLESS, Items.SAND, 0.625f);
 
-        ExtendedSingleItemRecipeBuilder.stonecuttingBuilder(Ingredient.fromItems(Items.COAL_BLOCK), Items.COAL, 9)
+        ExtendedSingleItemRecipeBuilder.stonecuttingBuilder(Ingredient.of(Items.COAL_BLOCK), Items.COAL, 9)
                 .addExtraData(json -> json.addProperty("extra_test", "testing extra data!"))
                 .build(consumer);
 
@@ -73,7 +73,7 @@ public class TestRecipeProvider extends LibRecipeProvider {
     }
 
     private void addLore(JsonObject json, String... lore) {
-        JsonObject result = JSONUtils.getJsonObject(json, "result");
+        JsonObject result = JSONUtils.getAsJsonObject(json, "result");
         JsonObject display = new JsonObject();
         JsonObject nbt = new JsonObject();
         JsonArray array = new JsonArray();

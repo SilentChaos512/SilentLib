@@ -18,7 +18,7 @@ public final class BiomeUtils {
         if (biome == from(input))
             return true;
         String category = CATEGORY_PATTERN.matcher(input).replaceFirst(Matcher.quoteReplacement(""));
-        return biome.getCategory().name().equalsIgnoreCase(category);
+        return biome.getBiomeCategory().name().equalsIgnoreCase(category);
     }
 
     public static boolean containedInList(Biome biome, Collection<? extends String> list, boolean valueIfListEmpty) {
@@ -34,7 +34,7 @@ public final class BiomeUtils {
 
     @Nullable
     public static Biome from(String str) {
-        ResourceLocation id = ResourceLocation.tryCreate(str);
+        ResourceLocation id = ResourceLocation.tryParse(str);
         if (id != null) {
             return ForgeRegistries.BIOMES.getValue(id);
         }

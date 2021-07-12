@@ -26,7 +26,7 @@ public class ExtendedSingleItemRecipeBuilder {
     private final Ingredient ingredients;
     private final Item result;
     private final int count;
-    private final Advancement.Builder advancementBuilder = Advancement.Builder.builder();
+    private final Advancement.Builder advancementBuilder = Advancement.Builder.advancement();
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
@@ -50,7 +50,7 @@ public class ExtendedSingleItemRecipeBuilder {
     }
 
     public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, IItemProvider result, int count) {
-        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTING, ingredient, result, count);
+        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTER, ingredient, result, count);
     }
 
     /**
@@ -76,7 +76,7 @@ public class ExtendedSingleItemRecipeBuilder {
     }
 
     public ExtendedSingleItemRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
-        this.advancementBuilder.withCriterion(name, criterion);
+        this.advancementBuilder.addCriterion(name, criterion);
         this.hasAdvancementCriterion = true;
         return this;
     }
@@ -94,12 +94,12 @@ public class ExtendedSingleItemRecipeBuilder {
 
     public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
-            this.advancementBuilder.withParentId(new ResourceLocation("recipes/root"))
-                    .withCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY_AND, id))
-                    .withRewards(AdvancementRewards.Builder.recipe(id))
-                    .withRequirementsStrategy(IRequirementsStrategy.OR);
+            this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
+                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY, id))
+                    .rewards(AdvancementRewards.Builder.recipe(id))
+                    .requirements(IRequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getGroup().getPath() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
         consumer.accept(new ExtendedSingleItemRecipeBuilder.Result(id, this, advancementId));
     }
 
@@ -115,12 +115,12 @@ public class ExtendedSingleItemRecipeBuilder {
         }
 
         @Override
-        public void serialize(JsonObject json) {
+        public void serializeRecipeData(JsonObject json) {
             if (!builder.group.isEmpty()) {
                 json.addProperty("group", builder.group);
             }
 
-            json.add("ingredient", builder.ingredients.serialize());
+            json.add("ingredient", builder.ingredients.toJson());
             json.addProperty("result", NameUtils.from(builder.result).toString());
             json.addProperty("count", builder.count);
 
@@ -128,24 +128,24 @@ public class ExtendedSingleItemRecipeBuilder {
         }
 
         @Override
-        public IRecipeSerializer<?> getSerializer() {
+        public IRecipeSerializer<?> getType() {
             return builder.serializer;
         }
 
         @Override
-        public ResourceLocation getID() {
+        public ResourceLocation getId() {
             return id;
         }
 
         @Nullable
         @Override
-        public JsonObject getAdvancementJson() {
-            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serialize() : null;
+        public JsonObject serializeAdvancement() {
+            return builder.hasAdvancementCriterion ? builder.advancementBuilder.serializeToJson() : null;
         }
 
         @Nullable
         @Override
-        public ResourceLocation getAdvancementID() {
+        public ResourceLocation getAdvancementId() {
             return builder.hasAdvancementCriterion ? advancementId : null;
         }
     }

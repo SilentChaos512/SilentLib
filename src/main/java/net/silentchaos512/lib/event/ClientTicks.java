@@ -86,7 +86,7 @@ public final class ClientTicks {
     }
 
     private void updateTickCounters() {
-        Screen gui = Minecraft.getInstance().currentScreen;
+        Screen gui = Minecraft.getInstance().screen;
         if (gui == null || !gui.isPauseScreen()) {
             ++ticksInGame;
             partialTicks = 0;

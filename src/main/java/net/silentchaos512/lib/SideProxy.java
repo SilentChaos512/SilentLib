@@ -72,7 +72,7 @@ public class SideProxy {
 
         @Override
         public void tryFetchTagsHack() {
-            TagRegistryManager.fetchTags();
+            TagRegistryManager.resetAllToEmpty();
         }
     }
 

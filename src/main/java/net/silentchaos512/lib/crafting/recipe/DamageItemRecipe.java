@@ -12,7 +12,7 @@ import net.silentchaos512.lib.SilentLib;
 public class DamageItemRecipe extends ExtendedShapelessRecipe {
     public static final ExtendedShapelessRecipe.Serializer<DamageItemRecipe> SERIALIZER = new ExtendedShapelessRecipe.Serializer<>(
             DamageItemRecipe::new,
-            (json, recipe) -> recipe.damageToItems = JSONUtils.getInt(json, "damage", 1),
+            (json, recipe) -> recipe.damageToItems = JSONUtils.getAsInt(json, "damage", 1),
             (buffer, recipe) -> recipe.damageToItems = buffer.readVarInt(),
             (buffer, recipe) -> buffer.writeVarInt(recipe.damageToItems)
     );
@@ -34,21 +34,21 @@ public class DamageItemRecipe extends ExtendedShapelessRecipe {
     }
 
     @Override
-    public ItemStack getCraftingResult(CraftingInventory inv) {
-        return getBaseRecipe().getCraftingResult(inv);
+    public ItemStack assemble(CraftingInventory inv) {
+        return getBaseRecipe().assemble(inv);
     }
 
     @Override
     public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv) {
-        NonNullList<ItemStack> list = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+        NonNullList<ItemStack> list = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 
         for (int i = 0; i < list.size(); ++i) {
-            ItemStack stack = inv.getStackInSlot(i);
+            ItemStack stack = inv.getItem(i);
             if (stack.hasContainerItem()) {
                 list.set(i, stack.getContainerItem());
             } else if (stack.getMaxDamage() > 0) {
                 ItemStack tool = stack.copy();
-                if (tool.attemptDamageItem(this.damageToItems, SilentLib.RANDOM, null)) {
+                if (tool.hurt(this.damageToItems, SilentLib.RANDOM, null)) {
                     tool.shrink(1);
                 }
                 list.set(i, tool);

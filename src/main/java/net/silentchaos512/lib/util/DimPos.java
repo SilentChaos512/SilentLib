@@ -57,7 +57,7 @@ public final class DimPos {
     }
 
     public static DimPos of(Entity entity) {
-        return new DimPos(entity.getPosition(), entity.world.getDimensionKey());
+        return new DimPos(entity.blockPosition(), entity.level.dimension());
     }
 
     //endregion
@@ -102,7 +102,7 @@ public final class DimPos {
                 tags.getInt("posX"),
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
-                RegistryKey.getOrCreateKey(Registry.WORLD_KEY, new ResourceLocation(tags.getString("dim"))));
+                RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tags.getString("dim"))));
     }
 
     public void write(CompoundNBT tags) {
@@ -138,9 +138,9 @@ public final class DimPos {
             return this;
         }
         return new DimPos(
-                this.posX + facing.getXOffset() * n,
-                this.posY + facing.getYOffset() * n,
-                this.posZ + facing.getZOffset() * n,
+                this.posX + facing.getStepX() * n,
+                this.posY + facing.getStepY() * n,
+                this.posZ + facing.getStepZ() * n,
                 this.dimension);
     }
 

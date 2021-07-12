@@ -15,9 +15,9 @@ public final class LibHooks {
     }
 
     public static void registerCompostable(float chance, IItemProvider item) {
-        synchronized (ComposterBlock.CHANCES) {
+        synchronized (ComposterBlock.COMPOSTABLES) {
             try {
-                ComposterBlock.CHANCES.put(item, chance);
+                ComposterBlock.COMPOSTABLES.put(item, chance);
             } catch (Exception ex) {
                 SilentLib.LOGGER.error("Failed to register compostable item: {}, chance {}", item.asItem().getRegistryName(), chance);
                 SilentLib.LOGGER.catching(ex);

@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.tile;
 
+import net.minecraft.block.BlockState;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.tileentity.TileEntity;
 import net.silentchaos512.lib.util.NBTSerializer;
@@ -34,14 +35,14 @@ public @interface SyncVariable {
     String name();
 
     /**
-     * Should the variable be loaded in {@link TileEntity#read}?
+     * Should the variable be loaded in {@link TileEntity#load(BlockState, CompoundNBT)}?
      *
      * @return True if we should load on read
      */
     boolean onRead() default true;
 
     /**
-     * Should the variable be saved in {@link TileEntity#write}?
+     * Should the variable be saved in {@link TileEntity#save(CompoundNBT)}?
      *
      * @return True if we should save on write
      */

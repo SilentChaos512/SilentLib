@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 public class DisplayNBTCommand {
     public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("sl_nbt")
-                .requires(source -> source.hasPermissionLevel(2))
+                .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("block")
                         .then(Commands.argument("pos", BlockPosArgument.blockPos())
                                 .executes(
@@ -50,45 +50,45 @@ public class DisplayNBTCommand {
     }
 
     private static int runForBlock(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        BlockPos pos = BlockPosArgument.getBlockPos(context, "pos");
-        ServerWorld world = context.getSource().getWorld();
-        TileEntity tileEntity = world.getTileEntity(pos);
-        ITextComponent title = new TranslationTextComponent(world.getBlockState(pos).getBlock().getTranslationKey());
+        BlockPos pos = BlockPosArgument.getOrLoadBlockPos(context, "pos");
+        ServerWorld world = context.getSource().getLevel();
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        ITextComponent title = new TranslationTextComponent(world.getBlockState(pos).getBlock().getDescriptionId());
 
         if (tileEntity != null) {
-            sendPacket(context, tileEntity.write(new CompoundNBT()), title);
+            sendPacket(context, tileEntity.save(new CompoundNBT()), title);
             return 1;
         }
 
-        context.getSource().sendErrorMessage(new TranslationTextComponent("command.silentlib.nbt.notBlockEntity", title));
+        context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.notBlockEntity", title));
         return 0;
     }
 
     private static int runForEntity(CommandContext<CommandSource> context) throws CommandSyntaxException {
         Entity entity = EntityArgument.getEntity(context, "target");
-        CompoundNBT nbt = entity.writeWithoutTypeId(new CompoundNBT());
+        CompoundNBT nbt = entity.saveWithoutId(new CompoundNBT());
         ITextComponent title = entity.getDisplayName();
         sendPacket(context, nbt, title);
         return 1;
     }
 
     private static int runForItem(CommandContext<CommandSource> context) throws CommandSyntaxException {
-        ItemStack stack = context.getSource().asPlayer().getHeldItemMainhand();
+        ItemStack stack = context.getSource().getPlayerOrException().getMainHandItem();
         if (stack.isEmpty()) {
-            context.getSource().sendErrorMessage(new TranslationTextComponent("command.silentlib.nbt.noItemInHand"));
+            context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.noItemInHand"));
             return 0;
         } else if (!stack.hasTag()) {
-            context.getSource().sendErrorMessage(new TranslationTextComponent("command.silentlib.nbt.noItemTag", stack.getDisplayName()));
+            context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.noItemTag", stack.getHoverName()));
             return 0;
         }
 
-        sendPacket(context, stack.getOrCreateTag(), stack.getDisplayName());
+        sendPacket(context, stack.getOrCreateTag(), stack.getHoverName());
         return 1;
     }
 
     private static void sendPacket(CommandContext<CommandSource> context, CompoundNBT nbt, ITextComponent title) throws CommandSyntaxException {
         DisplayNBTPacket msg = new DisplayNBTPacket(nbt, textOfNullable(title));
-        NetworkManager netManager = context.getSource().asPlayer().connection.netManager;
+        NetworkManager netManager = context.getSource().getPlayerOrException().connection.connection;
         SilentLibNetwork.channel.sendTo(msg, netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 

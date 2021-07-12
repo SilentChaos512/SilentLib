@@ -34,7 +34,7 @@ public final class ExclusionIngredient extends Ingredient {
     }
 
     public static ExclusionIngredient of(ITag<Item> tag, Ingredient... exclusions) {
-        return of(Ingredient.fromTag(tag), exclusions);
+        return of(Ingredient.of(tag), exclusions);
     }
 
     public static ExclusionIngredient of(Ingredient parent, Ingredient... exclusions) {
@@ -44,20 +44,20 @@ public final class ExclusionIngredient extends Ingredient {
     }
 
     public static ExclusionIngredient of(ITag<Item> tag, IItemProvider... exclusions) {
-        return of(Ingredient.fromTag(tag), exclusions);
+        return of(Ingredient.of(tag), exclusions);
     }
 
     public static ExclusionIngredient of(Ingredient parent, IItemProvider... exclusions) {
         List<Ingredient> list = new ArrayList<>();
         for (IItemProvider item : exclusions) {
-            list.add(Ingredient.fromItems(item));
+            list.add(Ingredient.of(item));
         }
         return new ExclusionIngredient(parent, list);
     }
 
     @Override
-    public ItemStack[] getMatchingStacks() {
-        List<ItemStack> ret = new ArrayList<>(Arrays.asList(parent.getMatchingStacks()));
+    public ItemStack[] getItems() {
+        List<ItemStack> ret = new ArrayList<>(Arrays.asList(parent.getItems()));
         exclusions.forEach(ret::removeIf);
         return ret.toArray(new ItemStack[0]);
     }
@@ -69,7 +69,7 @@ public final class ExclusionIngredient extends Ingredient {
      * @return All matching stacks of the parent ingredient
      */
     public ItemStack[] getMatchingStacksWithExclusions() {
-        return parent.getMatchingStacks();
+        return parent.getItems();
     }
 
     @Override
@@ -102,12 +102,12 @@ public final class ExclusionIngredient extends Ingredient {
     }
 
     @Override
-    public JsonElement serialize() {
+    public JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", Serializer.NAME.toString());
-        json.add("value", this.parent.serialize());
+        json.add("value", this.parent.toJson());
         JsonArray array = new JsonArray();
-        this.exclusions.forEach(ingredient -> array.add(ingredient.serialize()));
+        this.exclusions.forEach(ingredient -> array.add(ingredient.toJson()));
         json.add("exclusions", array);
         return json;
     }
@@ -119,7 +119,7 @@ public final class ExclusionIngredient extends Ingredient {
         @Nonnull
         @Override
         public ExclusionIngredient parse(@Nonnull JsonObject json) {
-            Ingredient value = Ingredient.deserialize(json.get("value"));
+            Ingredient value = Ingredient.fromJson(json.get("value"));
 
             List<Ingredient> list = new ArrayList<>();
             for (JsonElement e : json.get("exclusions").getAsJsonArray()) {
@@ -127,12 +127,12 @@ public final class ExclusionIngredient extends Ingredient {
                     ResourceLocation id = new ResourceLocation(e.getAsString());
                     Item item = ForgeRegistries.ITEMS.getValue(id);
                     if (item != null) {
-                        list.add(Ingredient.fromItems(item));
+                        list.add(Ingredient.of(item));
                     } else {
                         throw new JsonParseException("Unknown item: " + id);
                     }
                 } else {
-                    list.add(Ingredient.deserialize(e));
+                    list.add(Ingredient.fromJson(e));
                 }
             }
 
@@ -145,18 +145,18 @@ public final class ExclusionIngredient extends Ingredient {
             List<Ingredient> list = new ArrayList<>();
             int count = buffer.readByte();
             for (int i = 0; i < count; ++i) {
-                list.add(Ingredient.read(buffer));
+                list.add(Ingredient.fromNetwork(buffer));
             }
-            return new ExclusionIngredient(Ingredient.read(buffer), list);
+            return new ExclusionIngredient(Ingredient.fromNetwork(buffer), list);
         }
 
         @Override
         public void write(@Nonnull PacketBuffer buffer, @Nonnull ExclusionIngredient ingredient) {
             buffer.writeByte(ingredient.exclusions.size());
             for (Ingredient ing : ingredient.exclusions) {
-                ing.write(buffer);
+                ing.toNetwork(buffer);
             }
-            ingredient.parent.write(buffer);
+            ingredient.parent.toNetwork(buffer);
         }
 
     }

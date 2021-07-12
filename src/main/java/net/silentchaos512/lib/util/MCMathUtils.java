@@ -50,9 +50,9 @@ public final class MCMathUtils {
      * @return The distance between {@code from} and {@code to}
      */
     public static double distance(IPosition from, IPosition to) {
-        double dx = to.getX() - from.getX();
-        double dy = to.getY() - from.getY();
-        double dz = to.getZ() - from.getZ();
+        double dx = to.x() - from.x();
+        double dy = to.y() - from.y();
+        double dz = to.z() - from.z();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
@@ -65,9 +65,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}
      */
     public static double distance(Entity entity, Vector3i pos) {
-        double dx = pos.getX() + 0.5 - entity.getPosX();
-        double dy = pos.getY() + 0.5 - entity.getPosY();
-        double dz = pos.getZ() + 0.5 - entity.getPosZ();
+        double dx = pos.getX() + 0.5 - entity.getX();
+        double dy = pos.getY() + 0.5 - entity.getY();
+        double dz = pos.getZ() + 0.5 - entity.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
@@ -80,9 +80,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}
      */
     public static double distance(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.getPosX();
-        double dy = pos.getY() - entity.getPosY();
-        double dz = pos.getZ() - entity.getPosZ();
+        double dx = pos.x() - entity.getX();
+        double dy = pos.y() - entity.getY();
+        double dz = pos.z() - entity.getZ();
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
@@ -110,9 +110,9 @@ public final class MCMathUtils {
      * @return The distance between {@code from} and {@code to} squared
      */
     public static double distanceSq(IPosition from, IPosition to) {
-        double dx = to.getX() - from.getX();
-        double dy = to.getY() - from.getY();
-        double dz = to.getZ() - from.getZ();
+        double dx = to.x() - from.x();
+        double dy = to.y() - from.y();
+        double dz = to.z() - from.z();
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -124,9 +124,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared
      */
     public static double distanceSq(Entity entity, Vector3i pos) {
-        double dx = pos.getX() + 0.5 - entity.getPosX();
-        double dy = pos.getY() + 0.5 - entity.getPosY();
-        double dz = pos.getZ() + 0.5 - entity.getPosZ();
+        double dx = pos.getX() + 0.5 - entity.getX();
+        double dy = pos.getY() + 0.5 - entity.getY();
+        double dz = pos.getZ() + 0.5 - entity.getZ();
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -138,9 +138,9 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared
      */
     public static double distanceSq(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.getPosX();
-        double dy = pos.getY() - entity.getPosY();
-        double dz = pos.getZ() - entity.getPosZ();
+        double dx = pos.x() - entity.getX();
+        double dy = pos.y() - entity.getY();
+        double dz = pos.z() - entity.getZ();
         return dx * dx + dy * dy + dz * dz;
     }
 
@@ -167,8 +167,8 @@ public final class MCMathUtils {
      * @return The distance between {@code from} and {@code to} squared
      */
     public static double distanceHorizontal(IPosition from, IPosition to) {
-        double dx = to.getX() - from.getX();
-        double dz = to.getZ() - from.getZ();
+        double dx = to.x() - from.x();
+        double dz = to.z() - from.z();
         return Math.sqrt(dx * dx + dz * dz);
     }
 
@@ -180,8 +180,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}, ignoring Y-axis
      */
     public static double distanceHorizontal(Entity entity, Vector3i pos) {
-        double dx = pos.getX() + 0.5 - entity.getPosX();
-        double dz = pos.getZ() + 0.5 - entity.getPosZ();
+        double dx = pos.getX() + 0.5 - entity.getX();
+        double dz = pos.getZ() + 0.5 - entity.getZ();
         return Math.sqrt(dx * dx + dz * dz);
     }
 
@@ -193,8 +193,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos}, ignoring Y-axis
      */
     public static double distanceHorizontal(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.getPosX();
-        double dz = pos.getZ() - entity.getPosZ();
+        double dx = pos.x() - entity.getX();
+        double dz = pos.z() - entity.getZ();
         return Math.sqrt(dx * dx + dz * dz);
     }
 
@@ -221,8 +221,8 @@ public final class MCMathUtils {
      * @return The distance between {@code from} and {@code to} squared, ignoring Y-axis
      */
     public static double distanceHorizontalSq(IPosition from, IPosition to) {
-        double dx = to.getX() - from.getX();
-        double dz = to.getZ() - from.getZ();
+        double dx = to.x() - from.x();
+        double dz = to.z() - from.z();
         return dx * dx + dz * dz;
     }
 
@@ -235,8 +235,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared, ignoring Y-axis
      */
     public static double distanceHorizontalSq(Entity entity, Vector3i pos) {
-        double dx = pos.getX() + 0.5 - entity.getPosX();
-        double dz = pos.getZ() + 0.5 - entity.getPosZ();
+        double dx = pos.getX() + 0.5 - entity.getX();
+        double dz = pos.getZ() + 0.5 - entity.getZ();
         return dx * dx + dz * dz;
     }
 
@@ -249,8 +249,8 @@ public final class MCMathUtils {
      * @return The distance between {code entity} and {@code pos} squared, ignoring Y-axis
      */
     public static double distanceHorizontalSq(Entity entity, IPosition pos) {
-        double dx = pos.getX() - entity.getPosX();
-        double dz = pos.getZ() - entity.getPosZ();
+        double dx = pos.x() - entity.getX();
+        double dz = pos.z() - entity.getZ();
         return dx * dx + dz * dz;
     }
 }

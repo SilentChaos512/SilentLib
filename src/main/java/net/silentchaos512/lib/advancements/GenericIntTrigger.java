@@ -18,8 +18,6 @@
 
 package net.silentchaos512.lib.advancements;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.ICriterionTrigger;
 import net.minecraft.advancements.PlayerAdvancements;
@@ -44,7 +42,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
     }
 
     @Override
-    public void addListener(PlayerAdvancements playerAdvancementsIn, Listener<GenericIntTrigger.Instance> listenerIn) {
+    public void addPlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<GenericIntTrigger.Instance> listenerIn) {
         Listeners triggerListeners = this.listeners.get(playerAdvancementsIn);
         if (triggerListeners == null) {
             triggerListeners = new Listeners(playerAdvancementsIn);
@@ -54,7 +52,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
     }
 
     @Override
-    public void removeListener(PlayerAdvancements playerAdvancementsIn, Listener<GenericIntTrigger.Instance> listenerIn) {
+    public void removePlayerListener(PlayerAdvancements playerAdvancementsIn, Listener<GenericIntTrigger.Instance> listenerIn) {
         Listeners triggerListeners = this.listeners.get(playerAdvancementsIn);
         if (triggerListeners != null) {
             triggerListeners.remove(listenerIn);
@@ -64,14 +62,14 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
     }
 
     @Override
-    public void removeAllListeners(PlayerAdvancements playerAdvancementsIn) {
+    public void removePlayerListeners(PlayerAdvancements playerAdvancementsIn) {
         this.listeners.remove(playerAdvancementsIn);
     }
 
     @Override
-    public Instance deserialize(JsonObject json, ConditionArrayParser p_230307_2_) {
-        String type = JSONUtils.getString(json, "type", "unknown");
-        int value = JSONUtils.getInt(json, "value", 0);
+    public Instance createInstance(JsonObject json, ConditionArrayParser p_230307_2_) {
+        String type = JSONUtils.getAsString(json, "type", "unknown");
+        int value = JSONUtils.getAsInt(json, "value", 0);
         return new Instance(type, value);
     }
 
@@ -80,7 +78,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
         int value;
 
         Instance(String type, int value) {
-            super(GenericIntTrigger.ID, EntityPredicate.AndPredicate.ANY_AND);
+            super(GenericIntTrigger.ID, EntityPredicate.AndPredicate.ANY);
             this.type = type;
             this.value = value;
         }
@@ -94,7 +92,7 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
         }
 
         @Override
-        public JsonObject serialize(ConditionArraySerializer p_230240_1_) {
+        public JsonObject serializeToJson(ConditionArraySerializer p_230240_1_) {
             JsonObject json = new JsonObject();
             json.addProperty("type", this.type);
             json.addProperty("value", this.value);
@@ -132,11 +130,11 @@ public class GenericIntTrigger implements ICriterionTrigger<GenericIntTrigger.In
             List<Listener<Instance>> list = new ArrayList<>();
 
             for (Listener<Instance> listener : this.listeners)
-                if (listener.getCriterionInstance().test(typeIn, valueIn))
+                if (listener.getTriggerInstance().test(typeIn, valueIn))
                     list.add(listener);
 
             for (Listener<Instance> listener : list)
-                listener.grantCriterion(this.playerAdvancements);
+                listener.run(this.playerAdvancements);
         }
     }
 }

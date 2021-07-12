@@ -18,12 +18,12 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shaped crafting.
  */
 public abstract class ExtendedShapedRecipe extends ShapedRecipe {
-    private static final IRecipeSerializer<ShapedRecipe> BASE_SERIALIZER = IRecipeSerializer.CRAFTING_SHAPED;
+    private static final IRecipeSerializer<ShapedRecipe> BASE_SERIALIZER = IRecipeSerializer.SHAPED_RECIPE;
 
     private final ShapedRecipe recipe;
 
     public ExtendedShapedRecipe(ShapedRecipe recipe) {
-        super(recipe.getId(), recipe.getGroup(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getRecipeOutput());
+        super(recipe.getId(), recipe.getGroup(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem());
         this.recipe = recipe;
     }
 
@@ -38,7 +38,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     public abstract boolean matches(CraftingInventory inv, World worldIn);
 
     @Override
-    public abstract ItemStack getCraftingResult(CraftingInventory inv);
+    public abstract ItemStack assemble(CraftingInventory inv);
 
     public static class Serializer<T extends ExtendedShapedRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
         private final Function<ShapedRecipe, T> recipeFactory;
@@ -66,8 +66,8 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, JsonObject json) {
-            ShapedRecipe recipe = BASE_SERIALIZER.read(recipeId, json);
+        public T fromJson(ResourceLocation recipeId, JsonObject json) {
+            ShapedRecipe recipe = BASE_SERIALIZER.fromJson(recipeId, json);
             T result = this.recipeFactory.apply(recipe);
             if (this.readJson != null) {
                 this.readJson.accept(json, result);
@@ -76,8 +76,8 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public T read(ResourceLocation recipeId, PacketBuffer buffer) {
-            ShapedRecipe recipe = BASE_SERIALIZER.read(recipeId, buffer);
+        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+            ShapedRecipe recipe = BASE_SERIALIZER.fromNetwork(recipeId, buffer);
             T result = this.recipeFactory.apply(recipe);
             if (this.readBuffer != null) {
                 this.readBuffer.accept(buffer, result);
@@ -86,8 +86,8 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public void write(PacketBuffer buffer, T recipe) {
-            BASE_SERIALIZER.write(buffer, recipe.getBaseRecipe());
+        public void toNetwork(PacketBuffer buffer, T recipe) {
+            BASE_SERIALIZER.toNetwork(buffer, recipe.getBaseRecipe());
             if (this.writeBuffer != null) {
                 this.writeBuffer.accept(buffer, recipe);
             }

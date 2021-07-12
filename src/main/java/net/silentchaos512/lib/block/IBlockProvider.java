@@ -22,7 +22,7 @@ public interface IBlockProvider extends IItemProvider {
      * @return Default block state
      */
     default BlockState asBlockState() {
-        return asBlock().getDefaultState();
+        return asBlock().defaultBlockState();
     }
 
     @Override

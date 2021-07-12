@@ -77,8 +77,8 @@ public final class InventoryUtils {
      * @since 3.1.0 (was in StackHelper from 3.0.6)
      */
     public static ItemStack firstMatch(IInventory inv, Predicate<ItemStack> predicate) {
-        for (int i = 0; i < inv.getSizeInventory(); ++i) {
-            ItemStack stack = inv.getStackInSlot(i);
+        for (int i = 0; i < inv.getContainerSize(); ++i) {
+            ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty() && predicate.test(stack)) {
                 return stack;
             }
@@ -93,23 +93,23 @@ public final class InventoryUtils {
 
         // Merge into non-empty slots first
         for (int i = slotStart; i < slotEndExclusive && !stack.isEmpty(); ++i) {
-            ItemStack inSlot = inventory.getStackInSlot(i);
+            ItemStack inSlot = inventory.getItem(i);
             if (canItemsStack(inSlot, stack)) {
-                int amountCanFit = MathUtils.min(inSlot.getMaxStackSize() - inSlot.getCount(), stack.getCount(), inventory.getInventoryStackLimit());
+                int amountCanFit = MathUtils.min(inSlot.getMaxStackSize() - inSlot.getCount(), stack.getCount(), inventory.getMaxStackSize());
                 inSlot.grow(amountCanFit);
                 stack.shrink(amountCanFit);
-                inventory.setInventorySlotContents(i, inSlot);
+                inventory.setItem(i, inSlot);
             }
         }
 
         // Fill empty slots next
         for (int i = slotStart; i < slotEndExclusive && !stack.isEmpty(); ++i) {
-            if (inventory.getStackInSlot(i).isEmpty()) {
-                int amountCanFit = MathUtils.min(stack.getCount(), inventory.getInventoryStackLimit());
+            if (inventory.getItem(i).isEmpty()) {
+                int amountCanFit = MathUtils.min(stack.getCount(), inventory.getMaxStackSize());
                 ItemStack toInsert = stack.copy();
                 toInsert.setCount(amountCanFit);
                 stack.shrink(amountCanFit);
-                inventory.setInventorySlotContents(i, toInsert);
+                inventory.setItem(i, toInsert);
             }
         }
 

@@ -33,7 +33,7 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     }
 
     @Override
-    public int getSizeInventory() {
+    public int getContainerSize() {
         return items.size();
     }
 
@@ -48,7 +48,7 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     }
 
     @Override
-    public ItemStack getStackInSlot(int index) {
+    public ItemStack getItem(int index) {
         if (index < 0 || index >= items.size()) {
             return ItemStack.EMPTY;
         }
@@ -56,43 +56,43 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count) {
-        return ItemStackHelper.getAndSplit(items, index, count);
+    public ItemStack removeItem(int index, int count) {
+        return ItemStackHelper.removeItem(items, index, count);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index) {
-        return ItemStackHelper.getAndRemove(items, index);
+    public ItemStack removeItemNoUpdate(int index) {
+        return ItemStackHelper.takeItem(items, index);
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack) {
+    public void setItem(int index, ItemStack stack) {
         items.set(index, stack);
-        if (stack.getCount() > getInventoryStackLimit()) {
-            stack.setCount(getInventoryStackLimit());
+        if (stack.getCount() > getMaxStackSize()) {
+            stack.setCount(getMaxStackSize());
         }
     }
 
     @Override
-    public boolean isUsableByPlayer(PlayerEntity player) {
-        return world != null && world.getTileEntity(pos) == this && MCMathUtils.distanceSq(player, pos) <= 64;
+    public boolean stillValid(PlayerEntity player) {
+        return level != null && level.getBlockEntity(worldPosition) == this && MCMathUtils.distanceSq(player, worldPosition) <= 64;
     }
 
     @Override
-    public void clear() {
+    public void clearContent() {
         items.clear();
     }
 
     @Override
-    public void read(BlockState stateIn, CompoundNBT tags) {
-        super.read(stateIn, tags);
-        items = NonNullList.withSize(getSizeInventory(), ItemStack.EMPTY);
+    public void load(BlockState stateIn, CompoundNBT tags) {
+        super.load(stateIn, tags);
+        items = NonNullList.withSize(getContainerSize(), ItemStack.EMPTY);
         ItemStackHelper.loadAllItems(tags, items);
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT tags) {
-        super.write(tags);
+    public CompoundNBT save(CompoundNBT tags) {
+        super.save(tags);
         ItemStackHelper.saveAllItems(tags, items);
         return tags;
     }
@@ -101,19 +101,19 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     public SUpdateTileEntityPacket getUpdatePacket() {
         CompoundNBT tags = getUpdateTag();
         ItemStackHelper.saveAllItems(tags, items);
-        return new SUpdateTileEntityPacket(pos, 1, tags);
+        return new SUpdateTileEntityPacket(worldPosition, 1, tags);
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket packet) {
         super.onDataPacket(net, packet);
-        ItemStackHelper.loadAllItems(packet.getNbtCompound(), items);
+        ItemStackHelper.loadAllItems(packet.getTag(), items);
     }
 
     @Nullable
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
-        if (!this.removed && side != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
+        if (!this.remove && side != null && cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY) {
             if (side == Direction.UP)
                 return handlers[0].cast();
             if (side == Direction.DOWN)
@@ -124,8 +124,8 @@ public abstract class LockableSidedInventoryTileEntity extends LockableTileEntit
     }
 
     @Override
-    public void remove() {
-        super.remove();
+    public void setRemoved() {
+        super.setRemoved();
         for (LazyOptional<? extends IItemHandler> handler : handlers) {
             handler.invalidate();
         }

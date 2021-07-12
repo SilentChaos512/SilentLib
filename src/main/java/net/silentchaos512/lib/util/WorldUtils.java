@@ -81,7 +81,7 @@ public final class WorldUtils {
     public static <T> Map<BlockPos, T> getBlocks(World world, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, BiFunction<World, BlockPos, Optional<T>> getter) {
         Map<BlockPos, T> map = new LinkedHashMap<>();
         //noinspection deprecation
-        if (!world.isAreaLoaded(xMin, yMin, zMin, xMax, yMax, zMax)) {
+        if (!world.hasChunksAt(xMin, yMin, zMin, xMax, yMax, zMax)) {
             return map;
         }
 
@@ -90,7 +90,7 @@ public final class WorldUtils {
             for (int y = yMin; y <= yMax; ++y) {
                 for (int z = zMin; z <= zMax; ++z) {
                     BlockPos pos = new BlockPos(x, y, z);
-                    getter.apply(world, blockPos.setPos(x, y, z)).ifPresent(t -> map.put(pos, t));
+                    getter.apply(world, blockPos.set(x, y, z)).ifPresent(t -> map.put(pos, t));
                 }
             }
         }
@@ -132,7 +132,7 @@ public final class WorldUtils {
 
     @SuppressWarnings("unchecked")
     private static <T extends TileEntity> Optional<T> getTileEntityOfType(Class<? extends T> clazz, BlockPos pos, IBlockReader world) {
-        TileEntity te = world.getTileEntity(pos);
+        TileEntity te = world.getBlockEntity(pos);
         return clazz.isInstance(te) ? Optional.of((T) te) : Optional.empty();
     }
 }

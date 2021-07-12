@@ -36,8 +36,8 @@ public class ContainerSL extends Container {
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity player) {
-        return tileInventory.isUsableByPlayer(player);
+    public boolean stillValid(PlayerEntity player) {
+        return tileInventory.stillValid(player);
     }
 
     @Deprecated

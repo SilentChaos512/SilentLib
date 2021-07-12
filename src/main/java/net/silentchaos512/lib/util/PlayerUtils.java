@@ -41,11 +41,11 @@ public final class PlayerUtils {
      */
     public static void giveItem(PlayerEntity player, ItemStack stack) {
         ItemStack copy = stack.copy();
-        if (!player.inventory.addItemStackToInventory(copy)) {
-            ItemEntity entityItem = new ItemEntity(player.world, player.getPosX(), player.getPosYHeight(0.5), player.getPosZ(), copy);
-            entityItem.setNoPickupDelay();
-            entityItem.setOwnerId(player.getUniqueID());
-            player.world.addEntity(entityItem);
+        if (!player.inventory.add(copy)) {
+            ItemEntity entityItem = new ItemEntity(player.level, player.getX(), player.getY(0.5), player.getZ(), copy);
+            entityItem.setNoPickUpDelay();
+            entityItem.setOwner(player.getUUID());
+            player.level.addFreshEntity(entityItem);
         }
     }
 
@@ -56,7 +56,7 @@ public final class PlayerUtils {
      * @param stack  The item
      */
     public static void removeItem(PlayerEntity player, ItemStack stack) {
-        List<NonNullList<ItemStack>> inventories = ImmutableList.of(player.inventory.mainInventory, player.inventory.offHandInventory, player.inventory.armorInventory);
+        List<NonNullList<ItemStack>> inventories = ImmutableList.of(player.inventory.items, player.inventory.offhand, player.inventory.armor);
         for (NonNullList<ItemStack> inv : inventories) {
             for (int i = 0; i < inv.size(); ++i) {
                 if (stack == inv.get(i)) {
@@ -109,17 +109,17 @@ public final class PlayerUtils {
         NonNullList<ItemStack> list = NonNullList.create();
 
         if (includeMain)
-            for (ItemStack stack : player.inventory.mainInventory)
+            for (ItemStack stack : player.inventory.items)
                 if (!stack.isEmpty() && predicate.test(stack))
                     list.add(stack);
 
         if (includeOffHand)
-            for (ItemStack stack : player.inventory.offHandInventory)
+            for (ItemStack stack : player.inventory.offhand)
                 if (!stack.isEmpty() && predicate.test(stack))
                     list.add(stack);
 
         if (includeArmor)
-            for (ItemStack stack : player.inventory.armorInventory)
+            for (ItemStack stack : player.inventory.armor)
                 if (!stack.isEmpty() && predicate.test(stack))
                     list.add(stack);
 
@@ -142,17 +142,17 @@ public final class PlayerUtils {
     @Nonnull
     public static ItemStack getFirstValidStack(PlayerEntity player, boolean includeMain, boolean includeOffHand, boolean includeArmor, Predicate<ItemStack> predicate) {
         if (includeOffHand)
-            for (ItemStack stack : player.inventory.offHandInventory)
+            for (ItemStack stack : player.inventory.offhand)
                 if (!stack.isEmpty() && predicate.test(stack))
                     return stack;
 
         if (includeArmor)
-            for (ItemStack stack : player.inventory.armorInventory)
+            for (ItemStack stack : player.inventory.armor)
                 if (!stack.isEmpty() && predicate.test(stack))
                     return stack;
 
         if (includeMain)
-            for (ItemStack stack : player.inventory.mainInventory)
+            for (ItemStack stack : player.inventory.items)
                 if (!stack.isEmpty() && predicate.test(stack))
                     return stack;
 

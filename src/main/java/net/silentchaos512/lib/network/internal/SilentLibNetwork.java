@@ -7,7 +7,7 @@ import net.silentchaos512.lib.SilentLib;
 
 import java.util.Objects;
 
-public class SilentLibNetwork {
+public final class SilentLibNetwork {
     private static final ResourceLocation NAME = new ResourceLocation(SilentLib.MOD_ID, "network");
     private static final int VERSION = 1;
 
@@ -37,6 +37,7 @@ public class SilentLibNetwork {
                 .add();
     }
 
-    public static void init() {
-    }
+    private SilentLibNetwork() {}
+
+    public static void init() {}
 }
