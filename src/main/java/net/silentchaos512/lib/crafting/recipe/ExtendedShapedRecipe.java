@@ -1,13 +1,13 @@
 package net.silentchaos512.lib.crafting.recipe;
 
 import com.google.gson.JsonObject;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -18,7 +18,7 @@ import java.util.function.Function;
  * Allows quick extensions of vanilla shaped crafting.
  */
 public abstract class ExtendedShapedRecipe extends ShapedRecipe {
-    private static final IRecipeSerializer<ShapedRecipe> BASE_SERIALIZER = IRecipeSerializer.SHAPED_RECIPE;
+    private static final RecipeSerializer<ShapedRecipe> BASE_SERIALIZER = RecipeSerializer.SHAPED_RECIPE;
 
     private final ShapedRecipe recipe;
 
@@ -32,24 +32,24 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public abstract IRecipeSerializer<?> getSerializer();
+    public abstract RecipeSerializer<?> getSerializer();
 
     @Override
-    public abstract boolean matches(CraftingInventory inv, World worldIn);
+    public abstract boolean matches(CraftingContainer inv, Level worldIn);
 
     @Override
-    public abstract ItemStack assemble(CraftingInventory inv);
+    public abstract ItemStack assemble(CraftingContainer inv);
 
-    public static class Serializer<T extends ExtendedShapedRecipe> extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<T> {
+    public static class Serializer<T extends ExtendedShapedRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
         private final Function<ShapedRecipe, T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
-        @Nullable private final BiConsumer<PacketBuffer, T> readBuffer;
-        @Nullable private final BiConsumer<PacketBuffer, T> writeBuffer;
+        @Nullable private final BiConsumer<FriendlyByteBuf, T> readBuffer;
+        @Nullable private final BiConsumer<FriendlyByteBuf, T> writeBuffer;
 
         public Serializer(Function<ShapedRecipe, T> recipeFactory,
                           @Nullable BiConsumer<JsonObject, T> readJson,
-                          @Nullable BiConsumer<PacketBuffer, T> readBuffer,
-                          @Nullable BiConsumer<PacketBuffer, T> writeBuffer) {
+                          @Nullable BiConsumer<FriendlyByteBuf, T> readBuffer,
+                          @Nullable BiConsumer<FriendlyByteBuf, T> writeBuffer) {
             this.recipeFactory = recipeFactory;
             this.readJson = readJson;
             this.readBuffer = readBuffer;
@@ -76,7 +76,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public T fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+        public T fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
             ShapedRecipe recipe = BASE_SERIALIZER.fromNetwork(recipeId, buffer);
             T result = this.recipeFactory.apply(recipe);
             if (this.readBuffer != null) {
@@ -86,7 +86,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, T recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, T recipe) {
             BASE_SERIALIZER.toNetwork(buffer, recipe.getBaseRecipe());
             if (this.writeBuffer != null) {
                 this.writeBuffer.accept(buffer, recipe);

@@ -1,12 +1,14 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.list.ExtendedList;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.silentchaos512.lib.util.TextRenderUtils;
 
-public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
+public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
     private final DisplayNBTScreen screen;
 
     public DisplayNBTList(DisplayNBTScreen screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn) {
@@ -20,7 +22,7 @@ public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
         return super.getRowWidth() + 200;
     }
 
-    public final class Entry extends ExtendedList.AbstractListEntry<Entry> {
+    public final class Entry extends ObjectSelectionList.Entry<Entry> {
         private final String text;
         private final Minecraft mc;
 
@@ -30,8 +32,13 @@ public class DisplayNBTList extends ExtendedList<DisplayNBTList.Entry> {
         }
 
         @Override
-        public void render(MatrixStack matrix, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            TextRenderUtils.renderScaled(matrix, this.mc.font, new StringTextComponent(this.text).getVisualOrderText(), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
+        public void render(PoseStack matrix, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
+            TextRenderUtils.renderScaled(matrix, this.mc.font, new TextComponent(this.text).getVisualOrderText(), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
+        }
+
+        @Override
+        public Component getNarration() {
+            return TextComponent.EMPTY;
         }
     }
 }

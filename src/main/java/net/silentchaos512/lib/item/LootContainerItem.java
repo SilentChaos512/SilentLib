@@ -18,19 +18,25 @@
 
 package net.silentchaos512.lib.item;
 
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.LootUtils;
 import net.silentchaos512.lib.util.PlayerUtils;
@@ -95,7 +101,7 @@ public class LootContainerItem extends Item {
         return result;
     }
 
-    protected static CompoundNBT getData(ItemStack stack) {
+    protected static CompoundTag getData(ItemStack stack) {
         return stack.getOrCreateTagElement(NBT_ROOT);
     }
 
@@ -107,7 +113,7 @@ public class LootContainerItem extends Item {
      * @return The loot table which will be used
      */
     protected ResourceLocation getLootTable(ItemStack stack) {
-        CompoundNBT tags = getData(stack);
+        CompoundTag tags = getData(stack);
         if (tags.contains(NBT_LOOT_TABLE)) {
             String str = tags.getString(NBT_LOOT_TABLE);
             ResourceLocation table = ResourceLocation.tryParse(str);
@@ -137,26 +143,26 @@ public class LootContainerItem extends Item {
      * @param player   The player using the item
      * @return A collection of items to give to the player
      */
-    protected Collection<ItemStack> getLootDrops(ItemStack heldItem, ServerPlayerEntity player) {
+    protected Collection<ItemStack> getLootDrops(ItemStack heldItem, ServerPlayer player) {
         return LootUtils.gift(getLootTable(heldItem), player);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn) {
+    public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        ITextComponent textTableName = new StringTextComponent(this.getLootTable(stack).toString()).withStyle(TextFormatting.WHITE);
-        tooltip.add(new TranslationTextComponent("item.silentlib.lootContainer.table", textTableName).withStyle(TextFormatting.BLUE));
+        Component textTableName = new TextComponent(this.getLootTable(stack).toString()).withStyle(ChatFormatting.WHITE);
+        tooltip.add(new TranslatableComponent("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn) {
+    public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand handIn) {
         ItemStack heldItem = playerIn.getItemInHand(handIn);
-        if (!(playerIn instanceof ServerPlayerEntity))
-            return ActionResult.success(heldItem);
+        if (!(playerIn instanceof ServerPlayer))
+            return InteractionResultHolder.success(heldItem);
 
         // Generate items from loot table, give to player.
-        ServerPlayerEntity playerMP = (ServerPlayerEntity) playerIn;
+        ServerPlayer playerMP = (ServerPlayer) playerIn;
         Collection<ItemStack> lootDrops = this.getLootDrops(heldItem, playerMP);
 
         if (lootDrops.isEmpty())
@@ -171,13 +177,13 @@ public class LootContainerItem extends Item {
 
         // Play item pickup sound...
         float pitch = ((playerMP.getRandom().nextFloat() - playerMP.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F;
-        playerMP.level.playSound(null, playerMP.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.PLAYERS, 0.2F, pitch);
+        playerMP.level.playSound(null, playerMP.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
-        return ActionResult.success(heldItem);
+        return InteractionResultHolder.success(heldItem);
     }
 
-    private static void listItemReceivedInChat(ServerPlayerEntity playerMP, ItemStack stack) {
-        ITextComponent itemReceivedText = new TranslationTextComponent(
+    private static void listItemReceivedInChat(ServerPlayer playerMP, ItemStack stack) {
+        Component itemReceivedText = new TranslatableComponent(
                 "item.silentlib.lootContainer.itemReceived",
                 stack.getCount(),
                 stack.getHoverName());
@@ -185,7 +191,7 @@ public class LootContainerItem extends Item {
     }
 
     @Override
-    public void fillItemCategory(ItemGroup group, NonNullList<ItemStack> items) {
+    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
         if (this.allowdedIn(group)) {
             items.add(this.getStack());
         }

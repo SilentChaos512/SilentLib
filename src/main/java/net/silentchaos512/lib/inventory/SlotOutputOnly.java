@@ -18,12 +18,12 @@
 
 package net.silentchaos512.lib.inventory;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class SlotOutputOnly extends Slot {
-    public SlotOutputOnly(IInventory inventoryIn, int index, int xPosition, int yPosition) {
+    public SlotOutputOnly(Container inventoryIn, int index, int xPosition, int yPosition) {
         super(inventoryIn, index, xPosition, yPosition);
     }
 

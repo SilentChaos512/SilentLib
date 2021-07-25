@@ -1,14 +1,14 @@
 package net.silentchaos512.lib.block;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Extension of {@link IItemProvider}, intended for block enums.
  */
-public interface IBlockProvider extends IItemProvider {
+public interface IBlockProvider extends ItemLike {
     /**
      * Get the block this object represents.
      *

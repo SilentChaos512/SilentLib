@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.util;
 
-import net.minecraft.block.ComposterBlock;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.ComposterBlock;
 import net.silentchaos512.lib.SilentLib;
 
 /**
@@ -14,7 +14,7 @@ public final class LibHooks {
         throw new IllegalAccessError("Utility class");
     }
 
-    public static void registerCompostable(float chance, IItemProvider item) {
+    public static void registerCompostable(float chance, ItemLike item) {
         synchronized (ComposterBlock.COMPOSTABLES) {
             try {
                 ComposterBlock.COMPOSTABLES.put(item, chance);

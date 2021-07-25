@@ -14,24 +14,24 @@ public final class NBTToJson {
 
     private NBTToJson() {throw new IllegalAccessError("Utility class");}
 
-    public static JsonElement toJson(INBT nbt) {
+    public static JsonElement toJson(Tag nbt) {
         //noinspection ChainOfInstanceofChecks
-        if (nbt instanceof CompoundNBT) {
-            return toJsonObject((CompoundNBT) nbt);
-        } else if (nbt instanceof CollectionNBT) {
-            return toJsonArray((CollectionNBT<?>) nbt);
-        } else if (nbt instanceof NumberNBT) {
-            return new JsonPrimitive(((NumberNBT) nbt).getAsNumber());
-        } else if (nbt instanceof StringNBT) {
+        if (nbt instanceof CompoundTag) {
+            return toJsonObject((CompoundTag) nbt);
+        } else if (nbt instanceof CollectionTag) {
+            return toJsonArray((CollectionTag<?>) nbt);
+        } else if (nbt instanceof NumericTag) {
+            return new JsonPrimitive(((NumericTag) nbt).getAsNumber());
+        } else if (nbt instanceof StringTag) {
             return new JsonPrimitive(nbt.getAsString());
         }
         return JsonNull.INSTANCE;
     }
 
-    public static JsonObject toJsonObject(CompoundNBT nbt) {
+    public static JsonObject toJsonObject(CompoundTag nbt) {
         JsonObject json = new JsonObject();
         for (String key : nbt.getAllKeys()) {
-            INBT element = nbt.get(key);
+            Tag element = nbt.get(key);
             if (element != null) {
                 json.add(key, toJson(element));
             }
@@ -39,9 +39,9 @@ public final class NBTToJson {
         return json;
     }
 
-    public static JsonArray toJsonArray(CollectionNBT<?> nbt) {
+    public static JsonArray toJsonArray(CollectionTag<?> nbt) {
         JsonArray json = new JsonArray();
-        for (INBT element : nbt) {
+        for (Tag element : nbt) {
             json.add(toJson(element));
         }
         return json;

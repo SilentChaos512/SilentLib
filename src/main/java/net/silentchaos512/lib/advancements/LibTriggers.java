@@ -19,7 +19,7 @@
 package net.silentchaos512.lib.advancements;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -61,22 +61,22 @@ public final class LibTriggers {
         }
 
         public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-            if (event.getPlayer() instanceof ServerPlayerEntity) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayerEntity) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
+            if (event.getPlayer() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
             }
         }
 
         @SubscribeEvent
         public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-            if (event.getPlayer() instanceof ServerPlayerEntity) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayerEntity) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
+            if (event.getPlayer() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
             }
         }
 
         @SubscribeEvent
         public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-            if (event.getPlayer() instanceof ServerPlayerEntity) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayerEntity) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
+            if (event.getPlayer() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
             }
         }
     }

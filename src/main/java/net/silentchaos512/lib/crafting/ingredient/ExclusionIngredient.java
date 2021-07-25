@@ -4,13 +4,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.silentchaos512.lib.SilentLib;
@@ -33,7 +33,7 @@ public final class ExclusionIngredient extends Ingredient {
         this.exclusions.addAll(exclusions);
     }
 
-    public static ExclusionIngredient of(ITag<Item> tag, Ingredient... exclusions) {
+    public static ExclusionIngredient of(Tag<Item> tag, Ingredient... exclusions) {
         return of(Ingredient.of(tag), exclusions);
     }
 
@@ -43,13 +43,13 @@ public final class ExclusionIngredient extends Ingredient {
         return new ExclusionIngredient(parent, list);
     }
 
-    public static ExclusionIngredient of(ITag<Item> tag, IItemProvider... exclusions) {
+    public static ExclusionIngredient of(Tag<Item> tag, ItemLike... exclusions) {
         return of(Ingredient.of(tag), exclusions);
     }
 
-    public static ExclusionIngredient of(Ingredient parent, IItemProvider... exclusions) {
+    public static ExclusionIngredient of(Ingredient parent, ItemLike... exclusions) {
         List<Ingredient> list = new ArrayList<>();
-        for (IItemProvider item : exclusions) {
+        for (ItemLike item : exclusions) {
             list.add(Ingredient.of(item));
         }
         return new ExclusionIngredient(parent, list);
@@ -141,7 +141,7 @@ public final class ExclusionIngredient extends Ingredient {
 
         @Nonnull
         @Override
-        public ExclusionIngredient parse(@Nonnull PacketBuffer buffer) {
+        public ExclusionIngredient parse(@Nonnull FriendlyByteBuf buffer) {
             List<Ingredient> list = new ArrayList<>();
             int count = buffer.readByte();
             for (int i = 0; i < count; ++i) {
@@ -151,7 +151,7 @@ public final class ExclusionIngredient extends Ingredient {
         }
 
         @Override
-        public void write(@Nonnull PacketBuffer buffer, @Nonnull ExclusionIngredient ingredient) {
+        public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull ExclusionIngredient ingredient) {
             buffer.writeByte(ingredient.exclusions.size());
             for (Ingredient ing : ingredient.exclusions) {
                 ing.toNetwork(buffer);

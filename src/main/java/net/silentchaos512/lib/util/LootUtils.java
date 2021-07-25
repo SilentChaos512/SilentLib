@@ -1,15 +1,15 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootParameters;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
 import java.util.Collection;
 
@@ -33,15 +33,15 @@ public final class LootUtils {
         return new ItemEntity(dropper.level, x, y, z, stack);
     }
 
-    public static Collection<ItemStack> gift(ResourceLocation lootTable, ServerPlayerEntity player) {
+    public static Collection<ItemStack> gift(ResourceLocation lootTable, ServerPlayer player) {
         MinecraftServer server = player.level.getServer();
         if (server == null) return ImmutableList.of();
 
         LootContext lootContext = (new LootContext.Builder(player.getLevel()))
-                .withParameter(LootParameters.THIS_ENTITY, player)
-                .withParameter(LootParameters.ORIGIN, player.position())
+                .withParameter(LootContextParams.THIS_ENTITY, player)
+                .withParameter(LootContextParams.ORIGIN, player.position())
                 .withLuck(player.getLuck())
-                .create(LootParameterSets.GIFT);
+                .create(LootContextParamSets.GIFT);
         return server.getLootTables().get(lootTable).getRandomItems(lootContext);
     }
 }

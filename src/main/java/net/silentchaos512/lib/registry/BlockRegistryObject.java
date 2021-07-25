@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.registry;
 
-import net.minecraft.block.Block;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.silentchaos512.lib.block.IBlockProvider;
 
 public class BlockRegistryObject<T extends Block> extends RegistryObjectWrapper<T> implements IBlockProvider {

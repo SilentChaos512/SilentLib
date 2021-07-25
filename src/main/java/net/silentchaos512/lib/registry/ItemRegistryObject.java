@@ -1,10 +1,10 @@
 package net.silentchaos512.lib.registry;
 
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
-public class ItemRegistryObject<T extends Item> extends RegistryObjectWrapper<T> implements IItemProvider {
+public class ItemRegistryObject<T extends Item> extends RegistryObjectWrapper<T> implements ItemLike {
     public ItemRegistryObject(RegistryObject<T> item) {
         super(item);
     }
