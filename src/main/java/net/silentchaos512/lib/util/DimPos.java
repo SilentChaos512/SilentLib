@@ -18,15 +18,15 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.Entity;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.Direction;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
 
 /**
  * Basically a BlockPos with a dimension coordinate.
@@ -39,7 +39,7 @@ public final class DimPos {
     /**
      * Origin (0, 0, 0) in dimension 0
      */
-    public static final DimPos ZERO = new DimPos(0, 0, 0, Level.OVERWORLD);
+    public static final DimPos ZERO = new DimPos(0, 0, 0, World.OVERWORLD);
 
     private final int posX;
     private final int posY;
@@ -48,11 +48,11 @@ public final class DimPos {
 
     //region Static factory methods
 
-    public static DimPos of(BlockPos pos, ResourceKey<Level> dimension) {
+    public static DimPos of(BlockPos pos, RegistryKey<World> dimension) {
         return new DimPos(pos, dimension);
     }
 
-    public static DimPos of(int x, int y, int z, ResourceKey<Level> dimension) {
+    public static DimPos of(int x, int y, int z, RegistryKey<World> dimension) {
         return new DimPos(x, y, z, dimension);
     }
 
@@ -62,11 +62,11 @@ public final class DimPos {
 
     //endregion
 
-    private DimPos(BlockPos pos, ResourceKey<Level> dimension) {
+    private DimPos(BlockPos pos, RegistryKey<World> dimension) {
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
-    private DimPos(int x, int y, int z, ResourceKey<Level> dimension) {
+    private DimPos(int x, int y, int z, RegistryKey<World> dimension) {
         this(x, y, z, DimensionId.fromId(dimension));
     }
 
@@ -93,19 +93,19 @@ public final class DimPos {
         return dimension;
     }
 
-    public ResourceKey<Level> getDimension() {
+    public RegistryKey<World> getDimension() {
         return this.dimension.getId();
     }
 
-    public static DimPos read(CompoundTag tags) {
+    public static DimPos read(CompoundNBT tags) {
         return DimPos.of(
                 tags.getInt("posX"),
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
-                ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tags.getString("dim"))));
+                RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tags.getString("dim"))));
     }
 
-    public void write(CompoundTag tags) {
+    public void write(CompoundNBT tags) {
         tags.putInt("posX", this.posX);
         tags.putInt("posY", this.posY);
         tags.putInt("posZ", this.posZ);
@@ -121,8 +121,8 @@ public final class DimPos {
         return new BlockPos(posX, posY, posZ);
     }
 
-    public Vec3 getPosCentered(double yOffset) {
-        return new Vec3(posX + 0.5, posY + yOffset, posZ + 0.5);
+    public Vector3d getPosCentered(double yOffset) {
+        return new Vector3d(posX + 0.5, posY + yOffset, posZ + 0.5);
     }
 
     /**

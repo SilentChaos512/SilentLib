@@ -19,7 +19,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.silentchaos512.lib.SilentLib;

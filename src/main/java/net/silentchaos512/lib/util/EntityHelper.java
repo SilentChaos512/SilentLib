@@ -18,14 +18,14 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.LevelWriter;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.world.IWorldWriter;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.fml.network.PacketDistributor;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 import net.silentchaos512.lib.network.internal.SpawnEntityPacket;
@@ -54,13 +54,13 @@ public final class EntityHelper {
         entitiesToSpawn.add(entity);
     }
 
-    public static void spawnWithClientPacket(LevelWriter world, Entity entity) {
+    public static void spawnWithClientPacket(IWorldWriter world, Entity entity) {
         spawnWithClientPacket(world, entity, 4096);
     }
 
-    public static void spawnWithClientPacket(LevelWriter world, Entity entity, double r2) {
+    public static void spawnWithClientPacket(IWorldWriter world, Entity entity, double r2) {
         world.addFreshEntity(entity);
-        if (world instanceof ServerLevel) {
+        if (world instanceof ServerWorld) {
             SpawnEntityPacket message = new SpawnEntityPacket(entity);
             SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getX(), entity.getY(), entity.getZ(), r2, entity.level.dimension())), message);
         }
