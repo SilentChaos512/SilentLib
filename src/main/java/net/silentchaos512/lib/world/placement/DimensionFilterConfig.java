@@ -2,18 +2,18 @@ package net.silentchaos512.lib.world.placement;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.placement.IPlacementConfig;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class DimensionFilterConfig implements IPlacementConfig {
+public class DimensionFilterConfig implements DecoratorConfiguration {
     public static final Codec<DimensionFilterConfig> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                     Codec.BOOL.fieldOf("is_whitelist").forGetter(config -> config.isWhitelist),
@@ -22,31 +22,31 @@ public class DimensionFilterConfig implements IPlacementConfig {
                                     .map(rk -> rk.getRegistryName().toString())
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
-                Collection<RegistryKey<World>> dims = strList.stream()
-                        .map(str -> RegistryKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(str)))
+                Collection<ResourceKey<Level>> dims = strList.stream()
+                        .map(str -> ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(str)))
                         .collect(Collectors.toList());
                 return new DimensionFilterConfig(isWhitelist, dims);
             }));
 
     private final boolean isWhitelist;
-    private final Collection<RegistryKey<World>> dimensions = new ArrayList<>();
+    private final Collection<ResourceKey<Level>> dimensions = new ArrayList<>();
 
-    public DimensionFilterConfig(boolean isWhitelist, Collection<RegistryKey<World>> dimensions) {
+    public DimensionFilterConfig(boolean isWhitelist, Collection<ResourceKey<Level>> dimensions) {
         this.isWhitelist = isWhitelist;
         this.dimensions.addAll(dimensions);
     }
 
     @SafeVarargs
-    public static DimensionFilterConfig whitelist(RegistryKey<World>... dimensions) {
+    public static DimensionFilterConfig whitelist(ResourceKey<Level>... dimensions) {
         return new DimensionFilterConfig(true, Arrays.asList(dimensions));
     }
 
     @SafeVarargs
-    public static DimensionFilterConfig blacklist(RegistryKey<World>... dimensions) {
+    public static DimensionFilterConfig blacklist(ResourceKey<Level>... dimensions) {
         return new DimensionFilterConfig(false, Arrays.asList(dimensions));
     }
 
-    public boolean matches(RegistryKey<World> dimension) {
+    public boolean matches(ResourceKey<Level> dimension) {
         return this.dimensions.contains(dimension) == this.isWhitelist;
     }
 }

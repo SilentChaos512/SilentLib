@@ -1,14 +1,14 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.button.Button;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.*;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.silentchaos512.lib.util.NBTToJson;
 import net.silentchaos512.lib.util.TextRenderUtils;
 
@@ -17,11 +17,11 @@ import java.util.List;
 
 public class DisplayNBTScreen extends Screen {
     final List<String> lines;
-    private final CompoundNBT nbtCompound;
+    private final CompoundTag nbtCompound;
     private DisplayNBTList displayList;
-    private ITextComponent header;
+    private Component header;
 
-    public DisplayNBTScreen(CompoundNBT nbt, ITextComponent titleIn) {
+    public DisplayNBTScreen(CompoundTag nbt, Component titleIn) {
         super(titleIn);
         this.lines = formatNbt(nbt, 0);
         this.nbtCompound = nbt;
@@ -36,92 +36,92 @@ public class DisplayNBTScreen extends Screen {
         int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
         int width = 100;
         int height = 20;
-        this.addButton(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, new StringTextComponent("Export to JSON"), b -> {
+        this.addRenderableWidget(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, new TextComponent("Export to JSON"), b -> {
             JsonObject json = NBTToJson.toJsonObject(this.nbtCompound);
             String message = NBTToJson.writeFile(json);
-            this.header = new StringTextComponent(message);
+            this.header = new TextComponent(message);
         }));
 
         this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, this.height - 12, 11);
-        this.children.add(this.displayList);
+        this.addWidget(displayList);
     }
 
     @Override
-    public void render(MatrixStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
         assert minecraft != null;
         this.displayList.render(matrix, mouseX, mouseY, partialTicks);
         String titleStr = this.header.getString();
         int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
-        TextRenderUtils.renderScaled(matrix, font, new StringTextComponent(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
+        TextRenderUtils.renderScaled(matrix, font, new TextComponent(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
         super.render(matrix, mouseX, mouseY, partialTicks);
     }
 
-    private static List<String> formatNbt(CompoundNBT nbt, int depth) {
+    private static List<String> formatNbt(CompoundTag nbt, int depth) {
         List<String> list = new ArrayList<>();
 
         for (String key : nbt.getAllKeys()) {
-            INBT inbt = nbt.get(key);
+            Tag inbt = nbt.get(key);
             list.addAll(formatNbt(key, inbt, depth + 1));
         }
 
         return list;
     }
 
-    private static List<String> formatNbt(String key, INBT nbt, int depth) {
+    private static List<String> formatNbt(String key, Tag nbt, int depth) {
         List<String> list = new ArrayList<>();
         String indentStr = indent(depth);
 
         //noinspection ChainOfInstanceofChecks
-        if (nbt instanceof CompoundNBT) {
-            formatCompound(key, (CompoundNBT) nbt, depth, list, indentStr);
-        } else if (nbt instanceof CollectionNBT) {
-            formatList(key, (CollectionNBT) nbt, depth, list, indentStr);
-        } else if (nbt instanceof NumberNBT) {
-            formatNumber(key, (NumberNBT) nbt, list, indentStr);
-        } else if (nbt instanceof StringNBT) {
+        if (nbt instanceof CompoundTag) {
+            formatCompound(key, (CompoundTag) nbt, depth, list, indentStr);
+        } else if (nbt instanceof CollectionTag) {
+            formatList(key, (CollectionTag) nbt, depth, list, indentStr);
+        } else if (nbt instanceof NumericTag) {
+            formatNumber(key, (NumericTag) nbt, list, indentStr);
+        } else if (nbt instanceof StringTag) {
             String value = nbt.getAsString();
-            list.add(indentStr + format(key, value, TextFormatting.GREEN));
+            list.add(indentStr + format(key, value, ChatFormatting.GREEN));
         }
 
         return list;
     }
 
-    private static void formatCompound(String key, CompoundNBT nbt, int depth, List<String> list, String indentStr) {
+    private static void formatCompound(String key, CompoundTag nbt, int depth, List<String> list, String indentStr) {
         if (nbt.isEmpty()) {
-            list.add(indentStr + format(key, "{}", TextFormatting.RESET));
+            list.add(indentStr + format(key, "{}", ChatFormatting.RESET));
         } else {
-            list.add(indentStr + format(key, "{", TextFormatting.RESET));
+            list.add(indentStr + format(key, "{", ChatFormatting.RESET));
             list.addAll(formatNbt(nbt, depth + 1));
-            list.add(indentStr + "}" + (key.isEmpty() ? "" : TextFormatting.DARK_GRAY + " #" + key));
+            list.add(indentStr + "}" + (key.isEmpty() ? "" : ChatFormatting.DARK_GRAY + " #" + key));
         }
     }
 
-    private static void formatList(String key, CollectionNBT nbt, int depth, List<String> list, String indentStr) {
+    private static void formatList(String key, CollectionTag nbt, int depth, List<String> list, String indentStr) {
         if (nbt.isEmpty()) {
-            list.add(indentStr + format(key, "[]", TextFormatting.RESET));
+            list.add(indentStr + format(key, "[]", ChatFormatting.RESET));
         } else {
-            list.add(indentStr + format(key, "[", TextFormatting.RESET));
-            for (INBT element : (CollectionNBT<?>) nbt) {
+            list.add(indentStr + format(key, "[", ChatFormatting.RESET));
+            for (Tag element : (CollectionTag<?>) nbt) {
                 list.addAll(formatNbt("", element, depth + 1));
             }
-            list.add(indentStr + "]" + (key.isEmpty() ? "" : TextFormatting.DARK_GRAY + " #" + key));
+            list.add(indentStr + "]" + (key.isEmpty() ? "" : ChatFormatting.DARK_GRAY + " #" + key));
         }
     }
 
-    private static void formatNumber(String key, NumberNBT nbt, List<String> list, String indentStr) {
+    private static void formatNumber(String key, NumericTag nbt, List<String> list, String indentStr) {
         Number value = nbt.getAsNumber();
-        String line = indentStr + format(key, value, TextFormatting.LIGHT_PURPLE);
+        String line = indentStr + format(key, value, ChatFormatting.LIGHT_PURPLE);
         if (value instanceof Integer) {
-            line += TextFormatting.GRAY + String.format(" (0x%X)", value.intValue());
+            line += ChatFormatting.GRAY + String.format(" (0x%X)", value.intValue());
         }
         list.add(line);
     }
 
-    private static String format(String key, Object value, TextFormatting valueFormat) {
+    private static String format(String key, Object value, ChatFormatting valueFormat) {
         if (key.isEmpty()) {
             return valueFormat + value.toString();
         } else {
-            return TextFormatting.GOLD + key + TextFormatting.RESET + ": " + valueFormat + value;
+            return ChatFormatting.GOLD + key + ChatFormatting.RESET + ": " + valueFormat + value;
         }
     }
 

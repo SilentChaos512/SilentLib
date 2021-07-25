@@ -5,17 +5,17 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.ICriterionInstance;
-import net.minecraft.advancements.IRequirementsStrategy;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTriggerInstance;
+import net.minecraft.advancements.RequirementsStrategy;
+import net.minecraft.advancements.critereon.EntityPredicate;
+import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
@@ -33,7 +33,7 @@ import java.util.function.Consumer;
  */
 @SuppressWarnings("WeakerAccess")
 public class ExtendedShapedRecipeBuilder {
-    private final IRecipeSerializer<?> serializer;
+    private final RecipeSerializer<?> serializer;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Item result;
     private final int count;
@@ -43,26 +43,26 @@ public class ExtendedShapedRecipeBuilder {
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    private ExtendedShapedRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
+    private ExtendedShapedRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
         this.serializer = serializer;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedShapedRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result) {
+    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result) {
         return builder(serializer, result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
+    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result, int count) {
         return new ExtendedShapedRecipeBuilder(serializer, result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(IItemProvider result) {
+    public static ExtendedShapedRecipeBuilder vanillaBuilder(ItemLike result) {
         return vanillaBuilder(result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(IItemProvider result, int count) {
-        return new ExtendedShapedRecipeBuilder(IRecipeSerializer.SHAPED_RECIPE, result, count);
+    public static ExtendedShapedRecipeBuilder vanillaBuilder(ItemLike result, int count) {
+        return new ExtendedShapedRecipeBuilder(RecipeSerializer.SHAPED_RECIPE, result, count);
     }
 
     /**
@@ -87,11 +87,11 @@ public class ExtendedShapedRecipeBuilder {
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, ITag<Item> tagIn) {
+    public ExtendedShapedRecipeBuilder key(Character symbol, Tag<Item> tagIn) {
         return this.key(symbol, Ingredient.of(tagIn));
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, IItemProvider itemIn) {
+    public ExtendedShapedRecipeBuilder key(Character symbol, ItemLike itemIn) {
         return this.key(symbol, Ingredient.of(itemIn));
     }
 
@@ -115,7 +115,7 @@ public class ExtendedShapedRecipeBuilder {
         }
     }
 
-    public ExtendedShapedRecipeBuilder addCriterion(String name, ICriterionInstance criterionIn) {
+    public ExtendedShapedRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
         this.advancementBuilder.addCriterion(name, criterionIn);
         this.hasAdvancementCriterion = true;
         return this;
@@ -126,17 +126,17 @@ public class ExtendedShapedRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer) {
+    public void build(Consumer<FinishedRecipe> consumer) {
         build(consumer, NameUtils.from(this.result));
     }
 
-    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         this.validate(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
-                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY, id))
+                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY, id))
                     .rewards(AdvancementRewards.Builder.recipe(id))
-                    .requirements(IRequirementsStrategy.OR);
+                    .requirements(RequirementsStrategy.OR);
         }
         ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
         consumer.accept(new Result(id, this, advancementId));
@@ -169,7 +169,7 @@ public class ExtendedShapedRecipeBuilder {
         }
     }
 
-    public static class Result implements IFinishedRecipe {
+    public static class Result implements FinishedRecipe {
         private final ResourceLocation id;
         private final ExtendedShapedRecipeBuilder builder;
         private final ResourceLocation advancementId;
@@ -205,7 +205,7 @@ public class ExtendedShapedRecipeBuilder {
         }
 
         @Override
-        public IRecipeSerializer<?> getType() {
+        public RecipeSerializer<?> getType() {
             return builder.serializer;
         }
 

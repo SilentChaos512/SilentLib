@@ -19,11 +19,10 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.silentchaos512.lib.collection.StackList;
 import net.silentchaos512.utils.MathUtils;
 
@@ -44,7 +43,7 @@ public final class InventoryUtils {
      * @return A collection of slots to be added
      * @since 4.1.1
      */
-    public static Collection<Slot> createPlayerSlots(PlayerInventory playerInventory, int startX, int startY) {
+    public static Collection<Slot> createPlayerSlots(Inventory playerInventory, int startX, int startY) {
         Collection<Slot> list = new ArrayList<>();
         // Backpack
         for (int y = 0; y < 3; ++y) {
@@ -76,7 +75,7 @@ public final class InventoryUtils {
      * @return The first matching stack, or {@link ItemStack#EMPTY} if there is none
      * @since 3.1.0 (was in StackHelper from 3.0.6)
      */
-    public static ItemStack firstMatch(IInventory inv, Predicate<ItemStack> predicate) {
+    public static ItemStack firstMatch(Container inv, Predicate<ItemStack> predicate) {
         for (int i = 0; i < inv.getContainerSize(); ++i) {
             ItemStack stack = inv.getItem(i);
             if (!stack.isEmpty() && predicate.test(stack)) {
@@ -86,7 +85,7 @@ public final class InventoryUtils {
         return ItemStack.EMPTY;
     }
 
-    public static ItemStack mergeItem(IInventory inventory, int slotStart, int slotEndExclusive, ItemStack stack) {
+    public static ItemStack mergeItem(Container inventory, int slotStart, int slotEndExclusive, ItemStack stack) {
         if (inventory == null || stack.isEmpty()) {
             return stack;
         }
@@ -116,7 +115,7 @@ public final class InventoryUtils {
         return stack;
     }
 
-    public static Collection<ItemStack> mergeItems(IInventory inventory, int slotStart, int slotEndExclusive, Collection<ItemStack> stacks) {
+    public static Collection<ItemStack> mergeItems(Container inventory, int slotStart, int slotEndExclusive, Collection<ItemStack> stacks) {
         if (inventory == null && stacks.isEmpty()) {
             return ImmutableList.of();
         }

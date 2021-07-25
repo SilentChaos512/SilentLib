@@ -1,8 +1,8 @@
 package net.silentchaos512.lib.item;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.math.BlockRayTraceResult;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.phys.BlockHitResult;
 
 /**
  * Extension of {@link ItemUseContext} to work around the needed constructor being private. This is
@@ -11,9 +11,9 @@ import net.minecraft.util.math.BlockRayTraceResult;
  *
  * @since 4.1.0
  */
-public class FakeItemUseContext extends ItemUseContext {
-    public FakeItemUseContext(ItemUseContext original, ItemStack fakeItem) {
+public class FakeItemUseContext extends UseOnContext {
+    public FakeItemUseContext(UseOnContext original, ItemStack fakeItem) {
         super(original.getLevel(), original.getPlayer(), original.getHand(), fakeItem,
-                new BlockRayTraceResult(original.getClickLocation(), original.getClickedFace(), original.getClickedPos(), original.isInside()));
+                new BlockHitResult(original.getClickLocation(), original.getClickedFace(), original.getClickedPos(), original.isInside()));
     }
 }
