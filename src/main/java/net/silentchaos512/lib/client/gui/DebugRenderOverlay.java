@@ -18,11 +18,11 @@
 
 package net.silentchaos512.lib.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.platform.Window;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.FontRenderer;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
@@ -37,7 +37,7 @@ import java.util.List;
 /**
  * Draws text directly to the screen for debugging purposes
  */
-public abstract class DebugRenderOverlay extends AbstractGui {
+public abstract class DebugRenderOverlay extends GuiComponent {
     protected static final String SPLITTER = "=";
 
     private static final int DEFAULT_UPDATE_FREQUENCY = 10;
@@ -108,7 +108,7 @@ public abstract class DebugRenderOverlay extends AbstractGui {
     public abstract boolean isHidden();
 
     @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    protected void drawLine(MatrixStack matrix, FontRenderer font, String line, int x, int y, int color) {
+    protected void drawLine(PoseStack matrix, Font font, String line, int x, int y, int color) {
         String[] array = line.split(SPLITTER);
         if (array.length == 2) {
             font.drawShadow(matrix, array[0].trim(), x, y, color);
@@ -137,14 +137,14 @@ public abstract class DebugRenderOverlay extends AbstractGui {
         float scale = getTextScale();
         if (scale <= 0f) return;
 
-        FontRenderer font = mc.font;
-        MatrixStack matrix = event.getMatrixStack();
+        Font font = mc.font;
+        PoseStack matrix = event.getMatrixStack();
 
         matrix.pushPose();
         matrix.scale(scale, scale, 1);
 
         // Divide by text scale to correct position. But it's still a bit off?
-        MainWindow mainWindow = mc.getWindow();
+        Window mainWindow = mc.getWindow();
         int x = (int) (getAnchorPoint().getX(mainWindow.getGuiScaledWidth(), textWidth, getMarginSize()) / getTextScale());
         int y = (int) (getAnchorPoint().getY(mainWindow.getGuiScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
@@ -162,7 +162,7 @@ public abstract class DebugRenderOverlay extends AbstractGui {
             debugText = getDebugText();
 
             // Recalculate width and height
-            FontRenderer font = Minecraft.getInstance().font;
+            Font font = Minecraft.getInstance().font;
             textWidth = 0;
             textHeight = LINE_HEIGHT * debugText.size();
             for (String line : debugText) {

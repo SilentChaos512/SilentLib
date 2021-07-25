@@ -18,12 +18,12 @@
 
 package net.silentchaos512.lib.item;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.silentchaos512.lib.network.internal.LeftClickItemPacket;
@@ -43,8 +43,8 @@ public interface ILeftClickItem {
      * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
-    default ActionResult<ItemStack> onItemLeftClickSL(World world, PlayerEntity player, Hand hand) {
-        return new ActionResult<>(ActionResultType.PASS, player.getItemInHand(hand));
+    default InteractionResultHolder<ItemStack> onItemLeftClickSL(Level world, Player player, InteractionHand hand) {
+        return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
     }
 
     /**
@@ -56,7 +56,7 @@ public interface ILeftClickItem {
      * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
-    default ActionResult<ItemStack> onItemLeftClickBlockSL(World world, PlayerEntity player, Hand hand) {
+    default InteractionResultHolder<ItemStack> onItemLeftClickBlockSL(Level world, Player player, InteractionHand hand) {
         return onItemLeftClickSL(world, player, hand);
     }
 
@@ -76,9 +76,9 @@ public interface ILeftClickItem {
             ItemStack stack = event.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
                 // Client-side call
-                ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getWorld(), event.getPlayer(), event.getHand());
+                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getWorld(), event.getPlayer(), event.getHand());
                 // Server-side call
-                if (result.getResult() == ActionResultType.SUCCESS) {
+                if (result.getResult() == InteractionResult.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.BLOCK, event.getHand()));
                 }
             }
@@ -88,9 +88,9 @@ public interface ILeftClickItem {
             ItemStack stack = event.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
                 // Client-side call
-                ActionResult<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getWorld(), event.getPlayer(), event.getHand());
+                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getWorld(), event.getPlayer(), event.getHand());
                 // Server-side call
-                if (result.getResult() == ActionResultType.SUCCESS) {
+                if (result.getResult() == InteractionResult.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.EMPTY, event.getHand()));
                 }
             }

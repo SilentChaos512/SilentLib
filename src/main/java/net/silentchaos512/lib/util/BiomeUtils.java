@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.util;
 
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;

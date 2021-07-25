@@ -1,28 +1,28 @@
 package net.silentchaos512.lib.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 @Deprecated
-public class ContainerSL extends Container {
-    protected final IInventory tileInventory;
+public class ContainerSL extends AbstractContainerMenu {
+    protected final Container tileInventory;
 
-    public ContainerSL(ContainerType<?> type, PlayerInventory playerInventory, IInventory tileInventory) {
+    public ContainerSL(MenuType<?> type, Inventory playerInventory, Container tileInventory) {
         super(type, 0);
         this.tileInventory = tileInventory;
         addTileInventorySlots(tileInventory);
         addPlayerInventorySlots(playerInventory);
     }
 
-    protected void addTileInventorySlots(IInventory inv) {
+    protected void addTileInventorySlots(Container inv) {
     }
 
-    protected void addPlayerInventorySlots(PlayerInventory inv) {
+    protected void addPlayerInventorySlots(Inventory inv) {
         int i;
         for (i = 0; i < 3; ++i) {
             for (int j = 0; j < 9; ++j) {
@@ -36,12 +36,12 @@ public class ContainerSL extends Container {
     }
 
     @Override
-    public boolean stillValid(PlayerEntity player) {
+    public boolean stillValid(Player player) {
         return tileInventory.stillValid(player);
     }
 
     @Deprecated
-    public static void onTakeFromSlot(Slot slot, PlayerEntity player, ItemStack stack) {
+    public static void onTakeFromSlot(Slot slot, Player player, ItemStack stack) {
         slot.onTake(player, stack);
     }
 }

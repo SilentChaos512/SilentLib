@@ -2,6 +2,6 @@
 @MethodsReturnNonnullByDefault
 package net.silentchaos512.lib.world.feature;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

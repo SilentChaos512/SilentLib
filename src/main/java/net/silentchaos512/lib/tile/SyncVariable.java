@@ -1,8 +1,6 @@
 package net.silentchaos512.lib.tile;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
 import net.silentchaos512.lib.util.NBTSerializer;
 
 import java.lang.annotation.Annotation;
@@ -76,15 +74,15 @@ public @interface SyncVariable {
 
         private Helper() {}
 
-        public static <T> void registerSerializer(Class<T> clazz, Function<CompoundNBT, T> reader, BiConsumer<CompoundNBT, T> writer) {
+        public static <T> void registerSerializer(Class<T> clazz, Function<CompoundTag, T> reader, BiConsumer<CompoundTag, T> writer) {
             SERIALIZERS.put(clazz, new NBTSerializer<T>() {
                 @Override
-                public T read(CompoundNBT tags) {
+                public T read(CompoundTag tags) {
                     return reader.apply(tags);
                 }
 
                 @Override
-                public void write(CompoundNBT tags, T obj) {
+                public void write(CompoundTag tags, T obj) {
                     writer.accept(tags, obj);
                 }
             });
@@ -97,7 +95,7 @@ public @interface SyncVariable {
          * @param obj  The object with SyncVariable fields.
          * @param tags The NBT to read values from.
          */
-        public static void readSyncVars(Object obj, CompoundNBT tags) {
+        public static void readSyncVars(Object obj, CompoundTag tags) {
             // Try to read from NBT for fields marked with SyncVariable.
             for (Field field : obj.getClass().getDeclaredFields()) {
                 for (Annotation annotation : field.getDeclaredAnnotations()) {
@@ -129,7 +127,7 @@ public @interface SyncVariable {
                                 field.setByte(obj, tags.getByte(name));
                             else if (SERIALIZERS.containsKey(field.getType())) {
                                 NBTSerializer serializer = SERIALIZERS.get(field.getType());
-                                CompoundNBT compound = tags.getCompound(name);
+                                CompoundTag compound = tags.getCompound(name);
                                 field.set(obj, serializer.read(compound));
                             } else
                                 throw new IllegalArgumentException("Don't know how to read type " + field.getType() + " from NBT!");
@@ -151,7 +149,7 @@ public @interface SyncVariable {
          * @return The modified tags.
          */
         @SuppressWarnings("unchecked") // from serializer
-        public static CompoundNBT writeSyncVars(Object obj, CompoundNBT tags, Type syncType) {
+        public static CompoundTag writeSyncVars(Object obj, CompoundTag tags, Type syncType) {
 
             // Try to write to NBT for fields marked with SyncVariable.
             for (Field field : obj.getClass().getDeclaredFields()) {
@@ -186,7 +184,7 @@ public @interface SyncVariable {
                                 else if (field.getType() == byte.class)
                                     tags.putByte(name, field.getByte(obj));
                                 else if (SERIALIZERS.containsKey(field.getType())) {
-                                    CompoundNBT compound = new CompoundNBT();
+                                    CompoundTag compound = new CompoundTag();
                                     NBTSerializer serializer = SERIALIZERS.get(field.getType());
                                     serializer.write(compound, field.get(obj));
                                     tags.put(name, compound);

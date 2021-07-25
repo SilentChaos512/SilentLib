@@ -1,22 +1,21 @@
 buildscript {
     repositories {
         maven { url = 'https://files.minecraftforge.net/maven' }
-        jcenter()
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
     }
 }
 
 plugins {
-    id 'maven'
     id 'maven-publish'
     id "com.matthewprenger.cursegradle" version "1.4.0"
 }
 
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'idea'
+apply from: 'https://raw.githubusercontent.com/SizableShrimp/Forge-Class-Remapper/main/classremapper.gradle'
 
 repositories {
     flatDir {
@@ -24,7 +23,6 @@ repositories {
         dirs "repo"
     }
     mavenLocal()
-    jcenter()
 }
 
 tasks.withType(JavaCompile) {
@@ -42,10 +40,10 @@ System.out.println(versionInfo)
 def version_short = "${versionInfo['version_short']}"
 version = "${versionInfo['version']}"
 
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+java.toolchain.languageVersion = JavaLanguageVersion.of(16)
 
 minecraft {
-    mappings channel: project.mappings_channel.toString(), version: project.mappings_version.toString()
+    mappings channel: 'official', version: project.mc_version.toString()
 
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
@@ -101,17 +99,16 @@ repositories {
     }
 
     mavenLocal()
-    jcenter()
     maven {
         // location of the maven that hosts JEI files
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
-    maven {
-        // location of a maven mirror for JEI files, as a fallback
-        name = "ModMaven"
-        url = "https://modmaven.k-4u.nl"
-    }
+//    maven {
+//        // location of a maven mirror for JEI files, as a fallback
+//        name = "ModMaven"
+//        url = "https://modmaven.k-4u.nl"
+//    }
     maven {
         url = uri("https://maven.pkg.github.com/silentchaos512/silent-utils")
         credentials gpr_creds
@@ -135,7 +132,7 @@ dependencies {
         exclude module: 'toml'
     }
 
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.1.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.1.0'

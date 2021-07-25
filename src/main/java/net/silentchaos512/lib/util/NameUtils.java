@@ -1,9 +1,9 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromItem(IItemProvider item) {
+    public static ResourceLocation fromItem(ItemLike item) {
         Preconditions.checkNotNull(item.asItem(), "asItem() is null, has object not been fully constructed?");
         return checkNotNull(item.asItem().getRegistryName());
     }

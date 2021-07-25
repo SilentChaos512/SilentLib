@@ -1,10 +1,10 @@
 package net.silentchaos512.lib.network.internal;
 
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.utils.EnumUtils;
@@ -13,14 +13,14 @@ import java.util.function.Supplier;
 
 public class LeftClickItemPacket {
     private ILeftClickItem.ClickType clickType;
-    private Hand hand;
+    private InteractionHand hand;
 
     public LeftClickItemPacket() {
         this.clickType = ILeftClickItem.ClickType.EMPTY;
-        this.hand = Hand.MAIN_HAND;
+        this.hand = InteractionHand.MAIN_HAND;
     }
 
-    public LeftClickItemPacket(ILeftClickItem.ClickType clickType, Hand hand) {
+    public LeftClickItemPacket(ILeftClickItem.ClickType clickType, InteractionHand hand) {
         this.clickType = clickType;
         this.hand = hand;
     }
@@ -29,24 +29,24 @@ public class LeftClickItemPacket {
         return clickType;
     }
 
-    public Hand getHand() {
+    public InteractionHand getHand() {
         return hand;
     }
 
-    public static LeftClickItemPacket fromBytes(PacketBuffer buffer) {
+    public static LeftClickItemPacket fromBytes(FriendlyByteBuf buffer) {
         LeftClickItemPacket packet = new LeftClickItemPacket();
         packet.clickType = EnumUtils.byOrdinal(buffer.readByte(), ILeftClickItem.ClickType.EMPTY);
-        packet.hand = buffer.readBoolean() ? Hand.MAIN_HAND : Hand.OFF_HAND;
+        packet.hand = buffer.readBoolean() ? InteractionHand.MAIN_HAND : InteractionHand.OFF_HAND;
         return packet;
     }
 
-    public void toBytes(PacketBuffer buffer) {
+    public void toBytes(FriendlyByteBuf buffer) {
         buffer.writeByte(this.clickType.ordinal());
-        buffer.writeBoolean(this.hand == Hand.MAIN_HAND);
+        buffer.writeBoolean(this.hand == InteractionHand.MAIN_HAND);
     }
 
     public static void handle(LeftClickItemPacket packet, Supplier<NetworkEvent.Context> context) {
-        ServerPlayerEntity player = context.get().getSender();
+        ServerPlayer player = context.get().getSender();
 
         if (player != null) {
             ItemStack heldItem = player.getItemInHand(packet.hand);

@@ -1,16 +1,17 @@
 package net.silentchaos512.lib;
 
 import com.mojang.brigadier.CommandDispatcher;
-import net.minecraft.command.CommandSource;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.tags.TagRegistryManager;
+import net.minecraft.tags.StaticTags;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.command.internal.TeleportCommand;
@@ -26,7 +27,7 @@ public class SideProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcEnqueue);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(IRecipeSerializer.class, this::registerRecipeSerializers);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
 
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
@@ -48,12 +49,12 @@ public class SideProxy {
     private void imcProcess(InterModProcessEvent event) {}
 
     private void onRegisterCommands(RegisterCommandsEvent event) {
-        CommandDispatcher<CommandSource> dispatcher = event.getDispatcher();
+        CommandDispatcher<CommandSourceStack> dispatcher = event.getDispatcher();
         DisplayNBTCommand.register(dispatcher);
         TeleportCommand.register(dispatcher);
     }
 
-    private void registerRecipeSerializers(RegistryEvent.Register<IRecipeSerializer<?>> event) {
+    private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
         event.getRegistry().register(DamageItemRecipe.SERIALIZER.setRegistryName(SilentLib.getId("damage_item")));
     }
 
@@ -72,7 +73,7 @@ public class SideProxy {
 
         @Override
         public void tryFetchTagsHack() {
-            TagRegistryManager.resetAllToEmpty();
+            StaticTags.resetAllToEmpty();
         }
     }
 
