@@ -3,28 +3,28 @@ package net.silentchaos512.lib.command.internal;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
-import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.Entity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.NetworkManager;
+import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.silentchaos512.lib.network.internal.DisplayNBTPacket;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 
 import javax.annotation.Nullable;
 
 public class DisplayNBTCommand {
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("sl_nbt")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.literal("block")
@@ -49,36 +49,36 @@ public class DisplayNBTCommand {
         );
     }
 
-    private static int runForBlock(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        BlockPos pos = BlockPosArgument.getLoadedBlockPos(context, "pos");
-        ServerLevel world = context.getSource().getLevel();
-        BlockEntity tileEntity = world.getBlockEntity(pos);
-        Component title = new TranslatableComponent(world.getBlockState(pos).getBlock().getDescriptionId());
+    private static int runForBlock(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        BlockPos pos = BlockPosArgument.getOrLoadBlockPos(context, "pos");
+        ServerWorld world = context.getSource().getLevel();
+        TileEntity tileEntity = world.getBlockEntity(pos);
+        ITextComponent title = new TranslationTextComponent(world.getBlockState(pos).getBlock().getDescriptionId());
 
         if (tileEntity != null) {
-            sendPacket(context, tileEntity.save(new CompoundTag()), title);
+            sendPacket(context, tileEntity.save(new CompoundNBT()), title);
             return 1;
         }
 
-        context.getSource().sendFailure(new TranslatableComponent("command.silentlib.nbt.notBlockEntity", title));
+        context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.notBlockEntity", title));
         return 0;
     }
 
-    private static int runForEntity(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int runForEntity(CommandContext<CommandSource> context) throws CommandSyntaxException {
         Entity entity = EntityArgument.getEntity(context, "target");
-        CompoundTag nbt = entity.saveWithoutId(new CompoundTag());
-        Component title = entity.getDisplayName();
+        CompoundNBT nbt = entity.saveWithoutId(new CompoundNBT());
+        ITextComponent title = entity.getDisplayName();
         sendPacket(context, nbt, title);
         return 1;
     }
 
-    private static int runForItem(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
+    private static int runForItem(CommandContext<CommandSource> context) throws CommandSyntaxException {
         ItemStack stack = context.getSource().getPlayerOrException().getMainHandItem();
         if (stack.isEmpty()) {
-            context.getSource().sendFailure(new TranslatableComponent("command.silentlib.nbt.noItemInHand"));
+            context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.noItemInHand"));
             return 0;
         } else if (!stack.hasTag()) {
-            context.getSource().sendFailure(new TranslatableComponent("command.silentlib.nbt.noItemTag", stack.getHoverName()));
+            context.getSource().sendFailure(new TranslationTextComponent("command.silentlib.nbt.noItemTag", stack.getHoverName()));
             return 0;
         }
 
@@ -86,14 +86,14 @@ public class DisplayNBTCommand {
         return 1;
     }
 
-    private static void sendPacket(CommandContext<CommandSourceStack> context, CompoundTag nbt, Component title) throws CommandSyntaxException {
+    private static void sendPacket(CommandContext<CommandSource> context, CompoundNBT nbt, ITextComponent title) throws CommandSyntaxException {
         DisplayNBTPacket msg = new DisplayNBTPacket(nbt, textOfNullable(title));
-        Connection netManager = context.getSource().getPlayerOrException().connection.connection;
+        NetworkManager netManager = context.getSource().getPlayerOrException().connection.connection;
         SilentLibNetwork.channel.sendTo(msg, netManager, NetworkDirection.PLAY_TO_CLIENT);
     }
 
-    private static Component textOfNullable(@Nullable Component text) {
+    private static ITextComponent textOfNullable(@Nullable ITextComponent text) {
         // Just in case a mod does something stupid
-        return text == null ? new TextComponent("null") : text;
+        return text == null ? new StringTextComponent("null") : text;
     }
 }

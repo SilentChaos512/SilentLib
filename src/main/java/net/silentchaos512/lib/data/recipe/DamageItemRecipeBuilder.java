@@ -1,30 +1,30 @@
 package net.silentchaos512.lib.data.recipe;
 
 import com.google.gson.JsonObject;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.util.IItemProvider;
 import net.silentchaos512.lib.crafting.recipe.DamageItemRecipe;
 
 public class DamageItemRecipeBuilder extends ExtendedShapelessRecipeBuilder {
     protected int damage = 1;
 
-    protected DamageItemRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
+    protected DamageItemRecipeBuilder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
         super(serializer, result, count);
     }
 
-    public static DamageItemRecipeBuilder builder(ItemLike result) {
+    public static DamageItemRecipeBuilder builder(IItemProvider result) {
         return builder(result, 1);
     }
 
-    public static DamageItemRecipeBuilder builder(ItemLike result, int count) {
+    public static DamageItemRecipeBuilder builder(IItemProvider result, int count) {
         return builder(DamageItemRecipe.SERIALIZER, result, count);
     }
 
-    public static DamageItemRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result) {
+    public static DamageItemRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result) {
         return builder(serializer, result, 1);
     }
 
-    public static DamageItemRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result, int count) {
+    public static DamageItemRecipeBuilder builder(IRecipeSerializer<?> serializer, IItemProvider result, int count) {
         return new DamageItemRecipeBuilder(serializer, result, count);
     }
 

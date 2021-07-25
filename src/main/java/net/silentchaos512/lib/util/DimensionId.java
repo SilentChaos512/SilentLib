@@ -1,14 +1,14 @@
 package net.silentchaos512.lib.util;
 
-import net.minecraft.core.Registry;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.PacketBuffer;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.Level;
+import net.minecraft.util.RegistryKey;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.registry.Registry;
+import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.fml.server.ServerLifecycleHooks;
 
 import java.util.Objects;
 
@@ -18,11 +18,11 @@ import java.util.Objects;
  * https://github.com/McJtyMods/McJtyLib/blob/1.16/src/main/java/mcjty/lib/varia/DimensionId.java
  */
 public class DimensionId {
-    private final ResourceKey<Level> id;
+    private final RegistryKey<World> id;
 
-    private final static Lazy<DimensionId> OVERWORLD = Lazy.of(() -> new DimensionId(Level.OVERWORLD));
+    private final static Lazy<DimensionId> OVERWORLD = Lazy.of(() -> new DimensionId(World.OVERWORLD));
 
-    private DimensionId(ResourceKey<Level> id) {
+    private DimensionId(RegistryKey<World> id) {
         this.id = id;
     }
 
@@ -30,25 +30,25 @@ public class DimensionId {
         return OVERWORLD.get();
     }
 
-    public static DimensionId fromId(ResourceKey<Level> id) {
+    public static DimensionId fromId(RegistryKey<World> id) {
         return new DimensionId(id);
     }
 
-    public static DimensionId fromPacket(FriendlyByteBuf buf) {
-        ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
+    public static DimensionId fromPacket(PacketBuffer buf) {
+        RegistryKey<World> key = RegistryKey.create(Registry.DIMENSION_REGISTRY, buf.readResourceLocation());
         return new DimensionId(key);
     }
 
-    public static DimensionId fromWorld(Level world) {
+    public static DimensionId fromWorld(World world) {
         return new DimensionId(world.dimension());
     }
 
     public static DimensionId fromResourceLocation(ResourceLocation location) {
-        ResourceKey<Level> key = ResourceKey.create(Registry.DIMENSION_REGISTRY, location);
+        RegistryKey<World> key = RegistryKey.create(Registry.DIMENSION_REGISTRY, location);
         return new DimensionId(key);
     }
 
-    public ResourceKey<Level> getId() {
+    public RegistryKey<World> getId() {
         return id;
     }
 
@@ -60,36 +60,36 @@ public class DimensionId {
     public String getName() { return id.location().getPath(); }
 
     public boolean isOverworld() {
-        return id.equals(Level.OVERWORLD);
+        return id.equals(World.OVERWORLD);
     }
 
-    public void toBytes(FriendlyByteBuf buf) {
+    public void toBytes(PacketBuffer buf) {
         // @todo use numerical ID
         buf.writeResourceLocation(id.location());
     }
 
-    public ServerLevel loadWorld() {
+    public ServerWorld loadWorld() {
         // Worlds in 1.16 are always loaded
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         return server.getLevel(id);
     }
 
     // Do not load the world if it is not there
-    public ServerLevel getWorld() {
+    public ServerWorld getWorld() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
         return server.getLevel(id);
     }
 
-    public ServerLevel loadWorld(Level otherWorld) {
+    public ServerWorld loadWorld(World otherWorld) {
         // Worlds in 1.16 are always loaded
         return otherWorld.getServer().getLevel(id);
     }
 
-    public static boolean sameDimension(Level world1, Level world2) {
+    public static boolean sameDimension(World world1, World world2) {
         return world1.dimension().equals(world2.dimension());
     }
 
-    public boolean sameDimension(Level world) {
+    public boolean sameDimension(World world) {
         return id.equals(world.dimension());
     }
 

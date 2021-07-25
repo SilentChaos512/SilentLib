@@ -18,10 +18,10 @@
 
 package net.silentchaos512.lib.util;
 
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.ai.attributes.Attribute;
+import net.minecraft.entity.ai.attributes.AttributeModifier;
+import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
 import net.silentchaos512.utils.MathUtils;
 
 import javax.annotation.Nullable;
@@ -37,11 +37,11 @@ public final class AttributeHelper {
     private AttributeHelper() {throw new IllegalAccessError("Utility class");}
 
     public static void apply(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
-        AttributeInstance instance = entity.getAttribute(attribute);
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
         apply(instance, modifier);
     }
 
-    public static void apply(@Nullable AttributeInstance attributeInstance, AttributeModifier modifier) {
+    public static void apply(@Nullable ModifiableAttributeInstance attributeInstance, AttributeModifier modifier) {
         if (attributeInstance == null) return;
         AttributeModifier currentMod = attributeInstance.getModifier(modifier.getId());
 
@@ -54,11 +54,11 @@ public final class AttributeHelper {
     }
 
     public static void remove(LivingEntity entity, Attribute attribute, UUID uuid) {
-        AttributeInstance instance = entity.getAttribute(attribute);
+        ModifiableAttributeInstance instance = entity.getAttribute(attribute);
         remove(instance, uuid);
     }
 
-    public static void remove(@Nullable AttributeInstance attributeInstance, UUID uuid) {
+    public static void remove(@Nullable ModifiableAttributeInstance attributeInstance, UUID uuid) {
         if (attributeInstance == null) return;
         attributeInstance.removeModifier(uuid);
     }

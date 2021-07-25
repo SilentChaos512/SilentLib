@@ -3,22 +3,22 @@ package net.silentchaos512.lib.command.internal;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.commands.arguments.DimensionArgument;
-import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
-import net.minecraft.core.BlockPos;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.command.CommandSource;
+import net.minecraft.command.Commands;
+import net.minecraft.command.arguments.BlockPosArgument;
+import net.minecraft.command.arguments.DimensionArgument;
+import net.minecraft.command.arguments.EntityArgument;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.server.ServerWorld;
 import net.silentchaos512.lib.util.DimensionId;
 import net.silentchaos512.lib.util.TeleportUtils;
 
 public final class TeleportCommand {
     private TeleportCommand() {}
 
-    public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public static void register(CommandDispatcher<CommandSource> dispatcher) {
         dispatcher.register(Commands.literal("sl_tp")
                 .requires(source -> source.hasPermission(2))
                 .then(Commands.argument("entity", EntityArgument.entities())
@@ -31,13 +31,13 @@ public final class TeleportCommand {
         );
     }
 
-    private static int run(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        BlockPos target = BlockPosArgument.getLoadedBlockPos(context, "pos");
-        ServerLevel world = DimensionArgument.getDimension(context, "dimension");
+    private static int run(CommandContext<CommandSource> context) throws CommandSyntaxException {
+        BlockPos target = BlockPosArgument.getOrLoadBlockPos(context, "pos");
+        ServerWorld world = DimensionArgument.getDimension(context, "dimension");
 
         for (Entity entity : EntityArgument.getEntities(context, "entity")) {
-            if (entity instanceof Player)
-                TeleportUtils.teleport((Player) entity, DimensionId.fromWorld(world), target.getX(), target.getY(), target.getZ(), null);
+            if (entity instanceof PlayerEntity)
+                TeleportUtils.teleport((PlayerEntity) entity, DimensionId.fromWorld(world), target.getX(), target.getY(), target.getZ(), null);
             TeleportUtils.teleportEntity(entity, world, target.getX(), target.getY(), target.getZ(), null);
         }
 

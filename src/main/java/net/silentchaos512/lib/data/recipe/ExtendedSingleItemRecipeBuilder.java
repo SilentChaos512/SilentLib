@@ -3,16 +3,16 @@ package net.silentchaos512.lib.data.recipe;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
-import net.minecraft.advancements.CriterionTriggerInstance;
-import net.minecraft.advancements.RequirementsStrategy;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.level.ItemLike;
+import net.minecraft.advancements.ICriterionInstance;
+import net.minecraft.advancements.IRequirementsStrategy;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
+import net.minecraft.data.IFinishedRecipe;
+import net.minecraft.item.Item;
+import net.minecraft.item.crafting.IRecipeSerializer;
+import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.IItemProvider;
+import net.minecraft.util.ResourceLocation;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.function.Consumer;
 
 public class ExtendedSingleItemRecipeBuilder {
-    private final RecipeSerializer<?> serializer;
+    private final IRecipeSerializer<?> serializer;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Ingredient ingredients;
     private final Item result;
@@ -30,27 +30,27 @@ public class ExtendedSingleItemRecipeBuilder {
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    protected ExtendedSingleItemRecipeBuilder(RecipeSerializer<?> serializer, Ingredient ingredients, ItemLike result, int count) {
+    protected ExtendedSingleItemRecipeBuilder(IRecipeSerializer<?> serializer, Ingredient ingredients, IItemProvider result, int count) {
         this.serializer = serializer;
         this.ingredients = ingredients;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, Ingredient ingredient, ItemLike result) {
+    public static ExtendedSingleItemRecipeBuilder builder(IRecipeSerializer<?> serializer, Ingredient ingredient, IItemProvider result) {
         return builder(serializer, ingredient, result, 1);
     }
 
-    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, Ingredient ingredient, ItemLike result, int count) {
+    public static ExtendedSingleItemRecipeBuilder builder(IRecipeSerializer<?> serializer, Ingredient ingredient, IItemProvider result, int count) {
         return new ExtendedSingleItemRecipeBuilder(serializer, ingredient, result, count);
     }
 
-    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, ItemLike result) {
+    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, IItemProvider result) {
         return stonecuttingBuilder(ingredient, result, 1);
     }
 
-    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, ItemLike result, int count) {
-        return new ExtendedSingleItemRecipeBuilder(RecipeSerializer.STONECUTTER, ingredient, result, count);
+    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, IItemProvider result, int count) {
+        return new ExtendedSingleItemRecipeBuilder(IRecipeSerializer.STONECUTTER, ingredient, result, count);
     }
 
     /**
@@ -75,7 +75,7 @@ public class ExtendedSingleItemRecipeBuilder {
         return this;
     }
 
-    public ExtendedSingleItemRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterion) {
+    public ExtendedSingleItemRecipeBuilder addCriterion(String name, ICriterionInstance criterion) {
         this.advancementBuilder.addCriterion(name, criterion);
         this.hasAdvancementCriterion = true;
         return this;
@@ -86,24 +86,24 @@ public class ExtendedSingleItemRecipeBuilder {
         return this;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
+    public void build(Consumer<IFinishedRecipe> consumer) {
         ResourceLocation itemId = NameUtils.from(this.result);
         ResourceLocation serializerId = NameUtils.from(this.serializer);
         build(consumer, new ResourceLocation(itemId.getNamespace(), serializerId.getPath() + "/" + itemId.getPath()));
     }
 
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void build(Consumer<IFinishedRecipe> consumer, ResourceLocation id) {
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
-                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY, id))
+                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.Instance(EntityPredicate.AndPredicate.ANY, id))
                     .rewards(AdvancementRewards.Builder.recipe(id))
-                    .requirements(RequirementsStrategy.OR);
+                    .requirements(IRequirementsStrategy.OR);
         }
         ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
         consumer.accept(new ExtendedSingleItemRecipeBuilder.Result(id, this, advancementId));
     }
 
-    public static class Result implements FinishedRecipe {
+    public static class Result implements IFinishedRecipe {
         private final ResourceLocation id;
         private final ExtendedSingleItemRecipeBuilder builder;
         private final ResourceLocation advancementId;
@@ -128,7 +128,7 @@ public class ExtendedSingleItemRecipeBuilder {
         }
 
         @Override
-        public RecipeSerializer<?> getType() {
+        public IRecipeSerializer<?> getType() {
             return builder.serializer;
         }
 
