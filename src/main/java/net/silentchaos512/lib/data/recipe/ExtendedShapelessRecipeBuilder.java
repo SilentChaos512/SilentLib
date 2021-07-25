@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Very similar to {@link net.minecraft.data.ShapelessRecipeBuilder}, but with a couple of changes.
+ * Very similar to {@link net.minecraft.data.recipes.ShapelessRecipeBuilder}, but with a couple of changes.
  * Intended to generate {@link net.silentchaos512.lib.crafting.recipe.ExtendedShapelessRecipe}s.
  * Extra data can be quickly added to serialization by either calling {@link
  * #addExtraData(Consumer)} or extending this class and overriding {@link

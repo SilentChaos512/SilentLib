@@ -1,5 +1,8 @@
 # Changelog
 
+## [5.0.0] - 2021-07-24
+- Updated to 1.17.1 (Cyborgmas) [#31]
+
 ## [4.10.0] - 2021-07-12
 ### Changed
 - Updated source code to use official mappings. This has no impact on a normal Minecraft instance, it's only for developers and 1.17 prep.

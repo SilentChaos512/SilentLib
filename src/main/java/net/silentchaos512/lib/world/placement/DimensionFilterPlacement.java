@@ -15,8 +15,7 @@ public class DimensionFilterPlacement extends FeatureDecorator<DimensionFilterCo
 
     @Override
     public Stream<BlockPos> getPositions(DecorationContext helper, Random rand, DimensionFilterConfig config, BlockPos pos) {
-        // AT'd visibility of level
-        if (config.matches(helper.level.getLevel().dimension())) {
+        if (config.matches(helper.getLevel().getLevel().dimension())) {
             return Stream.of(pos);
         }
         return Stream.empty();
