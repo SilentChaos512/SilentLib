@@ -5,7 +5,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.silentchaos512.lib.util.TextRenderUtils;
 
 public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {

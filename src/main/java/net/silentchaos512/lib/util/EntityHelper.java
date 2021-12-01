@@ -25,7 +25,7 @@ import net.minecraft.world.level.LevelWriter;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.network.internal.SilentLibNetwork;
 import net.silentchaos512.lib.network.internal.SpawnEntityPacket;

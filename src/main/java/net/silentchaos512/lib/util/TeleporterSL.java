@@ -10,7 +10,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.ITeleporter;
-import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nullable;
 import java.util.function.Function;
@@ -60,7 +60,7 @@ public class TeleporterSL implements ITeleporter {
                 player.connection.send(new ClientboundUpdateMobEffectPacket(player.getId(), effect));
             }
 
-            BasicEventHooks.firePlayerChangedDimensionEvent(player, currentWorld.dimension(), destWorld.dimension());
+            ForgeEventFactory.firePlayerChangedDimensionEvent(player, currentWorld.dimension(), destWorld.dimension());
         } else {
             entity.moveTo(position.x, position.y, position.z, yaw, entity.getXRot());
         }
