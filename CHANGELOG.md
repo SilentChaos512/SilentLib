@@ -1,5 +1,8 @@
 # Changelog
 
+## [6.0.0] - 2021-11-30
+- Updated to 1.18 (Cyborgmas) [#33]
+
 ## [5.0.0] - 2021-07-24
 - Updated to 1.17.1 (Cyborgmas) [#31]
 
