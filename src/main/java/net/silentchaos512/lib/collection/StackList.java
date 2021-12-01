@@ -53,7 +53,7 @@ public final class StackList extends ArrayList<ItemStack> {
     /**
      * Create a StackList from the non-empty (valid) stacks in the provided inventory.
      *
-     * @param inventory The {@link IInventory}
+     * @param inventory The {@link Container}
      * @return A new list of all non-empty stacks from the inventory
      * @since 3.0.6
      */

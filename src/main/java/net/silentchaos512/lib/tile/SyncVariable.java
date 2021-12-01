@@ -1,6 +1,8 @@
 package net.silentchaos512.lib.tile;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.state.BlockState;
 import net.silentchaos512.lib.util.NBTSerializer;
 
 import java.lang.annotation.Annotation;
@@ -33,22 +35,23 @@ public @interface SyncVariable {
     String name();
 
     /**
-     * Should the variable be loaded in {@link TileEntity#load(BlockState, CompoundNBT)}?
+     * Should the variable be loaded in {@link net.minecraft.world.level.block.entity.BlockEntity#loadStatic(BlockPos,
+     * BlockState, CompoundTag)}?
      *
      * @return True if we should load on read
      */
     boolean onRead() default true;
 
     /**
-     * Should the variable be saved in {@link TileEntity#save(CompoundNBT)}?
+     * Should the variable be saved in {@link net.minecraft.world.level.block.entity.BlockEntity#save(CompoundTag)}?
      *
      * @return True if we should save on write
      */
     boolean onWrite() default true;
 
     /**
-     * Should the variable be saved in {@link TileEntity#getUpdatePacket} and {@link
-     * TileEntity#getUpdateTag}?
+     * Should the variable be saved in {@link net.minecraft.world.level.block.entity.BlockEntity#getUpdatePacket}
+     * and {@link net.minecraft.world.level.block.entity.BlockEntity#getUpdateTag}?
      *
      * @return True if we should save on sync packet
      */

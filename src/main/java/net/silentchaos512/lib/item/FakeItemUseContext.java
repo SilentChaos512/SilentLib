@@ -5,7 +5,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.phys.BlockHitResult;
 
 /**
- * Extension of {@link ItemUseContext} to work around the needed constructor being private. This is
+ * Extension of {@link UseOnContext} to work around the needed constructor being private. This is
  * useful for simulating the player using an item without needing to place the item in the player's
  * hand.
  *

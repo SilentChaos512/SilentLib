@@ -6,7 +6,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * Extension of {@link IItemProvider}, intended for block enums.
+ * Extension of {@link ItemLike}, intended for block enums.
  */
 public interface IBlockProvider extends ItemLike {
     /**

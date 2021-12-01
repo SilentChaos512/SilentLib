@@ -1,6 +1,6 @@
 modLoader="javafml"
-loaderVersion="[33,)"
-license="GNU GPL v3.0"
+loaderVersion="[37,)"
+license="MIT"
 issueTrackerURL="https://github.com/SilentChaos512/SilentLib"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/silent-lib"
 #logoFile="examplemod.png"
@@ -19,12 +19,12 @@ authors="SilentChaos512"
 [[dependencies.silentlib]]
     modId="forge"
     mandatory=true
-    versionRange="[33,)"
+    versionRange="[37,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.silentlib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.16.2,)"
+    versionRange="[1.17.1,)"
     ordering="NONE"
     side="BOTH"

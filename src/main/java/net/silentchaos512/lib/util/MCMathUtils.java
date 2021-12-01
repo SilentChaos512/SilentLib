@@ -28,7 +28,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance between two {@link Vector3i} (such as {@link net.minecraft.util.math.BlockPos}).
+     * Distance between two {@link Vec3i} (such as {@link net.minecraft.core.BlockPos}).
      * Consider using {@link #distanceSq} when possible.
      *
      * @param from One point
@@ -43,7 +43,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance between two {@link IPosition}. Consider using {@link #distanceSq} when possible.
+     * Distance between two {@link Position}. Consider using {@link #distanceSq} when possible.
      *
      * @param from One point
      * @param to   Another point
@@ -87,7 +87,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance squared between two {@link Vector3i} (such as {@link net.minecraft.util.math.BlockPos}).
+     * Distance squared between two {@link Vec3i} (such as {@link net.minecraft.core.BlockPos}).
      * Use instead of {@link #distance} when possible.
      *
      * @param from One point
@@ -102,7 +102,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance squared between two {@link IPosition}. Use instead of {@link #distance} when
+     * Distance squared between two {@link Position}. Use instead of {@link #distance} when
      * possible.
      *
      * @param from One point
@@ -145,7 +145,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance between two {@link Vector3i} (such as {@link net.minecraft.util.math.BlockPos}), but
+     * Distance between two {@link Vec3i} (such as {@link net.minecraft.core.BlockPos}), but
      * ignores the Y-coordinate. Consider using {@link #distanceHorizontalSq} when possible.
      *
      * @param from One point
@@ -159,7 +159,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance between two {@link IPosition}, but ignores the Y-coordinate. Consider using {@link
+     * Distance between two {@link Position}, but ignores the Y-coordinate. Consider using {@link
      * #distanceHorizontalSq} when possible.
      *
      * @param from One point
@@ -199,7 +199,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance squared between two {@link Vector3i} (such as {@link net.minecraft.util.math.BlockPos}),
+     * Distance squared between two {@link Vec3i} (such as {@link net.minecraft.core.BlockPos}),
      * but ignores the Y-coordinate. Use instead of {@link #distanceHorizontal} when possible.
      *
      * @param from One point
@@ -213,7 +213,7 @@ public final class MCMathUtils {
     }
 
     /**
-     * Distance squared between two {@link IPosition}, but ignores the Y-coordinate. Use instead of
+     * Distance squared between two {@link Position}, but ignores the Y-coordinate. Use instead of
      * {@link #distanceHorizontal} when possible.
      *
      * @param from One point

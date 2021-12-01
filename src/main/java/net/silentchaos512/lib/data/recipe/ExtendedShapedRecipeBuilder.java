@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.function.Consumer;
 
 /**
- * Very similar to {@link net.minecraft.data.ShapedRecipeBuilder}, but with a couple of changes.
+ * Very similar to {@link net.minecraft.data.recipes.ShapedRecipeBuilder}, but with a couple of changes.
  * Intended to generate {@link net.silentchaos512.lib.crafting.recipe.ExtendedShapedRecipe}s. Extra
  * data can be quickly added to serialization by either calling {@link #addExtraData(Consumer)} or
  * extending this class and overriding {@link #serializeExtra(JsonObject)}.

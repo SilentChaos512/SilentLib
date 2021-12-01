@@ -26,7 +26,7 @@ public final class BlockUtils {
      * should not be called in release builds, as missing loot tables are a development error.
      *
      * @param modId The mod ID
-     * @param world World reference (needed to get {@link LootTableManager})
+     * @param world World reference (needed to get {@link LootTables})
      * @return A list of missing loot tables, or an empty collection if there are none
      * @since 4.5.0
      */
@@ -51,10 +51,10 @@ public final class BlockUtils {
      * be displayed in development builds.
      *
      * @param modId  The mod ID
-     * @param world  World reference (needed to get {@link LootTableManager})
+     * @param world  World reference (needed to get {@link LootTables})
      * @param logger If not null, separate errors will be logged for missing loot tables. Does not
      *               affect the return value.
-     * @return An {@link ITextComponent} if there are missing block loot tables, or null if none are
+     * @return An {@link Component} if there are missing block loot tables, or null if none are
      * missing.
      * @since 4.5.0
      */

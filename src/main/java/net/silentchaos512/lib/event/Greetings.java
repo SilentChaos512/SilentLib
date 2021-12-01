@@ -48,7 +48,7 @@ public final class Greetings {
      * Add a message to display to the player on login. If the function returns {@code null}, no
      * message is displayed. Consider displaying your message only once per session or per day.
      *
-     * @param message A function to create the message. Using {@link net.minecraft.util.text.TranslationTextComponent}
+     * @param message A function to create the message. Using {@link net.minecraft.network.chat.TranslatableComponent}
      *                may be ideal.
      * @since 3.0.6
      */

@@ -35,7 +35,7 @@ public final class NameUtils {
      *
      * @param path The path (must be /[a-z0-9/._-]+/)
      * @return A new ResourceLocation
-     * @throws net.minecraft.util.ResourceLocationException if path is invalid
+     * @throws net.minecraft.ResourceLocationException if path is invalid
      */
     public static ResourceLocation forgeId(String path) {
         return new ResourceLocation("forge", path);
