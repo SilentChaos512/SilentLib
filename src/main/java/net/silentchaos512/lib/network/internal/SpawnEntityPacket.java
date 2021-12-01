@@ -8,16 +8,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
-import net.minecraftforge.fmllegacy.common.registry.IEntityAdditionalSpawnData;
-import net.minecraftforge.fmllegacy.network.NetworkEvent;
+import net.minecraftforge.common.util.LogicalSidedProvider;
+import net.minecraftforge.entity.IEntityAdditionalSpawnData;
+import net.minecraftforge.network.NetworkEvent;
 
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Supplier;
 
 /**
- * More or less a straight copy from {@link net.minecraftforge.fmllegacy.network.FMLPlayMessages.SpawnEntity}.
+ * More or less a straight copy from {@link net.minecraftforge.network.PlayMessages.SpawnEntity}.
  */
 public class SpawnEntityPacket {
     private final Entity entity;

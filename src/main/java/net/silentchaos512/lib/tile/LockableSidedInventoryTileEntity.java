@@ -100,9 +100,12 @@ public abstract class LockableSidedInventoryTileEntity extends BaseContainerBloc
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        CompoundTag tags = getUpdateTag();
-        ContainerHelper.saveAllItems(tags, items);
-        return new ClientboundBlockEntityDataPacket(worldPosition, 1, tags);
+        return ClientboundBlockEntityDataPacket.create(this, (be) ->
+        {
+            CompoundTag tags = getUpdateTag();
+            ContainerHelper.saveAllItems(tags, items);
+            return tags;
+        });
     }
 
     @Override

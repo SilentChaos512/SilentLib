@@ -1,8 +1,8 @@
 package net.silentchaos512.lib.registry;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
 import java.util.Optional;
