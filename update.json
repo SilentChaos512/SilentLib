@@ -1,6 +1,6 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/silent-lib",
-    "1.18": {
+    "1.18.1": {
         "6.0.0": "https://github.com/SilentChaos512/SilentLib/blob/1.18.x/CHANGELOG.md"
     },
     "promos": {

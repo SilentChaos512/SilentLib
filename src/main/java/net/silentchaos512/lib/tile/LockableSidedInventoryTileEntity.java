@@ -92,10 +92,9 @@ public abstract class LockableSidedInventoryTileEntity extends BaseContainerBloc
     }
 
     @Override
-    public CompoundTag save(CompoundTag tags) {
-        super.save(tags);
+    public void saveAdditional(CompoundTag tags) {
+        super.saveAdditional(tags);
         ContainerHelper.saveAllItems(tags, items);
-        return tags;
     }
 
     @Override

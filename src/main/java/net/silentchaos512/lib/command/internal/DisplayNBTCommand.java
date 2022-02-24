@@ -56,7 +56,7 @@ public class DisplayNBTCommand {
         Component title = new TranslatableComponent(world.getBlockState(pos).getBlock().getDescriptionId());
 
         if (tileEntity != null) {
-            sendPacket(context, tileEntity.save(new CompoundTag()), title);
+            sendPacket(context, tileEntity.saveWithFullMetadata(), title);
             return 1;
         }
 
