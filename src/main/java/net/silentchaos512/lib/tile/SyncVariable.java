@@ -43,7 +43,7 @@ public @interface SyncVariable {
     boolean onRead() default true;
 
     /**
-     * Should the variable be saved in {@link net.minecraft.world.level.block.entity.BlockEntity#save(CompoundTag)}?
+     * Should the variable be saved in BlockEntity#saveAdditional?
      *
      * @return True if we should save on write
      */
@@ -107,7 +107,7 @@ public @interface SyncVariable {
 
                         try {
                             // Set fields accessible if necessary.
-                            if (!field.isAccessible())
+                            if (!field.canAccess(obj))
                                 field.setAccessible(true);
                             String name = sync.name();
 
@@ -165,7 +165,7 @@ public @interface SyncVariable {
                                 || syncType == SyncVariable.Type.PACKET && sync.onPacket()) {
                             try {
                                 // Set fields accessible if necessary.
-                                if (!field.isAccessible())
+                                if (!field.canAccess(obj))
                                     field.setAccessible(true);
                                 String name = sync.name();
 
