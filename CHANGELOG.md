@@ -1,5 +1,9 @@
 # Changelog
 
+## [6.1.0] - 2022-02-24
+### Fixed
+- Some block entities not saving their inventories [[Silent Gear #487]](https://github.com/SilentChaos512/Silent-Gear/issues/487)
+
 ## [6.0.0] - 2021-11-30
 - Updated to 1.18 (Cyborgmas) [#33]
 
