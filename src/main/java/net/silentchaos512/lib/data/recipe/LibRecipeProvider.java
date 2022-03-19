@@ -7,6 +7,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -150,7 +151,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
-    protected void smeltingAndBlastingRecipes(Consumer<FinishedRecipe> consumer, String id, Tag<Item> ingredientIn, ItemLike result, float experienceIn) {
+    protected void smeltingAndBlastingRecipes(Consumer<FinishedRecipe> consumer, String id, TagKey<Item> ingredientIn, ItemLike result, float experienceIn) {
         smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
     }
 
