@@ -3,7 +3,6 @@ package net.silentchaos512.lib;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.tags.StaticTags;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -62,19 +61,12 @@ public class SideProxy {
         CraftingHelper.register(ExclusionIngredient.Serializer.NAME, ExclusionIngredient.Serializer.INSTANCE);
     }
 
-    public void tryFetchTagsHack() {}
-
     static class Client extends SideProxy {
         Client() {
             FMLJavaModLoadingContext.get().getModEventBus().addListener(this::clientSetup);
         }
 
         private void clientSetup(FMLClientSetupEvent event) {}
-
-        @Override
-        public void tryFetchTagsHack() {
-            StaticTags.resetAllToEmpty();
-        }
     }
 
     static class Server extends SideProxy {

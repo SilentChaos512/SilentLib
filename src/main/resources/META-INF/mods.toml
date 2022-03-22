@@ -19,12 +19,12 @@ authors="SilentChaos512"
 [[dependencies.silentlib]]
     modId="forge"
     mandatory=true
-    versionRange="[39,)"
+    versionRange="[40.0.18,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.silentlib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.1,1.19)"
+    versionRange="[1.18.2,1.19)"
     ordering="NONE"
     side="BOTH"

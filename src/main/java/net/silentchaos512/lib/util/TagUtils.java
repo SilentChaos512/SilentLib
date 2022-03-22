@@ -7,7 +7,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.silentchaos512.lib.SilentLib;
 
 public final class TagUtils {
     private TagUtils() {throw new IllegalAccessError("Utility class");}
@@ -55,11 +54,6 @@ public final class TagUtils {
     }
 
     private static <T> boolean containsSafe(Tag<T> tag, T obj, boolean firstAttempt) {
-        try {
-            return tag.contains(obj);
-        } catch (IllegalStateException ex) {
-            SilentLib.PROXY.tryFetchTagsHack();
-        }
-        return firstAttempt && containsSafe(tag, obj, false);
+        return tag.getValues().contains(obj);
     }
 }

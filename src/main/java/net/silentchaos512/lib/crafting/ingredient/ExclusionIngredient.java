@@ -7,6 +7,7 @@ import com.google.gson.JsonParseException;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -33,7 +34,7 @@ public final class ExclusionIngredient extends Ingredient {
         this.exclusions.addAll(exclusions);
     }
 
-    public static ExclusionIngredient of(Tag<Item> tag, Ingredient... exclusions) {
+    public static ExclusionIngredient of(TagKey<Item> tag, Ingredient... exclusions) {
         return of(Ingredient.of(tag), exclusions);
     }
 
@@ -43,7 +44,7 @@ public final class ExclusionIngredient extends Ingredient {
         return new ExclusionIngredient(parent, list);
     }
 
-    public static ExclusionIngredient of(Tag<Item> tag, ItemLike... exclusions) {
+    public static ExclusionIngredient of(TagKey<Item> tag, ItemLike... exclusions) {
         return of(Ingredient.of(tag), exclusions);
     }
 
