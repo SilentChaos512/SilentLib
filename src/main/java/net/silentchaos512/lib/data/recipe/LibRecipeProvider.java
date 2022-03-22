@@ -3,10 +3,11 @@ package net.silentchaos512.lib.data.recipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -223,5 +224,9 @@ public abstract class LibRecipeProvider extends RecipeProvider {
                     .unlockedBy("has_item", has(item))
                     .save(consumer, modId(nuggetName));
         }
+    }
+
+    protected static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
+        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
     }
 }
