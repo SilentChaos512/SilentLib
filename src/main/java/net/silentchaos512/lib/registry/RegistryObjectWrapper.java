@@ -1,7 +1,6 @@
 package net.silentchaos512.lib.registry;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.Objects;
@@ -12,7 +11,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public class RegistryObjectWrapper<T extends IForgeRegistryEntry<? super T>> implements Supplier<T> {
+public class RegistryObjectWrapper<T> implements Supplier<T> {
     protected final RegistryObject<T> registryObject;
 
     public RegistryObjectWrapper(RegistryObject<T> registryObject) {

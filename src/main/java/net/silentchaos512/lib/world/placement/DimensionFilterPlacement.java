@@ -6,13 +6,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
 import java.util.Collection;
-import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -22,7 +22,7 @@ public class DimensionFilterPlacement extends PlacementModifier {
                     Codec.BOOL.fieldOf("is_whitelist").forGetter(f -> f.isWhitelist),
                     Codec.STRING.listOf().fieldOf("list").forGetter(f ->
                             f.levels.stream()
-                                    .map(rk -> rk.getRegistryName().toString())
+                                    .map(rk -> rk.location().toString())
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
                 Collection<ResourceKey<Level>> levels = strList.stream()
@@ -40,7 +40,7 @@ public class DimensionFilterPlacement extends PlacementModifier {
     }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext helper, Random rand, BlockPos pos) {
+    public Stream<BlockPos> getPositions(PlacementContext helper, RandomSource rand, BlockPos pos) {
         if (this.levels.contains(helper.getLevel().getLevel().dimension()) == this.isWhitelist) {
             return Stream.of(pos);
         }

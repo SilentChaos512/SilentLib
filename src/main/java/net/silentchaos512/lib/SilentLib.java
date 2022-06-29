@@ -1,6 +1,7 @@
 package net.silentchaos512.lib;
 
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModList;
@@ -18,6 +19,7 @@ public final class SilentLib {
 
     public static final Logger LOGGER = LogManager.getLogger(MOD_NAME);
     public static final Random RANDOM = new Random();
+    public static final RandomSource RANDOM_SOURCE = RandomSource.create();
 
     private static SilentLib INSTANCE;
     public static SideProxy PROXY;

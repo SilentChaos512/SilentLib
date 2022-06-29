@@ -19,12 +19,9 @@
 package net.silentchaos512.lib.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -151,8 +148,8 @@ public class LootContainerItem extends Item {
     public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn) {
         if (!flagIn.isAdvanced()) return;
 
-        Component textTableName = new TextComponent(this.getLootTable(stack).toString()).withStyle(ChatFormatting.WHITE);
-        tooltip.add(new TranslatableComponent("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));
+        Component textTableName = Component.literal(this.getLootTable(stack).toString()).withStyle(ChatFormatting.WHITE);
+        tooltip.add(Component.translatable("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));
     }
 
     @Override
@@ -183,16 +180,16 @@ public class LootContainerItem extends Item {
     }
 
     private static void listItemReceivedInChat(ServerPlayer playerMP, ItemStack stack) {
-        Component itemReceivedText = new TranslatableComponent(
+        Component itemReceivedText = Component.translatable(
                 "item.silentlib.lootContainer.itemReceived",
                 stack.getCount(),
                 stack.getHoverName());
-        playerMP.sendMessage(itemReceivedText, Util.NIL_UUID);
+        playerMP.sendSystemMessage(itemReceivedText);
     }
 
     @Override
     public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowdedIn(group)) {
+        if (this.allowedIn(group)) {
             items.add(this.getStack());
         }
     }

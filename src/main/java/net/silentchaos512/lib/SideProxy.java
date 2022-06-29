@@ -3,14 +3,14 @@ package net.silentchaos512.lib;
 import com.mojang.brigadier.CommandDispatcher;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.*;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 import net.silentchaos512.lib.advancements.LibTriggers;
 import net.silentchaos512.lib.command.internal.DisplayNBTCommand;
 import net.silentchaos512.lib.command.internal.TeleportCommand;
@@ -26,7 +26,7 @@ public class SideProxy {
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::commonSetup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcEnqueue);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::imcProcess);
-        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(RecipeSerializer.class, this::registerRecipeSerializers);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerRecipeSerializers);
 
         MinecraftForge.EVENT_BUS.addListener(this::onRegisterCommands);
 
@@ -38,7 +38,7 @@ public class SideProxy {
 
     private void gatherData(GatherDataEvent event) {
         DataGenerator gen = event.getGenerator();
-        gen.addProvider(new TestRecipeProvider(gen));
+        gen.addProvider(true, new TestRecipeProvider(gen));
     }
 
     private void commonSetup(FMLCommonSetupEvent event) {}
@@ -53,8 +53,10 @@ public class SideProxy {
         TeleportCommand.register(dispatcher);
     }
 
-    private void registerRecipeSerializers(RegistryEvent.Register<RecipeSerializer<?>> event) {
-        event.getRegistry().register(DamageItemRecipe.SERIALIZER.setRegistryName(SilentLib.getId("damage_item")));
+    private void registerRecipeSerializers(RegisterEvent event) {
+        if (!event.getRegistryKey().equals(ForgeRegistries.RECIPE_SERIALIZERS.getRegistryKey())) return;
+
+        event.getForgeRegistry().register(SilentLib.getId("damage_item"), DamageItemRecipe.SERIALIZER);
     }
 
     private void registerIngredientSerializers() {

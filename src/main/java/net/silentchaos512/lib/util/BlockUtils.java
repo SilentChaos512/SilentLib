@@ -2,7 +2,6 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.AirBlock;
@@ -68,7 +67,7 @@ public final class BlockUtils {
                 missing.forEach(id -> logger.error("Missing block loot table '{}'", id));
             }
             String list = missing.stream().map(ResourceLocation::toString).collect(Collectors.joining(", "));
-            return new TextComponent("The following block loot tables are missing: " + list).withStyle(ChatFormatting.RED);
+            return Component.literal("The following block loot tables are missing: " + list).withStyle(ChatFormatting.RED);
         }
 
         return null;

@@ -138,7 +138,7 @@ public abstract class DebugRenderOverlay extends GuiComponent {
         if (scale <= 0f) return;
 
         Font font = mc.font;
-        PoseStack matrix = event.getMatrixStack();
+        PoseStack matrix = event.getPoseStack();
 
         matrix.pushPose();
         matrix.scale(scale, scale, 1);

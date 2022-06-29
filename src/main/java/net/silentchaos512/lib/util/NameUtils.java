@@ -3,8 +3,10 @@ package net.silentchaos512.lib.util;
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.registries.IForgeRegistryEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.regex.Pattern;
@@ -42,17 +44,6 @@ public final class NameUtils {
     }
 
     /**
-     * Gets the registry name, throwing an exception if it is null
-     *
-     * @param entry The registry object
-     * @return The registry name
-     * @throws NullPointerException if registry name is null
-     */
-    public static ResourceLocation from(IForgeRegistryEntry<?> entry) {
-        return checkNotNull(entry.getRegistryName());
-    }
-
-    /**
      * Gets the item's registry name, throwing an exception if it is null
      *
      * @param item The item
@@ -61,7 +52,7 @@ public final class NameUtils {
      */
     public static ResourceLocation fromItem(ItemLike item) {
         Preconditions.checkNotNull(item.asItem(), "asItem() is null, has object not been fully constructed?");
-        return checkNotNull(item.asItem().getRegistryName());
+        return checkNotNull(ForgeRegistries.ITEMS.getKey(item.asItem()));
     }
 
     /**
@@ -72,6 +63,10 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromItem(ItemStack stack) {
-        return checkNotNull(stack.getItem().getRegistryName());
+        return fromItem(stack.getItem());
+    }
+
+    public static ResourceLocation fromRecipeSerializer(RecipeSerializer<? extends Recipe<?>> serializer) {
+        return checkNotNull(ForgeRegistries.RECIPE_SERIALIZERS.getKey(serializer));
     }
 }

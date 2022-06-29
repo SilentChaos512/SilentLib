@@ -4,7 +4,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.silentchaos512.lib.util.TextRenderUtils;
 
 public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
@@ -32,12 +31,12 @@ public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
 
         @Override
         public void render(PoseStack matrix, int p_230432_2_, int p_230432_3_, int p_230432_4_, int p_230432_5_, int p_230432_6_, int p_230432_7_, int p_230432_8_, boolean p_230432_9_, float p_230432_10_) {
-            TextRenderUtils.renderScaled(matrix, this.mc.font, new TextComponent(this.text).getVisualOrderText(), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
+            TextRenderUtils.renderScaled(matrix, this.mc.font, Component.literal(this.text).getVisualOrderText(), p_230432_4_, p_230432_3_, 1.0f, 0xFFFFFF, true);
         }
 
         @Override
         public Component getNarration() {
-            return TextComponent.EMPTY;
+            return Component.empty();
         }
     }
 }

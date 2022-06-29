@@ -113,7 +113,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     }
 
     protected void registerCustomRecipe(Consumer<FinishedRecipe> consumer, SimpleRecipeSerializer<?> serializer) {
-        registerCustomRecipe(consumer, serializer, NameUtils.from(serializer));
+        registerCustomRecipe(consumer, serializer, NameUtils.fromRecipeSerializer(serializer));
     }
 
     protected void registerCustomRecipe(Consumer<FinishedRecipe> consumer, SimpleRecipeSerializer<?> serializer, ResourceLocation recipeId) {

@@ -11,7 +11,6 @@ import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -128,7 +127,7 @@ public class ExtendedShapedRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, NameUtils.from(this.result));
+        build(consumer, NameUtils.fromItem(this.result));
     }
 
     public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
@@ -196,7 +195,7 @@ public class ExtendedShapedRecipeBuilder {
             json.add("key", key);
 
             JsonObject result = new JsonObject();
-            result.addProperty("item", NameUtils.from(builder.result).toString());
+            result.addProperty("item", NameUtils.fromItem(builder.result).toString());
             if (builder.count > 1) {
                 result.addProperty("count", builder.count);
             }

@@ -18,7 +18,6 @@
 
 package net.silentchaos512.lib.event;
 
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
@@ -48,8 +47,7 @@ public final class Greetings {
      * Add a message to display to the player on login. If the function returns {@code null}, no
      * message is displayed. Consider displaying your message only once per session or per day.
      *
-     * @param message A function to create the message. Using {@link net.minecraft.network.chat.TranslatableComponent}
-     *                may be ideal.
+     * @param message A function to create the message.
      * @since 3.0.6
      */
     public static void addMessage(Function<Player, Component> message) {
@@ -59,6 +57,6 @@ public final class Greetings {
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getPlayer();
         if (player == null) return;
-        messages.forEach(msg -> msg.apply(player).ifPresent(text -> player.sendMessage(text, Util.NIL_UUID)));
+        messages.forEach(msg -> msg.apply(player).ifPresent(player::sendSystemMessage));
     }
 }

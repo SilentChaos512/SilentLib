@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[40,)"
+loaderVersion="[41,)"
 license="MIT"
 issueTrackerURL="https://github.com/SilentChaos512/SilentLib"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/silent-lib"
@@ -11,7 +11,7 @@ authors="SilentChaos512"
     modId="silentlib"
     version="${file.jarVersion}"
     displayName="Silent Lib"
-    updateJSONURL="https://raw.githubusercontent.com/SilentChaos512/SilentLib/1.18.x/update.json"
+    updateJSONURL="https://raw.githubusercontent.com/SilentChaos512/SilentLib/1.19.x/update.json"
     description='''
     Shared library for Silent's mods
     '''
@@ -19,12 +19,12 @@ authors="SilentChaos512"
 [[dependencies.silentlib]]
     modId="forge"
     mandatory=true
-    versionRange="[40.0.18,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.silentlib]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.2,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"

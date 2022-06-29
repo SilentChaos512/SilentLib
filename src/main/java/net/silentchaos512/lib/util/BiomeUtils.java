@@ -6,7 +6,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public final class BiomeUtils {
@@ -17,8 +16,8 @@ public final class BiomeUtils {
     public static boolean matches(Biome biome, String input) {
         if (biome == from(input))
             return true;
-        String category = CATEGORY_PATTERN.matcher(input).replaceFirst(Matcher.quoteReplacement(""));
-        return biome.getBiomeCategory().name().equalsIgnoreCase(category);
+        // TODO: biome tags?
+        return false;
     }
 
     public static boolean containedInList(Biome biome, Collection<? extends String> list, boolean valueIfListEmpty) {

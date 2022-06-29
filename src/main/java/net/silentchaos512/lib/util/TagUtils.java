@@ -27,12 +27,7 @@ public final class TagUtils {
         return contains(ForgeRegistries.ENTITIES, tag, entity.getType());
     }
 
-    public static <T extends IForgeRegistryEntry<T>> boolean contains(TagKey<T> tag, T obj) {
-        ForgeRegistry<T> registry = RegistryManager.ACTIVE.getRegistry(obj.getRegistryName());
-        return contains(registry, tag, obj);
-    }
-
-    public static <T extends IForgeRegistryEntry<T>> boolean contains(IForgeRegistry<T> registry, TagKey<T> tag, T obj) {
+    public static <T> boolean contains(IForgeRegistry<T> registry, TagKey<T> tag, T obj) {
         ITagManager<T> tagManager = registry.tags();
         return tagManager != null && tagManager.getTag(tag).contains(obj);
     }
@@ -45,7 +40,7 @@ public final class TagUtils {
         return getObjectsInTag(ForgeRegistries.BLOCKS, tag);
     }
 
-    public static <T extends IForgeRegistryEntry<T>> Stream<T> getObjectsInTag(IForgeRegistry<T> registry, TagKey<T> tag) {
+    public static <T> Stream<T> getObjectsInTag(IForgeRegistry<T> registry, TagKey<T> tag) {
         ITagManager<T> tagManager = registry.tags();
         if (tagManager != null) {
             return tagManager.getTag(tag).stream();

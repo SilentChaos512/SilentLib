@@ -19,7 +19,7 @@ public final class LibHooks {
             try {
                 ComposterBlock.COMPOSTABLES.put(item, chance);
             } catch (Exception ex) {
-                SilentLib.LOGGER.error("Failed to register compostable item: {}, chance {}", item.asItem().getRegistryName(), chance);
+                SilentLib.LOGGER.error("Failed to register compostable item: {}, chance {}", NameUtils.fromItem(item), chance);
                 SilentLib.LOGGER.catching(ex);
             }
         }

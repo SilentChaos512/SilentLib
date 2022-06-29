@@ -9,6 +9,10 @@ import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
 import net.silentchaos512.lib.SilentLib;
 
+/**
+ * NOTE: This recipe type has some issues. Sometimes items are duplicated in certain crafting
+ * interfaces from other mods. Consider using a custom crafting block instead.
+ */
 public class DamageItemRecipe extends ExtendedShapelessRecipe {
     public static final ExtendedShapelessRecipe.Serializer<DamageItemRecipe> SERIALIZER = new ExtendedShapelessRecipe.Serializer<>(
             DamageItemRecipe::new,
@@ -48,7 +52,7 @@ public class DamageItemRecipe extends ExtendedShapelessRecipe {
                 list.set(i, stack.getContainerItem());
             } else if (stack.getMaxDamage() > 0) {
                 ItemStack tool = stack.copy();
-                if (tool.hurt(this.damageToItems, SilentLib.RANDOM, null)) {
+                if (tool.hurt(this.damageToItems, SilentLib.RANDOM_SOURCE, null)) {
                     tool.shrink(1);
                 }
                 list.set(i, tool);
