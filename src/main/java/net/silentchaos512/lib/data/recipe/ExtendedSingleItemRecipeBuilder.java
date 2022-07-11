@@ -87,8 +87,8 @@ public class ExtendedSingleItemRecipeBuilder {
     }
 
     public void build(Consumer<FinishedRecipe> consumer) {
-        ResourceLocation itemId = NameUtils.from(this.result);
-        ResourceLocation serializerId = NameUtils.from(this.serializer);
+        ResourceLocation itemId = NameUtils.fromItem(this.result);
+        ResourceLocation serializerId = NameUtils.fromRecipeSerializer(this.serializer);
         build(consumer, new ResourceLocation(itemId.getNamespace(), serializerId.getPath() + "/" + itemId.getPath()));
     }
 
@@ -121,7 +121,7 @@ public class ExtendedSingleItemRecipeBuilder {
             }
 
             json.add("ingredient", builder.ingredients.toJson());
-            json.addProperty("result", NameUtils.from(builder.result).toString());
+            json.addProperty("result", NameUtils.fromItem(builder.result).toString());
             json.addProperty("count", builder.count);
 
             builder.serializeExtra(json);

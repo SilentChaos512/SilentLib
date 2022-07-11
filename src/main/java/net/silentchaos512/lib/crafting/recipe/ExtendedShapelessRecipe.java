@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -40,7 +39,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     @Override
     public abstract ItemStack assemble(CraftingContainer inv);
 
-    public static class Serializer<T extends ExtendedShapelessRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+    public static class Serializer<T extends ExtendedShapelessRecipe> implements RecipeSerializer<T> {
         private final Function<ShapelessRecipe, T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
         @Nullable private final BiConsumer<FriendlyByteBuf, T> readBuffer;

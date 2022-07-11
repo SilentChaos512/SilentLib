@@ -4,7 +4,7 @@
         "6.3.0": "https://github.com/SilentChaos512/SilentLib/blob/1.19.x/CHANGELOG.md"
     },
     "promos": {
-        "1.19-latest": "6.3.0",
-        "1.19-recommended": "6.3.0"
+        "1.19-latest": "7.0.0",
+        "1.19-recommended": "7.0.0"
     }
 }

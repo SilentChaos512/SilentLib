@@ -1,5 +1,8 @@
 # Changelog
 
+## [7.0.0] - 2022-07-10
+- Updated to 1.19
+
 ## [6.2.0] - 2022-03-22
 - Updated to 1.18.2 (Cyborgmas) [#34]
 - Complete rewrite of `TagUtils` class (breaks compatibility)

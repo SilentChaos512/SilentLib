@@ -12,7 +12,6 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleItemRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.function.BiConsumer;
@@ -32,7 +31,7 @@ public class ExtendedSingleItemRecipe extends SingleItemRecipe {
         T create(ResourceLocation id, Ingredient ingredient, ItemStack result);
     }
 
-    public static class Serializer<T extends ExtendedSingleItemRecipe> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<T> {
+    public static class Serializer<T extends ExtendedSingleItemRecipe> implements RecipeSerializer<T> {
         private final IRecipeFactory<T> recipeFactory;
         @Nullable private final BiConsumer<JsonObject, T> readJson;
         @Nullable private final BiConsumer<FriendlyByteBuf, T> readBuffer;
