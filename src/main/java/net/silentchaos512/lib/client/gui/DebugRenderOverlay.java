@@ -23,7 +23,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiComponent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.TickEvent;
 import net.silentchaos512.utils.Anchor;
@@ -128,9 +129,9 @@ public abstract class DebugRenderOverlay extends GuiComponent {
         return startY;
     }
 
-    public void renderTick(RenderGameOverlayEvent.Post event) {
+    public void renderTick(RenderGuiOverlayEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (isHidden() || debugText.isEmpty() || mc.isPaused() || mc.options.renderDebug || event.getType() != RenderGameOverlayEvent.ElementType.ALL)
+        if (isHidden() || debugText.isEmpty() || mc.isPaused() || mc.options.renderDebug || event.getOverlay() != VanillaGuiOverlay.CHAT_PANEL.type())
             return;
 
         // Get text scale, sanity-check the value

@@ -61,22 +61,22 @@ public final class LibTriggers {
         }
 
         public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
-            if (event.getPlayer() instanceof ServerPlayer) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
+            if (event.getEntity() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getEntity(), event.getItemStack(), UseItemTrigger.Target.BLOCK);
             }
         }
 
         @SubscribeEvent
         public static void onPlayerRightClickEntity(PlayerInteractEvent.EntityInteract event) {
-            if (event.getPlayer() instanceof ServerPlayer) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
+            if (event.getEntity() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getEntity(), event.getItemStack(), UseItemTrigger.Target.ENTITY);
             }
         }
 
         @SubscribeEvent
         public static void onPlayerRightClickItem(PlayerInteractEvent.RightClickItem event) {
-            if (event.getPlayer() instanceof ServerPlayer) {
-                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getPlayer(), event.getItemStack(), UseItemTrigger.Target.ITEM);
+            if (event.getEntity() instanceof ServerPlayer) {
+                LibTriggers.USE_ITEM.trigger((ServerPlayer) event.getEntity(), event.getItemStack(), UseItemTrigger.Target.ITEM);
             }
         }
     }

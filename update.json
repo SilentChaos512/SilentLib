@@ -1,10 +1,10 @@
 {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/silent-lib",
     "1.19": {
-        "6.3.0": "https://github.com/SilentChaos512/SilentLib/blob/1.19.x/CHANGELOG.md"
+        "7.0.1": "https://github.com/SilentChaos512/SilentLib/blob/1.19.x/CHANGELOG.md"
     },
     "promos": {
-        "1.19-latest": "7.0.0",
-        "1.19-recommended": "7.0.0"
+        "1.19-latest": "7.0.1",
+        "1.19-recommended": "7.0.1"
     }
 }

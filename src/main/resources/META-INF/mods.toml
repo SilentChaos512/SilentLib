@@ -19,7 +19,7 @@ authors="SilentChaos512"
 [[dependencies.silentlib]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[41.1,)"
     ordering="NONE"
     side="BOTH"
 [[dependencies.silentlib]]

@@ -24,7 +24,7 @@ public final class TagUtils {
     }
 
     public static boolean contains(TagKey<EntityType<?>> tag, Entity entity) {
-        return contains(ForgeRegistries.ENTITIES, tag, entity.getType());
+        return contains(ForgeRegistries.ENTITY_TYPES, tag, entity.getType());
     }
 
     public static <T> boolean contains(IForgeRegistry<T> registry, TagKey<T> tag, T obj) {

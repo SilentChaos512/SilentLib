@@ -76,7 +76,7 @@ public interface ILeftClickItem {
             ItemStack stack = event.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
                 // Client-side call
-                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getWorld(), event.getPlayer(), event.getHand());
+                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getLevel(), event.getEntity(), event.getHand());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.BLOCK, event.getHand()));
@@ -88,7 +88,7 @@ public interface ILeftClickItem {
             ItemStack stack = event.getItemStack();
             if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
                 // Client-side call
-                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getWorld(), event.getPlayer(), event.getHand());
+                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getLevel(), event.getEntity(), event.getHand());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
                     SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.EMPTY, event.getHand()));

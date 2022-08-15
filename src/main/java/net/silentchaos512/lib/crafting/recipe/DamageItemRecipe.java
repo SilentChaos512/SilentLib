@@ -48,8 +48,8 @@ public class DamageItemRecipe extends ExtendedShapelessRecipe {
 
         for (int i = 0; i < list.size(); ++i) {
             ItemStack stack = inv.getItem(i);
-            if (stack.hasContainerItem()) {
-                list.set(i, stack.getContainerItem());
+            if (stack.hasCraftingRemainingItem()) {
+                list.set(i, stack.getCraftingRemainingItem());
             } else if (stack.getMaxDamage() > 0) {
                 ItemStack tool = stack.copy();
                 if (tool.hurt(this.damageToItems, SilentLib.RANDOM_SOURCE, null)) {

@@ -1,5 +1,8 @@
 # Changelog
 
+## [7.0.1] - 2022-08-15
+- Updated to Forge 41.1.0 (Minecraft 1.19)
+
 ## [7.0.0] - 2022-07-10
 - Updated to 1.19
 

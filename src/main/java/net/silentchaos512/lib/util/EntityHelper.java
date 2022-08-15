@@ -91,8 +91,8 @@ public final class EntityHelper {
     }
 
     @SubscribeEvent
-    public static void onWorldTick(TickEvent.WorldTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) {
+    public static void onWorldTick(TickEvent event) {
+        if (event.phase == TickEvent.Phase.START && event.type == TickEvent.Type.LEVEL) {
             handleSpawns();
         }
     }
