@@ -1,5 +1,8 @@
 # Changelog
 
+## [7.0.2] - 2022-08-30
+- Bump to Forge 43.1.3 (Minecraft 1.19.2) (No code changes, should be compatible with 1.19)
+
 ## [7.0.1] - 2022-08-15
 - Updated to Forge 41.1.0 (Minecraft 1.19)
 
