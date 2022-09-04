@@ -1,5 +1,8 @@
 # Changelog
 
+## [7.0.3] - 2022-09-04
+- Added some additional methods to `NameUtils`
+
 ## [7.0.2] - 2022-08-30
 - Bump to Forge 43.1.3 (Minecraft 1.19.2) (No code changes, should be compatible with 1.19)
 
