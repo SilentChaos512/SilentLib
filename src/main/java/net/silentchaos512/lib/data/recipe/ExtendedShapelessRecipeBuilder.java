@@ -10,6 +10,7 @@ import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -37,6 +38,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("WeakerAccess")
 public class ExtendedShapelessRecipeBuilder {
     private final RecipeSerializer<?> serializer;
+    private final RecipeCategory category;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Item result;
     private final int count;
@@ -45,26 +47,27 @@ public class ExtendedShapelessRecipeBuilder {
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    protected ExtendedShapelessRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
+    protected ExtendedShapelessRecipeBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
         this.serializer = serializer;
+        this.category = category;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedShapelessRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result) {
-        return builder(serializer, result, 1);
+    public static ExtendedShapelessRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result) {
+        return builder(serializer,category , result, 1);
     }
 
-    public static ExtendedShapelessRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result, int count) {
-        return new ExtendedShapelessRecipeBuilder(serializer, result, count);
+    public static ExtendedShapelessRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
+        return new ExtendedShapelessRecipeBuilder(serializer, category, result, count);
     }
 
-    public static ExtendedShapelessRecipeBuilder vanillaBuilder(ItemLike result) {
-        return vanillaBuilder(result, 1);
+    public static ExtendedShapelessRecipeBuilder vanillaBuilder(RecipeCategory category, ItemLike result) {
+        return vanillaBuilder(category, result, 1);
     }
 
-    public static ExtendedShapelessRecipeBuilder vanillaBuilder(ItemLike result, int count) {
-        return new ExtendedShapelessRecipeBuilder(RecipeSerializer.SHAPELESS_RECIPE, result, count);
+    public static ExtendedShapelessRecipeBuilder vanillaBuilder(RecipeCategory category, ItemLike result, int count) {
+        return new ExtendedShapelessRecipeBuilder(RecipeSerializer.SHAPELESS_RECIPE, category, result, count);
     }
 
     /**
@@ -89,56 +92,56 @@ public class ExtendedShapelessRecipeBuilder {
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(TagKey<Item> tag) {
-        return addIngredient(tag, 1);
+    public ExtendedShapelessRecipeBuilder requires(TagKey<Item> tag) {
+        return requires(tag, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(TagKey<Item> tag, int quantity) {
-        return addIngredient(Ingredient.of(tag), quantity);
+    public ExtendedShapelessRecipeBuilder requires(TagKey<Item> tag, int quantity) {
+        return requires(Ingredient.of(tag), quantity);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(ItemLike item) {
-        return addIngredient(item, 1);
+    public ExtendedShapelessRecipeBuilder requires(ItemLike item) {
+        return requires(item, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(ItemLike item, int quantity) {
-        return addIngredient(Ingredient.of(item), quantity);
+    public ExtendedShapelessRecipeBuilder requires(ItemLike item, int quantity) {
+        return requires(Ingredient.of(item), quantity);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient) {
-        return addIngredient(ingredient, 1);
+    public ExtendedShapelessRecipeBuilder requires(Ingredient ingredient) {
+        return requires(ingredient, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder addIngredient(Ingredient ingredient, int quantity) {
+    public ExtendedShapelessRecipeBuilder requires(Ingredient ingredient, int quantity) {
         for (int i = 0; i < quantity; ++i) {
             this.ingredients.add(ingredient);
         }
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterion) {
+    public ExtendedShapelessRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterion) {
         this.advancementBuilder.addCriterion(name, criterion);
         this.hasAdvancementCriterion = true;
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder setGroup(String group) {
+    public ExtendedShapelessRecipeBuilder group(String group) {
         this.group = group;
         return this;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, NameUtils.fromItem(this.result));
+    public void save(Consumer<FinishedRecipe> consumer) {
+        save(consumer, NameUtils.fromItem(this.result));
     }
 
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
-                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY, id))
+                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                     .rewards(AdvancementRewards.Builder.recipe(id))
                     .requirements(RequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.category.getFolderName() + "/" + id.getPath());
         consumer.accept(new Result(id, this, advancementId));
     }
 

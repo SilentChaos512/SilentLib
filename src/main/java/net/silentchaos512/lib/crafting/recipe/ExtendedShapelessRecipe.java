@@ -22,7 +22,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     private final ShapelessRecipe recipe;
 
     public ExtendedShapelessRecipe(ShapelessRecipe recipe) {
-        super(recipe.getId(), recipe.getGroup(), recipe.getResultItem(), recipe.getIngredients());
+        super(recipe.getId(), recipe.getGroup(), recipe.category(), recipe.getResultItem(), recipe.getIngredients());
         this.recipe = recipe;
     }
 

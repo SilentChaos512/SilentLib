@@ -35,11 +35,12 @@ public class DisplayNBTScreen extends Screen {
         int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
         int width = 100;
         int height = 20;
-        this.addRenderableWidget(new Button(scaledWidth - width - 2, scaledHeight - height - 2, width, height, Component.literal("Export to JSON"), b -> {
+        Button exportButton = Button.builder(Component.literal("Export to JSON"), b -> {
             JsonObject json = NBTToJson.toJsonObject(this.nbtCompound);
             String message = NBTToJson.writeFile(json);
             this.header = Component.literal(message);
-        }));
+        }).bounds(scaledWidth - width - 2, scaledHeight - height - 2, width, height).build();
+        this.addRenderableWidget(exportButton);
 
         this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, this.height - 12, 11);
         this.addWidget(displayList);

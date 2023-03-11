@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -26,7 +27,7 @@ public class DimensionFilterPlacement extends PlacementModifier {
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
                 Collection<ResourceKey<Level>> levels = strList.stream()
-                        .map(str -> ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(str)))
+                        .map(str -> ResourceKey.create(Registries.DIMENSION, new ResourceLocation(str)))
                         .collect(Collectors.toList());
                 return new DimensionFilterPlacement(isWhitelist, levels);
             }));

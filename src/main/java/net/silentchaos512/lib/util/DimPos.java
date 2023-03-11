@@ -21,6 +21,7 @@ package net.silentchaos512.lib.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -102,7 +103,7 @@ public final class DimPos {
                 tags.getInt("posX"),
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
-                ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(tags.getString("dim"))));
+                ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tags.getString("dim"))));
     }
 
     public void write(CompoundTag tags) {

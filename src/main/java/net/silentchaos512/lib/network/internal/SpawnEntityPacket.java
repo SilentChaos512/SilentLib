@@ -2,6 +2,7 @@ package net.silentchaos512.lib.network.internal;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
@@ -31,7 +32,7 @@ public class SpawnEntityPacket {
 
     public SpawnEntityPacket(Entity e) {
         this.entity = e;
-        this.typeId = Registry.ENTITY_TYPE.getId(e.getType());
+        this.typeId = BuiltInRegistries.ENTITY_TYPE.getId(e.getType());
         this.entityId = e.getId();
         this.uuid = e.getUUID();
         this.posX = e.getX();
@@ -100,7 +101,7 @@ public class SpawnEntityPacket {
 
     public static void handle(SpawnEntityPacket msg, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            EntityType<?> type = Registry.ENTITY_TYPE.byId(msg.typeId);
+            EntityType<?> type = BuiltInRegistries.ENTITY_TYPE.byId(msg.typeId);
             if (type == null) {
                 throw new RuntimeException(String.format("Could not spawn entity (id %d) with unknown type at (%f, %f, %f)", msg.entityId, msg.posX, msg.posY, msg.posZ));
             }

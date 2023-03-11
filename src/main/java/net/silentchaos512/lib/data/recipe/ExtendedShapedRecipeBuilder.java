@@ -7,9 +7,9 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.advancements.RequirementsStrategy;
-import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -34,6 +34,7 @@ import java.util.function.Consumer;
 @SuppressWarnings("WeakerAccess")
 public class ExtendedShapedRecipeBuilder {
     private final RecipeSerializer<?> serializer;
+    private final RecipeCategory category;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Item result;
     private final int count;
@@ -43,26 +44,27 @@ public class ExtendedShapedRecipeBuilder {
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    private ExtendedShapedRecipeBuilder(RecipeSerializer<?> serializer, ItemLike result, int count) {
+    private ExtendedShapedRecipeBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
         this.serializer = serializer;
+        this.category = category;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result) {
-        return builder(serializer, result, 1);
+    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result) {
+        return builder(serializer, category, result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, ItemLike result, int count) {
-        return new ExtendedShapedRecipeBuilder(serializer, result, count);
+    public static ExtendedShapedRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
+        return new ExtendedShapedRecipeBuilder(serializer, category, result, count);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(ItemLike result) {
-        return vanillaBuilder(result, 1);
+    public static ExtendedShapedRecipeBuilder vanillaBuilder(RecipeCategory category, ItemLike result) {
+        return vanillaBuilder(category, result, 1);
     }
 
-    public static ExtendedShapedRecipeBuilder vanillaBuilder(ItemLike result, int count) {
-        return new ExtendedShapedRecipeBuilder(RecipeSerializer.SHAPED_RECIPE, result, count);
+    public static ExtendedShapedRecipeBuilder vanillaBuilder(RecipeCategory category, ItemLike result, int count) {
+        return new ExtendedShapedRecipeBuilder(RecipeSerializer.SHAPED_RECIPE, category, result, count);
     }
 
     /**
@@ -87,15 +89,15 @@ public class ExtendedShapedRecipeBuilder {
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, TagKey<Item> tagIn) {
-        return this.key(symbol, Ingredient.of(tagIn));
+    public ExtendedShapedRecipeBuilder define(Character symbol, TagKey<Item> tagIn) {
+        return this.define(symbol, Ingredient.of(tagIn));
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, ItemLike itemIn) {
-        return this.key(symbol, Ingredient.of(itemIn));
+    public ExtendedShapedRecipeBuilder define(Character symbol, ItemLike itemIn) {
+        return this.define(symbol, Ingredient.of(itemIn));
     }
 
-    public ExtendedShapedRecipeBuilder key(Character symbol, Ingredient ingredientIn) {
+    public ExtendedShapedRecipeBuilder define(Character symbol, Ingredient ingredientIn) {
         if (this.key.containsKey(symbol)) {
             throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
         } else if (symbol == ' ') {
@@ -106,7 +108,7 @@ public class ExtendedShapedRecipeBuilder {
         }
     }
 
-    public ExtendedShapedRecipeBuilder patternLine(String patternIn) {
+    public ExtendedShapedRecipeBuilder pattern(String patternIn) {
         if (!this.pattern.isEmpty() && patternIn.length() != this.pattern.get(0).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
         } else {
@@ -115,34 +117,34 @@ public class ExtendedShapedRecipeBuilder {
         }
     }
 
-    public ExtendedShapedRecipeBuilder addCriterion(String name, CriterionTriggerInstance criterionIn) {
+    public ExtendedShapedRecipeBuilder unlockedBy(String name, CriterionTriggerInstance criterionIn) {
         this.advancementBuilder.addCriterion(name, criterionIn);
         this.hasAdvancementCriterion = true;
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder setGroup(String groupIn) {
+    public ExtendedShapedRecipeBuilder group(String groupIn) {
         this.group = groupIn;
         return this;
     }
 
-    public void build(Consumer<FinishedRecipe> consumer) {
-        build(consumer, NameUtils.fromItem(this.result));
+    public void save(Consumer<FinishedRecipe> consumer) {
+        save(consumer, NameUtils.fromItem(this.result));
     }
 
-    public void build(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
-        this.validate(id);
+    public void save(Consumer<FinishedRecipe> consumer, ResourceLocation id) {
+        this.ensureValid(id);
         if (this.hasAdvancementCriterion && !this.advancementBuilder.getCriteria().isEmpty()) {
             this.advancementBuilder.parent(new ResourceLocation("recipes/root"))
-                    .addCriterion("has_the_recipe", new RecipeUnlockedTrigger.TriggerInstance(EntityPredicate.Composite.ANY, id))
+                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                     .rewards(AdvancementRewards.Builder.recipe(id))
                     .requirements(RequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.category.getFolderName() + "/" + id.getPath());
         consumer.accept(new Result(id, this, advancementId));
     }
 
-    private void validate(ResourceLocation id) {
+    private void ensureValid(ResourceLocation id) {
         // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
         if (this.pattern.isEmpty()) {
             throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");

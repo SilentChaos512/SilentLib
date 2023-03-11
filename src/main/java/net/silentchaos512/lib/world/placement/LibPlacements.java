@@ -3,6 +3,8 @@ package net.silentchaos512.lib.world.placement;
 import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
@@ -18,7 +20,7 @@ public final class LibPlacements {
 
     //need this for typing issues
     private static <P extends PlacementModifier> PlacementModifierType<P> register(ResourceLocation loc, Codec<P> codec) {
-        return Registry.register(Registry.PLACEMENT_MODIFIERS, loc, () -> codec);
+        return Registry.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, loc, () -> codec);
     }
 
     private LibPlacements() {}

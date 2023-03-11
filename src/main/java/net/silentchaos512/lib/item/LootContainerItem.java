@@ -186,11 +186,4 @@ public class LootContainerItem extends Item {
                 stack.getHoverName());
         playerMP.sendSystemMessage(itemReceivedText);
     }
-
-    @Override
-    public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items) {
-        if (this.allowedIn(group)) {
-            items.add(this.getStack());
-        }
-    }
 }

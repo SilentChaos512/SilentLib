@@ -22,7 +22,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     private final ShapedRecipe recipe;
 
     public ExtendedShapedRecipe(ShapedRecipe recipe) {
-        super(recipe.getId(), recipe.getGroup(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem());
+        super(recipe.getId(), recipe.getGroup(), recipe.category(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem());
         this.recipe = recipe;
     }
 

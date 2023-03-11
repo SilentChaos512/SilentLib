@@ -8,6 +8,7 @@ import net.minecraft.advancements.RequirementsStrategy;
 import net.minecraft.advancements.critereon.EntityPredicate;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -22,6 +23,7 @@ import java.util.function.Consumer;
 
 public class ExtendedSingleItemRecipeBuilder {
     private final RecipeSerializer<?> serializer;
+    private final RecipeCategory category;
     private final Collection<Consumer<JsonObject>> extraData = new ArrayList<>();
     private final Ingredient ingredients;
     private final Item result;
@@ -30,27 +32,28 @@ public class ExtendedSingleItemRecipeBuilder {
     private boolean hasAdvancementCriterion = false;
     private String group = "";
 
-    protected ExtendedSingleItemRecipeBuilder(RecipeSerializer<?> serializer, Ingredient ingredients, ItemLike result, int count) {
+    protected ExtendedSingleItemRecipeBuilder(RecipeSerializer<?> serializer, RecipeCategory category, Ingredient ingredients, ItemLike result, int count) {
         this.serializer = serializer;
+        this.category = category;
         this.ingredients = ingredients;
         this.result = result.asItem();
         this.count = count;
     }
 
-    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, Ingredient ingredient, ItemLike result) {
-        return builder(serializer, ingredient, result, 1);
+    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, Ingredient ingredient, ItemLike result) {
+        return builder(serializer, category, ingredient, result, 1);
     }
 
-    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, Ingredient ingredient, ItemLike result, int count) {
-        return new ExtendedSingleItemRecipeBuilder(serializer, ingredient, result, count);
+    public static ExtendedSingleItemRecipeBuilder builder(RecipeSerializer<?> serializer, RecipeCategory category, Ingredient ingredient, ItemLike result, int count) {
+        return new ExtendedSingleItemRecipeBuilder(serializer, category, ingredient, result, count);
     }
 
-    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, ItemLike result) {
-        return stonecuttingBuilder(ingredient, result, 1);
+    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(RecipeCategory category, Ingredient ingredient, ItemLike result) {
+        return stonecuttingBuilder(category, ingredient, result, 1);
     }
 
-    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(Ingredient ingredient, ItemLike result, int count) {
-        return new ExtendedSingleItemRecipeBuilder(RecipeSerializer.STONECUTTER, ingredient, result, count);
+    public static ExtendedSingleItemRecipeBuilder stonecuttingBuilder(RecipeCategory category, Ingredient ingredient, ItemLike result, int count) {
+        return new ExtendedSingleItemRecipeBuilder(RecipeSerializer.STONECUTTER, category, ingredient, result, count);
     }
 
     /**
@@ -99,7 +102,7 @@ public class ExtendedSingleItemRecipeBuilder {
                     .rewards(AdvancementRewards.Builder.recipe(id))
                     .requirements(RequirementsStrategy.OR);
         }
-        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + id.getPath());
+        ResourceLocation advancementId = new ResourceLocation(id.getNamespace(), "recipes/" + this.category.getFolderName() + "/" + id.getPath());
         consumer.accept(new ExtendedSingleItemRecipeBuilder.Result(id, this, advancementId));
     }
 
