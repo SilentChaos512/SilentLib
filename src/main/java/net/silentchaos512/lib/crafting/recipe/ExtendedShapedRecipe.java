@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.crafting.recipe;
 
 import com.google.gson.JsonObject;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -22,7 +23,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     private final ShapedRecipe recipe;
 
     public ExtendedShapedRecipe(ShapedRecipe recipe) {
-        super(recipe.getId(), recipe.getGroup(), recipe.category(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem());
+        super(recipe.getId(), recipe.getGroup(), recipe.category(), recipe.getRecipeWidth(), recipe.getRecipeHeight(), recipe.getIngredients(), recipe.getResultItem(null));
         this.recipe = recipe;
     }
 
@@ -37,7 +38,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     public abstract boolean matches(CraftingContainer inv, Level worldIn);
 
     @Override
-    public abstract ItemStack assemble(CraftingContainer inv);
+    public abstract ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess);
 
     public static class Serializer<T extends ExtendedShapedRecipe> implements RecipeSerializer<T> {
         private final Function<ShapedRecipe, T> recipeFactory;

@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.crafting.recipe;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -38,8 +39,8 @@ public class DamageItemRecipe extends ExtendedShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv) {
-        return getBaseRecipe().assemble(inv);
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+        return getBaseRecipe().assemble(inv, registryAccess);
     }
 
     @Override

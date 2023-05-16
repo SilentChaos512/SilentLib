@@ -2,6 +2,7 @@ package net.silentchaos512.lib.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -101,7 +102,7 @@ public class TeleportUtils {
 
     private static void fixOrientation(Entity entity, double newX, double newY, double newZ, Direction facing) {
         if (facing != Direction.DOWN && facing != Direction.UP) {
-            facePosition(entity, newX, newY, newZ, new BlockPos(newX, newY, newZ).relative(facing, 4));
+            facePosition(entity, newX, newY, newZ, new BlockPos(new Vec3i((int) newX, (int) newY, (int) newZ)).relative(facing, 4));
         }
     }
 }
