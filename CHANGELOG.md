@@ -1,5 +1,8 @@
 # Changelog
 
+## [7.2.0] - 2023-05-16
+- Updated for Minecraft 1.19.4
+
 ## [7.1.0] - 2023-03-11
 - Updated for Minecraft 1.19.3
 - Changed extended recipe builder method names to match vanilla ones and added RecipeCategory parameters everywhere
