@@ -6,7 +6,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.LootDataManager;
+import net.minecraft.world.level.storage.loot.LootDataType;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
 
@@ -25,32 +26,31 @@ public final class BlockUtils {
      * should not be called in release builds, as missing loot tables are a development error.
      *
      * @param modId The mod ID
-     * @param world World reference (needed to get {@link LootTables})
+     * @param world World reference (needed to get {@link LootDataManager})
      * @return A list of missing loot tables, or an empty collection if there are none
      * @since 4.5.0
      */
     public static Collection<ResourceLocation> getMissingLootTables(String modId, ServerLevel world) {
-        LootTables lootTableManager = world.getServer().getLootTables();
+        LootDataManager lootTableManager = world.getServer().getLootData();
         Collection<ResourceLocation> missing = new ArrayList<>();
 
         for (Block block : ForgeRegistries.BLOCKS.getValues()) {
             ResourceLocation lootTable = block.getLootTable();
             // The AirBlock check filters out removed blocks
-            if (lootTable.getNamespace().equals(modId) && !(block instanceof AirBlock) && !lootTableManager.getIds().contains(lootTable)) {
+            if (lootTable.getNamespace().equals(modId) && !(block instanceof AirBlock) && lootTableManager.getElementOptional(LootDataType.TABLE, lootTable).isEmpty()) {
                 missing.add(lootTable);
             }
         }
 
         return missing;
     }
-
     /**
      * Gets a message to display in chat for missing block loot tables. This is intended to be used
      * with {@link net.silentchaos512.lib.event.Greetings}. Missing loot table warnings should only
      * be displayed in development builds.
      *
      * @param modId  The mod ID
-     * @param world  World reference (needed to get {@link LootTables})
+     * @param world  World reference (needed to get {@link LootDataManager})
      * @param logger If not null, separate errors will be logged for missing loot tables. Does not
      *               affect the return value.
      * @return An {@link Component} if there are missing block loot tables, or null if none are
@@ -59,7 +59,6 @@ public final class BlockUtils {
      */
     @Nullable
     public static Component checkAndReportMissingLootTables(String modId, ServerLevel world, @Nullable Logger logger) {
-        LootTables lootTableManager = world.getServer().getLootTables();
         Collection<ResourceLocation> missing = getMissingLootTables(modId, world);
 
         if (!missing.isEmpty()) {

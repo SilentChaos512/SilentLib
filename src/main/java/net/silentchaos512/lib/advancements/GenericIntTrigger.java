@@ -20,10 +20,7 @@ package net.silentchaos512.lib.advancements;
 
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriterionTrigger;
-import net.minecraft.advancements.critereon.AbstractCriterionTriggerInstance;
-import net.minecraft.advancements.critereon.DeserializationContext;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SerializationContext;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.PlayerAdvancements;
 import net.minecraft.server.level.ServerPlayer;
@@ -78,7 +75,7 @@ public class GenericIntTrigger implements CriterionTrigger<GenericIntTrigger.Ins
         int value;
 
         Instance(String type, int value) {
-            super(GenericIntTrigger.ID, EntityPredicate.Composite.ANY);
+            super(GenericIntTrigger.ID, ContextAwarePredicate.ANY);
             this.type = type;
             this.value = value;
         }

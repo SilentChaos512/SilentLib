@@ -42,10 +42,10 @@ public final class PlayerUtils {
     public static void giveItem(Player player, ItemStack stack) {
         ItemStack copy = stack.copy();
         if (!player.getInventory().add(copy)) {
-            ItemEntity entityItem = new ItemEntity(player.level, player.getX(), player.getY(0.5), player.getZ(), copy);
+            ItemEntity entityItem = new ItemEntity(player.level(), player.getX(), player.getY(0.5), player.getZ(), copy);
             entityItem.setNoPickUpDelay();
             entityItem.setThrower(player.getUUID());
-            player.level.addFreshEntity(entityItem);
+            player.level().addFreshEntity(entityItem);
         }
     }
 

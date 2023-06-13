@@ -22,7 +22,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.common.MinecraftForge;
@@ -38,7 +38,7 @@ import java.util.List;
 /**
  * Draws text directly to the screen for debugging purposes
  */
-public abstract class DebugRenderOverlay extends GuiComponent {
+public abstract class DebugRenderOverlay {
     protected static final String SPLITTER = "=";
 
     private static final int DEFAULT_UPDATE_FREQUENCY = 10;
@@ -109,13 +109,13 @@ public abstract class DebugRenderOverlay extends GuiComponent {
     public abstract boolean isHidden();
 
     @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    protected void drawLine(PoseStack matrix, Font font, String line, int x, int y, int color) {
+    protected void drawLine(GuiGraphics graphics, Font font, String line, int x, int y, int color) {
         String[] array = line.split(SPLITTER);
         if (array.length == 2) {
-            font.drawShadow(matrix, array[0].trim(), x, y, color);
-            font.drawShadow(matrix, array[1].trim(), x + getSplitWidth(), y, color);
+            graphics.drawString(font, array[0].trim(), x, y, color);
+            graphics.drawString(font,array[1].trim(), x + getSplitWidth(), y, color);
         } else {
-            font.drawShadow(matrix, line, x, y, color);
+            graphics.drawString(font, line, x, y, color);
         }
     }
 
@@ -139,7 +139,7 @@ public abstract class DebugRenderOverlay extends GuiComponent {
         if (scale <= 0f) return;
 
         Font font = mc.font;
-        PoseStack matrix = event.getPoseStack();
+        PoseStack matrix = event.getGuiGraphics().pose();
 
         matrix.pushPose();
         matrix.scale(scale, scale, 1);
@@ -149,7 +149,7 @@ public abstract class DebugRenderOverlay extends GuiComponent {
         int x = (int) (getAnchorPoint().getX(mainWindow.getGuiScaledWidth(), textWidth, getMarginSize()) / getTextScale());
         int y = (int) (getAnchorPoint().getY(mainWindow.getGuiScaledHeight(), textHeight, getMarginSize()) / getTextScale());
         for (String line : debugText) {
-            drawLine(matrix, font, line, x, y, Color.VALUE_WHITE);
+            drawLine(event.getGuiGraphics(), font, line, x, y, Color.VALUE_WHITE);
             y += LINE_HEIGHT;
         }
 

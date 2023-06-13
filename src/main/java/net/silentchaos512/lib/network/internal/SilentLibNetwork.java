@@ -23,17 +23,17 @@ public final class SilentLibNetwork {
         channel.messageBuilder(LeftClickItemPacket.class, 1)
                 .decoder(LeftClickItemPacket::fromBytes)
                 .encoder(LeftClickItemPacket::toBytes)
-                .consumer(LeftClickItemPacket::handle)
+                .consumerMainThread(LeftClickItemPacket::handle)
                 .add();
         channel.messageBuilder(DisplayNBTPacket.class, 2)
                 .decoder(DisplayNBTPacket::fromBytes)
                 .encoder(DisplayNBTPacket::toBytes)
-                .consumer(DisplayNBTPacket::handle)
+                .consumerMainThread(DisplayNBTPacket::handle)
                 .add();
         channel.messageBuilder(SpawnEntityPacket.class, 3)
                 .decoder(SpawnEntityPacket::decode)
                 .encoder(SpawnEntityPacket::encode)
-                .consumer(SpawnEntityPacket::handle)
+                .consumerMainThread(SpawnEntityPacket::handle)
                 .add();
     }
 
