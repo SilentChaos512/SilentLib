@@ -174,7 +174,7 @@ public class LootContainerItem extends Item {
 
         // Play item pickup sound...
         float pitch = ((playerMP.getRandom().nextFloat() - playerMP.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F;
-        playerMP.level.playSound(null, playerMP.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, pitch);
+        playerMP.level().playSound(null, playerMP.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, pitch);
         heldItem.shrink(1);
         return InteractionResultHolder.success(heldItem);
     }

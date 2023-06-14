@@ -42,8 +42,9 @@ public class TeleportUtils {
         player.changeDimension(world, new ITeleporter() {
             @Override
             public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                entity.level = world;
-                world.addDuringPortalTeleport((ServerPlayer) entity);
+                ServerPlayer sp = (ServerPlayer) entity;
+                sp.setServerLevel(world);
+                world.addDuringPortalTeleport(sp);
                 entity.moveTo(x, y, z);
                 entity.teleportTo(x, y, z);
                 return entity;

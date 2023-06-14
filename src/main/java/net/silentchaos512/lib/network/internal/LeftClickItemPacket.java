@@ -55,9 +55,9 @@ public class LeftClickItemPacket {
                 ILeftClickItem item = (ILeftClickItem) heldItem.getItem();
 
                 if (packet.clickType == ILeftClickItem.ClickType.EMPTY) {
-                    item.onItemLeftClickSL(player.level, player, packet.hand);
+                    item.onItemLeftClickSL(player.level(), player, packet.hand);
                 } else if (packet.clickType == ILeftClickItem.ClickType.BLOCK) {
-                    item.onItemLeftClickBlockSL(player.level, player, packet.hand);
+                    item.onItemLeftClickBlockSL(player.level(), player, packet.hand);
                 } else {
                     SilentLib.LOGGER.error("Unknown ILeftClickItem.ClickType: {}", packet.clickType);
                 }

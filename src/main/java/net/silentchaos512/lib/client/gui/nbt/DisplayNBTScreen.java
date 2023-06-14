@@ -4,6 +4,8 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.*;
@@ -47,13 +49,13 @@ public class DisplayNBTScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack matrix, int mouseX, int mouseY, float partialTicks) {
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         assert minecraft != null;
-        this.displayList.render(matrix, mouseX, mouseY, partialTicks);
+        this.displayList.render(graphics, mouseX, mouseY, partialTicks);
         String titleStr = this.header.getString();
         int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
-        TextRenderUtils.renderScaled(matrix, font, Component.literal(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
-        super.render(matrix, mouseX, mouseY, partialTicks);
+        TextRenderUtils.renderScaled(graphics, font, Component.literal(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
+        super.render(graphics, mouseX, mouseY, partialTicks);
     }
 
     private static List<String> formatNbt(CompoundTag nbt, int depth) {

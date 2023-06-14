@@ -62,14 +62,14 @@ public final class EntityHelper {
         world.addFreshEntity(entity);
         if (world instanceof ServerLevel) {
             SpawnEntityPacket message = new SpawnEntityPacket(entity);
-            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getX(), entity.getY(), entity.getZ(), r2, entity.level.dimension())), message);
+            SilentLibNetwork.channel.send(PacketDistributor.NEAR.with(PacketDistributor.TargetPoint.p(entity.getX(), entity.getY(), entity.getZ(), r2, entity.level().dimension())), message);
         }
     }
 
     private static void handleSpawns() {
         Entity entity;
         while ((entity = entitiesToSpawn.poll()) != null) {
-            entity.level.addFreshEntity(entity);
+            entity.level().addFreshEntity(entity);
         }
     }
 

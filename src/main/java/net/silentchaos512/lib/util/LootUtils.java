@@ -8,6 +8,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
@@ -30,18 +31,18 @@ public final class LootUtils {
         double x = dropper.getX();
         double y = dropper.getY(dropper.getBbHeight() / 2);
         double z = dropper.getZ();
-        return new ItemEntity(dropper.level, x, y, z, stack);
+        return new ItemEntity(dropper.level(), x, y, z, stack);
     }
 
     public static Collection<ItemStack> gift(ResourceLocation lootTable, ServerPlayer player) {
-        MinecraftServer server = player.level.getServer();
+        MinecraftServer server = player.level().getServer();
         if (server == null) return ImmutableList.of();
 
-        LootContext lootContext = (new LootContext.Builder(player.getLevel()))
+        LootParams lootParams = (new LootParams.Builder(player.serverLevel()))
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
                 .withLuck(player.getLuck())
                 .create(LootContextParamSets.GIFT);
-        return server.getLootTables().get(lootTable).getRandomItems(lootContext);
+        return server.getLootData().getLootTable(lootTable).getRandomItems(lootParams);
     }
 }

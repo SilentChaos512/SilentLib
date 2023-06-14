@@ -58,7 +58,7 @@ public final class DimPos {
     }
 
     public static DimPos of(Entity entity) {
-        return new DimPos(entity.blockPosition(), entity.level.dimension());
+        return new DimPos(entity.blockPosition(), entity.level().dimension());
     }
 
     //endregion
