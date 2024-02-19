@@ -4,7 +4,7 @@ A common library for my Minecraft mods to use, to make updating and creating new
 ## Downloads
 
 - [CurseForge](https://www.curseforge.com/minecraft/mc-mods/silent-lib)
-- [Modrinth](https://modrinth.com/mod/torch-bandolier)
+- [Modrinth](https://modrinth.com/mod/silent-lib)
 
 If you downloaded the mod from somewhere other than Curseforge or Modrinth (or as part of a modpack in some cases), I cannot make any guarantees about the file or its contents, as it may have been uploaded without my permission.
 
