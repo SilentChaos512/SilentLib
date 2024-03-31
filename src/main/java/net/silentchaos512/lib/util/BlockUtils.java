@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.ChatFormatting;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
@@ -8,7 +9,6 @@ import net.minecraft.world.level.block.AirBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootDataManager;
 import net.minecraft.world.level.storage.loot.LootDataType;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public final class BlockUtils {
         LootDataManager lootTableManager = world.getServer().getLootData();
         Collection<ResourceLocation> missing = new ArrayList<>();
 
-        for (Block block : ForgeRegistries.BLOCKS.getValues()) {
+        for (Block block : BuiltInRegistries.BLOCK) {
             ResourceLocation lootTable = block.getLootTable();
             // The AirBlock check filters out removed blocks
             if (lootTable.getNamespace().equals(modId) && !(block instanceof AirBlock) && lootTableManager.getElementOptional(LootDataType.TABLE, lootTable).isEmpty()) {

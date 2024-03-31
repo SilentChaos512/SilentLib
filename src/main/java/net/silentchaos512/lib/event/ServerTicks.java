@@ -18,8 +18,8 @@
 
 package net.silentchaos512.lib.event;
 
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import net.silentchaos512.lib.SilentLib;
 
 import java.util.Queue;
@@ -39,7 +39,7 @@ public final class ServerTicks {
     private volatile Queue<Runnable> scheduledActions = new ConcurrentLinkedDeque<>();
 
     private ServerTicks() {
-        MinecraftForge.EVENT_BUS.addListener(this::serverTicks);
+        NeoForge.EVENT_BUS.addListener(this::serverTicks);
     }
 
     public static void scheduleAction(Runnable action) {
@@ -49,7 +49,7 @@ public final class ServerTicks {
         if (INSTANCE.scheduledActions.size() > QUEUE_OVERFLOW_LIMIT) {
             SilentLib.LOGGER.warn("Too many server tick actions queued! Currently at {} items. Would have added '{}'.",
                     INSTANCE.scheduledActions.size(), action);
-            SilentLib.LOGGER.catching(new IllegalStateException("ServerTicks queue overflow"));
+            SilentLib.LOGGER.error("ServerTicks queue overflow", new IllegalStateException("ServerTicks queue overflow"));
             INSTANCE.scheduledActions.clear();
         }
     }

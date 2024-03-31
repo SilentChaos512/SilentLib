@@ -19,7 +19,6 @@
 package net.silentchaos512.lib.item;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -29,7 +28,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -133,8 +131,7 @@ public class LootContainerItem extends Item {
 
     /**
      * Get the items to give the player when used. By default, this uses the loot table specified in
-     * the NBT of {@code heldItem}. Can be overridden for different behavior. This implementation is
-     * similar to {@link net.minecraft.advancements.AdvancementRewards#grant(ServerPlayerEntity)}.
+     * the NBT of {@code heldItem}. Can be overridden for different behavior.
      *
      * @param heldItem The loot container item being used
      * @param player   The player using the item

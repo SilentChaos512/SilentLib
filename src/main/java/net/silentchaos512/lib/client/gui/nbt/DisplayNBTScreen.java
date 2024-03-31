@@ -1,10 +1,8 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -44,7 +42,7 @@ public class DisplayNBTScreen extends Screen {
         }).bounds(scaledWidth - width - 2, scaledHeight - height - 2, width, height).build();
         this.addRenderableWidget(exportButton);
 
-        this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, this.height - 12, 11);
+        this.displayList = new DisplayNBTList(this, minecraft, scaledWidth, this.height, 12, 11);
         this.addWidget(displayList);
     }
 

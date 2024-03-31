@@ -9,15 +9,14 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.network.NetworkDirection;
-import net.silentchaos512.lib.network.internal.DisplayNBTPacket;
-import net.silentchaos512.lib.network.internal.SilentLibNetwork;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.silentchaos512.lib.network.internal.SPacketDisplayNbt;
 
 import javax.annotation.Nullable;
 
@@ -85,9 +84,9 @@ public class DisplayNBTCommand {
     }
 
     private static void sendPacket(CommandContext<CommandSourceStack> context, CompoundTag nbt, Component title) throws CommandSyntaxException {
-        DisplayNBTPacket msg = new DisplayNBTPacket(nbt, textOfNullable(title));
-        Connection netManager = context.getSource().getPlayerOrException().connection.connection;
-        SilentLibNetwork.channel.sendTo(msg, netManager, NetworkDirection.PLAY_TO_CLIENT);
+        ServerPlayer serverPlayer = context.getSource().getPlayerOrException();
+        SPacketDisplayNbt msg = new SPacketDisplayNbt(nbt, textOfNullable(title));
+        PacketDistributor.PLAYER.with(serverPlayer).send(msg);
     }
 
     private static Component textOfNullable(@Nullable Component text) {

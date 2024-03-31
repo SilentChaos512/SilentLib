@@ -44,7 +44,7 @@ public final class PlayerUtils {
         if (!player.getInventory().add(copy)) {
             ItemEntity entityItem = new ItemEntity(player.level(), player.getX(), player.getY(0.5), player.getZ(), copy);
             entityItem.setNoPickUpDelay();
-            entityItem.setThrower(player.getUUID());
+            entityItem.setThrower(player);
             player.level().addFreshEntity(entityItem);
         }
     }

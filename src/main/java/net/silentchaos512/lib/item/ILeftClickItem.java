@@ -24,10 +24,10 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.silentchaos512.lib.network.internal.LeftClickItemPacket;
-import net.silentchaos512.lib.network.internal.SilentLibNetwork;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
+import net.neoforged.neoforge.network.PacketDistributor;
+import net.silentchaos512.lib.network.internal.CPacketSwingItem;
 
 public interface ILeftClickItem {
     enum ClickType {
@@ -61,15 +61,11 @@ public interface ILeftClickItem {
     }
 
     final class EventHandler {
-        private static EventHandler INSTANCE;
-
-        private EventHandler() { }
+        private EventHandler() {}
 
         public static void init() {
-            if (INSTANCE != null) return;
-            INSTANCE = new EventHandler();
-            MinecraftForge.EVENT_BUS.addListener(EventHandler::onLeftClickBlock);
-            MinecraftForge.EVENT_BUS.addListener(EventHandler::onLeftClickEmpty);
+            NeoForge.EVENT_BUS.addListener(EventHandler::onLeftClickBlock);
+            NeoForge.EVENT_BUS.addListener(EventHandler::onLeftClickEmpty);
         }
 
         private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
@@ -79,7 +75,7 @@ public interface ILeftClickItem {
                 InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getLevel(), event.getEntity(), event.getHand());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
-                    SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.BLOCK, event.getHand()));
+                    PacketDistributor.SERVER.noArg().send(new CPacketSwingItem(ClickType.BLOCK, event.getHand()));
                 }
             }
         }
@@ -91,7 +87,7 @@ public interface ILeftClickItem {
                 InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getLevel(), event.getEntity(), event.getHand());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
-                    SilentLibNetwork.channel.sendToServer(new LeftClickItemPacket(ClickType.EMPTY, event.getHand()));
+                    PacketDistributor.SERVER.noArg().send(new CPacketSwingItem(ClickType.EMPTY, event.getHand()));
                 }
             }
         }

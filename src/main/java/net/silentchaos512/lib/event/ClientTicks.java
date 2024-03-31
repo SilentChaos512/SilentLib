@@ -20,10 +20,11 @@ package net.silentchaos512.lib.event;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.TickEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.TickEvent;
 import net.silentchaos512.lib.SilentLib;
-import net.silentchaos512.lib.util.GameUtil;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
@@ -47,12 +48,12 @@ public final class ClientTicks {
     public float totalTicks = 0f;
 
     private ClientTicks() {
-        MinecraftForge.EVENT_BUS.addListener(this::clientTickEnd);
-        MinecraftForge.EVENT_BUS.addListener(this::renderTick);
+        NeoForge.EVENT_BUS.addListener(this::clientTickEnd);
+        NeoForge.EVENT_BUS.addListener(this::renderTick);
     }
 
     public static void scheduleAction(Runnable action) {
-        if (GameUtil.isClient())
+        if (FMLEnvironment.dist == Dist.CLIENT)
             INSTANCE.scheduledActions.add(action);
         else
             SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
@@ -61,7 +62,7 @@ public final class ClientTicks {
             // Queue overflow?
             SilentLib.LOGGER.warn("Too many client tick actions queued! Currently at {} items. Would have added '{}'.",
                     INSTANCE.scheduledActions.size(), action);
-            SilentLib.LOGGER.catching(new IllegalStateException("ClientTicks queue overflow"));
+            SilentLib.LOGGER.error("ClientTicks queue overflow", new IllegalStateException("ClientTicks queue overflow"));
             INSTANCE.scheduledActions.clear();
         }
     }

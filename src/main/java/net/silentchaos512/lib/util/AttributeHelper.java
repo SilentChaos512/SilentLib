@@ -47,7 +47,7 @@ public final class AttributeHelper {
 
         if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.getOperation() != modifier.getOperation())) {
             // Modifier changed, so it needs to be reapplied
-            attributeInstance.removeModifier(currentMod);
+            attributeInstance.removeModifier(currentMod.getId());
         } else {
             attributeInstance.addPermanentModifier(modifier);
         }

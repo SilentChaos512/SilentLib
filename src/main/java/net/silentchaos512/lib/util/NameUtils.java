@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.base.Preconditions;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,8 +13,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.silentchaos512.lib.block.IBlockProvider;
 
 import javax.annotation.Nullable;
@@ -59,7 +59,7 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromBlock(Block block) {
-        return checkNotNull(ForgeRegistries.BLOCKS.getKey(block));
+        return checkNotNull(BuiltInRegistries.BLOCK.getKey(block));
     }
 
     /**
@@ -93,7 +93,7 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromEnchantment(Enchantment enchantment) {
-        return checkNotNull(ForgeRegistries.ENCHANTMENTS.getKey(enchantment));
+        return checkNotNull(BuiltInRegistries.ENCHANTMENT.getKey(enchantment));
     }
 
     /**
@@ -115,7 +115,7 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromEntityType(EntityType<?> type) {
-        return checkNotNull(ForgeRegistries.ENTITY_TYPES.getKey(type));
+        return checkNotNull(BuiltInRegistries.ENTITY_TYPE.getKey(type));
     }
 
     /**
@@ -126,7 +126,7 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromFluid(Fluid fluid) {
-        return checkNotNull(ForgeRegistries.FLUIDS.getKey(fluid));
+        return checkNotNull(BuiltInRegistries.FLUID.getKey(fluid));
     }
 
     /**
@@ -149,7 +149,7 @@ public final class NameUtils {
      */
     public static ResourceLocation fromItem(ItemLike item) {
         Preconditions.checkNotNull(item.asItem(), "asItem() is null, has object not been fully constructed?");
-        return checkNotNull(ForgeRegistries.ITEMS.getKey(item.asItem()));
+        return checkNotNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
     }
 
     /**
@@ -171,6 +171,6 @@ public final class NameUtils {
      * @throws NullPointerException if registry name is null
      */
     public static ResourceLocation fromRecipeSerializer(RecipeSerializer<? extends Recipe<?>> serializer) {
-        return checkNotNull(ForgeRegistries.RECIPE_SERIALIZERS.getKey(serializer));
+        return checkNotNull(BuiltInRegistries.RECIPE_SERIALIZER.getKey(serializer));
     }
 }

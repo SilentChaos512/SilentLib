@@ -22,8 +22,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.PlayerUtils;
 
@@ -52,7 +52,7 @@ public final class InitialSpawnItems {
     private final Map<ResourceLocation, Function<Player, Collection<ItemStack>>> spawnItems = new HashMap<>();
 
     private InitialSpawnItems() {
-        MinecraftForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
+        NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
     }
 
     /**

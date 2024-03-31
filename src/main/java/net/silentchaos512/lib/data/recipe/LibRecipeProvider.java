@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.data.recipe;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -10,16 +10,14 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
-import java.util.function.Consumer;
+import java.util.function.Function;
 
 @SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
 public abstract class LibRecipeProvider extends RecipeProvider {
@@ -31,7 +29,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected abstract void buildRecipes(Consumer<FinishedRecipe> consumer);
+    protected abstract void buildRecipes(RecipeOutput consumer);
 
     /**
      * Gets a {@link ResourceLocation} with {@link #modId} as the namespace. This is used
@@ -44,79 +42,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         return new ResourceLocation(this.modId, path);
     }
 
-    /**
-     * Add recipe conditions to recipe JSON. This can be called from the {@code #addExtraData}
-     * methods of some extended recipe builders.
-     * <p>
-     * Example: {@code shapedBuilder(...).addExtraData(json -> writeConditions(json, condition1,
-     * conditions2...)...;}
-     *
-     * @param json       The recipe JSON
-     * @param conditions The conditions to serialize
-     */
-    protected void writeConditions(JsonObject json, ICondition... conditions) {
-        if (conditions.length > 0) {
-            JsonArray array = new JsonArray();
-            for (ICondition condition : conditions) {
-                array.add(CraftingHelper.serialize(condition));
-            }
-            json.add("conditions", array);
-        }
-    }
-
-    protected ExtendedShapedRecipeBuilder shapedBuilder(RecipeCategory category, ItemLike result) {
-        return ExtendedShapedRecipeBuilder.vanillaBuilder(category, result, 1);
-    }
-
-    protected ExtendedShapedRecipeBuilder shapedBuilder(RecipeCategory category, ItemLike result, int count) {
-        return ExtendedShapedRecipeBuilder.vanillaBuilder(category, result, count);
-    }
-
-    protected ExtendedShapedRecipeBuilder shapedBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result) {
-        return ExtendedShapedRecipeBuilder.builder(serializer, category, result, 1);
-    }
-
-    protected ExtendedShapedRecipeBuilder shapedBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
-        return ExtendedShapedRecipeBuilder.builder(serializer, category, result, count);
-    }
-
-    protected ExtendedShapelessRecipeBuilder shapelessBuilder(RecipeCategory category, ItemLike result) {
-        return ExtendedShapelessRecipeBuilder.vanillaBuilder(category, result, 1);
-    }
-
-    protected ExtendedShapelessRecipeBuilder shapelessBuilder(RecipeCategory category, ItemLike result, int count) {
-        return ExtendedShapelessRecipeBuilder.vanillaBuilder(category, result, count);
-    }
-
-    protected ExtendedShapelessRecipeBuilder shapelessBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result) {
-        return ExtendedShapelessRecipeBuilder.builder(serializer, category, result, 1);
-    }
-
-    protected ExtendedShapelessRecipeBuilder shapelessBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
-        return ExtendedShapelessRecipeBuilder.builder(serializer, category, result, count);
-    }
-
-    protected DamageItemRecipeBuilder damageItemBuilder(RecipeCategory category, ItemLike result) {
-        return DamageItemRecipeBuilder.builder(category, result, 1);
-    }
-
-    protected DamageItemRecipeBuilder damageItemBuilder(RecipeCategory category, ItemLike result, int count) {
-        return DamageItemRecipeBuilder.builder(category, result, count);
-    }
-
-    protected DamageItemRecipeBuilder damageItemBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result) {
-        return DamageItemRecipeBuilder.builder(serializer, category, result, 1);
-    }
-
-    protected DamageItemRecipeBuilder damageItemBuilder(RecipeSerializer<?> serializer, RecipeCategory category, ItemLike result, int count) {
-        return DamageItemRecipeBuilder.builder(serializer, category, result, count);
-    }
-
-    protected void registerCustomRecipe(Consumer<FinishedRecipe> consumer, SimpleCraftingRecipeSerializer<?> serializer) {
-        registerCustomRecipe(consumer, serializer, NameUtils.fromRecipeSerializer(serializer));
-    }
-
-    protected void registerCustomRecipe(Consumer<FinishedRecipe> consumer, SimpleCraftingRecipeSerializer<?> serializer, ResourceLocation recipeId) {
+    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, ResourceLocation recipeId) {
         SpecialRecipeBuilder.special(serializer).save(consumer, recipeId.toString());
     }
 
@@ -128,13 +54,13 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #buildRecipes(Consumer)}
+     * @param consumer     RecipeOutput
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
-    protected void smeltingAndBlastingRecipes(Consumer<FinishedRecipe> consumer, String id, ItemLike ingredientIn, ItemLike result, float experienceIn) {
+    protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, ItemLike ingredientIn, ItemLike result, float experienceIn) {
         smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
     }
 
@@ -146,13 +72,13 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #buildRecipes(Consumer)}
+     * @param consumer     RecipeOutput
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
-    protected void smeltingAndBlastingRecipes(Consumer<FinishedRecipe> consumer, String id, TagKey<Item> ingredientIn, ItemLike result, float experienceIn) {
+    protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, TagKey<Item> ingredientIn, ItemLike result, float experienceIn) {
         smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
     }
 
@@ -164,18 +90,18 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * The recipes will be saved to {@code mod_id:blasting/id} and {@code mod_id:smelting/id}, where
      * {@code id} is the String parameter you called the method with.
      *
-     * @param consumer     Consumer from {@link #buildRecipes(Consumer)}
+     * @param consumer     RecipeOutput
      * @param id           Recipe path ending
      * @param ingredientIn The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
-    protected void smeltingAndBlastingRecipes(Consumer<FinishedRecipe> consumer, String id, Ingredient ingredientIn, ItemLike result, float experienceIn) {
+    protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, Ingredient ingredientIn, ItemLike result, float experienceIn) {
         SimpleCookingRecipeBuilder.blasting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 100)
-                .unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance())
+                .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                 .save(consumer, modId("blasting/" + id));
         SimpleCookingRecipeBuilder.smelting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 200)
-                .unlockedBy("impossible", new ImpossibleTrigger.TriggerInstance())
+                .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                 .save(consumer, modId("smelting/" + id));
     }
 
@@ -187,13 +113,13 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * If the {@code nugget} parameter is null, block/item recipes will still generate, but the
      * nugget recipes will not.
      *
-     * @param consumer Consumer from {@link #buildRecipes(Consumer)}
+     * @param consumer RecipeOutput
      * @param block    The block item (mandatory). Does not need to be a block, but is assumed to be
      *                 one.
      * @param item     The normal item (ingot, gem, etc.) Again, this can be any item.
      * @param nugget   The nugget item (optional). Can be any item or null.
      */
-    protected void compressionRecipes(Consumer<FinishedRecipe> consumer, ItemLike block, ItemLike item, @Nullable ItemLike nugget) {
+    protected void compressionRecipes(RecipeOutput consumer, ItemLike block, ItemLike item, @Nullable ItemLike nugget) {
         compressionRecipes(consumer, RecipeCategory.MISC, block, item, nugget);
     }
 
@@ -205,14 +131,14 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * If the {@code nugget} parameter is null, block/item recipes will still generate, but the
      * nugget recipes will not.
      *
-     * @param consumer Consumer from {@link #buildRecipes(Consumer)}
+     * @param consumer RecipeOutput
      * @param category The recipe cateogry
      * @param block    The block item (mandatory). Does not need to be a block, but is assumed to be
      *                 one.
      * @param item     The normal item (ingot, gem, etc.) Again, this can be any item.
      * @param nugget   The nugget item (optional). Can be any item or null.
      */
-    protected void compressionRecipes(Consumer<FinishedRecipe> consumer, RecipeCategory category, ItemLike block, ItemLike item, @Nullable ItemLike nugget) {
+    protected void compressionRecipes(RecipeOutput consumer, RecipeCategory category, ItemLike block, ItemLike item, @Nullable ItemLike nugget) {
         String blockName = NameUtils.fromItem(block).getPath();
         String itemName = NameUtils.fromItem(item).getPath();
 
@@ -245,7 +171,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         }
     }
 
-    protected static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
-        return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
+    protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(TagKey<Item> tagKey) {
+        return inventoryTrigger(ItemPredicate.Builder.item().of(tagKey).build());
     }
 }

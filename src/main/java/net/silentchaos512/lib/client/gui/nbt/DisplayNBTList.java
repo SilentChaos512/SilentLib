@@ -1,6 +1,5 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -10,8 +9,8 @@ import net.silentchaos512.lib.util.TextRenderUtils;
 public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
     private final DisplayNBTScreen screen;
 
-    public DisplayNBTList(DisplayNBTScreen screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int bottomIn, int slotHeightIn) {
-        super(mcIn, widthIn, heightIn, topIn, bottomIn, slotHeightIn);
+    public DisplayNBTList(DisplayNBTScreen screen, Minecraft mcIn, int widthIn, int heightIn, int topIn, int slotHeightIn) {
+        super(mcIn, widthIn, heightIn, topIn, slotHeightIn);
         this.screen = screen;
         this.screen.lines.forEach(line -> addEntry(new Entry(line)));
     }
