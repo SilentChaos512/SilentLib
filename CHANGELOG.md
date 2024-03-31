@@ -1,5 +1,8 @@
 # Changelog
 
+## [9.0.0] - 2024-03-31
+- Updated for NeoForge and Minecraft 1.20.4
+
 ## [8.0.0] - 2023-06-13
 - Updated for Minecraft 1.20.1 (Cyborgmas) [#41]
 

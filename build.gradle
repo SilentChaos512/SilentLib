@@ -5,10 +5,19 @@ plugins {
     id 'maven-publish'
     id 'net.neoforged.gradle.userdev' version '7.0.97'
     id "com.matthewprenger.cursegradle" version "1.4.0"
+    id "com.modrinth.minotaur" version "2.+"
 }
+
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
 
 version = mod_version
 group = mod_group_id
+base {
+    archivesName = "${repo_name}-${minecraft_version}-neoforge"
+}
+
+System.out.println("Version: ${version}")
+System.out.println("Archive: ${base.archivesName}")
 
 repositories {
     flatDir {
@@ -16,10 +25,6 @@ repositories {
         dirs "repo"
     }
     mavenLocal()
-}
-
-base {
-    archivesName = mod_id
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -153,19 +158,25 @@ artifacts {
 }
 
 curseforge {
-    if (project.hasProperty('cf_project_id') && project.hasProperty('cf_release_type') && project.hasProperty('cf_changelog_filename') &&
-            ((project.cf_release_type == 'alpha') || (project.cf_release_type == 'beta') || (project.cf_release_type == 'release'))) {
-        apiKey = property('curseforge.apiKey')
-        project {
-            id = project.cf_project_id
-            changelog = file(project.cf_changelog_filename)
-            releaseType = project.cf_release_type
-            addGameVersion(project.minecraft_version)
-            mainArtifact(jar) {
-//                displayName = "$project.description $display_version"
-            }
+    apiKey = property('curseforge.apiKey')
+    project {
+        id = project.cf_project_id
+        changelog = file(project.cf_changelog_filename)
+        releaseType = project.release_type
+        addGameVersion(project.minecraft_version)
+        mainArtifact(jar) {
         }
     }
+}
+
+modrinth {
+    token = property('modrinth.token')
+    projectId = project.mr_project_id
+    versionNumber = project.mod_version
+    versionType = project.release_type
+    uploadFile = jar
+    gameVersions = [project.minecraft_version]
+    loaders = ["neoforge"]
 }
 
 // GPR/Maven publishing
