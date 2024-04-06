@@ -157,26 +157,30 @@ artifacts {
     archives javadocJar
 }
 
-curseforge {
-    apiKey = property('curseforge.apiKey')
-    project {
-        id = project.cf_project_id
-        changelog = file(project.cf_changelog_filename)
-        releaseType = project.release_type
-        addGameVersion(project.minecraft_version)
-        mainArtifact(jar) {
+if (project.hasProperty('curseforge.apiKey')) {
+    curseforge {
+        apiKey = property('curseforge.apiKey')
+        project {
+            id = project.cf_project_id
+            changelog = file(project.cf_changelog_filename)
+            releaseType = project.release_type
+            addGameVersion(project.minecraft_version)
+            mainArtifact(jar) {
+            }
         }
     }
 }
 
-modrinth {
-    token = property('modrinth.token')
-    projectId = project.mr_project_id
-    versionNumber = project.mod_version
-    versionType = project.release_type
-    uploadFile = jar
-    gameVersions = [project.minecraft_version]
-    loaders = ["neoforge"]
+if (project.hasProperty('modrinth_token')) {
+    modrinth {
+        token = property('modrinth.token')
+        projectId = project.mr_project_id
+        versionNumber = project.mod_version
+        versionType = project.release_type
+        uploadFile = jar
+        gameVersions = [project.minecraft_version]
+        loaders = ["neoforge"]
+    }
 }
 
 // GPR/Maven publishing
