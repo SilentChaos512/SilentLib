@@ -18,7 +18,7 @@ If you downloaded the mod from somewhere other than Curseforge or Modrinth (or a
 
 To use Silent Lib in your project, add the following to your `build.gradle`.
 
-You alse need to generate a GitHub token and add it along with your GitHub username to your personal `gradle.properties` file in `C:\Users\YOUR_USERNAME\.gradle` or `~/.gradle/gradle.properties`. This file may not exist, and you would have to create it yourself.
+You also need to generate a GitHub token and add it along with your GitHub username to your personal `gradle.properties` file in `C:\Users\YOUR_USERNAME\.gradle` or `~/.gradle/gradle.properties`. This file may not exist, and you would have to create it yourself.
 
 GitHub tokens can be generated [here](https://github.com/settings/tokens). Click _Generate New Token_ and click the checkmark for _read:packages_
 
@@ -34,7 +34,35 @@ gpr.token=paste_your_token_here
 
 -----------------------------------
 
-Code to add to `build.gradle`
+### Code to add to `build.gradle`
+
+#### Minecraft 1.20.4 or higher (NeoForge)
+
+The package name includes the Minecraft version and "neoforge". The `silent-utils` library is no longer used.
+
+```gradle
+repositories {
+    maven {
+        url = uri("https://maven.pkg.github.com/silentchaos512/silentlib")
+        credentials {
+            username = property('gpr.username')
+            password = property('gpr.token')
+        }
+    }
+}
+```
+
+```gradle
+dependencies {
+    // Add "silentlib_version" to your gradle.properties (example: silentlib_version = 9.+)
+    // Available builds can be found here: https://github.com/SilentChaos512/silentlib/packages
+    implementation("net.silentchaos512:silent-lib-${minecraft_version}-neoforge:${project.silentlib_version}")
+}
+```
+
+#### Minecraft 1.20.1 or lower (Forge)
+
+The Minecraft version is part of the package version. The `silent-utils` library must be added as well.
 
 ```gradle
 repositories {
