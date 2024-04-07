@@ -95,22 +95,8 @@ repositories {
     }
 }
 
-configurations {
-    // Dependencies to pack into the jar
-    extraLibs
-}
-
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-
-    extraLibs("net.silentchaos512:silent-utils:1.+") {
-        exclude module: 'guava'
-        exclude module: 'gson'
-        exclude module: 'log4j-core'
-        exclude module: 'log4j-api'
-        exclude module: 'jsr305'
-        exclude module: 'toml'
-    }
 
     // JEI
     if (project.hasProperty("jei_version")) {
@@ -118,8 +104,6 @@ dependencies {
         compileOnly "mezz.jei:jei-${mc_version}-forge-api:${jei_version}"
         runtimeOnly "mezz.jei:jei-${mc_version}-forge:${jei_version}"
     }
-
-    configurations.implementation.extendsFrom(configurations.extraLibs)
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

@@ -27,8 +27,8 @@ import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.TickEvent;
-import net.silentchaos512.utils.Anchor;
-import net.silentchaos512.utils.Color;
+import net.silentchaos512.lib.util.Anchor;
+import net.silentchaos512.lib.util.Color;
 
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;

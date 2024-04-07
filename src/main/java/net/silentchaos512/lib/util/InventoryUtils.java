@@ -24,7 +24,6 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.silentchaos512.lib.collection.StackList;
-import net.silentchaos512.utils.MathUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
