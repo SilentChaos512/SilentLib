@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.crafting.recipe;
 
+import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function5;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -91,6 +92,16 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         return nonnulllist.isEmpty() || nonnulllist.stream().filter(ingredient -> !ingredient.isEmpty()).anyMatch(net.neoforged.neoforge.common.CommonHooks::hasNoElements);
     }
 
+    protected static <R extends ExtendedShapedRecipe> Products.P5<RecordCodecBuilder.Mu<R>, String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean> basicCodecFields(RecordCodecBuilder.Instance<R> builder) {
+        return builder.group(
+                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(r -> r.group),
+                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
+                ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.result),
+                ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(r -> r.showNotification)
+        );
+    }
+
     public static class BasicSerializer<R extends ExtendedShapedRecipe> implements RecipeSerializer<R> {
         private final Codec<R> codec;
         private final Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory;
@@ -98,13 +109,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         public BasicSerializer(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
             this.factory = factory;
             this.codec = RecordCodecBuilder.create(
-                    builder -> builder.group(
-                                    ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(r -> r.group),
-                                    CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
-                                    ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
-                                    ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.result),
-                                    ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(r -> r.showNotification)
-                            )
+                    builder -> basicCodecFields(builder)
                             .apply(builder, this.factory)
             );
         }

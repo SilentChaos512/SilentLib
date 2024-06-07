@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.crafting.recipe;
 
+import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -85,6 +86,33 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
         return pWidth * pHeight >= this.ingredients.size();
     }
 
+    protected static <T extends ExtendedShapelessRecipe> Products.P4<RecordCodecBuilder.Mu<T>, String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>> commonCodecFields(RecordCodecBuilder.Instance<T> pInstance) {
+        var maxIngredients = 9; //ShapedRecipePattern.maxHeight * ShapedRecipePattern.maxWidth
+        return pInstance.group(
+                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(p_301127_ -> p_301127_.group),
+                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_301133_ -> p_301133_.category),
+                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.result),
+                Ingredient.CODEC_NONEMPTY
+                        .listOf()
+                        .fieldOf("ingredients")
+                        .flatXmap(
+                                list -> {
+                                    Ingredient[] aingredient = list
+                                            .toArray(Ingredient[]::new); //Forge skip the empty check and immediately create the array.
+                                    if (aingredient.length == 0) {
+                                        return DataResult.error(() -> "No ingredients for shapeless recipe");
+                                    } else {
+                                        return aingredient.length > maxIngredients
+                                                ? DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: %s".formatted(maxIngredients))
+                                                : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
+                                    }
+                                },
+                                DataResult::success
+                        )
+                        .forGetter(r -> r.ingredients)
+        );
+    }
+
     public static class BasicSerializer<R extends ExtendedShapelessRecipe> implements RecipeSerializer<R> {
         private final Codec<R> codec;
         private final Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory;
@@ -92,29 +120,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
         public BasicSerializer(Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
             this.factory = factory;
             this.codec = RecordCodecBuilder.create(
-                    builder -> builder.group(
-                                    ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(p_301127_ -> p_301127_.group),
-                                    CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_301133_ -> p_301133_.category),
-                                    ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.result),
-                                    Ingredient.CODEC_NONEMPTY
-                                            .listOf()
-                                            .fieldOf("ingredients")
-                                            .flatXmap(
-                                                    list -> {
-                                                        Ingredient[] aingredient = list
-                                                                .toArray(Ingredient[]::new); //Forge skip the empty check and immediatly create the array.
-                                                        if (aingredient.length == 0) {
-                                                            return DataResult.error(() -> "No ingredients for shapeless recipe");
-                                                        } else {
-                                                            return aingredient.length > 9 //ShapedRecipePattern.maxHeight * ShapedRecipePattern.maxWidth
-                                                                    ? DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: %s".formatted(9))
-                                                                    : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
-                                                        }
-                                                    },
-                                                    DataResult::success
-                                            )
-                                            .forGetter(r -> r.ingredients)
-                            )
+                    builder -> commonCodecFields(builder)
                             .apply(builder, this.factory)
             );
         }

@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.data.recipe;
 
+import com.mojang.datafixers.util.Function5;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -9,6 +10,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
@@ -19,7 +21,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> {
+public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> implements RecipeBuilder {
     protected final RecipeCategory category;
     protected final ItemStack result;
     protected final List<String> rows = new ArrayList<>();
@@ -78,10 +80,17 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> {
         return this;
     }
 
+    @Override
+    public Item getResult() {
+        return result.getItem();
+    }
+
+    @Override
     public void save(RecipeOutput output) {
         save(output, NameUtils.fromItem(this.result));
     }
 
+    @Override
     public void save(RecipeOutput output, ResourceLocation id) {
         ShapedRecipePattern pattern = ShapedRecipePattern.of(this.key, this.rows);
         Advancement.Builder advancementBuilder = null;
@@ -94,17 +103,38 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> {
         }
 
         R recipe = createRecipe(id);
-        AdvancementHolder advancementHolder = advancementBuilder != null ? advancementBuilder.build(id.withPrefix("recipes/" + this.category.getFolderName() + "/")) : null;
+        AdvancementHolder advancementHolder = advancementBuilder != null
+                ? advancementBuilder.build(id.withPrefix("recipes/" + this.category.getFolderName() + "/"))
+                : null;
         output.accept(id, recipe, advancementHolder);
+    }
+
+    public RecipeCategory category() {
+        return category;
+    }
+
+    public ItemStack result() {
+        return result;
+    }
+
+    public ShapedRecipePattern pattern() {
+        return ShapedRecipePattern.of(this.key, this.rows);
+    }
+
+    public String group() {
+        return group;
+    }
+
+    public boolean showNotification() {
+        return showNotification;
     }
 
     public static ShapedRecipe vanillaFactory(ResourceLocation id, ExtendedShapedRecipeBuilder<ShapedRecipe> builder) {
         // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
-        ShapedRecipePattern pattern = ShapedRecipePattern.of(builder.key, builder.rows);
         return new ShapedRecipe(
                 Objects.requireNonNullElse(builder.group, ""),
                 RecipeBuilder.determineBookCategory(builder.category),
-                pattern,
+                ShapedRecipePattern.of(builder.key, builder.rows),
                 builder.result,
                 builder.showNotification
         );
@@ -116,6 +146,38 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> {
         public Basic(RecipeCategory category, ItemStack result, BiFunction<ResourceLocation, Basic<R>, R> factory) {
             super(category, result);
             this.factory = factory;
+        }
+
+        public Basic(RecipeCategory category, ItemLike result, BiFunction<ResourceLocation, Basic<R>, R> factory) {
+            super(category, new ItemStack(result));
+            this.factory = factory;
+        }
+
+        public Basic(RecipeCategory category, ItemLike result, int count, BiFunction<ResourceLocation, Basic<R>, R> factory) {
+            super(category, new ItemStack(result, count));
+            this.factory = factory;
+        }
+
+        public Basic(RecipeCategory category, ItemStack result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+            this(category, result, convertConstructor(factory));
+        }
+
+        public Basic(RecipeCategory category, ItemLike result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+            this(category, result, convertConstructor(factory));
+        }
+
+        public Basic(RecipeCategory category, ItemLike result, int count, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+            this(category, result, convertConstructor(factory));
+        }
+
+        private static <R extends ShapedRecipe> BiFunction<ResourceLocation, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+            return (id, builder) -> factory.apply(
+                    builder.group,
+                    RecipeBuilder.determineBookCategory(builder.category),
+                    builder.pattern(),
+                    builder.result,
+                    builder.showNotification
+            );
         }
 
         @Override
