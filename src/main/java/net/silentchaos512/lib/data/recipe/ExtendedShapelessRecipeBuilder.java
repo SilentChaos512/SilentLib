@@ -19,7 +19,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 
-import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -31,8 +30,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
     protected final ItemStack resultStack;
     protected final NonNullList<Ingredient> ingredients = NonNullList.create();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    @Nullable
-    protected String group;
+    protected String group = "";
 
     public ExtendedShapelessRecipeBuilder(RecipeCategory category, ItemStack result) {
         this.category = category;
@@ -51,12 +49,20 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
     public abstract R createRecipe(ResourceLocation id);
 
     public ExtendedShapelessRecipeBuilder<R> requires(TagKey<Item> tag) {
-        return this.requires(Ingredient.of(tag));
+        return this.requires(tag, 1);
     }
 
-    public ExtendedShapelessRecipeBuilder<R> requires(ItemLike pItem, int pQuantity) {
-        for(int i = 0; i < pQuantity; ++i) {
-            this.requires(Ingredient.of(pItem));
+    public ExtendedShapelessRecipeBuilder<R> requires(TagKey<Item> tag, int count) {
+        return this.requires(Ingredient.of(tag), count);
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> requires(ItemLike item) {
+        return this.requires(item, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> requires(ItemLike item, int count) {
+        for(int i = 0; i < count; ++i) {
+            this.requires(Ingredient.of(item));
         }
 
         return this;
@@ -79,7 +85,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder<R> group(@Nullable String pGroupName) {
+    public ExtendedShapelessRecipeBuilder<R> group(String pGroupName) {
         this.group = pGroupName;
         return this;
     }
