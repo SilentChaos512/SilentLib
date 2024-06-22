@@ -1,21 +1,3 @@
-/*
- * Silent Lib -- InventoryUtils
- * Copyright (C) 2018 SilentChaos512
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation version 3
- * of the License.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
@@ -30,7 +12,9 @@ import java.util.Collection;
 import java.util.function.Predicate;
 
 public final class InventoryUtils {
-    private InventoryUtils() {throw new IllegalAccessError("Utility class");}
+    private InventoryUtils() {
+        throw new IllegalAccessError("Utility class");
+    }
 
     /**
      * Creates slots for the player's inventory for a {@link Container}. Convenience method to
@@ -57,12 +41,12 @@ public final class InventoryUtils {
         return list;
     }
 
+    /**
+     * @deprecated No longer needed?
+     */
+    @Deprecated
     public static boolean canItemsStack(ItemStack a, ItemStack b) {
-        if (a.getItem() != b.getItem())
-            return false;
-        if (a.getTag() == null && b.getTag() != null)
-            return false;
-        return (a.getTag() == null || a.getTag().equals(b.getTag())) && a.areAttachmentsCompatible(b);
+        return ItemStack.isSameItemSameComponents(a, b);
     }
 
     /**

@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.20.6-9.2.0] - 2024-06-21
+- Updated for Minecraft 1.20.6 (NeoForge)
+- Removed: sl_nbt command
+- Removed: BlockUtils, NBTSerializer, TriConsumer, TriFunction
+- Various renames and refactoring
+
 ## [9.1.2] - 2024-06-16
 - Assorted internal changes and fixes
 

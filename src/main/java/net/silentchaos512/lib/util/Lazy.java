@@ -8,7 +8,9 @@ import java.util.function.Supplier;
  * produced by the {@link Supplier}. Call {@link #get} to acquire the object.
  *
  * @param <T> The type of the stored object
+ * @deprecated Use {@link net.neoforged.neoforge.common.util.Lazy} instead
  */
+@Deprecated(forRemoval = true)
 public class Lazy<T> {
     private T value;
     private Supplier<T> supplier;

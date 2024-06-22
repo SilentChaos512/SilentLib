@@ -1,24 +1,9 @@
-/*
- * SilentLib - IItemSL
- * Copyright (C) 2018 SilentChaos512
- *
- * This library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.silentchaos512.lib.item;
 
-import net.minecraft.world.InteractionHand;
+import io.netty.buffer.ByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -27,11 +12,27 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.silentchaos512.lib.network.internal.CPacketSwingItem;
+import net.silentchaos512.lib.network.internal.SwingItemPayload;
 
 public interface ILeftClickItem {
-    enum ClickType {
-        EMPTY, BLOCK
+    enum Target {
+        /**
+         * The player clicked and swung at the air (no target)
+         */
+        EMPTY,
+        /**
+         * The player clicked and swung at a nearby block
+         */
+        BLOCK;
+
+        public static final StreamCodec<ByteBuf, Target> ID_STREAM_CODEC = ByteBufCodecs.idMapper(
+                ByIdMap.continuous(
+                        Target::ordinal,
+                        Target.values(),
+                        ByIdMap.OutOfBoundsStrategy.ZERO
+                ),
+                Target::ordinal
+        );
     }
 
     /**
@@ -40,11 +41,10 @@ public interface ILeftClickItem {
      *
      * @param world  The world
      * @param player The player
-     * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
-    default InteractionResultHolder<ItemStack> onItemLeftClickSL(Level world, Player player, InteractionHand hand) {
-        return new InteractionResultHolder<>(InteractionResult.PASS, player.getItemInHand(hand));
+    default InteractionResultHolder<ItemStack> onItemLeftClickSL(Level world, Player player) {
+        return new InteractionResultHolder<>(InteractionResult.PASS, player.getMainHandItem());
     }
 
     /**
@@ -53,15 +53,15 @@ public interface ILeftClickItem {
      *
      * @param world  The world
      * @param player The player
-     * @param hand   The hand the item is in
      * @return If this returns SUCCESS on the client-side, a packet will be sent to the server.
      */
-    default InteractionResultHolder<ItemStack> onItemLeftClickBlockSL(Level world, Player player, InteractionHand hand) {
-        return onItemLeftClickSL(world, player, hand);
+    default InteractionResultHolder<ItemStack> onItemLeftClickBlockSL(Level world, Player player) {
+        return onItemLeftClickSL(world, player);
     }
 
     final class EventHandler {
-        private EventHandler() {}
+        private EventHandler() {
+        }
 
         public static void init() {
             NeoForge.EVENT_BUS.addListener(EventHandler::onLeftClickBlock);
@@ -70,24 +70,24 @@ public interface ILeftClickItem {
 
         private static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
             ItemStack stack = event.getItemStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem leftClickItem) {
                 // Client-side call
-                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickBlockSL(event.getLevel(), event.getEntity(), event.getHand());
+                InteractionResultHolder<ItemStack> result = leftClickItem.onItemLeftClickBlockSL(event.getLevel(), event.getEntity());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
-                    PacketDistributor.SERVER.noArg().send(new CPacketSwingItem(ClickType.BLOCK, event.getHand()));
+                    PacketDistributor.sendToServer(new SwingItemPayload(Target.BLOCK));
                 }
             }
         }
 
         private static void onLeftClickEmpty(PlayerInteractEvent.LeftClickEmpty event) {
             ItemStack stack = event.getItemStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem) {
+            if (!stack.isEmpty() && stack.getItem() instanceof ILeftClickItem leftClickItem) {
                 // Client-side call
-                InteractionResultHolder<ItemStack> result = ((ILeftClickItem) stack.getItem()).onItemLeftClickSL(event.getLevel(), event.getEntity(), event.getHand());
+                InteractionResultHolder<ItemStack> result = leftClickItem.onItemLeftClickSL(event.getLevel(), event.getEntity());
                 // Server-side call
                 if (result.getResult() == InteractionResult.SUCCESS) {
-                    PacketDistributor.SERVER.noArg().send(new CPacketSwingItem(ClickType.EMPTY, event.getHand()));
+                    PacketDistributor.sendToServer(new SwingItemPayload(Target.EMPTY));
                 }
             }
         }

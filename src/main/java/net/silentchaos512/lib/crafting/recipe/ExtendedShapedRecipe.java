@@ -3,11 +3,12 @@ package net.silentchaos512.lib.crafting.recipe;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function5;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -47,7 +48,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return this.result;
     }
 
@@ -72,8 +73,8 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
-        return this.getResultItem(pRegistryAccess).copy();
+    public ItemStack assemble(CraftingContainer pContainer, HolderLookup.Provider pRegistries) {
+        return this.getResultItem(pRegistries).copy();
     }
 
     @Override
@@ -89,53 +90,60 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     @Override
     public boolean isIncomplete() {
         NonNullList<Ingredient> nonnulllist = this.getIngredients();
-        return nonnulllist.isEmpty() || nonnulllist.stream().filter(ingredient -> !ingredient.isEmpty()).anyMatch(net.neoforged.neoforge.common.CommonHooks::hasNoElements);
+        return nonnulllist.isEmpty() || nonnulllist.stream()
+                .filter(ingredient -> !ingredient.isEmpty())
+                .anyMatch(Ingredient::hasNoItems);
     }
 
     protected static <R extends ExtendedShapedRecipe> Products.P5<RecordCodecBuilder.Mu<R>, String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean> basicCodecFields(RecordCodecBuilder.Instance<R> builder) {
         return builder.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(r -> r.group),
+                Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.group),
                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
                 ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(r -> r.result),
-                ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(r -> r.showNotification)
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result),
+                Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(r -> r.showNotification)
         );
     }
 
     public static class BasicSerializer<R extends ExtendedShapedRecipe> implements RecipeSerializer<R> {
-        private final Codec<R> codec;
+        private final MapCodec<R> codec;
+        private final StreamCodec<RegistryFriendlyByteBuf, R> streamCodec;
         private final Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory;
 
         public BasicSerializer(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
             this.factory = factory;
-            this.codec = RecordCodecBuilder.create(
+            this.codec = RecordCodecBuilder.mapCodec(
                     builder -> basicCodecFields(builder)
                             .apply(builder, this.factory)
             );
+            this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
         }
 
         @Override
-        public Codec<R> codec() {
+        public MapCodec<R> codec() {
             return this.codec;
         }
 
         @Override
-        public R fromNetwork(FriendlyByteBuf pBuffer) {
-            String group = pBuffer.readUtf();
-            CraftingBookCategory category = pBuffer.readEnum(CraftingBookCategory.class);
-            ShapedRecipePattern pattern = ShapedRecipePattern.fromNetwork(pBuffer);
-            ItemStack result = pBuffer.readItem();
-            boolean showNotification = pBuffer.readBoolean();
+        public StreamCodec<RegistryFriendlyByteBuf, R> streamCodec() {
+            return this.streamCodec;
+        }
+
+        public R fromNetwork(RegistryFriendlyByteBuf buf) {
+            String group = buf.readUtf();
+            CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
+            ShapedRecipePattern pattern = ShapedRecipePattern.STREAM_CODEC.decode(buf);
+            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
+            boolean showNotification = buf.readBoolean();
             return factory.apply(group, category, pattern, result, showNotification);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, R pRecipe) {
-            pBuffer.writeUtf(pRecipe.group);
-            pBuffer.writeEnum(pRecipe.category);
-            pRecipe.pattern.toNetwork(pBuffer);
-            pBuffer.writeItem(pRecipe.result);
-            pBuffer.writeBoolean(pRecipe.showNotification);
+        public void toNetwork(RegistryFriendlyByteBuf buf, R recipe) {
+            buf.writeUtf(recipe.group);
+            buf.writeEnum(recipe.category);
+            ShapedRecipePattern.STREAM_CODEC.encode(buf, recipe.pattern);
+            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
+            buf.writeBoolean(recipe.showNotification);
         }
     }
 }

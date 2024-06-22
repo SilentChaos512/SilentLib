@@ -4,11 +4,12 @@ import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.ExtraCodecs;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -48,7 +49,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess pRegistryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider pRegistries) {
         return this.result;
     }
 
@@ -77,7 +78,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, RegistryAccess pRegistryAccess) {
+    public ItemStack assemble(CraftingContainer pContainer, HolderLookup.Provider pRegistries) {
         return this.result.copy();
     }
 
@@ -89,16 +90,15 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     protected static <T extends ExtendedShapelessRecipe> Products.P4<RecordCodecBuilder.Mu<T>, String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>> commonCodecFields(RecordCodecBuilder.Instance<T> pInstance) {
         var maxIngredients = 9; //ShapedRecipePattern.maxHeight * ShapedRecipePattern.maxWidth
         return pInstance.group(
-                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(p_301127_ -> p_301127_.group),
-                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_301133_ -> p_301133_.category),
-                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.result),
+                Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.group),
+                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
+                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result),
                 Ingredient.CODEC_NONEMPTY
                         .listOf()
                         .fieldOf("ingredients")
                         .flatXmap(
                                 list -> {
-                                    Ingredient[] aingredient = list
-                                            .toArray(Ingredient[]::new); //Forge skip the empty check and immediately create the array.
+                                    Ingredient[] aingredient = list.toArray(Ingredient[]::new);
                                     if (aingredient.length == 0) {
                                         return DataResult.error(() -> "No ingredients for shapeless recipe");
                                     } else {
@@ -114,48 +114,53 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     public static class BasicSerializer<R extends ExtendedShapelessRecipe> implements RecipeSerializer<R> {
-        private final Codec<R> codec;
+        private final MapCodec<R> codec;
+        private final StreamCodec<RegistryFriendlyByteBuf, R> streamCodec;
         private final Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory;
 
         public BasicSerializer(Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
             this.factory = factory;
-            this.codec = RecordCodecBuilder.create(
+            this.codec = RecordCodecBuilder.mapCodec(
                     builder -> commonCodecFields(builder)
                             .apply(builder, this.factory)
             );
+            this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
         }
 
         @Override
-        public Codec<R> codec() {
+        public MapCodec<R> codec() {
             return this.codec;
         }
 
         @Override
-        public R fromNetwork(FriendlyByteBuf pBuffer) {
-            String group = pBuffer.readUtf();
-            CraftingBookCategory category = pBuffer.readEnum(CraftingBookCategory.class);
-            int ingredientCount = pBuffer.readVarInt();
+        public StreamCodec<RegistryFriendlyByteBuf, R> streamCodec() {
+            return this.streamCodec;
+        }
+
+        public R fromNetwork(RegistryFriendlyByteBuf buf) {
+            String group = buf.readUtf();
+            CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
+            int ingredientCount = buf.readVarInt();
             NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.EMPTY);
 
             for (int j = 0; j < ingredients.size(); ++j) {
-                ingredients.set(j, Ingredient.fromNetwork(pBuffer));
+                ingredients.set(j, Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
             }
 
-            ItemStack result = pBuffer.readItem();
+            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
             return this.factory.apply(group, category, result, ingredients);
         }
 
-        @Override
-        public void toNetwork(FriendlyByteBuf pBuffer, R pRecipe) {
-            pBuffer.writeUtf(pRecipe.group);
-            pBuffer.writeEnum(pRecipe.category);
-            pBuffer.writeVarInt(pRecipe.ingredients.size());
+        public void toNetwork(RegistryFriendlyByteBuf buf, R recipe) {
+            buf.writeUtf(recipe.group);
+            buf.writeEnum(recipe.category);
+            buf.writeVarInt(recipe.ingredients.size());
 
-            for (Ingredient ingredient : pRecipe.ingredients) {
-                ingredient.toNetwork(pBuffer);
+            for (Ingredient ingredient : recipe.ingredients) {
+                Ingredient.CONTENTS_STREAM_CODEC.encode(buf, ingredient);
             }
 
-            pBuffer.writeItem(pRecipe.result);
+            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
         }
     }
 }

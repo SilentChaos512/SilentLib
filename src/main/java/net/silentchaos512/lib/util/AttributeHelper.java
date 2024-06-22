@@ -18,6 +18,7 @@
 
 package net.silentchaos512.lib.util;
 
+import net.minecraft.core.Holder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -36,24 +37,24 @@ public final class AttributeHelper {
     private AttributeHelper() {throw new IllegalAccessError("Utility class");}
 
     public static void apply(LivingEntity entity, Attribute attribute, AttributeModifier modifier) {
-        AttributeInstance instance = entity.getAttribute(attribute);
+        AttributeInstance instance = entity.getAttribute(Holder.direct(attribute));
         apply(instance, modifier);
     }
 
     public static void apply(@Nullable AttributeInstance attributeInstance, AttributeModifier modifier) {
         if (attributeInstance == null) return;
-        AttributeModifier currentMod = attributeInstance.getModifier(modifier.getId());
+        AttributeModifier currentMod = attributeInstance.getModifier(modifier.id());
 
-        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.getAmount(), modifier.getAmount()) || currentMod.getOperation() != modifier.getOperation())) {
+        if (currentMod != null && (!MathUtils.doublesEqual(currentMod.amount(), modifier.amount()) || currentMod.operation() != modifier.operation())) {
             // Modifier changed, so it needs to be reapplied
-            attributeInstance.removeModifier(currentMod.getId());
+            attributeInstance.removeModifier(currentMod.id());
         } else {
             attributeInstance.addPermanentModifier(modifier);
         }
     }
 
     public static void remove(LivingEntity entity, Attribute attribute, UUID uuid) {
-        AttributeInstance instance = entity.getAttribute(attribute);
+        AttributeInstance instance = entity.getAttribute(Holder.direct(attribute));
         remove(instance, uuid);
     }
 

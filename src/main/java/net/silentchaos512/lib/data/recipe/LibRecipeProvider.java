@@ -5,7 +5,8 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.data.DataGenerator;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -17,14 +18,15 @@ import net.minecraft.world.level.ItemLike;
 import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
 @SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
 public abstract class LibRecipeProvider extends RecipeProvider {
     private final String modId;
 
-    public LibRecipeProvider(DataGenerator generatorIn, String modId) {
-        super(generatorIn.getPackOutput());
+    public LibRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modId) {
+        super(packOutput, registries);
         this.modId = modId;
     }
 

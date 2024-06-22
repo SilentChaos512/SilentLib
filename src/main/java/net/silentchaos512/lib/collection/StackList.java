@@ -18,8 +18,6 @@
 
 package net.silentchaos512.lib.collection;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
@@ -61,16 +59,6 @@ public final class StackList extends ArrayList<ItemStack> {
         StackList newList = new StackList();
         for (int i = 0; i < inventory.getContainerSize(); ++i) {
             newList.add(inventory.getItem(i));
-        }
-        return newList;
-    }
-
-    public static StackList from(Iterable<Tag> tagList) {
-        StackList newList = new StackList();
-        for (Tag nbt : tagList) {
-            if (nbt instanceof CompoundTag) {
-                newList.add(ItemStack.of((CompoundTag) nbt));
-            }
         }
         return newList;
     }

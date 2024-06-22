@@ -7,6 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
 import java.util.Objects;

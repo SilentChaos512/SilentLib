@@ -1,9 +1,9 @@
 package net.silentchaos512.lib.world.placement;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -12,13 +12,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.silentchaos512.lib.SilentLib;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DimensionFilterPlacement extends PlacementModifier {
-    public static final Codec<DimensionFilterPlacement> CODEC = RecordCodecBuilder.create(instance ->
+    public static final MapCodec<DimensionFilterPlacement> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
                     Codec.BOOL.fieldOf("is_whitelist").forGetter(f -> f.isWhitelist),
                     Codec.STRING.listOf().fieldOf("list").forGetter(f ->
@@ -50,6 +51,6 @@ public class DimensionFilterPlacement extends PlacementModifier {
 
     @Override
     public PlacementModifierType<DimensionFilterPlacement> type() {
-        return LibPlacements.DIMENSION_FILTER.get();
+        return SilentLib.DIMENSION_FILTER_PLACEMENT.get();
     }
 }

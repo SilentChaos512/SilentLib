@@ -2,48 +2,31 @@ package net.silentchaos512.lib.crafting.ingredient;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.IngredientType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public class IngredientWithCount extends Ingredient {
+public record IngredientWithCount(Ingredient ingredient, int count) implements Predicate<ItemStack> {
     public static final Codec<IngredientWithCount> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(iwa -> iwa),
-                    Codec.INT.fieldOf("count").forGetter(iwa -> iwa.count)
+                    Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(iwc -> iwc.ingredient),
+                    Codec.INT.fieldOf("count").forGetter(iwc -> iwc.count)
             ).apply(instance, IngredientWithCount::new)
     );
 
-    public static final IngredientWithCount EMPTY = new IngredientWithCount(Stream.empty(), 0);
-
-    private final int count;
-
-    private IngredientWithCount(Ingredient ingredient, int count) {
-        this(Arrays.stream(ingredient.values), count);
-    }
-
-    private IngredientWithCount(Stream<? extends Value> values, int count) {
-        super(values);
-        this.count = count;
-    }
-
-    private IngredientWithCount(Stream<? extends Value> values, Supplier<? extends IngredientType<?>> type, int count) {
-        super(values, type);
-        this.count = count;
-    }
+    public static final IngredientWithCount EMPTY = new IngredientWithCount(Ingredient.EMPTY, 0);
 
     @Override
     public boolean test(@Nullable ItemStack pStack) {
-        return pStack != null && pStack.getCount() >= this.count && super.test(pStack);
+        return pStack != null && pStack.getCount() >= this.count && ingredient.test(pStack);
     }
 
     public static IngredientWithCount of() {
@@ -59,26 +42,19 @@ public class IngredientWithCount extends Ingredient {
     }
 
     public static IngredientWithCount of(int count, Stream<ItemStack> pStacks) {
-        return fromValues(pStacks.filter((stack) -> {
-            return !stack.isEmpty();
-        }).map(ItemValue::new), count);
+        return new IngredientWithCount(Ingredient.of(pStacks), count);
     }
 
     public static IngredientWithCount of(int count, TagKey<Item> pTag) {
-        return fromValues(Stream.of(new TagValue(pTag)), count);
+        return new IngredientWithCount(Ingredient.of(pTag), count);
     }
 
-    public static IngredientWithCount fromValues(Stream<? extends Value> pStream, int count) {
-        IngredientWithCount ingredient = new IngredientWithCount(pStream, count);
-        return ingredient.isEmpty() ? EMPTY : ingredient;
+    public static IngredientWithCount fromNetwork(RegistryFriendlyByteBuf buf) {
+        return new IngredientWithCount(Ingredient.CONTENTS_STREAM_CODEC.decode(buf), buf.readByte());
     }
 
-    public static IngredientWithCount fromNetworkIwc(FriendlyByteBuf buf) {
-        return new IngredientWithCount(Ingredient.fromNetwork(buf), buf.readByte());
-    }
-
-    public void toNetworkIwc(FriendlyByteBuf buf) {
-        super.toNetwork(buf);
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
+        Ingredient.CONTENTS_STREAM_CODEC.encode(buf, this.ingredient);
         buf.writeByte(count);
     }
 }

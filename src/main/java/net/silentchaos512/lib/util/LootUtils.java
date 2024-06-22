@@ -1,14 +1,14 @@
 package net.silentchaos512.lib.util;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
@@ -34,7 +34,7 @@ public final class LootUtils {
         return new ItemEntity(dropper.level(), x, y, z, stack);
     }
 
-    public static Collection<ItemStack> gift(ResourceLocation lootTable, ServerPlayer player) {
+    public static Collection<ItemStack> gift(ResourceKey<LootTable> lootTableKey, ServerPlayer player) {
         MinecraftServer server = player.level().getServer();
         if (server == null) return ImmutableList.of();
 
@@ -43,6 +43,6 @@ public final class LootUtils {
                 .withParameter(LootContextParams.ORIGIN, player.position())
                 .withLuck(player.getLuck())
                 .create(LootContextParamSets.GIFT);
-        return server.getLootData().getLootTable(lootTable).getRandomItems(lootParams);
+        return server.reloadableRegistries().getLootTable(lootTableKey).getRandomItems(lootParams);
     }
 }

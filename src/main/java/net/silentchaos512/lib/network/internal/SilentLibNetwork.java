@@ -1,12 +1,20 @@
 package net.silentchaos512.lib.network.internal;
 
-import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.silentchaos512.lib.SilentLib;
 
+@EventBusSubscriber(modid = SilentLib.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public final class SilentLibNetwork {
-    public static void register(IPayloadRegistrar registrar) {
-        registrar.play(CPacketSwingItem.ID, CPacketSwingItem::new,
-                handler -> handler.server(SilentLibServerPayloadHandler.getInstance()::handleSwingItem));
-        registrar.play(SPacketDisplayNbt.ID, SPacketDisplayNbt::new,
-                handler -> handler.client(SilentLibClientPayloadHandler.getInstance()::handleDisplayNbt));
+    @SubscribeEvent
+    public static void register(RegisterPayloadHandlersEvent event) {
+        final var registrar = event.registrar("1");
+
+        registrar.playToServer(
+                SwingItemPayload.TYPE,
+                SwingItemPayload.STREAM_CODEC,
+                (data, ctx) -> SilentLibServerPayloadHandler.getInstance().handleSwingItem(data, ctx)
+        );
     }
 }

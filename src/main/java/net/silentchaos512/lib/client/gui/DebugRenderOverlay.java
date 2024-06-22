@@ -23,10 +23,10 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.client.event.RenderGuiOverlayEvent;
-import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.TickEvent;
 import net.silentchaos512.lib.util.Anchor;
 import net.silentchaos512.lib.util.Color;
 
@@ -129,9 +129,9 @@ public abstract class DebugRenderOverlay {
         return startY;
     }
 
-    public void renderTick(RenderGuiOverlayEvent.Post event) {
+    public void renderTick(RenderGuiLayerEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (isHidden() || debugText.isEmpty() || mc.isPaused() || /*mc.options.renderDebug ||*/ event.getOverlay() != VanillaGuiOverlay.CHAT_PANEL.type())
+        if (isHidden() || debugText.isEmpty() || mc.isPaused() || /*mc.options.renderDebug ||*/ event.getLayer() != VanillaGuiLayers.CHAT)
             return;
 
         // Get text scale, sanity-check the value
@@ -156,9 +156,7 @@ public abstract class DebugRenderOverlay {
         matrix.popPose();
     }
 
-    public void clientTick(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.START) return;
-
+    public void clientTick(ClientTickEvent.Pre event) {
         if (getUpdateFrequency() == 0 || (++ticksPassed) % getUpdateFrequency() == 0) {
             debugText = getDebugText();
 
