@@ -41,7 +41,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @return A {@link ResourceLocation} with {@link #modId} as the namespace and the given path
      */
     protected ResourceLocation modId(String path) {
-        return new ResourceLocation(this.modId, path);
+        return ResourceLocation.fromNamespaceAndPath(this.modId, path);
     }
 
     protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, ResourceLocation recipeId) {

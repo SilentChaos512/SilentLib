@@ -28,7 +28,7 @@ public class DimensionFilterPlacement extends PlacementModifier {
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
                 Collection<ResourceKey<Level>> levels = strList.stream()
-                        .map(str -> ResourceKey.create(Registries.DIMENSION, new ResourceLocation(str)))
+                        .map(str -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(str)))
                         .collect(Collectors.toList());
                 return new DimensionFilterPlacement(isWhitelist, levels);
             }));

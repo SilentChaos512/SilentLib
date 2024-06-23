@@ -131,7 +131,8 @@ public abstract class DebugRenderOverlay {
 
     public void renderTick(RenderGuiLayerEvent.Post event) {
         Minecraft mc = Minecraft.getInstance();
-        if (isHidden() || debugText.isEmpty() || mc.isPaused() || /*mc.options.renderDebug ||*/ event.getLayer() != VanillaGuiLayers.CHAT)
+
+        if (isHidden() || debugText.isEmpty() || mc.isPaused() || event.getName() != VanillaGuiLayers.CHAT)
             return;
 
         // Get text scale, sanity-check the value

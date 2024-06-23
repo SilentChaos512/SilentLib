@@ -8,7 +8,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -48,7 +47,7 @@ public final class NameUtils {
      * @throws net.minecraft.ResourceLocationException if path is invalid
      */
     public static ResourceLocation forgeId(String path) {
-        return new ResourceLocation("forge", path);
+        return ResourceLocation.fromNamespaceAndPath("forge", path);
     }
 
     /**
@@ -83,17 +82,6 @@ public final class NameUtils {
      */
     public static ResourceLocation fromBlock(BlockState state) {
         return fromBlock(state.getBlock());
-    }
-
-    /**
-     * Gets the enchantment's registry name, throwing an exception if it is null
-     *
-     * @param enchantment The enchantment
-     * @return The registry name
-     * @throws NullPointerException if registry name is null
-     */
-    public static ResourceLocation fromEnchantment(Enchantment enchantment) {
-        return checkNotNull(BuiltInRegistries.ENCHANTMENT.getKey(enchantment));
     }
 
     /**

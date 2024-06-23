@@ -4,15 +4,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.ITeleporter;
+import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
-import java.util.function.Function;
 
 public class TeleportUtils {
     public static void teleport(Player player, DimPos pos, @Nullable Direction direction) {
@@ -39,17 +38,8 @@ public class TeleportUtils {
 
     public static void teleportToDimension(Player player, DimensionId dimension, double x, double y, double z) {
         ServerLevel world = dimension.loadWorld(player.getCommandSenderWorld());
-        player.changeDimension(world, new ITeleporter() {
-            @Override
-            public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                ServerPlayer sp = (ServerPlayer) entity;
-                sp.setServerLevel(world);
-                world.addDuringPortalTeleport(sp);
-                entity.moveTo(x, y, z);
-                entity.teleportTo(x, y, z);
-                return entity;
-            }
-        });
+        var dimensionTransition = new DimensionTransition(world, new Vec3(x, y, z), Vec3.ZERO, player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
+        player.changeDimension(dimensionTransition);
     }
 
     private static void facePosition(Entity entity, double newX, double newY, double newZ, BlockPos dest) {
@@ -69,14 +59,12 @@ public class TeleportUtils {
         return angle + f;
     }
 
+    @Nullable
     public static Entity teleportEntity(Entity entity, DimPos pos, @Nullable Direction facing) {
         return teleportEntity(entity, pos.getDimensionId().getWorld(), pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5, facing);
     }
 
-    /**
-     * Teleport an entity and return the new entity (as teleporting to other dimensions causes
-     * entities to be killed and recreated)
-     */
+    @Nullable
     public static Entity teleportEntity(Entity entity, Level destWorld, double newX, double newY, double newZ, @Nullable Direction facing) {
         Level world = entity.getCommandSenderWorld();
         if (DimensionId.fromWorld(world).equals(DimensionId.fromWorld(destWorld))) {
@@ -87,17 +75,8 @@ public class TeleportUtils {
             ((ServerLevel) destWorld).tickNonPassenger(entity);
             return entity;
         } else {
-            return entity.changeDimension((ServerLevel) destWorld, new ITeleporter() {
-                @Override
-                public Entity placeEntity(Entity entity, ServerLevel currentWorld, ServerLevel destWorld, float yaw, Function<Boolean, Entity> repositionEntity) {
-                    entity = repositionEntity.apply(false);
-                    if (facing != null) {
-                        fixOrientation(entity, newX, newY, newZ, facing);
-                    }
-                    entity.teleportTo(newX, newY, newZ);
-                    return entity;
-                }
-            });
+            var dimensionTransition = new DimensionTransition((ServerLevel) destWorld, new Vec3(newX, newY, newZ), Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
+            return entity.changeDimension(dimensionTransition);
         }
     }
 

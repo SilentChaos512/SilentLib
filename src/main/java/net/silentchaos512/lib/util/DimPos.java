@@ -84,7 +84,7 @@ public final class DimPos {
                 tags.getInt("posX"),
                 tags.getInt("posY"),
                 tags.getInt("posZ"),
-                ResourceKey.create(Registries.DIMENSION, new ResourceLocation(tags.getString("dim"))));
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tags.getString("dim"))));
     }
 
     public void write(CompoundTag tags) {

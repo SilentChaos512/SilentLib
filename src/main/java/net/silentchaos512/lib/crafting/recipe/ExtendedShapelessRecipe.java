@@ -11,12 +11,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 
 public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
@@ -59,12 +55,12 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer pInv, Level pLevel) {
+    public boolean matches(CraftingInput pInv, Level pLevel) {
         StackedContents stackedcontents = new StackedContents();
         java.util.List<ItemStack> inputs = new java.util.ArrayList<>();
         int i = 0;
 
-        for (int j = 0; j < pInv.getContainerSize(); ++j) {
+        for (int j = 0; j < pInv.size(); ++j) {
             ItemStack itemstack = pInv.getItem(j);
             if (!itemstack.isEmpty()) {
                 ++i;
@@ -78,7 +74,7 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, HolderLookup.Provider pRegistries) {
+    public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
         return this.result.copy();
     }
 

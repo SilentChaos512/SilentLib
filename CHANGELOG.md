@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.21-10.0.0] - 2024-06-23
+- Updated for Minecraft 1.21 (NeoForge)
+- Removed Lazy and EnchantmentWithLevel (pending investigation of enchantment changes)
+
 ## [1.20.6-9.2.0] - 2024-06-21
 - Updated for Minecraft 1.20.6 (NeoForge)
 - Removed: sl_nbt command

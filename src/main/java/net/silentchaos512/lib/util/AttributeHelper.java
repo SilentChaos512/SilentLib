@@ -19,13 +19,13 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 
 import javax.annotation.Nullable;
-import java.util.UUID;
 
 /**
  * Helper methods for working with entity attributes.
@@ -53,13 +53,13 @@ public final class AttributeHelper {
         }
     }
 
-    public static void remove(LivingEntity entity, Attribute attribute, UUID uuid) {
+    public static void remove(LivingEntity entity, Attribute attribute, ResourceLocation id) {
         AttributeInstance instance = entity.getAttribute(Holder.direct(attribute));
-        remove(instance, uuid);
+        remove(instance, id);
     }
 
-    public static void remove(@Nullable AttributeInstance attributeInstance, UUID uuid) {
+    public static void remove(@Nullable AttributeInstance attributeInstance, ResourceLocation id) {
         if (attributeInstance == null) return;
-        attributeInstance.removeModifier(uuid);
+        attributeInstance.removeModifier(id);
     }
 }

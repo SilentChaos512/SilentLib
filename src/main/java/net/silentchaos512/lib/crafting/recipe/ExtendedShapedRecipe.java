@@ -9,7 +9,6 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -68,12 +67,12 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer pInv, Level pLevel) {
+    public boolean matches(CraftingInput pInv, Level pLevel) {
         return this.pattern.matches(pInv);
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer pContainer, HolderLookup.Provider pRegistries) {
+    public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
         return this.getResultItem(pRegistries).copy();
     }
 

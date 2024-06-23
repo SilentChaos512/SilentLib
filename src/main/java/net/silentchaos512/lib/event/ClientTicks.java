@@ -56,7 +56,7 @@ public final class ClientTicks {
     }
 
     private void renderTick(RenderFrameEvent.Pre event) {
-        partialTicks = event.getPartialTick();
+        partialTicks = event.getPartialTick().getGameTimeDeltaTicks();
     }
 
     private void runScheduledActions() {
