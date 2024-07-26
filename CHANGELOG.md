@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21-10.1.0] - 2024-07-13
+- Added stream codec for Color
+
 ## [1.21-10.0.0] - 2024-06-23
 - Updated for Minecraft 1.21 (NeoForge)
 - Removed Lazy and EnchantmentWithLevel (pending investigation of enchantment changes)

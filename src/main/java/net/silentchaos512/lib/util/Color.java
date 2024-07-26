@@ -24,6 +24,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -35,6 +36,11 @@ public class Color {
     public static final Codec<Color> CODEC = Codec.STRING
             .comapFlatMap(Color::read, Color::format)
             .stable();
+
+    public static final StreamCodec<FriendlyByteBuf, Color> STREAM_CODEC = StreamCodec.of(
+            (buf, color) -> buf.writeVarInt(color.color),
+            buf -> new Color(buf.readVarInt())
+    );
 
     private static final Map<String, Color> NAMED_MAP = new HashMap<>();
     private static final Pattern PATTERN_LEADING_JUNK = Pattern.compile("(#|0x)", Pattern.CASE_INSENSITIVE);
