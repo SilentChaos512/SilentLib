@@ -1,21 +1,3 @@
-/*
- * SilentLib - Color
- * Copyright (C) 2018 SilentChaos512
- *
- * This library is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.silentchaos512.lib.util;
 
 import com.google.common.primitives.UnsignedInts;
@@ -24,6 +6,7 @@ import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 import java.util.HashMap;
@@ -37,9 +20,9 @@ public class Color {
             .comapFlatMap(Color::read, Color::format)
             .stable();
 
-    public static final StreamCodec<FriendlyByteBuf, Color> STREAM_CODEC = StreamCodec.of(
-            (buf, color) -> buf.writeVarInt(color.color),
-            buf -> new Color(buf.readVarInt())
+    public static final StreamCodec<FriendlyByteBuf, Color> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, c -> c.color,
+            Color::new
     );
 
     private static final Map<String, Color> NAMED_MAP = new HashMap<>();
@@ -425,5 +408,21 @@ public class Color {
 
     public int getAlphaInt() {
         return alpha;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+        if (other instanceof Color otherColor) {
+            return this.color == otherColor.color;
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.color;
     }
 }

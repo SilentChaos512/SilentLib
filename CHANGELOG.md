@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.21-10.2.0] - 2024-08-04
+- Added equals and hashCode to Color, so it can be used as a DataComponent
+- Added StackList.from(CraftingInput)
+
 ## [1.21-10.1.0] - 2024-07-13
 - Added stream codec for Color
 
