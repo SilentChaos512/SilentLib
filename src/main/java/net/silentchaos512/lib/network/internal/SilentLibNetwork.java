@@ -7,6 +7,6 @@ public final class SilentLibNetwork {
         registrar.play(CPacketSwingItem.ID, CPacketSwingItem::new,
                 handler -> handler.server(SilentLibServerPayloadHandler.getInstance()::handleSwingItem));
         registrar.play(SPacketDisplayNbt.ID, SPacketDisplayNbt::new,
-                handler -> handler.client(SilentLibClientPayloadHandler.getInstance()::handleDisplayNbt));
+                handler -> handler.client(SilentLibClientPayloadHandler.getInstance()::handleDisplayNbtProxy));
     }
 }

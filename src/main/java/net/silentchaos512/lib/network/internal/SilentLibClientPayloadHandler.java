@@ -3,6 +3,9 @@ package net.silentchaos512.lib.network.internal;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 import net.silentchaos512.lib.client.gui.nbt.DisplayNBTScreen;
 
@@ -21,6 +24,13 @@ public class SilentLibClientPayloadHandler {
                 });
     }
 
+    public void handleDisplayNbtProxy(SPacketDisplayNbt data, PlayPayloadContext ctx) {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            handleDisplayNbt(data, ctx);
+        }
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public void handleDisplayNbt(SPacketDisplayNbt data, PlayPayloadContext ctx) {
         handleData(ctx, () -> {
             Player player = ctx.player().orElse(Minecraft.getInstance().player);

@@ -1,5 +1,8 @@
 # Changelog
 
+## [9.1.3] - 2024-08-18
+- Fixed a server crash
+
 ## [9.1.2] - 2024-06-16
 - Assorted internal changes and fixes
 
