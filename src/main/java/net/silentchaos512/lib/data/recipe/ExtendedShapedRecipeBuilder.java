@@ -15,6 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.silentchaos512.lib.util.NameUtils;
 
 import java.util.*;
@@ -43,6 +44,10 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> implem
 
     public ExtendedShapedRecipeBuilder<R> define(Character symbol, ItemLike itemIn) {
         return this.define(symbol, Ingredient.of(itemIn));
+    }
+
+    public ExtendedShapedRecipeBuilder<R> define(Character symbol, ICustomIngredient customIngredient) {
+        return this.define(symbol, new Ingredient(customIngredient));
     }
 
     public ExtendedShapedRecipeBuilder<R> define(Character symbol, Ingredient ingredientIn) {

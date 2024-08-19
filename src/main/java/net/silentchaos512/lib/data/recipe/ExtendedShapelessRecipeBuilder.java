@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -63,6 +64,18 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
     public ExtendedShapelessRecipeBuilder<R> requires(ItemLike item, int count) {
         for(int i = 0; i < count; ++i) {
             this.requires(Ingredient.of(item));
+        }
+
+        return this;
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> requires(ICustomIngredient customIngredient) {
+        return this.requires(customIngredient, 1);
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> requires(ICustomIngredient customIngredient, int quantity) {
+        for(int i = 0; i < quantity; ++i) {
+            this.ingredients.add(new Ingredient(customIngredient));
         }
 
         return this;

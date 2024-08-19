@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21-10.3.0] - Unreleased
+- Added methods to ExtendedShapedRecipeBuilder and ExtendedShapelessRecipeBuilder that accepts ICustomIngredients
+
 ## [1.21-10.2.0] - 2024-08-04
 - Added equals and hashCode to Color, so it can be used as a DataComponent
 - Added StackList.from(CraftingInput)
