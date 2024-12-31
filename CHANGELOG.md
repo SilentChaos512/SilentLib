@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.21-10.3.0] - Unreleased
+## [1.21-10.3.1] - 2024-12-31
+- Fixed loot table location tooltip for `LootContainerItem`s
+
+## [1.21-10.3.0] - 2024-09-16
 - Added methods to ExtendedShapedRecipeBuilder and ExtendedShapelessRecipeBuilder that accepts ICustomIngredients
 
 ## [1.21-10.2.0] - 2024-08-04

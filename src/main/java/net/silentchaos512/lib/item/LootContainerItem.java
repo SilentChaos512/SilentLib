@@ -121,7 +121,7 @@ public class LootContainerItem extends Item {
     public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
         if (!flag.isAdvanced()) return;
 
-        Component textTableName = Component.literal(this.getLootTable(stack).toString()).withStyle(ChatFormatting.WHITE);
+        Component textTableName = Component.literal(this.getLootTable(stack).location().toString()).withStyle(ChatFormatting.WHITE);
         tooltip.add(Component.translatable("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));
     }
 
