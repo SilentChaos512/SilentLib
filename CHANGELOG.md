@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21.1-10.4.0] - 2025-03-09
+- Built against latest 1.21.1 NeoForge version, no significant changes
+
 ## [1.21-10.3.1] - 2024-12-31
 - Fixed loot table location tooltip for `LootContainerItem`s
 
