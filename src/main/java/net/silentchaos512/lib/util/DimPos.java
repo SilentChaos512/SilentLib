@@ -1,9 +1,14 @@
 package net.silentchaos512.lib.util;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -11,22 +16,30 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 /**
- * Basically a BlockPos with a dimension coordinate.
- * <p>
- * I tried to extend BlockPos here, but that caused some strange issues with Silent's Gems'
- * teleporters. They would apparently fail to link, but would work correctly after reloading the
- * world. No idea why this happens, but extending BlockPos seems to be the cause.
+ * Basically a BlockPos with a dimension coordinate. Used by {@link TeleportUtils}
  */
-public final class DimPos {
+public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension) {
+    public static final Codec<DimPos> CODEC = RecordCodecBuilder.create(
+            instance -> instance.group(
+                    Codec.INT.fieldOf("x").forGetter(DimPos::getX),
+                    Codec.INT.fieldOf("y").forGetter(DimPos::getY),
+                    Codec.INT.fieldOf("z").forGetter(DimPos::getZ),
+                    ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimPos::getDimension)
+            ).apply(instance, DimPos::of)
+    );
+
+    public static final StreamCodec<RegistryFriendlyByteBuf, DimPos> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.VAR_INT, DimPos::getX,
+            ByteBufCodecs.VAR_INT, DimPos::getY,
+            ByteBufCodecs.VAR_INT, DimPos::getZ,
+            ResourceKey.streamCodec(Registries.DIMENSION), DimPos::getDimension,
+            DimPos::of
+    );
+
     /**
      * Origin (0, 0, 0) in the overworld
      */
     public static final DimPos ZERO = new DimPos(0, 0, 0, Level.OVERWORLD);
-
-    private final int posX;
-    private final int posY;
-    private final int posZ;
-    private final DimensionId dimension;
 
     //region Static factory methods
 
@@ -48,50 +61,46 @@ public final class DimPos {
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
-    private DimPos(int x, int y, int z, ResourceKey<Level> dimension) {
-        this(x, y, z, DimensionId.fromId(dimension));
-    }
-
-    private DimPos(int x, int y, int z, DimensionId dimension) {
-        this.posX = x;
-        this.posY = y;
-        this.posZ = z;
-        this.dimension = dimension;
-    }
-
+    @Deprecated(forRemoval = true)
     public int getX() {
-        return this.posX;
+        return posX;
     }
 
+    @Deprecated(forRemoval = true)
     public int getY() {
-        return this.posY;
+        return posY;
     }
 
+    @Deprecated(forRemoval = true)
     public int getZ() {
-        return this.posZ;
+        return posZ;
     }
 
+    @Deprecated(forRemoval = true)
     public DimensionId getDimensionId() {
+        return DimensionId.fromId(dimension);
+    }
+
+    @Deprecated(forRemoval = true)
+    public ResourceKey<Level> getDimension() {
         return dimension;
     }
 
-    public ResourceKey<Level> getDimension() {
-        return this.dimension.getId();
-    }
-
-    public static DimPos read(CompoundTag tags) {
+    public static DimPos deserializeNbt(CompoundTag tag) {
         return DimPos.of(
-                tags.getInt("posX"),
-                tags.getInt("posY"),
-                tags.getInt("posZ"),
-                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tags.getString("dim"))));
+                tag.getInt("posX"),
+                tag.getInt("posY"),
+                tag.getInt("posZ"),
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("dim"))));
     }
 
-    public void write(CompoundTag tags) {
-        tags.putInt("posX", this.posX);
-        tags.putInt("posY", this.posY);
-        tags.putInt("posZ", this.posZ);
-        tags.putString("dim", dimension.getRegistryName().toString());
+    public CompoundTag serializeNbt() {
+        CompoundTag tag = new CompoundTag();
+        tag.putInt("posX", this.posX);
+        tag.putInt("posY", this.posY);
+        tag.putInt("posZ", this.posZ);
+        tag.putString("dim", dimension.location().toString());
+        return tag;
     }
 
     /**
@@ -128,7 +137,7 @@ public final class DimPos {
 
     @Override
     public String toString() {
-        return String.format("(%d, %d, %s) in %s", this.posX, this.posY, this.posZ, dimension.getRegistryName());
+        return String.format("(%d, %d, %s) in %s", this.posX, this.posY, this.posZ, dimension.location());
     }
 
     @Override
@@ -137,13 +146,13 @@ public final class DimPos {
             return true;
         }
         if (other instanceof DimPos pos) {
-            return pos.dimension == dimension && pos.posX == posX && pos.posY == posY && pos.posZ == posZ;
+            return pos.dimension.location().equals(dimension.location()) && pos.posX == posX && pos.posY == posY && pos.posZ == posZ;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.getRegistryName().hashCode();
+        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.location().hashCode();
     }
 }

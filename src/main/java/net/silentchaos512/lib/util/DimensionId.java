@@ -17,6 +17,7 @@ import java.util.Objects;
  * <p>
  * https://github.com/McJtyMods/McJtyLib/blob/1.16/src/main/java/mcjty/lib/varia/DimensionId.java
  */
+@Deprecated(forRemoval = true)
 public class DimensionId {
     private final ResourceKey<Level> id;
 

@@ -1,5 +1,10 @@
 # Changelog
 
+## [1.21.1-10.5.0] - 2025-04-20
+- Refactored DimPos and TeleportUtils
+- Add CODEC and STREAM_CODEC to DimPos
+- Deprecated DimensionId
+
 ## [1.21.1-10.4.0] - 2025-03-09
 - Built against latest 1.21.1 NeoForge version, no significant changes
 
