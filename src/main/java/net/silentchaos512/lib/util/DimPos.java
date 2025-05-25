@@ -15,6 +15,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.Optional;
+
 /**
  * Basically a BlockPos with a dimension coordinate. Used by {@link TeleportUtils}
  */
@@ -101,6 +103,20 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
         tag.putInt("posZ", this.posZ);
         tag.putString("dim", dimension.location().toString());
         return tag;
+    }
+
+    /**
+     * Get the Level this DimPos is in. This can only be done on the server.
+     *
+     * @param anyLevel Any Level object, to provide access to the server
+     * @return An Optional containing the level this DimPos is in, if it can be obtained.
+     */
+    public Optional<Level> getPosLevel(Level anyLevel) {
+        var server = anyLevel.getServer();
+        if (server == null) return Optional.empty();
+
+        var posLevel = server.getLevel(this.dimension);
+        return Optional.ofNullable(posLevel);
     }
 
     /**

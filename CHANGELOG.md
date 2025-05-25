@@ -1,6 +1,9 @@
 # Changelog
 
-## [1.21.1-10.5.0] - 2025-04-20
+## [1.21.1-10.5.1]
+- Add DimPos#getPosLevel
+
+## [1.21.1-10.5.0] - 2025-05-24
 - Refactored DimPos and TeleportUtils
 - Add CODEC and STREAM_CODEC to DimPos
 - Deprecated DimensionId
