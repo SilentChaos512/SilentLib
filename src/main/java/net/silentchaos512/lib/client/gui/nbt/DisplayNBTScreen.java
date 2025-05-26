@@ -59,7 +59,7 @@ public class DisplayNBTScreen extends Screen {
     private static List<String> formatNbt(CompoundTag nbt, int depth) {
         List<String> list = new ArrayList<>();
 
-        for (String key : nbt.getAllKeys()) {
+        for (String key : nbt.keySet()) {
             Tag inbt = nbt.get(key);
             list.addAll(formatNbt(key, inbt, depth + 1));
         }
@@ -79,7 +79,7 @@ public class DisplayNBTScreen extends Screen {
         } else if (nbt instanceof NumericTag) {
             formatNumber(key, (NumericTag) nbt, list, indentStr);
         } else if (nbt instanceof StringTag) {
-            String value = nbt.getAsString();
+            String value = nbt.asString().orElse("null");
             list.add(indentStr + format(key, value, ChatFormatting.GREEN));
         }
 
@@ -101,7 +101,7 @@ public class DisplayNBTScreen extends Screen {
             list.add(indentStr + format(key, "[]", ChatFormatting.RESET));
         } else {
             list.add(indentStr + format(key, "[", ChatFormatting.RESET));
-            for (Tag element : (CollectionTag<?>) nbt) {
+            for (Tag element : nbt) {
                 list.addAll(formatNbt("", element, depth + 1));
             }
             list.add(indentStr + "]" + (key.isEmpty() ? "" : ChatFormatting.DARK_GRAY + " #" + key));
@@ -109,7 +109,7 @@ public class DisplayNBTScreen extends Screen {
     }
 
     private static void formatNumber(String key, NumericTag nbt, List<String> list, String indentStr) {
-        Number value = nbt.getAsNumber();
+        Number value = nbt.asNumber().orElse(0);
         String line = indentStr + format(key, value, ChatFormatting.LIGHT_PURPLE);
         if (value instanceof Integer) {
             line += ChatFormatting.GRAY + String.format(" (0x%X)", value.intValue());
@@ -126,10 +126,6 @@ public class DisplayNBTScreen extends Screen {
     }
 
     private static String indent(int depth) {
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < depth; ++i) {
-            builder.append("  ");
-        }
-        return builder.toString();
+        return "  ".repeat(Math.max(0, depth));
     }
 }

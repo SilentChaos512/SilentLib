@@ -39,7 +39,7 @@ public final class MathUtils {
     }
 
     /**
-     * Check if {@code value} is equal to {@code value} casted to an int.
+     * Check if {@code value} is equal to {@code value} cast to an int.
      *
      * @param value The value
      * @return True if and only if {@code value} is equal to {@code (int) value}
@@ -56,7 +56,7 @@ public final class MathUtils {
     }
 
     /**
-     * Check if {@code value} is equal to {@code value} casted to an int.
+     * Check if {@code value} is equal to {@code value} cast to an int.
      *
      * @param value The value
      * @return True if and only if {@code value} is equal to {@code (int) value}

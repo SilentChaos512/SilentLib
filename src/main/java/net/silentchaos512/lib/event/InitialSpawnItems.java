@@ -1,21 +1,3 @@
-/*
- * Silent Lib -- InitialSpawnItems
- * Copyright (C) 2018 SilentChaos512
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation version 3
- * of the License.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- */
-
 package net.silentchaos512.lib.event;
 
 import net.minecraft.nbt.CompoundTag;
@@ -28,10 +10,7 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.PlayerUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -95,7 +74,8 @@ public final class InitialSpawnItems {
         if (items.isEmpty()) return;
 
         String nbtKey = key.toString().replace(':', '.');
-        if (!givenItems.getBoolean(nbtKey)) {
+        var hasBeenGiven = givenItems.getBoolean(nbtKey);
+        if (hasBeenGiven.isEmpty() || !hasBeenGiven.get()) {
             items.forEach(stack -> {
                 SilentLib.LOGGER.debug("Giving player {} spawn item \"{}\": {}", player.getScoreboardName(), nbtKey, stack);
                 PlayerUtils.giveItem(player, stack);

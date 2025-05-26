@@ -2,6 +2,7 @@ package net.silentchaos512.lib.crafting.ingredient;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,12 +18,12 @@ import java.util.stream.Stream;
 public record IngredientWithCount(Ingredient ingredient, int count) implements Predicate<ItemStack> {
     public static final Codec<IngredientWithCount> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Ingredient.CODEC_NONEMPTY.fieldOf("ingredient").forGetter(iwc -> iwc.ingredient),
+                    Ingredient.CODEC.fieldOf("ingredient").forGetter(iwc -> iwc.ingredient),
                     Codec.INT.fieldOf("count").forGetter(iwc -> iwc.count)
             ).apply(instance, IngredientWithCount::new)
     );
 
-    public static final IngredientWithCount EMPTY = new IngredientWithCount(Ingredient.EMPTY, 0);
+    public static final IngredientWithCount EMPTY = new IngredientWithCount(Ingredient.of(), 0);
 
     @Override
     public boolean test(@Nullable ItemStack pStack) {
@@ -33,20 +34,16 @@ public record IngredientWithCount(Ingredient ingredient, int count) implements P
         return EMPTY;
     }
 
-    public static IngredientWithCount of(int count, ItemLike... pItems) {
-        return of(count, Arrays.stream(pItems).map(ItemStack::new));
+    public static IngredientWithCount of(int count, ItemLike... items) {
+        return of(count, Arrays.stream(items));
     }
 
-    public static IngredientWithCount of(int count, ItemStack... pStacks) {
-        return of(count, Arrays.stream(pStacks));
+    public static IngredientWithCount of(int count, Stream<ItemLike> items) {
+        return new IngredientWithCount(Ingredient.of(items), count);
     }
 
-    public static IngredientWithCount of(int count, Stream<ItemStack> pStacks) {
-        return new IngredientWithCount(Ingredient.of(pStacks), count);
-    }
-
-    public static IngredientWithCount of(int count, TagKey<Item> pTag) {
-        return new IngredientWithCount(Ingredient.of(pTag), count);
+    public static IngredientWithCount of(int count, TagKey<Item> tag) {
+        return new IngredientWithCount(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag)), count);
     }
 
     public static IngredientWithCount fromNetwork(RegistryFriendlyByteBuf buf) {

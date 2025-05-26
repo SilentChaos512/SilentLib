@@ -42,14 +42,6 @@ public final class InventoryUtils {
     }
 
     /**
-     * @deprecated No longer needed?
-     */
-    @Deprecated
-    public static boolean canItemsStack(ItemStack a, ItemStack b) {
-        return ItemStack.isSameItemSameComponents(a, b);
-    }
-
-    /**
      * Obtain the first matching stack. {@link StackList} has a similar method, but this avoids
      * creating the entire list when it isn't needed.
      *
@@ -76,7 +68,7 @@ public final class InventoryUtils {
         // Merge into non-empty slots first
         for (int i = slotStart; i < slotEndExclusive && !stack.isEmpty(); ++i) {
             ItemStack inSlot = inventory.getItem(i);
-            if (canItemsStack(inSlot, stack)) {
+            if (ItemStack.isSameItemSameComponents(inSlot, stack)) {
                 int amountCanFit = MathUtils.min(inSlot.getMaxStackSize() - inSlot.getCount(), stack.getCount(), inventory.getMaxStackSize());
                 inSlot.grow(amountCanFit);
                 stack.shrink(amountCanFit);

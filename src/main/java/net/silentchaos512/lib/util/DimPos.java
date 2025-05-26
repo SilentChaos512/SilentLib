@@ -23,18 +23,18 @@ import java.util.Optional;
 public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension) {
     public static final Codec<DimPos> CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
-                    Codec.INT.fieldOf("x").forGetter(DimPos::getX),
-                    Codec.INT.fieldOf("y").forGetter(DimPos::getY),
-                    Codec.INT.fieldOf("z").forGetter(DimPos::getZ),
-                    ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimPos::getDimension)
+                    Codec.INT.fieldOf("x").forGetter(DimPos::posX),
+                    Codec.INT.fieldOf("y").forGetter(DimPos::posY),
+                    Codec.INT.fieldOf("z").forGetter(DimPos::posZ),
+                    ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimPos::dimension)
             ).apply(instance, DimPos::of)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DimPos> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.VAR_INT, DimPos::getX,
-            ByteBufCodecs.VAR_INT, DimPos::getY,
-            ByteBufCodecs.VAR_INT, DimPos::getZ,
-            ResourceKey.streamCodec(Registries.DIMENSION), DimPos::getDimension,
+            ByteBufCodecs.VAR_INT, DimPos::posX,
+            ByteBufCodecs.VAR_INT, DimPos::posY,
+            ByteBufCodecs.VAR_INT, DimPos::posZ,
+            ResourceKey.streamCodec(Registries.DIMENSION), DimPos::dimension,
             DimPos::of
     );
 
@@ -63,37 +63,12 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
         this(pos.getX(), pos.getY(), pos.getZ(), dimension);
     }
 
-    @Deprecated(forRemoval = true)
-    public int getX() {
-        return posX;
-    }
-
-    @Deprecated(forRemoval = true)
-    public int getY() {
-        return posY;
-    }
-
-    @Deprecated(forRemoval = true)
-    public int getZ() {
-        return posZ;
-    }
-
-    @Deprecated(forRemoval = true)
-    public DimensionId getDimensionId() {
-        return DimensionId.fromId(dimension);
-    }
-
-    @Deprecated(forRemoval = true)
-    public ResourceKey<Level> getDimension() {
-        return dimension;
-    }
-
     public static DimPos deserializeNbt(CompoundTag tag) {
         return DimPos.of(
-                tag.getInt("posX"),
-                tag.getInt("posY"),
-                tag.getInt("posZ"),
-                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getString("dim"))));
+                tag.getIntOr("posX", 0),
+                tag.getIntOr("posY", 0),
+                tag.getIntOr("posZ", 0),
+                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getStringOr("dim", "minecraft:overworld"))));
     }
 
     public CompoundTag serializeNbt() {

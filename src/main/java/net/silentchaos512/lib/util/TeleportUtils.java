@@ -3,7 +3,6 @@ package net.silentchaos512.lib.util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -11,7 +10,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
@@ -47,8 +46,7 @@ public class TeleportUtils {
         ServerLevel level = server.getLevel(dimension);
         if (level == null) return;
 
-        var dimensionTransition = new DimensionTransition(level, new Vec3(x, y, z), Vec3.ZERO, player.getYRot(), player.getXRot(), DimensionTransition.PLAY_PORTAL_SOUND);
-        player.changeDimension(dimensionTransition);
+        player.teleport(new TeleportTransition(level, new Vec3(x, y, z), Vec3.ZERO, player.getYRot(), player.getXRot(), TeleportTransition.PLAY_PORTAL_SOUND));
     }
 
     private static void facePosition(Entity entity, double newX, double newY, double newZ, BlockPos dest) {
@@ -86,12 +84,11 @@ public class TeleportUtils {
             if (facing != null) {
                 fixOrientation(entity, newX, newY, newZ, facing);
             }
-            entity.moveTo(newX, newY, newZ, entity.getYRot(), entity.getXRot());
+            entity.snapTo(newX, newY, newZ, entity.getYRot(), entity.getXRot());
             ((ServerLevel) destinationLevel).tickNonPassenger(entity);
             return entity;
         } else {
-            var dimensionTransition = new DimensionTransition((ServerLevel) destinationLevel, new Vec3(newX, newY, newZ), Vec3.ZERO, entity.getYRot(), entity.getXRot(), DimensionTransition.DO_NOTHING);
-            return entity.changeDimension(dimensionTransition);
+            return entity.teleport(new TeleportTransition((ServerLevel) destinationLevel, new Vec3(newX, newY, newZ), Vec3.ZERO, entity.getYRot(), entity.getXRot(), TeleportTransition.DO_NOTHING));
         }
     }
 

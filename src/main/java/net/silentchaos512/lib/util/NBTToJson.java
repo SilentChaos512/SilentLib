@@ -19,18 +19,18 @@ public final class NBTToJson {
         if (nbt instanceof CompoundTag) {
             return toJsonObject((CompoundTag) nbt);
         } else if (nbt instanceof CollectionTag) {
-            return toJsonArray((CollectionTag<?>) nbt);
+            return toJsonArray((CollectionTag) nbt);
         } else if (nbt instanceof NumericTag) {
-            return new JsonPrimitive(((NumericTag) nbt).getAsNumber());
+            return new JsonPrimitive((nbt.asNumber().orElse(0)));
         } else if (nbt instanceof StringTag) {
-            return new JsonPrimitive(nbt.getAsString());
+            return new JsonPrimitive(nbt.asString().orElse("null"));
         }
         return JsonNull.INSTANCE;
     }
 
     public static JsonObject toJsonObject(CompoundTag nbt) {
         JsonObject json = new JsonObject();
-        for (String key : nbt.getAllKeys()) {
+        for (String key : nbt.keySet()) {
             Tag element = nbt.get(key);
             if (element != null) {
                 json.add(key, toJson(element));
@@ -39,7 +39,7 @@ public final class NBTToJson {
         return json;
     }
 
-    public static JsonArray toJsonArray(CollectionTag<?> nbt) {
+    public static JsonArray toJsonArray(CollectionTag nbt) {
         JsonArray json = new JsonArray();
         for (Tag element : nbt) {
             json.add(toJson(element));

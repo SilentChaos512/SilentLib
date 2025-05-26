@@ -17,7 +17,6 @@ import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.silentchaos512.lib.command.internal.TeleportCommand;
 import net.silentchaos512.lib.component.LootContainer;
-import net.silentchaos512.lib.item.ILeftClickItem;
 import net.silentchaos512.lib.world.placement.DimensionFilterPlacement;
 import org.slf4j.Logger;
 
@@ -50,7 +49,7 @@ public final class SilentLib {
         DATA_COMPONENT_TYPES_REGISTRAR.register(modEventBus);
         PLACEMENT_MODIFIER_TYPE_REGISTRAR.register(modEventBus);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
-        ILeftClickItem.EventHandler.init();
+//        ILeftClickItem.EventHandler.init();
     }
 
     private void registerCommands(RegisterCommandsEvent event) {

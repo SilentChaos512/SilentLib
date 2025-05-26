@@ -1,13 +1,13 @@
 package net.silentchaos512.lib.data.recipe;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -19,19 +19,39 @@ import net.silentchaos512.lib.util.NameUtils;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
 public abstract class LibRecipeProvider extends RecipeProvider {
     private final String modId;
 
-    public LibRecipeProvider(PackOutput packOutput, CompletableFuture<HolderLookup.Provider> registries, String modId) {
-        super(packOutput, registries);
+    public static <T extends RecipeProvider> RecipeProvider.Runner createRunner(
+            PackOutput packOutput,
+            CompletableFuture<HolderLookup.Provider> registryLookup,
+            String name,
+            BiFunction<HolderLookup.Provider, RecipeOutput, T> constructor
+    ) {
+        return new RecipeProvider.Runner(packOutput, registryLookup) {
+            @Override
+            protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+                return constructor.apply(registries, output);
+            }
+
+            @Override
+            public String getName() {
+                return name;
+            }
+        };
+    }
+
+    public LibRecipeProvider(HolderLookup.Provider registries, RecipeOutput recipeOutput, String modId) {
+        super(registries, recipeOutput);
         this.modId = modId;
     }
 
     @Override
-    protected abstract void buildRecipes(RecipeOutput consumer);
+    protected abstract void buildRecipes();
 
     /**
      * Gets a {@link ResourceLocation} with {@link #modId} as the namespace. This is used
@@ -40,8 +60,8 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @param path The path to use
      * @return A {@link ResourceLocation} with {@link #modId} as the namespace and the given path
      */
-    protected ResourceLocation modId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(this.modId, path);
+    protected ResourceKey<Recipe<?>> modId(String path) {
+        return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(this.modId, path));
     }
 
     protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, ResourceLocation recipeId) {
@@ -76,12 +96,12 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      *
      * @param consumer     RecipeOutput
      * @param id           Recipe path ending
-     * @param ingredientIn The ingredient (ore, etc.)
+     * @param tag          The ingredient (ore, etc.)
      * @param result       The result (ingot, gem, etc.)
      * @param experienceIn The experience (XP) the recipe yields
      */
-    protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, TagKey<Item> ingredientIn, ItemLike result, float experienceIn) {
-        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(ingredientIn), result, experienceIn);
+    protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, TagKey<Item> tag, ItemLike result, float experienceIn) {
+        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag)), result, experienceIn);
     }
 
     /**
@@ -101,7 +121,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, Ingredient ingredientIn, ItemLike result, float experienceIn) {
         SimpleCookingRecipeBuilder.blasting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 100)
                 .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
-                .save(consumer, modId("blasting/" + id));
+                .save(this.output, modId("blasting/" + id));
         SimpleCookingRecipeBuilder.smelting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 200)
                 .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                 .save(consumer, modId("smelting/" + id));
@@ -134,7 +154,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * nugget recipes will not.
      *
      * @param consumer RecipeOutput
-     * @param category The recipe cateogry
+     * @param category The recipe category
      * @param block    The block item (mandatory). Does not need to be a block, but is assumed to be
      *                 one.
      * @param item     The normal item (ingot, gem, etc.) Again, this can be any item.
@@ -144,14 +164,14 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         String blockName = NameUtils.fromItem(block).getPath();
         String itemName = NameUtils.fromItem(item).getPath();
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, block, 1)
+        shaped(RecipeCategory.MISC, block, 1)
                 .pattern("###")
                 .pattern("###")
                 .pattern("###")
                 .define('#', item)
                 .unlockedBy("has_item", has(item))
                 .save(consumer, modId(itemName + "_from_block"));
-        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, item, 9)
+        shapeless(RecipeCategory.MISC, item, 9)
                 .requires(block)
                 .unlockedBy("has_item", has(item))
                 .save(consumer, modId(blockName));
@@ -159,21 +179,17 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         if (nugget != null) {
             String nuggetName = NameUtils.fromItem(nugget).getPath();
 
-            ShapedRecipeBuilder.shaped(RecipeCategory.MISC, item, 1)
+            shaped(RecipeCategory.MISC, item, 1)
                     .pattern("###")
                     .pattern("###")
                     .pattern("###")
                     .define('#', nugget)
                     .unlockedBy("has_item", has(item))
                     .save(consumer, modId(itemName + "_from_nugget"));
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, nugget, 9)
+            shapeless(RecipeCategory.MISC, nugget, 9)
                     .requires(item)
                     .unlockedBy("has_item", has(item))
                     .save(consumer, modId(nuggetName));
         }
-    }
-
-    protected static Criterion<InventoryChangeTrigger.TriggerInstance> has(TagKey<Item> tagKey) {
-        return inventoryTrigger(ItemPredicate.Builder.item().of(tagKey).build());
     }
 }
