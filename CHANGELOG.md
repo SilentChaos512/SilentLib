@@ -1,7 +1,8 @@
 # Changelog
 
-## [Unreleased]
+## [1.21.5-11.0.0] - 2025-05-27
 - Ported to Minecraft 1.21.5 (NeoForge)
+- Added LibModelProvider and LibWorldGenProvider (WIP)
 
 ## [1.21.1-10.5.1] - 2025-05-25
 - Add DimPos#getPosLevel
