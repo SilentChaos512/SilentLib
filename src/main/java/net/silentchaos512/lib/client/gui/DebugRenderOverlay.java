@@ -140,10 +140,10 @@ public abstract class DebugRenderOverlay {
         if (scale <= 0f) return;
 
         Font font = mc.font;
-        PoseStack matrix = event.getGuiGraphics().pose();
+        var matrix = event.getGuiGraphics().pose();
 
-        matrix.pushPose();
-        matrix.scale(scale, scale, 1);
+        matrix.pushMatrix();
+        matrix.scale(scale, scale, matrix);
 
         // Divide by text scale to correct position. But it's still a bit off?
         Window mainWindow = mc.getWindow();
@@ -154,7 +154,7 @@ public abstract class DebugRenderOverlay {
             y += LINE_HEIGHT;
         }
 
-        matrix.popPose();
+        matrix.popMatrix();
     }
 
     public void clientTick(ClientTickEvent.Pre event) {

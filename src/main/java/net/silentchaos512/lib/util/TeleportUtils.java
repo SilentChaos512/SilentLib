@@ -22,7 +22,7 @@ public class TeleportUtils {
     }
 
     public static void teleport(Player player, ResourceKey<Level> dimension, double destX, double destY, double destZ, @Nullable Direction direction) {
-        ResourceKey<Level> currentDimension = player.getCommandSenderWorld().dimension();
+        ResourceKey<Level> currentDimension = player.level().dimension();
 
         float rotationYaw = player.getYRot();
         float rotationPitch = player.getXRot();
@@ -40,7 +40,7 @@ public class TeleportUtils {
     }
 
     public static void teleportToDimension(Player player, ResourceKey<Level> dimension, double x, double y, double z) {
-        MinecraftServer server = player.getCommandSenderWorld().getServer();
+        MinecraftServer server = player.level().getServer();
         if (server == null) return;
 
         ServerLevel level = server.getLevel(dimension);
@@ -79,7 +79,7 @@ public class TeleportUtils {
 
     @Nullable
     public static Entity teleportEntity(Entity entity, Level destinationLevel, double newX, double newY, double newZ, @Nullable Direction facing) {
-        Level currentLevel = entity.getCommandSenderWorld();
+        Level currentLevel = entity.level();
         if (currentLevel.dimension().location().equals(destinationLevel.dimension().location())) {
             if (facing != null) {
                 fixOrientation(entity, newX, newY, newZ, facing);

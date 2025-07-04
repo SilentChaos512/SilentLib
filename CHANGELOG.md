@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21.7-11.0.0] - 2025-07-04
+- Ported to Minecraft 1.21.7 (NeoForge)
+
 ## [1.21.5-11.0.0] - 2025-05-27
 - Ported to Minecraft 1.21.5 (NeoForge)
 - Added LibModelProvider and LibWorldGenProvider (WIP)

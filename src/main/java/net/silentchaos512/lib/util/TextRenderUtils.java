@@ -1,17 +1,13 @@
 package net.silentchaos512.lib.util;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 @SuppressWarnings("MethodWithTooManyParameters")
 public final class TextRenderUtils {
     private TextRenderUtils() { throw new IllegalAccessError("Utility class"); }
@@ -21,18 +17,14 @@ public final class TextRenderUtils {
     }
 
     public static void renderScaled(GuiGraphics graphics, Font font, FormattedCharSequence text, int x, int y, float scale, int color, boolean shadow) {
-        PoseStack matrix = graphics.pose();
+        var matrix = graphics.pose();
 
-        matrix.pushPose();
-        matrix.scale(scale, scale, scale);
-        // FIXME?
-//        boolean oldUnicode = fontRenderer.getBidiFlag();
-//        fontRenderer.setBidiFlag(false);
+        matrix.pushMatrix();
+        matrix.scale(scale, scale, matrix);
 
-        graphics.drawString(font, text, x / scale, y / scale, color, shadow);
+        graphics.drawString(font, text, (int) (x / scale), (int) (y / scale), color, shadow);
 
-//        fontRenderer.setBidiFlag(oldUnicode);
-        matrix.popPose();
+        matrix.popMatrix();
     }
 
     public static void renderSplit(GuiGraphics graphics, Font font, FormattedText text, int x, int y, int width, int color, boolean shadow) {

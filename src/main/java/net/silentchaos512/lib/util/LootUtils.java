@@ -38,7 +38,7 @@ public final class LootUtils {
         MinecraftServer server = player.level().getServer();
         if (server == null) return ImmutableList.of();
 
-        LootParams lootParams = (new LootParams.Builder(player.serverLevel()))
+        LootParams lootParams = (new LootParams.Builder(player.level()))
                 .withParameter(LootContextParams.THIS_ENTITY, player)
                 .withParameter(LootContextParams.ORIGIN, player.position())
                 .withLuck(player.getLuck())
