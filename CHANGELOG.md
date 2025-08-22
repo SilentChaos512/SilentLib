@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21.5-11.0.1] - 2025-08-22
+- Re-added ExtendedShapedRecipe and ExtendedShapelessRecipe, and their Builder classes
+
 ## [1.21.5-11.0.0] - 2025-05-27
 - Ported to Minecraft 1.21.5 (NeoForge)
 - Added LibModelProvider and LibWorldGenProvider (WIP)

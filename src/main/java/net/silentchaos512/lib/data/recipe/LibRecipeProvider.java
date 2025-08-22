@@ -2,6 +2,7 @@ package net.silentchaos512.lib.data.recipe;
 
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 @SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
 public abstract class LibRecipeProvider extends RecipeProvider {
     private final String modId;
+    protected final HolderGetter<Item> items;
 
     public static <T extends RecipeProvider> RecipeProvider.Runner createRunner(
             PackOutput packOutput,
@@ -48,6 +50,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     public LibRecipeProvider(HolderLookup.Provider registries, RecipeOutput recipeOutput, String modId) {
         super(registries, recipeOutput);
         this.modId = modId;
+        this.items = registries.lookupOrThrow(Registries.ITEM);
     }
 
     @Override
