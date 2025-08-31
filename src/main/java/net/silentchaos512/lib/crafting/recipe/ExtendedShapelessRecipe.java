@@ -11,26 +11,37 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.level.Level;
+import org.checkerframework.checker.units.qual.N;
 
-public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
+import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class ExtendedShapelessRecipe implements CraftingRecipeExtension {
     protected final String group;
     protected final CraftingBookCategory category;
     protected final ItemStack result;
-    protected final NonNullList<Ingredient> ingredients;
+    protected final List<Ingredient> ingredients;
+    @Nullable
+    private PlacementInfo placementInfo;
     protected final boolean isSimple;
 
-    public ExtendedShapelessRecipe(String pGroup, CraftingBookCategory pCategory, ItemStack pResult, NonNullList<Ingredient> pIngredients) {
-        super(pGroup, pCategory, pResult, pIngredients);
-        this.group = pGroup;
-        this.category = pCategory;
-        this.result = pResult;
-        this.ingredients = pIngredients;
-        this.isSimple = pIngredients.stream().allMatch(Ingredient::isSimple);
+    public ExtendedShapelessRecipe(String group, CraftingBookCategory category, ItemStack result, List<Ingredient> ingredient) {
+        this.group = group;
+        this.category = category;
+        this.result = result;
+        this.ingredients = ingredient;
+        this.isSimple = ingredient.stream().allMatch(Ingredient::isSimple);
     }
 
     @Override
-    public abstract RecipeSerializer<ShapelessRecipe> getSerializer();
+    public abstract RecipeSerializer<? extends ExtendedShapelessRecipe> getSerializer();
 
     @Override
     public String group() {
@@ -43,32 +54,63 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     }
 
     @Override
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            this.placementInfo = PlacementInfo.create(this.ingredients);
+        }
+        return this.placementInfo;
+    }
+
+    @Override
+    public boolean matches(CraftingInput input, Level level) {
+        if (input.ingredientCount() != this.ingredients.size()) {
+            return false;
+        } else if (!isSimple) {
+            var nonEmptyItems = new java.util.ArrayList<ItemStack>(input.ingredientCount());
+            for (var item : input.items())
+                if (!item.isEmpty())
+                    nonEmptyItems.add(item);
+            return net.neoforged.neoforge.common.util.RecipeMatcher.findMatches(nonEmptyItems, this.ingredients) != null;
+        } else {
+            return input.size() == 1 && this.ingredients.size() == 1
+                    ? this.ingredients.getFirst().test(input.getItem(0))
+                    : input.stackedContents().canCraft(this, null);
+        }
+    }
+
+    @Override
     public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
         return this.result.copy();
     }
 
-    protected static <T extends ExtendedShapelessRecipe> Products.P4<RecordCodecBuilder.Mu<T>, String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>> commonCodecFields(RecordCodecBuilder.Instance<T> pInstance) {
-        var maxIngredients = 9; //ShapedRecipePattern.maxHeight * ShapedRecipePattern.maxWidth
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapelessCraftingRecipeDisplay(
+                        this.ingredients.stream().map(Ingredient::display).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)
+                )
+        );
+    }
+
+    @Override
+    public ItemStack getResultForDisplay() {
+        return this.result.copy();
+    }
+
+    @Override
+    public List<Ingredient> getIngredientsForDisplay() {
+        return this.ingredients;
+    }
+
+    protected static <T extends ExtendedShapelessRecipe> Products.P4<RecordCodecBuilder.Mu<T>, String, CraftingBookCategory, ItemStack, List<Ingredient>> commonCodecFields(RecordCodecBuilder.Instance<T> pInstance) {
         return pInstance.group(
                 Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.group),
                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
                 ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result),
-                Ingredient.CODEC
-                        .listOf()
+                Codec.lazyInitialized(() -> Ingredient.CODEC.listOf(1, ShapedRecipePattern.getMaxHeight() * ShapedRecipePattern.getMaxWidth()))
                         .fieldOf("ingredients")
-                        .flatXmap(
-                                list -> {
-                                    Ingredient[] aingredient = list.toArray(Ingredient[]::new);
-                                    if (aingredient.length == 0) {
-                                        return DataResult.error(() -> "No ingredients for shapeless recipe");
-                                    } else {
-                                        return aingredient.length > maxIngredients
-                                                ? DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: %s".formatted(maxIngredients))
-                                                : DataResult.success(NonNullList.of(Ingredient.of(), aingredient));
-                                    }
-                                },
-                                DataResult::success
-                        )
                         .forGetter(r -> r.ingredients)
         );
     }
@@ -76,9 +118,9 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
     public static class BasicSerializer<R extends ExtendedShapelessRecipe> implements RecipeSerializer<R> {
         private final MapCodec<R> codec;
         private final StreamCodec<RegistryFriendlyByteBuf, R> streamCodec;
-        private final Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory;
+        private final Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory;
 
-        public BasicSerializer(Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
+        public BasicSerializer(Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory) {
             this.factory = factory;
             this.codec = RecordCodecBuilder.mapCodec(
                     builder -> commonCodecFields(builder)
@@ -101,9 +143,10 @@ public abstract class ExtendedShapelessRecipe extends ShapelessRecipe {
             String group = buf.readUtf();
             CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
             int ingredientCount = buf.readVarInt();
-            NonNullList<Ingredient> ingredients = NonNullList.withSize(ingredientCount, Ingredient.of());
-
-            ingredients.replaceAll(ignored -> Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            List<Ingredient> ingredients = new ArrayList<>();
+            for (int i = 0; i < ingredientCount; ++i) {
+                ingredients.add(Ingredient.CONTENTS_STREAM_CODEC.decode(buf));
+            }
 
             ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
             return this.factory.apply(group, category, result, ingredients);

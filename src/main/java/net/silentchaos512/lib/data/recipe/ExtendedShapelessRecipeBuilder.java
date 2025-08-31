@@ -17,19 +17,17 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> implements RecipeBuilder {
+public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> implements RecipeBuilder {
     private final HolderGetter<Item> items;
     protected final RecipeCategory category;
     protected final Item result;
@@ -158,7 +156,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
         );
     }
 
-    public static class Basic<R extends ShapelessRecipe> extends ExtendedShapelessRecipeBuilder<R> {
+    public static class Basic<R extends CraftingRecipe> extends ExtendedShapelessRecipeBuilder<R> {
         private final BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory;
 
         public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
@@ -176,22 +174,22 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends ShapelessRecipe> 
             this.factory = factory;
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory) {
             super(items, category, result);
             this.factory = convertConstructor(factory);
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory) {
             super(items, category, result, count);
             this.factory = convertConstructor(factory);
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory) {
             super(items, category, result);
             this.factory = convertConstructor(factory);
         }
 
-        private static <R extends ShapelessRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function4<String, CraftingBookCategory, ItemStack, NonNullList<Ingredient>, R> factory) {
+        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function4<String, CraftingBookCategory, ItemStack, List<Ingredient>, R> factory) {
             return (id, builder) -> factory.apply(
                     builder.group,
                     RecipeBuilder.determineBookCategory(builder.category),
