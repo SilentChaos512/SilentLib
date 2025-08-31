@@ -9,18 +9,27 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
 
-public abstract class ExtendedShapedRecipe extends ShapedRecipe {
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+
+public abstract class ExtendedShapedRecipe implements CraftingRecipeExtension {
     protected final ShapedRecipePattern pattern;
     protected final ItemStack result;
     protected final String group;
     protected final CraftingBookCategory category;
     protected final boolean showNotification;
+    @Nullable
+    private PlacementInfo placementInfo;
 
     public ExtendedShapedRecipe(String pGroup, CraftingBookCategory pCategory, ShapedRecipePattern pPattern, ItemStack pResult, boolean pShowNotification) {
-        super(pGroup, pCategory, pPattern, pResult, pShowNotification);
         this.group = pGroup;
         this.category = pCategory;
         this.pattern = pPattern;
@@ -33,7 +42,7 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     }
 
     @Override
-    public abstract RecipeSerializer<? extends ShapedRecipe> getSerializer();
+    public abstract RecipeSerializer<? extends ExtendedShapedRecipe> getSerializer();
 
     @Override
     public String group() {
@@ -44,6 +53,15 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
     public CraftingBookCategory category() {
         return this.category;
     }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            this.placementInfo = PlacementInfo.createFromOptionals(this.pattern.ingredients());
+        }
+        return this.placementInfo;
+    }
+
     @Override
     public boolean showNotification() {
         return this.showNotification;
@@ -59,14 +77,35 @@ public abstract class ExtendedShapedRecipe extends ShapedRecipe {
         return this.result.copy();
     }
 
-    @Override
     public int getWidth() {
         return this.pattern.width();
     }
 
-    @Override
     public int getHeight() {
         return this.pattern.height();
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapedCraftingRecipeDisplay(
+                        this.pattern.width(),
+                        this.pattern.height(),
+                        this.pattern.ingredients().stream().map(optionalIngredient -> optionalIngredient.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE)).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)
+                )
+        );
+    }
+
+    @Override
+    public ItemStack getResultForDisplay() {
+        return this.result.copy();
+    }
+
+    @Override
+    public List<Ingredient> getIngredientsForDisplay() {
+        return placementInfo().ingredients();
     }
 
     protected static <R extends ExtendedShapedRecipe> Products.P5<RecordCodecBuilder.Mu<R>, String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean> basicCodecFields(RecordCodecBuilder.Instance<R> builder) {

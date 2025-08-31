@@ -23,7 +23,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> implements RecipeBuilder {
+public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> implements RecipeBuilder {
     private final HolderGetter<Item> items;
     protected final RecipeCategory category;
     protected final ItemStack result;
@@ -148,7 +148,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> implem
         );
     }
 
-    public static class Basic<R extends ShapedRecipe> extends ExtendedShapedRecipeBuilder<R> {
+    public static class Basic<R extends CraftingRecipe> extends ExtendedShapedRecipeBuilder<R> {
         private final BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory;
 
         public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
@@ -178,7 +178,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends ShapedRecipe> implem
             this(items, category, result, convertConstructor(factory));
         }
 
-        private static <R extends ShapedRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
             return (id, builder) -> factory.apply(
                     builder.group,
                     RecipeBuilder.determineBookCategory(builder.category),
