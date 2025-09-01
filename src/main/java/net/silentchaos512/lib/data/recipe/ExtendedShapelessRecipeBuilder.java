@@ -8,7 +8,6 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -58,7 +57,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
     }
 
     public ExtendedShapelessRecipeBuilder<R> requires(TagKey<Item> tag, int count) {
-        return this.requires(Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag)), count);
+        return this.requires(Ingredient.of(this.items.getOrThrow(tag)), count);
     }
 
     public ExtendedShapelessRecipeBuilder<R> requires(ItemLike item) {
