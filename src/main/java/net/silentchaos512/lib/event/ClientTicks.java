@@ -36,7 +36,7 @@ public final class ClientTicks {
     }
 
     public static void scheduleAction(Runnable action) {
-        if (FMLEnvironment.dist == Dist.CLIENT)
+        if (FMLEnvironment.getDist() == Dist.CLIENT)
             INSTANCE.scheduledActions.add(action);
         else
             SilentLib.LOGGER.error("Tried to add client tick action on server side? {}", action);
