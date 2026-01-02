@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class ExtendedShapedRecipe implements CraftingRecipeExtension {
     protected final ShapedRecipePattern pattern;
