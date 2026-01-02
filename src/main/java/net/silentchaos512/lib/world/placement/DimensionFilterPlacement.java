@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.annotation.Nonnull;
+
 public class DimensionFilterPlacement extends PlacementModifier {
     public static final MapCodec<DimensionFilterPlacement> CODEC = RecordCodecBuilder.mapCodec(instance ->
             instance.group(
@@ -42,7 +44,7 @@ public class DimensionFilterPlacement extends PlacementModifier {
     }
 
     @Override
-    public Stream<BlockPos> getPositions(PlacementContext helper, RandomSource rand, BlockPos pos) {
+    public Stream<BlockPos> getPositions(@Nonnull PlacementContext helper, @Nonnull RandomSource rand, @Nonnull BlockPos pos) {
         if (this.levels.contains(helper.getLevel().getLevel().dimension()) == this.isWhitelist) {
             return Stream.of(pos);
         }

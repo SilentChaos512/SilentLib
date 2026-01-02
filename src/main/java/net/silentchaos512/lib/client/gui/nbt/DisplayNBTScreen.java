@@ -14,6 +14,8 @@ import net.silentchaos512.lib.util.TextRenderUtils;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 public class DisplayNBTScreen extends Screen {
     final List<String> lines;
     private final CompoundTag nbtCompound;
@@ -47,7 +49,7 @@ public class DisplayNBTScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         assert minecraft != null;
         this.displayList.render(graphics, mouseX, mouseY, partialTicks);
         String titleStr = this.header.getString();
