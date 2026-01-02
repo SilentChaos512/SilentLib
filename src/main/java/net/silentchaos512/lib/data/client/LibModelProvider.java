@@ -22,6 +22,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -59,7 +60,7 @@ public abstract class LibModelProvider implements DataProvider {
     abstract protected ItemModelGenerators createItemModelGenerators(ItemModelOutput itemModelOutput, BiConsumer<ResourceLocation, ModelInstance> modelOutput);
 
     @Override
-    public CompletableFuture<?> run(CachedOutput output) {
+    public CompletableFuture<?> run(@Nonnull CachedOutput output) {
         ItemInfoCollector itemInfoCollector = new ItemInfoCollector();
         BlockStateGeneratorCollector blockStateGeneratorCollector = new BlockStateGeneratorCollector();
         SimpleModelCollector simpleModelCollector = new SimpleModelCollector();
@@ -110,11 +111,11 @@ public abstract class LibModelProvider implements DataProvider {
         private final Map<Item, Item> copies = new HashMap<>();
 
         @Override
-        public void accept(Item item, ItemModel.Unbaked model) {
+        public void accept(@Nonnull Item item, @Nonnull ItemModel.Unbaked model) {
             this.register(item, new ClientItem(model, ClientItem.Properties.DEFAULT));
         }
 
-        public void register(Item p_388205_, ClientItem p_388233_) {
+        public void register(@Nonnull Item p_388205_, @Nonnull ClientItem p_388233_) {
             ClientItem clientitem = this.itemInfos.put(p_388205_, p_388233_);
             if (clientitem != null) {
                 throw new IllegalStateException("Duplicate item model definition for " + p_388205_);
@@ -122,7 +123,7 @@ public abstract class LibModelProvider implements DataProvider {
         }
 
         @Override
-        public void copy(Item p_386920_, Item p_386789_) {
+        public void copy(@Nonnull Item p_386920_, @Nonnull Item p_386789_) {
             this.copies.put(p_386789_, p_386920_);
         }
 

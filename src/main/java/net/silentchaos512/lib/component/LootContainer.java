@@ -16,6 +16,8 @@ import net.minecraft.world.level.storage.loot.LootTable;
 
 import java.util.function.Consumer;
 
+import javax.annotation.Nonnull;
+
 /**
  * Data component used by {@link net.silentchaos512.lib.item.LootContainerItem}
  *
@@ -35,7 +37,7 @@ public record LootContainer(ResourceKey<LootTable> lootTable) implements Tooltip
     );
 
     @Override
-    public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
+    public void addToTooltip(@Nonnull Item.TooltipContext context, @Nonnull Consumer<Component> tooltipAdder, @Nonnull TooltipFlag flag, @Nonnull DataComponentGetter componentGetter) {
         if (flag.isAdvanced()) {
             Component textTableName = Component.literal(this.lootTable.location().toString()).withStyle(ChatFormatting.WHITE);
             tooltipAdder.accept(Component.translatable("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));

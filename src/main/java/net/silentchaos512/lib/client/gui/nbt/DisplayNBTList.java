@@ -1,5 +1,7 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
+import javax.annotation.Nonnull;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -30,7 +32,7 @@ public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void renderContent(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             TextRenderUtils.renderScaled(graphics, this.mc.font, Component.literal(this.text).getVisualOrderText(), mouseX, mouseY, 1.0f, 0xFFFFFF, true);
         }
 
