@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -35,12 +35,12 @@ public final class AttributeHelper {
         }
     }
 
-    public static void remove(LivingEntity entity, Attribute attribute, ResourceLocation id) {
+    public static void remove(LivingEntity entity, Attribute attribute, Identifier id) {
         AttributeInstance instance = entity.getAttribute(Holder.direct(attribute));
         remove(instance, id);
     }
 
-    public static void remove(@Nullable AttributeInstance attributeInstance, ResourceLocation id) {
+    public static void remove(@Nullable AttributeInstance attributeInstance, Identifier id) {
         if (attributeInstance == null) return;
         attributeInstance.removeModifier(id);
     }

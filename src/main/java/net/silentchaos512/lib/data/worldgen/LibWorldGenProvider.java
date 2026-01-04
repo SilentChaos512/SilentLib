@@ -8,8 +8,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
@@ -30,7 +30,6 @@ import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.BiomeModifiers;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import org.checkerframework.checker.index.qual.Positive;
 
 import java.util.Collections;
 import java.util.List;
@@ -80,24 +79,24 @@ public abstract class LibWorldGenProvider {
 
     //region registration helpers
 
-    protected void register(BootstrapContext<ConfiguredFeature<?, ?>> ctx, ResourceLocation key, ConfiguredFeature<?, ?> configuredFeature) {
+    protected void register(BootstrapContext<ConfiguredFeature<?, ?>> ctx, Identifier key, ConfiguredFeature<?, ?> configuredFeature) {
         ctx.register(configuredFeatureKey(key), configuredFeature);
     }
 
-    protected void register(BootstrapContext<PlacedFeature> ctx, ResourceLocation key, Function<Holder<ConfiguredFeature<?, ?>>, PlacedFeature> placedFeature) {
+    protected void register(BootstrapContext<PlacedFeature> ctx, Identifier key, Function<Holder<ConfiguredFeature<?, ?>>, PlacedFeature> placedFeature) {
         ctx.register(placedFeatureKey(key), placedFeature.apply(holderFeature(ctx, configuredFeatureKey(key))));
     }
 
-    protected void register(BootstrapContext<PlacedFeature> ctx, ResourceLocation key, PlacedFeature placedFeature) {
+    protected void register(BootstrapContext<PlacedFeature> ctx, Identifier key, PlacedFeature placedFeature) {
         ctx.register(placedFeatureKey(key), placedFeature);
     }
 
     protected void registerBiomeAddFeature(
             BootstrapContext<BiomeModifier> ctx,
-            ResourceLocation key,
+            Identifier key,
             TagKey<Biome> biomes,
             GenerationStep.Decoration decorationStep,
-            List<ResourceLocation> placedFeatureKeys
+            List<Identifier> placedFeatureKeys
     ) {
         ctx.register(
                 biomeModifierKey(key),
@@ -117,15 +116,15 @@ public abstract class LibWorldGenProvider {
 
     //region ResourceKey helpers
 
-    public static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey(ResourceLocation name) {
+    public static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureKey(Identifier name) {
         return ResourceKey.create(Registries.CONFIGURED_FEATURE, name);
     }
 
-    public static ResourceKey<PlacedFeature> placedFeatureKey(ResourceLocation name) {
+    public static ResourceKey<PlacedFeature> placedFeatureKey(Identifier name) {
         return ResourceKey.create(Registries.PLACED_FEATURE, name);
     }
 
-    public static ResourceKey<BiomeModifier> biomeModifierKey(ResourceLocation name) {
+    public static ResourceKey<BiomeModifier> biomeModifierKey(Identifier name) {
         return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, name);
     }
 
@@ -137,7 +136,7 @@ public abstract class LibWorldGenProvider {
         return ctx.lookup(Registries.CONFIGURED_FEATURE).getOrThrow(location);
     }
 
-    public static Holder<PlacedFeature> holderPlaced(BootstrapContext<BiomeModifier> ctx, ResourceLocation location) {
+    public static Holder<PlacedFeature> holderPlaced(BootstrapContext<BiomeModifier> ctx, Identifier location) {
         return ctx.lookup(Registries.PLACED_FEATURE).getOrThrow(placedFeatureKey(location));
     }
 
@@ -156,7 +155,10 @@ public abstract class LibWorldGenProvider {
 
     //region PlacedFeature helpers
 
-    public static PlacedFeature placeOnSurfaceWithRarity(Holder<ConfiguredFeature<?, ?>> configuredFeature, @Positive int rarityOnceEvery) {
+    public static PlacedFeature placeOnSurfaceWithRarity(Holder<ConfiguredFeature<?, ?>> configuredFeature, int rarityOnceEvery) {
+        if (rarityOnceEvery < 1) {
+            throw new IllegalArgumentException("rarity must be greater than zero");
+        }
         return new PlacedFeature(configuredFeature, List.of(
                 RarityFilter.onAverageOnceEvery(rarityOnceEvery),
                 InSquarePlacement.spread(),

@@ -9,8 +9,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -68,7 +68,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
                 tag.getIntOr("posX", 0),
                 tag.getIntOr("posY", 0),
                 tag.getIntOr("posZ", 0),
-                ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(tag.getStringOr("dim", "minecraft:overworld"))));
+                ResourceKey.create(Registries.DIMENSION, Identifier.parse(tag.getStringOr("dim", "minecraft:overworld"))));
     }
 
     public CompoundTag serializeNbt() {
@@ -76,7 +76,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
         tag.putInt("posX", this.posX);
         tag.putInt("posY", this.posY);
         tag.putInt("posZ", this.posZ);
-        tag.putString("dim", dimension.location().toString());
+        tag.putString("dim", dimension.identifier().toString());
         return tag;
     }
 
@@ -128,7 +128,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
 
     @Override
     public String toString() {
-        return String.format("(%d, %d, %s) in %s", this.posX, this.posY, this.posZ, dimension.location());
+        return String.format("(%d, %d, %s) in %s", this.posX, this.posY, this.posZ, dimension.identifier());
     }
 
     @Override
@@ -137,13 +137,13 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
             return true;
         }
         if (other instanceof DimPos pos) {
-            return pos.dimension.location().equals(dimension.location()) && pos.posX == posX && pos.posY == posY && pos.posZ == posZ;
+            return pos.dimension.identifier().equals(dimension.identifier()) && pos.posX == posX && pos.posY == posY && pos.posZ == posZ;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.location().hashCode();
+        return 31 * (31 * (31 * posX + posY) + posZ) + dimension.identifier().hashCode();
     }
 }

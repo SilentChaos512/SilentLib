@@ -37,7 +37,7 @@ public record LootContainer(ResourceKey<LootTable> lootTable) implements Tooltip
     @Override
     public void addToTooltip(Item.TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
         if (flag.isAdvanced()) {
-            Component textTableName = Component.literal(this.lootTable.location().toString()).withStyle(ChatFormatting.WHITE);
+            Component textTableName = Component.literal(this.lootTable.identifier().toString()).withStyle(ChatFormatting.WHITE);
             tooltipAdder.accept(Component.translatable("item.silentlib.lootContainer.table", textTableName).withStyle(ChatFormatting.BLUE));
         }
     }

@@ -8,6 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 /**
  * Extension of {@link ItemLike}, intended for block enums.
  */
+@Deprecated
 public interface IBlockProvider extends ItemLike {
     /**
      * Get the block this object represents.

@@ -5,8 +5,8 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.placement.PlacementContext;
@@ -24,11 +24,11 @@ public class DimensionFilterPlacement extends PlacementModifier {
                     Codec.BOOL.fieldOf("is_whitelist").forGetter(f -> f.isWhitelist),
                     Codec.STRING.listOf().fieldOf("list").forGetter(f ->
                             f.levels.stream()
-                                    .map(rk -> rk.location().toString())
+                                    .map(rk -> rk.identifier().toString())
                                     .collect(Collectors.toList()))
             ).apply(instance, (isWhitelist, strList) -> {
                 Collection<ResourceKey<Level>> levels = strList.stream()
-                        .map(str -> ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(str)))
+                        .map(str -> ResourceKey.create(Registries.DIMENSION, Identifier.parse(str)))
                         .collect(Collectors.toList());
                 return new DimensionFilterPlacement(isWhitelist, levels);
             }));

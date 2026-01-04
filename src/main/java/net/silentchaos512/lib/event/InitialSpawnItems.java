@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
@@ -10,13 +10,16 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.PlayerUtils;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
  * Can be used to give players items when they first join a world. Call {@link
- * #add(ResourceLocation, Supplier)} in either init or post-init. <em>This should be used
+ * #add(net.minecraft.resources.Identifier, Supplier)} in either init or post-init. <em>This should be used
  * sparingly</em>; we spawn with enough junk already. It is recommended to have config options to
  * disable spawn items.
  *
@@ -28,7 +31,7 @@ public final class InitialSpawnItems {
     private static final InitialSpawnItems INSTANCE = new InitialSpawnItems();
     private static final String NBT_KEY = SilentLib.MOD_ID + ".SpawnItemsGiven";
 
-    private final Map<ResourceLocation, Function<Player, Collection<ItemStack>>> spawnItems = new HashMap<>();
+    private final Map<Identifier, Function<Player, Collection<ItemStack>>> spawnItems = new HashMap<>();
 
     private InitialSpawnItems() {
         NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
@@ -41,10 +44,10 @@ public final class InitialSpawnItems {
      *
      * @param key   The key to uniquely identify the spawn item
      * @param stack The {@link ItemStack} supplier. If it returns an empty stack, nothing is given.
-     * @deprecated Use {@link #add(ResourceLocation, Function)} instead
+     * @deprecated Use {@link #add(Identifier, Function)} instead
      */
     @Deprecated
-    public static void add(ResourceLocation key, Supplier<ItemStack> stack) {
+    public static void add(Identifier key, Supplier<ItemStack> stack) {
         INSTANCE.spawnItems.put(key, p -> {
             ItemStack s = stack.get();
             return s.isEmpty() ? Collections.emptyList() : Collections.singleton(s);
@@ -59,7 +62,7 @@ public final class InitialSpawnItems {
      * @param key         The key to uniquely identify the spawn item
      * @param itemFactory The item stack producer. Should not contain empty stacks.
      */
-    public static void add(ResourceLocation key, Function<Player, Collection<ItemStack>> itemFactory) {
+    public static void add(Identifier key, Function<Player, Collection<ItemStack>> itemFactory) {
         INSTANCE.spawnItems.put(key, itemFactory);
     }
 
@@ -70,7 +73,7 @@ public final class InitialSpawnItems {
         spawnItems.forEach((key, factory) -> handleSpawnItems(player, givenItems, key, factory.apply(player)));
     }
 
-    private static void handleSpawnItems(Player player, CompoundTag givenItems, ResourceLocation key, Collection<ItemStack> items) {
+    private static void handleSpawnItems(Player player, CompoundTag givenItems, Identifier key, Collection<ItemStack> items) {
         if (items.isEmpty()) return;
 
         String nbtKey = key.toString().replace(':', '.');

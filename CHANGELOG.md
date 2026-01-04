@@ -1,5 +1,11 @@
 # Changelog
 
+## [1.21.11-11.0.3] - 2026-01-04
+- Ported to Minecraft 1.21.11 (NeoForge)
+
+## [1.21.10-11.0.3] - 2025-10-18
+- Ported to Minecraft 1.21.10 (NeoForge)
+
 ## [1.21.7-11.0.0] - 2025-07-04
 - Ported to Minecraft 1.21.7 (NeoForge)
 

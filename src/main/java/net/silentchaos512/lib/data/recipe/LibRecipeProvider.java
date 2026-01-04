@@ -1,15 +1,15 @@
 package net.silentchaos512.lib.data.recipe;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -57,17 +57,17 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     protected abstract void buildRecipes();
 
     /**
-     * Gets a {@link ResourceLocation} with {@link #modId} as the namespace. This is used
+     * Gets a {@link net.minecraft.resources.Identifier} with {@link #modId} as the namespace. This is used
      * internally, but may be used by the extending class as well.
      *
      * @param path The path to use
-     * @return A {@link ResourceLocation} with {@link #modId} as the namespace and the given path
+     * @return A {@link net.minecraft.resources.Identifier} with {@link #modId} as the namespace and the given path
      */
     protected ResourceKey<Recipe<?>> modId(String path) {
-        return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(this.modId, path));
+        return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(this.modId, path));
     }
 
-    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, ResourceLocation recipeId) {
+    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, Identifier recipeId) {
         SpecialRecipeBuilder.special(serializer).save(consumer, recipeId.toString());
     }
 

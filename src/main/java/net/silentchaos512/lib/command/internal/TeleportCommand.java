@@ -19,7 +19,7 @@ public final class TeleportCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         dispatcher.register(Commands.literal("sl_tp")
-                .requires(source -> source.hasPermission(2))
+                .requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
                 .then(Commands.argument("entity", EntityArgument.entities())
                         .then(Commands.argument("dimension", DimensionArgument.dimension())
                                 .then(Commands.argument("pos", BlockPosArgument.blockPos())

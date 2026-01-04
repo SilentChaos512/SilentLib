@@ -5,14 +5,14 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -124,7 +124,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
 
         R recipe = createRecipe(pId);
         var advancementHolder = advancement$builder != null
-                ? advancement$builder.build(pId.location().withPrefix("recipes/" + this.category.getFolderName() + "/"))
+                ? advancement$builder.build(pId.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
                 : null;
         pRecipeOutput.accept(pId, recipe, advancementHolder);
     }
@@ -145,7 +145,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         return group;
     }
 
-    public static ShapelessRecipe vanillaFactory(ResourceLocation id, ExtendedShapelessRecipeBuilder<ShapelessRecipe> builder) {
+    public static ShapelessRecipe vanillaFactory(Identifier id, ExtendedShapelessRecipeBuilder<ShapelessRecipe> builder) {
         // Basically the same as ShapelessRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapelessRecipe(
                 Objects.requireNonNullElse(builder.group, ""),

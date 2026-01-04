@@ -29,7 +29,7 @@ public class DisplayNBTScreen extends Screen {
 
     @Override
     protected void init() {
-        if (minecraft == null) minecraft = Minecraft.getInstance();
+        var minecraft = Minecraft.getInstance();
 
         int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
         int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
