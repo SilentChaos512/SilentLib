@@ -5,7 +5,7 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -69,7 +69,7 @@ public final class SilentLib {
         return "NONE".equals(getVersion());
     }
 
-    public static ResourceLocation getId(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
+    public static Identifier getId(String path) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, path);
     }
 }

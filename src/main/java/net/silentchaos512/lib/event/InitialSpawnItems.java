@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.event;
 
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForge;
@@ -28,7 +28,7 @@ public final class InitialSpawnItems {
     private static final InitialSpawnItems INSTANCE = new InitialSpawnItems();
     private static final String NBT_KEY = SilentLib.MOD_ID + ".SpawnItemsGiven";
 
-    private final Map<ResourceLocation, Function<Player, Collection<ItemStack>>> spawnItems = new HashMap<>();
+    private final Map<Identifier, Function<Player, Collection<ItemStack>>> spawnItems = new HashMap<>();
 
     private InitialSpawnItems() {
         NeoForge.EVENT_BUS.addListener(this::onPlayerLoggedIn);
@@ -44,7 +44,7 @@ public final class InitialSpawnItems {
      * @deprecated Use {@link #add(ResourceLocation, Function)} instead
      */
     @Deprecated
-    public static void add(ResourceLocation key, Supplier<ItemStack> stack) {
+    public static void add(Identifier key, Supplier<ItemStack> stack) {
         INSTANCE.spawnItems.put(key, p -> {
             ItemStack s = stack.get();
             return s.isEmpty() ? Collections.emptyList() : Collections.singleton(s);
@@ -59,7 +59,7 @@ public final class InitialSpawnItems {
      * @param key         The key to uniquely identify the spawn item
      * @param itemFactory The item stack producer. Should not contain empty stacks.
      */
-    public static void add(ResourceLocation key, Function<Player, Collection<ItemStack>> itemFactory) {
+    public static void add(Identifier key, Function<Player, Collection<ItemStack>> itemFactory) {
         INSTANCE.spawnItems.put(key, itemFactory);
     }
 
@@ -70,7 +70,7 @@ public final class InitialSpawnItems {
         spawnItems.forEach((key, factory) -> handleSpawnItems(player, givenItems, key, factory.apply(player)));
     }
 
-    private static void handleSpawnItems(Player player, CompoundTag givenItems, ResourceLocation key, Collection<ItemStack> items) {
+    private static void handleSpawnItems(Player player, CompoundTag givenItems, Identifier key, Collection<ItemStack> items) {
         if (items.isEmpty()) return;
 
         String nbtKey = key.toString().replace(':', '.');

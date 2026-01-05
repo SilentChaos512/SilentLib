@@ -16,10 +16,11 @@ import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.component.LootContainer;
 import net.silentchaos512.lib.util.LootUtils;
 import net.silentchaos512.lib.util.PlayerUtils;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 /**
  * An item that gives the player items from a loot table when used, similar to a loot bag. The loot table is specified
@@ -76,7 +77,7 @@ public class LootContainerItem extends Item {
     }
 
     @Override
-    public InteractionResult use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(@Nullable Level level, @Nullable Player player, @Nullable InteractionHand hand) {
         ItemStack heldItem = player.getItemInHand(hand);
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;

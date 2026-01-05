@@ -18,7 +18,6 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 
 public abstract class ExtendedShapedRecipe implements CraftingRecipeExtension {
     protected final ShapedRecipePattern pattern;
@@ -68,12 +67,12 @@ public abstract class ExtendedShapedRecipe implements CraftingRecipeExtension {
     }
 
     @Override
-    public boolean matches(CraftingInput pInv, Level pLevel) {
+    public boolean matches(@Nullable CraftingInput pInv, @Nullable Level pLevel) {
         return this.pattern.matches(pInv);
     }
 
     @Override
-    public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
+    public ItemStack assemble(@Nullable CraftingInput pContainer, @Nullable HolderLookup.Provider pRegistries) {
         return this.result.copy();
     }
 

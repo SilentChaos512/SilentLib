@@ -9,11 +9,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
+
+import javax.annotation.Nullable;
 
 public record IngredientWithCount(Ingredient ingredient, int count) implements Predicate<ItemStack> {
     public static final Codec<IngredientWithCount> CODEC = RecordCodecBuilder.create(

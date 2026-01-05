@@ -5,14 +5,13 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +24,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiFunction;
+
+import javax.annotation.Nullable;
 
 public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> implements RecipeBuilder {
     private final HolderGetter<Item> items;
@@ -96,12 +97,12 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder<R> unlockedBy(String pName, Criterion<?> pCriterion) {
+    public ExtendedShapelessRecipeBuilder<R> unlockedBy(@Nullable String pName, @Nullable Criterion<?> pCriterion) {
         this.criteria.put(pName, pCriterion);
         return this;
     }
 
-    public ExtendedShapelessRecipeBuilder<R> group(String pGroupName) {
+    public ExtendedShapelessRecipeBuilder<R> group(@Nullable String pGroupName) {
         this.group = pGroupName;
         return this;
     }
@@ -112,11 +113,10 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
     }
 
     @Override
-    public void save(RecipeOutput pRecipeOutput, ResourceKey<Recipe<?>> pId) {
+    public void save(@Nullable RecipeOutput pRecipeOutput, @Nullable ResourceKey<Recipe<?>> pId) {
         Advancement.Builder advancement$builder = null;
         if (!this.criteria.isEmpty()) {
             advancement$builder = pRecipeOutput.advancement()
-                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pId))
                     .rewards(AdvancementRewards.Builder.recipe(pId))
                     .requirements(AdvancementRequirements.Strategy.OR);
             this.criteria.forEach(advancement$builder::addCriterion);
@@ -124,7 +124,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
 
         R recipe = createRecipe(pId);
         var advancementHolder = advancement$builder != null
-                ? advancement$builder.build(pId.location().withPrefix("recipes/" + this.category.getFolderName() + "/"))
+                ? advancement$builder.build(pId.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
                 : null;
         pRecipeOutput.accept(pId, recipe, advancementHolder);
     }
@@ -145,7 +145,7 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         return group;
     }
 
-    public static ShapelessRecipe vanillaFactory(ResourceLocation id, ExtendedShapelessRecipeBuilder<ShapelessRecipe> builder) {
+    public static ShapelessRecipe vanillaFactory(Identifier id, ExtendedShapelessRecipeBuilder<ShapelessRecipe> builder) {
         // Basically the same as ShapelessRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapelessRecipe(
                 Objects.requireNonNullElse(builder.group, ""),

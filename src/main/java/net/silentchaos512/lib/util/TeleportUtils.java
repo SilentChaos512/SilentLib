@@ -80,7 +80,7 @@ public class TeleportUtils {
     @Nullable
     public static Entity teleportEntity(Entity entity, Level destinationLevel, double newX, double newY, double newZ, @Nullable Direction facing) {
         Level currentLevel = entity.level();
-        if (currentLevel.dimension().location().equals(destinationLevel.dimension().location())) {
+        if (currentLevel.dimension().identifier().equals(destinationLevel.dimension().identifier())) {
             if (facing != null) {
                 fixOrientation(entity, newX, newY, newZ, facing);
             }

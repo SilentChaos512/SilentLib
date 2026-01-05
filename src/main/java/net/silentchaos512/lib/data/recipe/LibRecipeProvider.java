@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.data.recipe;
 
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -9,7 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-@SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
+@SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess"})
 public abstract class LibRecipeProvider extends RecipeProvider {
     private final String modId;
     protected final HolderGetter<Item> items;
@@ -36,7 +36,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     ) {
         return new RecipeProvider.Runner(packOutput, registryLookup) {
             @Override
-            protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+            protected RecipeProvider createRecipeProvider(@Nullable HolderLookup.Provider registries, @Nullable RecipeOutput output) {
                 return constructor.apply(registries, output);
             }
 
@@ -64,10 +64,10 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @return A {@link ResourceLocation} with {@link #modId} as the namespace and the given path
      */
     protected ResourceKey<Recipe<?>> modId(String path) {
-        return ResourceKey.create(Registries.RECIPE, ResourceLocation.fromNamespaceAndPath(this.modId, path));
+        return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(this.modId, path));
     }
 
-    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, ResourceLocation recipeId) {
+    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, Identifier recipeId) {
         SpecialRecipeBuilder.special(serializer).save(consumer, recipeId.toString());
     }
 

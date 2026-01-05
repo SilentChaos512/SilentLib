@@ -91,10 +91,6 @@ public final class InventoryUtils {
     }
 
     public static Collection<ItemStack> mergeItems(Container inventory, int slotStart, int slotEndExclusive, Collection<ItemStack> stacks) {
-        if (inventory == null && stacks.isEmpty()) {
-            return ImmutableList.of();
-        }
-
         ImmutableList.Builder<ItemStack> leftovers = ImmutableList.builder();
 
         for (ItemStack stack : stacks) {

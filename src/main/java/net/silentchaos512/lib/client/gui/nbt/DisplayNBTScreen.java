@@ -2,7 +2,6 @@ package net.silentchaos512.lib.client.gui.nbt;
 
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
@@ -29,8 +28,6 @@ public class DisplayNBTScreen extends Screen {
 
     @Override
     protected void init() {
-        if (minecraft == null) minecraft = Minecraft.getInstance();
-
         int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
         int scaledHeight = minecraft.getWindow().getGuiScaledHeight();
         int width = 100;

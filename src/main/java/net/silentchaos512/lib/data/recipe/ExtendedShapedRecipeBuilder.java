@@ -2,14 +2,13 @@ package net.silentchaos512.lib.data.recipe;
 
 import com.mojang.datafixers.util.Function5;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -73,7 +72,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         }
     }
 
-    public ExtendedShapedRecipeBuilder<R> unlockedBy(String name, Criterion<?> criterion) {
+    public ExtendedShapedRecipeBuilder<R> unlockedBy(@Nullable String name, @Nullable Criterion<?> criterion) {
         this.criteria.put(name, criterion);
         return this;
     }
@@ -94,17 +93,16 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
     }
 
     @Override
-    public void save(RecipeOutput output) {
+    public void save(@Nullable RecipeOutput output) {
         save(output, ResourceKey.create(Registries.RECIPE, NameUtils.fromItem(this.result)));
     }
 
     @Override
-    public void save(RecipeOutput output, ResourceKey<Recipe<?>> id) {
+    public void save(@Nullable RecipeOutput output, @Nullable ResourceKey<Recipe<?>> id) {
         ShapedRecipePattern pattern = ShapedRecipePattern.of(this.key, this.rows);
         Advancement.Builder advancementBuilder = null;
         if (!this.criteria.isEmpty()) {
             advancementBuilder = output.advancement()
-                    .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(id))
                     .rewards(AdvancementRewards.Builder.recipe(id))
                     .requirements(AdvancementRequirements.Strategy.OR);
             this.criteria.forEach(advancementBuilder::addCriterion);
@@ -112,7 +110,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
 
         R recipe = createRecipe(id);
         AdvancementHolder advancementHolder = advancementBuilder != null
-                ? advancementBuilder.build(id.location().withPrefix("recipes/" + this.category.getFolderName() + "/"))
+                ? advancementBuilder.build(id.identifier().withPrefix("recipes/" + this.category.getFolderName() + "/"))
                 : null;
         output.accept(id, recipe, advancementHolder);
     }
@@ -137,7 +135,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         return showNotification;
     }
 
-    public static ShapedRecipe vanillaFactory(ResourceLocation id, ExtendedShapedRecipeBuilder<ShapedRecipe> builder) {
+    public static ShapedRecipe vanillaFactory(Identifier id, ExtendedShapedRecipeBuilder<ShapedRecipe> builder) {
         // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapedRecipe(
                 Objects.requireNonNullElse(builder.group, ""),

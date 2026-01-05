@@ -14,7 +14,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-@SuppressWarnings({"unused", "MagicNumber", "SpellCheckingInspection"})
+import javax.annotation.Nullable;
+
+@SuppressWarnings({"MagicNumber", "SpellCheckingInspection"})
 public class Color {
     public static final Codec<Color> CODEC = Codec.STRING
             .comapFlatMap(Color::read, Color::format)
@@ -411,7 +413,7 @@ public class Color {
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(@Nullable Object other) {
         if (this == other) {
             return true;
         }

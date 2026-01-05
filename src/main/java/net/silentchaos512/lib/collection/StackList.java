@@ -10,6 +10,8 @@ import java.util.Collections;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import javax.annotation.Nullable;
+
 /**
  * ArrayList designed to hold non-empty ItemStacks. Ignores any empty stacks that are added. Has
  * some convenience methods for selecting stacks.
@@ -98,13 +100,17 @@ public final class StackList extends ArrayList<ItemStack> {
     //region ArrayList overrides
 
     @Override
-    public boolean add(ItemStack itemStack) {
-        return !itemStack.isEmpty() && super.add(itemStack);
+    public boolean add(@Nullable ItemStack itemStack) {
+        return itemStack != null && !itemStack.isEmpty() && super.add(itemStack);
     }
 
     @Override
-    public boolean addAll(Collection<? extends ItemStack> c) {
+    public boolean addAll(@Nullable Collection<? extends ItemStack> c) {
         boolean added = false;
+        if(c == null) {
+            return added;
+        }
+
         for (ItemStack stack : c) {
             if (!stack.isEmpty()) {
                 added |= super.add(stack);
@@ -114,8 +120,12 @@ public final class StackList extends ArrayList<ItemStack> {
     }
 
     @Override
-    public boolean addAll(int index, Collection<? extends ItemStack> c) {
-        boolean added = false;
+    public boolean addAll(int index, @Nullable Collection<? extends ItemStack> c) {
+         boolean added = false;
+        if(c == null) {
+            return added;
+        }
+
         for (ItemStack stack : c) {
             if (!stack.isEmpty()) {
                 super.add(index, stack);
@@ -126,8 +136,8 @@ public final class StackList extends ArrayList<ItemStack> {
     }
 
     @Override
-    public void add(int index, ItemStack element) {
-        if (!element.isEmpty()) {
+    public void add(int index, @Nullable ItemStack element) {
+        if (element != null && !element.isEmpty()) {
             super.add(index, element);
         }
     }

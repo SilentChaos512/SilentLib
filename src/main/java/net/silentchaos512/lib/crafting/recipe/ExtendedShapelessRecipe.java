@@ -3,11 +3,9 @@ package net.silentchaos512.lib.crafting.recipe;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +15,6 @@ import net.minecraft.world.item.crafting.display.RecipeDisplay;
 import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
 import net.minecraft.world.item.crafting.display.SlotDisplay;
 import net.minecraft.world.level.Level;
-import org.checkerframework.checker.units.qual.N;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -62,8 +59,8 @@ public abstract class ExtendedShapelessRecipe implements CraftingRecipeExtension
     }
 
     @Override
-    public boolean matches(CraftingInput input, Level level) {
-        if (input.ingredientCount() != this.ingredients.size()) {
+    public boolean matches(@Nullable CraftingInput input, @Nullable Level level) {
+        if (input == null || input.ingredientCount() != this.ingredients.size()) {
             return false;
         } else if (!isSimple) {
             var nonEmptyItems = new java.util.ArrayList<ItemStack>(input.ingredientCount());
@@ -79,7 +76,7 @@ public abstract class ExtendedShapelessRecipe implements CraftingRecipeExtension
     }
 
     @Override
-    public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
+    public ItemStack assemble(@Nullable CraftingInput pContainer, @Nullable HolderLookup.Provider pRegistries) {
         return this.result.copy();
     }
 

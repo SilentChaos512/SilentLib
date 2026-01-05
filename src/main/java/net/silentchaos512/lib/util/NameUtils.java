@@ -2,7 +2,7 @@ package net.silentchaos512.lib.util;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -30,24 +30,24 @@ public final class NameUtils {
     /**
      * Verify name is not null, throwing an exception if it is.
      *
-     * @param name Possibly null ResourceLocation
+     * @param name Possibly null Identifier
      * @return name
      * @throws NullPointerException if name is null
      */
-    public static ResourceLocation checkNotNull(@Nullable ResourceLocation name) {
+    public static Identifier checkNotNull(@Nullable Identifier name) {
         Preconditions.checkNotNull(name, "Name is null, make sure the object has been registered correctly");
         return name;
     }
 
     /**
-     * Get a ResourceLocation with namespace "forge". Does not handle exceptions.
+     * Get a Identifier with namespace "forge". Does not handle exceptions.
      *
      * @param path The path (must be /[a-z0-9/._-]+/)
-     * @return A new ResourceLocation
-     * @throws net.minecraft.ResourceLocationException if path is invalid
+     * @return A new Identifier
+     * @throws net.minecraft.IdentifierException if path is invalid
      */
-    public static ResourceLocation forgeId(String path) {
-        return ResourceLocation.fromNamespaceAndPath("forge", path);
+    public static Identifier forgeId(String path) {
+        return Identifier.fromNamespaceAndPath("forge", path);
     }
 
     /**
@@ -57,7 +57,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromBlock(Block block) {
+    public static Identifier fromBlock(Block block) {
         return checkNotNull(BuiltInRegistries.BLOCK.getKey(block));
     }
 
@@ -68,7 +68,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromBlock(IBlockProvider block) {
+    public static Identifier fromBlock(IBlockProvider block) {
         Preconditions.checkNotNull(block.asBlock(), "asBlock() is null, has object not been fully constructed?");
         return fromBlock(block.asBlock());
     }
@@ -80,7 +80,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromBlock(BlockState state) {
+    public static Identifier fromBlock(BlockState state) {
         return fromBlock(state.getBlock());
     }
 
@@ -91,7 +91,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromEntity(Entity entity) {
+    public static Identifier fromEntity(Entity entity) {
         return fromEntityType(entity.getType());
     }
 
@@ -102,7 +102,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromEntityType(EntityType<?> type) {
+    public static Identifier fromEntityType(EntityType<?> type) {
         return checkNotNull(BuiltInRegistries.ENTITY_TYPE.getKey(type));
     }
 
@@ -113,7 +113,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromFluid(Fluid fluid) {
+    public static Identifier fromFluid(Fluid fluid) {
         return checkNotNull(BuiltInRegistries.FLUID.getKey(fluid));
     }
 
@@ -124,7 +124,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromFluid(FluidStack fluid) {
+    public static Identifier fromFluid(FluidStack fluid) {
         return fromFluid(fluid.getFluid());
     }
 
@@ -135,7 +135,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromItem(ItemLike item) {
+    public static Identifier fromItem(ItemLike item) {
         Preconditions.checkNotNull(item.asItem(), "asItem() is null, has object not been fully constructed?");
         return checkNotNull(BuiltInRegistries.ITEM.getKey(item.asItem()));
     }
@@ -147,7 +147,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromItem(ItemStack stack) {
+    public static Identifier fromItem(ItemStack stack) {
         return fromItem(stack.getItem());
     }
 
@@ -158,7 +158,7 @@ public final class NameUtils {
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static ResourceLocation fromRecipeSerializer(RecipeSerializer<? extends Recipe<?>> serializer) {
+    public static Identifier fromRecipeSerializer(RecipeSerializer<? extends Recipe<?>> serializer) {
         return checkNotNull(BuiltInRegistries.RECIPE_SERIALIZER.getKey(serializer));
     }
 }
