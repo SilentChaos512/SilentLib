@@ -21,7 +21,7 @@ public record IngredientWithCount(Ingredient ingredient, int count) implements P
             instance -> instance.group(
                     Ingredient.CODEC.fieldOf("ingredient").forGetter(iwc -> iwc.ingredient),
                     Codec.INT.fieldOf("count").forGetter(iwc -> iwc.count)
-            ).apply(instance, IngredientWithCount::new)
+            ).apply(instance, (ingredient, count) -> new IngredientWithCount(ingredient, count.intValue()))
     );
 
     public static final IngredientWithCount EMPTY = new IngredientWithCount(Ingredient.of(), 0);

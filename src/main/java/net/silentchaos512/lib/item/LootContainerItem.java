@@ -78,6 +78,9 @@ public class LootContainerItem extends Item {
 
     @Override
     public InteractionResult use(@Nullable Level level, @Nullable Player player, @Nullable InteractionHand hand) {
+        if (player == null || hand == null) {
+            return InteractionResult.PASS;
+        }
         ItemStack heldItem = player.getItemInHand(hand);
         if (!(player instanceof ServerPlayer serverPlayer)) {
             return InteractionResult.SUCCESS;

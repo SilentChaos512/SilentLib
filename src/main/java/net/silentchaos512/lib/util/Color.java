@@ -190,6 +190,10 @@ public class Color {
     private final int blue;
     private final int alpha;
 
+    public Color(Integer color) {
+        this(color.intValue());
+    }
+
     public Color(int color) {
         this.red = (color >> 16) & 0xFF;
         this.green = (color >> 8) & 0xFF;

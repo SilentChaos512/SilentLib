@@ -29,7 +29,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
                     Codec.INT.fieldOf("y").forGetter(DimPos::posY),
                     Codec.INT.fieldOf("z").forGetter(DimPos::posZ),
                     ResourceKey.codec(Registries.DIMENSION).fieldOf("dimension").forGetter(DimPos::dimension)
-            ).apply(instance, DimPos::of)
+            ).apply(instance, (x, y, z, dim) -> DimPos.of(x.intValue(), y.intValue(), z.intValue(), dim))
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DimPos> STREAM_CODEC = StreamCodec.composite(
@@ -37,7 +37,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
             ByteBufCodecs.VAR_INT, DimPos::posY,
             ByteBufCodecs.VAR_INT, DimPos::posZ,
             ResourceKey.streamCodec(Registries.DIMENSION), DimPos::dimension,
-            DimPos::of
+            (x, y, z, dim) -> DimPos.of(x.intValue(), y.intValue(), z.intValue(), dim)
     );
 
     /**

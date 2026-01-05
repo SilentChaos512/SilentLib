@@ -1,4 +1,4 @@
-@ParametersAreNonnullByDefault
+@NullMarked
 package net.silentchaos512.lib.block;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import org.jspecify.annotations.NullMarked;

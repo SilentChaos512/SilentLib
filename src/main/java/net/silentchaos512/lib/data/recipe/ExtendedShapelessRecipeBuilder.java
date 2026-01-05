@@ -114,6 +114,9 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
 
     @Override
     public void save(@Nullable RecipeOutput pRecipeOutput, @Nullable ResourceKey<Recipe<?>> pId) {
+        Objects.requireNonNull(pRecipeOutput, "RecipeOutput cannot be null");
+        Objects.requireNonNull(pId, "Recipe ID cannot be null");
+
         Advancement.Builder advancement$builder = null;
         if (!this.criteria.isEmpty()) {
             advancement$builder = pRecipeOutput.advancement()

@@ -9,7 +9,6 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.silentchaos512.lib.SilentLib;
 import net.silentchaos512.lib.util.PlayerUtils;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -23,7 +22,6 @@ import java.util.function.Supplier;
  * @author SilentChaos512
  * @since 3.0.3
  */
-@ParametersAreNonnullByDefault
 public final class InitialSpawnItems {
     private static final InitialSpawnItems INSTANCE = new InitialSpawnItems();
     private static final String NBT_KEY = SilentLib.MOD_ID + ".SpawnItemsGiven";

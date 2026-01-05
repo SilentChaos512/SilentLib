@@ -99,6 +99,9 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
 
     @Override
     public void save(@Nullable RecipeOutput output, @Nullable ResourceKey<Recipe<?>> id) {
+        Objects.requireNonNull(output, "RecipeOutput cannot be null");
+        Objects.requireNonNull(id, "Recipe ID cannot be null");
+
         ShapedRecipePattern pattern = ShapedRecipePattern.of(this.key, this.rows);
         Advancement.Builder advancementBuilder = null;
         if (!this.criteria.isEmpty()) {
