@@ -1,5 +1,8 @@
 # Changelog
 
+## [1.21.11-11.0.4] - 2026-01-16
+- Add `LibBlockItemTagsProvider`
+
 ## [1.21.11-11.0.3] - 2026-01-04
 - Ported to Minecraft 1.21.11 (NeoForge)
 
