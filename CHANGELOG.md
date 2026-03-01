@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.21.11-11.1.1] - 2026-03-01
+- Add `crop_cutout` model template for data generation
+
+## [1.21.11-11.1.0] - 2026-02-25
+- Add `LibBlockModelGenerators` and `cross_cutout` model templates
+- Fixed an issue with `LibRecipeProvider#smeltingAndBlastingRecipes` not handling tags correctly
+- Small refactoring in `InitialSpawnItems`: deprecate `add` and add `addItem` and `addItems`
+
 ## [1.21.11-11.0.4] - 2026-01-16
 - Add `LibBlockItemTagsProvider`
 

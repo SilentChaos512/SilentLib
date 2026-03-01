@@ -4,7 +4,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.ImpossibleTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
@@ -104,7 +103,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @param experienceIn The experience (XP) the recipe yields
      */
     protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, TagKey<Item> tag, ItemLike result, float experienceIn) {
-        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(BuiltInRegistries.ITEM.getOrThrow(tag)), result, experienceIn);
+        smeltingAndBlastingRecipes(consumer, id, Ingredient.of(this.items.getOrThrow(tag)), result, experienceIn);
     }
 
     /**
