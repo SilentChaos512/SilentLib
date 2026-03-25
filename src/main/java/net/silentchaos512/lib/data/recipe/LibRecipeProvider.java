@@ -129,6 +129,22 @@ public abstract class LibRecipeProvider extends RecipeProvider {
                 .save(consumer, modId("smelting/" + id));
     }
 
+    protected void cookingRecipes(String id, ItemLike ingredient, ItemLike result) {
+        cookingRecipes(id, ingredient, result, 0.35f, 200);
+    }
+
+    protected  void cookingRecipes(String id, ItemLike ingredient, ItemLike result, float experience, int smeltingTime) {
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ingredient), RecipeCategory.FOOD, result, experience, smeltingTime)
+                .unlockedBy("has_item", has(ingredient))
+                .save(this.output, modId("smelting/" + id));
+        SimpleCookingRecipeBuilder.smoking(Ingredient.of(ingredient), RecipeCategory.FOOD, result, experience, smeltingTime / 2)
+                .unlockedBy("has_item", has(ingredient))
+                .save(this.output, modId("smoking/" + id));
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ingredient), RecipeCategory.FOOD, result, experience, smeltingTime * 3)
+                .unlockedBy("has_item", has(ingredient))
+                .save(this.output, modId("campfire_cooking/" + id));
+    }
+
     /**
      * Adds recipes that convert between items, where nine of one is used to craft the bigger
      * version. These items can be anything, but this is typically used for things like metal
