@@ -19,10 +19,9 @@
 package net.silentchaos512.lib.client.gui;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -109,13 +108,13 @@ public abstract class DebugRenderOverlay {
     public abstract boolean isHidden();
 
     @SuppressWarnings({"WeakerAccess", "SameParameterValue"})
-    protected void drawLine(GuiGraphics graphics, Font font, String line, int x, int y, int color) {
+    protected void drawLine(GuiGraphicsExtractor graphics, Font font, String line, int x, int y, int color) {
         String[] array = line.split(SPLITTER);
         if (array.length == 2) {
-            graphics.drawString(font, array[0].trim(), x, y, color);
-            graphics.drawString(font,array[1].trim(), x + getSplitWidth(), y, color);
+            graphics.text(font, array[0].trim(), x, y, color);
+            graphics.text(font,array[1].trim(), x + getSplitWidth(), y, color);
         } else {
-            graphics.drawString(font, line, x, y, color);
+            graphics.text(font, line, x, y, color);
         }
     }
 

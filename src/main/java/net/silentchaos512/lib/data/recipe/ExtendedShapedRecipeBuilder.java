@@ -12,7 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.ICustomIngredient;
@@ -26,14 +26,14 @@ import java.util.function.BiFunction;
 public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> implements RecipeBuilder {
     private final HolderGetter<Item> items;
     protected final RecipeCategory category;
-    protected final ItemStack result;
+    protected final ItemStackTemplate result;
     protected final List<String> rows = new ArrayList<>();
     protected final Map<Character, Ingredient> key = new LinkedHashMap<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    protected String group = "";
+    @Nullable protected String group;
     protected boolean showNotification = true;
 
-    public ExtendedShapedRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStack result) {
+    public ExtendedShapedRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result) {
         this.items = items;
         this.category = category;
         this.result = result;
@@ -89,11 +89,6 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
     }
 
     @Override
-    public Item getResult() {
-        return result.getItem();
-    }
-
-    @Override
     public void save(RecipeOutput output) {
         save(output, ResourceKey.create(Registries.RECIPE, NameUtils.fromItem(this.result)));
     }
@@ -121,7 +116,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         return category;
     }
 
-    public ItemStack result() {
+    public ItemStackTemplate result() {
         return result;
     }
 
@@ -129,7 +124,7 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         return ShapedRecipePattern.of(this.key, this.rows);
     }
 
-    public String group() {
+    @Nullable public String group() {
         return group;
     }
 
@@ -140,48 +135,50 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
     public static ShapedRecipe vanillaFactory(Identifier id, ExtendedShapedRecipeBuilder<ShapedRecipe> builder) {
         // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapedRecipe(
-                Objects.requireNonNullElse(builder.group, ""),
-                RecipeBuilder.determineBookCategory(builder.category),
+                new Recipe.CommonInfo(builder.showNotification),
+                new CraftingRecipe.CraftingBookInfo(
+                        RecipeBuilder.determineCraftingBookCategory(builder.category),
+                        Objects.requireNonNullElse(builder.group, "")
+                ),
                 ShapedRecipePattern.of(builder.key, builder.rows),
-                builder.result,
-                builder.showNotification
+                builder.result
         );
     }
 
     public static class Basic<R extends CraftingRecipe> extends ExtendedShapedRecipeBuilder<R> {
         private final BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory;
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
             super(items, category, result);
             this.factory = factory;
         }
 
         public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
-            super(items, category, new ItemStack(result));
+            super(items, category, new ItemStackTemplate(result.asItem()));
             this.factory = factory;
         }
 
         public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> factory) {
-            super(items, category, new ItemStack(result, count));
+            super(items, category, new ItemStackTemplate(result.asItem(), count));
             this.factory = factory;
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStack result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
+        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
             return (id, builder) -> factory.apply(
                     builder.group,
-                    RecipeBuilder.determineBookCategory(builder.category),
+                    RecipeBuilder.determineCraftingBookCategory(builder.category),
                     builder.pattern(),
                     builder.result,
                     builder.showNotification
@@ -191,6 +188,11 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         @Override
         public R createRecipe(ResourceKey<Recipe<?>> id) {
             return factory.apply(id, this);
+        }
+
+        @Override
+        public ResourceKey<Recipe<?>> defaultId() {
+            return RecipeBuilder.getDefaultRecipeId(this.result);
         }
     }
 }

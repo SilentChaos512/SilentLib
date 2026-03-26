@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.client.gui.nbt;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.network.chat.Component;
 import net.silentchaos512.lib.util.TextRenderUtils;
@@ -30,7 +30,7 @@ public class DisplayNBTList extends ObjectSelectionList<DisplayNBTList.Entry> {
         }
 
         @Override
-        public void renderContent(GuiGraphics graphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor graphics, int mouseX, int mouseY, boolean hovered, float a) {
             TextRenderUtils.renderScaled(graphics, this.mc.font, Component.literal(this.text).getVisualOrderText(), mouseX, mouseY, 1.0f, 0xFFFFFF, true);
         }
 

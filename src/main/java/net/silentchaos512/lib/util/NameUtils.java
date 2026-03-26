@@ -6,7 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
@@ -135,12 +135,12 @@ public final class NameUtils {
     /**
      * Gets the registry name of the stack's item, throwing an exception if it is null
      *
-     * @param stack The ItemStack
+     * @param itemInstance The ItemStack or ItemStackTemplate
      * @return The registry name
      * @throws NullPointerException if registry name is null
      */
-    public static Identifier fromItem(ItemStack stack) {
-        return fromItem(stack.getItem());
+    public static Identifier fromItem(ItemInstance itemInstance) {
+        return fromItem(itemInstance.typeHolder().value());
     }
 
     /**

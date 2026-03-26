@@ -11,7 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.ItemLike;
@@ -20,7 +20,7 @@ import net.silentchaos512.lib.util.NameUtils;
 import javax.annotation.Nullable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 @SuppressWarnings({"SameParameterValue", "MethodMayBeStatic", "WeakerAccess", "unused"})
 public abstract class LibRecipeProvider extends RecipeProvider {
@@ -66,8 +66,12 @@ public abstract class LibRecipeProvider extends RecipeProvider {
         return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(this.modId, path));
     }
 
-    protected void registerCustomRecipe(RecipeOutput consumer, Function<CraftingBookCategory, Recipe<?>> serializer, Identifier recipeId) {
-        SpecialRecipeBuilder.special(serializer).save(consumer, recipeId.toString());
+    protected void registerCustomRecipe(RecipeOutput output, Supplier<Recipe<?>> recipe, Identifier id) {
+        registerCustomRecipe(output, recipe, ResourceKey.create(Registries.RECIPE, id));
+    }
+
+    protected void registerCustomRecipe(RecipeOutput output, Supplier<Recipe<?>> recipe, ResourceKey<Recipe<?>> id) {
+        SpecialRecipeBuilder.special(recipe).save(output, id);
     }
 
     /**
@@ -121,10 +125,10 @@ public abstract class LibRecipeProvider extends RecipeProvider {
      * @param experienceIn The experience (XP) the recipe yields
      */
     protected void smeltingAndBlastingRecipes(RecipeOutput consumer, String id, Ingredient ingredientIn, ItemLike result, float experienceIn) {
-        SimpleCookingRecipeBuilder.blasting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 100)
+        SimpleCookingRecipeBuilder.blasting(ingredientIn, RecipeCategory.MISC, CookingBookCategory.MISC, result, experienceIn, 100)
                 .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                 .save(this.output, modId("blasting/" + id));
-        SimpleCookingRecipeBuilder.smelting(ingredientIn, RecipeCategory.MISC, result, experienceIn, 200)
+        SimpleCookingRecipeBuilder.smelting(ingredientIn, RecipeCategory.MISC, CookingBookCategory.MISC, result, experienceIn, 200)
                 .unlockedBy("impossible", CriteriaTriggers.IMPOSSIBLE.createCriterion(new ImpossibleTrigger.TriggerInstance()))
                 .save(consumer, modId("smelting/" + id));
     }
@@ -134,7 +138,7 @@ public abstract class LibRecipeProvider extends RecipeProvider {
     }
 
     protected  void cookingRecipes(String id, ItemLike ingredient, ItemLike result, float experience, int smeltingTime) {
-        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ingredient), RecipeCategory.FOOD, result, experience, smeltingTime)
+        SimpleCookingRecipeBuilder.smelting(Ingredient.of(ingredient), RecipeCategory.FOOD, CookingBookCategory.FOOD, result, experience, smeltingTime)
                 .unlockedBy("has_item", has(ingredient))
                 .save(this.output, modId("smelting/" + id));
         SimpleCookingRecipeBuilder.smoking(Ingredient.of(ingredient), RecipeCategory.FOOD, result, experience, smeltingTime / 2)

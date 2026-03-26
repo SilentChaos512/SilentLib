@@ -1,14 +1,17 @@
 package net.silentchaos512.lib.crafting.recipe;
 
 import com.mojang.datafixers.Products;
+import com.mojang.datafixers.util.Function4;
 import com.mojang.datafixers.util.Function5;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.item.crafting.display.RecipeDisplay;
@@ -19,143 +22,43 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public abstract class ExtendedShapedRecipe implements CraftingRecipeExtension {
-    protected final ShapedRecipePattern pattern;
-    protected final ItemStack result;
-    protected final String group;
-    protected final CraftingBookCategory category;
-    protected final boolean showNotification;
-    @Nullable
-    private PlacementInfo placementInfo;
-
-    public ExtendedShapedRecipe(String pGroup, CraftingBookCategory pCategory, ShapedRecipePattern pPattern, ItemStack pResult, boolean pShowNotification) {
-        this.group = pGroup;
-        this.category = pCategory;
-        this.pattern = pPattern;
-        this.result = pResult;
-        this.showNotification = pShowNotification;
-    }
-
-    public ExtendedShapedRecipe(String pGroup, CraftingBookCategory pCategory, ShapedRecipePattern pPattern, ItemStack pResult) {
-        this(pGroup, pCategory, pPattern, pResult, true);
+public abstract class ExtendedShapedRecipe extends ShapedRecipe implements CraftingRecipeExtension {
+    public ExtendedShapedRecipe(CommonInfo commonInfo, CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        super(commonInfo, bookInfo, pattern, result);
     }
 
     @Override
-    public abstract RecipeSerializer<? extends ExtendedShapedRecipe> getSerializer();
-
-    @Override
-    public String group() {
-        return this.group;
+    public ItemStackTemplate getResultForDisplay() {
+        return this.result;
     }
 
-    @Override
-    public CraftingBookCategory category() {
-        return this.category;
+    public static <R extends ExtendedShapedRecipe> RecipeSerializer<R> basicSerializer(Function4<CommonInfo, CraftingBookInfo, ShapedRecipePattern, ItemStackTemplate, R> constructor) {
+        return new RecipeSerializer<>(basicCodec(constructor), basicStreamCodec(constructor));
     }
 
-    @Override
-    public PlacementInfo placementInfo() {
-        if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.createFromOptionals(this.pattern.ingredients());
-        }
-        return this.placementInfo;
-    }
-
-    @Override
-    public boolean showNotification() {
-        return this.showNotification;
-    }
-
-    @Override
-    public boolean matches(CraftingInput pInv, Level pLevel) {
-        return this.pattern.matches(pInv);
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput pContainer, HolderLookup.Provider pRegistries) {
-        return this.result.copy();
-    }
-
-    public int getWidth() {
-        return this.pattern.width();
-    }
-
-    public int getHeight() {
-        return this.pattern.height();
-    }
-
-    @Override
-    public List<RecipeDisplay> display() {
-        return List.of(
-                new ShapedCraftingRecipeDisplay(
-                        this.pattern.width(),
-                        this.pattern.height(),
-                        this.pattern.ingredients().stream().map(optionalIngredient -> optionalIngredient.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE)).toList(),
-                        new SlotDisplay.ItemStackSlotDisplay(this.result),
-                        new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)
-                )
+    public static <R extends ExtendedShapedRecipe> MapCodec<R> basicCodec(Function4<CommonInfo, CraftingBookInfo, ShapedRecipePattern, ItemStackTemplate, R> constructor) {
+        final int maxSize = 9; //ShapedRecipePattern.maxHeight * ShapedRecipePattern.maxWidth;
+        return RecordCodecBuilder.mapCodec(
+                i -> i.group(
+                        Recipe.CommonInfo.MAP_CODEC.forGetter(o -> o.commonInfo),
+                        CraftingRecipe.CraftingBookInfo.MAP_CODEC.forGetter(o -> o.bookInfo),
+                        ShapedRecipePattern.MAP_CODEC.forGetter(o -> o.pattern),
+                        ItemStackTemplate.CODEC.fieldOf("result").forGetter(o -> o.result)
+                ).apply(i, constructor)
         );
     }
 
-    @Override
-    public ItemStack getResultForDisplay() {
-        return this.result.copy();
-    }
-
-    @Override
-    public List<Ingredient> getIngredientsForDisplay() {
-        return placementInfo().ingredients();
-    }
-
-    protected static <R extends ExtendedShapedRecipe> Products.P5<RecordCodecBuilder.Mu<R>, String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean> basicCodecFields(RecordCodecBuilder.Instance<R> builder) {
-        return builder.group(
-                Codec.STRING.optionalFieldOf("group", "").forGetter(r -> r.group),
-                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(r -> r.category),
-                ShapedRecipePattern.MAP_CODEC.forGetter(r -> r.pattern),
-                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(r -> r.result),
-                Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(r -> r.showNotification)
+    public static <R extends ExtendedShapedRecipe> StreamCodec<RegistryFriendlyByteBuf, R> basicStreamCodec(Function4<CommonInfo, CraftingBookInfo, ShapedRecipePattern, ItemStackTemplate, R> constructor) {
+        return StreamCodec.composite(
+                Recipe.CommonInfo.STREAM_CODEC,
+                o -> o.commonInfo,
+                CraftingRecipe.CraftingBookInfo.STREAM_CODEC,
+                o -> o.bookInfo,
+                ShapedRecipePattern.STREAM_CODEC,
+                o -> o.pattern,
+                ItemStackTemplate.STREAM_CODEC,
+                o -> o.result,
+                constructor
         );
-    }
-
-    public static class BasicSerializer<R extends ExtendedShapedRecipe> implements RecipeSerializer<R> {
-        private final MapCodec<R> codec;
-        private final StreamCodec<RegistryFriendlyByteBuf, R> streamCodec;
-        private final Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory;
-
-        public BasicSerializer(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStack, Boolean, R> factory) {
-            this.factory = factory;
-            this.codec = RecordCodecBuilder.mapCodec(
-                    builder -> basicCodecFields(builder)
-                            .apply(builder, this.factory)
-            );
-            this.streamCodec = StreamCodec.of(this::toNetwork, this::fromNetwork);
-        }
-
-        @Override
-        public MapCodec<R> codec() {
-            return this.codec;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, R> streamCodec() {
-            return this.streamCodec;
-        }
-
-        public R fromNetwork(RegistryFriendlyByteBuf buf) {
-            String group = buf.readUtf();
-            CraftingBookCategory category = buf.readEnum(CraftingBookCategory.class);
-            ShapedRecipePattern pattern = ShapedRecipePattern.STREAM_CODEC.decode(buf);
-            ItemStack result = ItemStack.STREAM_CODEC.decode(buf);
-            boolean showNotification = buf.readBoolean();
-            return factory.apply(group, category, pattern, result, showNotification);
-        }
-
-        public void toNetwork(RegistryFriendlyByteBuf buf, R recipe) {
-            buf.writeUtf(recipe.group);
-            buf.writeEnum(recipe.category);
-            ShapedRecipePattern.STREAM_CODEC.encode(buf, recipe.pattern);
-            ItemStack.STREAM_CODEC.encode(buf, recipe.result);
-            buf.writeBoolean(recipe.showNotification);
-        }
     }
 }

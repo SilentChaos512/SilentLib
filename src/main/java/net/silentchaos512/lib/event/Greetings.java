@@ -38,6 +38,6 @@ public final class Greetings {
 
     private void onPlayerLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        messages.forEach(msg -> msg.apply(player).ifPresent(component -> player.displayClientMessage(component, false)));
+        messages.forEach(msg -> msg.apply(player).ifPresent(player::sendSystemMessage));
     }
 }

@@ -3,7 +3,7 @@ package net.silentchaos512.lib.client.gui.nbt;
 import com.google.gson.JsonObject;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.nbt.*;
@@ -47,13 +47,13 @@ public class DisplayNBTScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
         assert minecraft != null;
-        this.displayList.render(graphics, mouseX, mouseY, partialTicks);
+        this.displayList.extractRenderState(graphics, mouseX, mouseY, a);
         String titleStr = this.header.getString();
         int scaledWidth = minecraft.getWindow().getGuiScaledWidth();
         TextRenderUtils.renderScaled(graphics, font, Component.literal(titleStr).getVisualOrderText(), (scaledWidth - font.width(titleStr)) / 2, 2, 1f, 0xFFFFFF, true);
-        super.render(graphics, mouseX, mouseY, partialTicks);
+        super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     private static List<String> formatNbt(CompoundTag nbt, int depth) {

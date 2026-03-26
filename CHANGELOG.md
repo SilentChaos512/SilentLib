@@ -1,5 +1,10 @@
 # Changelog
 
+## [26.1-11.1.2] - 2026-03-25
+- Port to Minecraft 26.1 (NeoForge)
+- `ExtendedShapedRecipe` and `ExtendedShapeless` recipe now extend the vanilla classes and have been mostly gutted. But
+they contain helper methods to create basic serializers.
+
 ## [1.21.11-11.1.1] - 2026-03-01
 - Add `crop_cutout` model template for data generation
 
