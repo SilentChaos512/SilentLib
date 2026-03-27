@@ -24,22 +24,23 @@ import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 
+/** @noinspection unused*/
 public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> implements RecipeBuilder {
     private final HolderGetter<Item> items;
     protected final RecipeCategory category;
     protected final ItemStackTemplate result;
     protected final NonNullList<Ingredient> ingredients = NonNullList.create();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    @Nullable
-    protected String group = null;
+    protected Recipe.CommonInfo commonInfo = new Recipe.CommonInfo(true);
+    protected CraftingRecipe.CraftingBookInfo bookInfo;
 
     public ExtendedShapelessRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result) {
         this.items = items;
         this.category = category;
         this.result = result;
+        this.bookInfo = new CraftingRecipe.CraftingBookInfo(RecipeBuilder.determineCraftingBookCategory(this.category), "");
     }
 
     public ExtendedShapelessRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
@@ -51,6 +52,27 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
     }
 
     public abstract R createRecipe(ResourceKey<Recipe<?>> id);
+
+    public ExtendedShapelessRecipeBuilder<R> commonInfo(Recipe.CommonInfo commonInfo) {
+        this.commonInfo = commonInfo;
+        return this;
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> showNotification(boolean showNotification) {
+        this.commonInfo = new Recipe.CommonInfo(showNotification);
+        return this;
+    }
+
+    public ExtendedShapelessRecipeBuilder<R> bookInfo(CraftingRecipe.CraftingBookInfo bookInfo) {
+        this.bookInfo = bookInfo;
+        return this;
+    }
+
+    @Override
+    public ExtendedShapelessRecipeBuilder<R> group(@Nullable String group) {
+        this.bookInfo = new CraftingRecipe.CraftingBookInfo(this.bookInfo.category(), group == null ? "" : group);
+        return this;
+    }
 
     public ExtendedShapelessRecipeBuilder<R> requires(TagKey<Item> tag) {
         return this.requires(tag, 1);
@@ -96,13 +118,9 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         return this;
     }
 
+    @Override
     public ExtendedShapelessRecipeBuilder<R> unlockedBy(String pName, Criterion<?> pCriterion) {
         this.criteria.put(pName, pCriterion);
-        return this;
-    }
-
-    public ExtendedShapelessRecipeBuilder<R> group(@Nullable String pGroupName) {
-        this.group = pGroupName;
         return this;
     }
 
@@ -124,6 +142,14 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         pRecipeOutput.accept(pId, recipe, advancementHolder);
     }
 
+    public Recipe.CommonInfo commonInfo() {
+        return this.commonInfo;
+    }
+
+    public CraftingRecipe.CraftingBookInfo bookInfo() {
+        return this.bookInfo;
+    }
+
     public RecipeCategory category() {
         return category;
     }
@@ -136,18 +162,16 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
         return NonNullList.copyOf(ingredients);
     }
 
-    public String group() {
-        return group;
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(this.result);
     }
 
     public static ShapelessRecipe vanillaFactory(Identifier id, ExtendedShapelessRecipeBuilder<ShapelessRecipe> builder) {
         // Basically the same as ShapelessRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapelessRecipe(
-                new Recipe.CommonInfo(true),
-                new CraftingRecipe.CraftingBookInfo(
-                        RecipeBuilder.determineCraftingBookCategory(builder.category),
-                        Objects.requireNonNullElse(builder.group, "")
-                ),
+                builder.commonInfo,
+                builder.bookInfo,
                 builder.result,
                 builder.ingredients
         );
@@ -171,25 +195,25 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
             this.factory = factory;
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, Function4<String, CraftingBookCategory, ItemStackTemplate, List<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, Factory<R> factory) {
             super(items, category, result);
             this.factory = convertConstructor(factory);
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function4<String, CraftingBookCategory, ItemStackTemplate, List<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Factory<R> factory) {
             super(items, category, result, count);
             this.factory = convertConstructor(factory);
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function4<String, CraftingBookCategory, ItemStackTemplate, List<Ingredient>, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Factory<R> factory) {
             super(items, category, result);
             this.factory = convertConstructor(factory);
         }
 
-        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function4<String, CraftingBookCategory, ItemStackTemplate, List<Ingredient>, R> factory) {
-            return (id, builder) -> factory.apply(
-                    builder.group,
-                    RecipeBuilder.determineCraftingBookCategory(builder.category),
+        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Factory<R> factory) {
+            return (_, builder) -> factory.apply(
+                    builder.commonInfo,
+                    builder.bookInfo,
                     builder.result,
                     builder.ingredients
             );
@@ -205,4 +229,6 @@ public abstract class ExtendedShapelessRecipeBuilder<R extends CraftingRecipe> i
             return RecipeBuilder.getDefaultRecipeId(this.result);
         }
     }
+
+    public interface Factory<R extends CraftingRecipe> extends Function4<Recipe.CommonInfo, CraftingRecipe.CraftingBookInfo, ItemStackTemplate, List<Ingredient>, R> {}
 }

@@ -7,14 +7,68 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
 
-public abstract class ExtendedShapelessRecipe extends ShapelessRecipe implements CraftingRecipeExtension {
+public abstract class ExtendedShapelessRecipe extends NormalCraftingRecipe implements CraftingRecipeExtension {
+    protected final ItemStackTemplate result;
+    protected final List<Ingredient> ingredients;
+    private final boolean isSimple;
+
     public ExtendedShapelessRecipe(CommonInfo commonInfo, CraftingBookInfo bookInfo, ItemStackTemplate result, List<Ingredient> ingredients) {
-        super(commonInfo, bookInfo, result, ingredients);
+        super(commonInfo, bookInfo);
+        this.result = result;
+        this.ingredients = ingredients;
+        this.isSimple = ingredients.stream().allMatch(Ingredient::isSimple);
+    }
+
+    @Override
+    public abstract RecipeSerializer<? extends ExtendedShapelessRecipe> getSerializer();
+
+    @Override
+    protected PlacementInfo createPlacementInfo() {
+        return PlacementInfo.create(this.ingredients);
+    }
+
+    @Override
+    public boolean matches(CraftingInput input, Level level) {
+        if (input.ingredientCount() != this.ingredients.size()) {
+            return false;
+        } else if (!isSimple) {
+            var nonEmptyItems = new java.util.ArrayList<ItemStack>(input.ingredientCount());
+            for (var item : input.items())
+                if (!item.isEmpty())
+                    nonEmptyItems.add(item);
+            return net.neoforged.neoforge.common.util.RecipeMatcher.findMatches(nonEmptyItems, this.ingredients) != null;
+        } else {
+            return input.size() == 1 && this.ingredients.size() == 1
+                    ? this.ingredients.getFirst().test(input.getItem(0))
+                    : input.stackedContents().canCraft(this, null);
+        }
+    }
+
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        return this.result.create();
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapelessCraftingRecipeDisplay(
+                        this.ingredients.stream().map(Ingredient::display).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)
+                )
+        );
     }
 
     @Override

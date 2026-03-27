@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.data.recipe;
 
+import com.mojang.datafixers.util.Function4;
 import com.mojang.datafixers.util.Function5;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
@@ -30,16 +31,38 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
     protected final List<String> rows = new ArrayList<>();
     protected final Map<Character, Ingredient> key = new LinkedHashMap<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    @Nullable protected String group;
-    protected boolean showNotification = true;
+    protected Recipe.CommonInfo commonInfo = new Recipe.CommonInfo(true);
+    protected CraftingRecipe.CraftingBookInfo bookInfo;
 
     public ExtendedShapedRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result) {
         this.items = items;
         this.category = category;
         this.result = result;
+        this.bookInfo = new CraftingRecipe.CraftingBookInfo(RecipeBuilder.determineCraftingBookCategory(this.category), "");
     }
 
     public abstract R createRecipe(ResourceKey<Recipe<?>> id);
+
+    public ExtendedShapedRecipeBuilder<R> commonInfo(Recipe.CommonInfo commonInfo) {
+        this.commonInfo = commonInfo;
+        return this;
+    }
+
+    public ExtendedShapedRecipeBuilder<R> showNotification(boolean showNotification) {
+        this.commonInfo = new Recipe.CommonInfo(showNotification);
+        return this;
+    }
+
+    public ExtendedShapedRecipeBuilder<R> bookInfo(CraftingRecipe.CraftingBookInfo bookInfo) {
+        this.bookInfo = bookInfo;
+        return this;
+    }
+
+    @Override
+    public ExtendedShapedRecipeBuilder<R> group(@Nullable String group) {
+        this.bookInfo = new CraftingRecipe.CraftingBookInfo(this.bookInfo.category(), group == null ? "" : group);
+        return this;
+    }
 
     public ExtendedShapedRecipeBuilder<R> define(Character symbol, TagKey<Item> tagIn) {
         return this.define(symbol, Ingredient.of(this.items.getOrThrow(tagIn)));
@@ -73,18 +96,9 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         }
     }
 
+    @Override
     public ExtendedShapedRecipeBuilder<R> unlockedBy(String name, Criterion<?> criterion) {
         this.criteria.put(name, criterion);
-        return this;
-    }
-
-    public ExtendedShapedRecipeBuilder<R> group(@Nullable String groupIn) {
-        this.group = groupIn;
-        return this;
-    }
-
-    public ExtendedShapedRecipeBuilder<R> showNotification(boolean showNotification) {
-        this.showNotification = showNotification;
         return this;
     }
 
@@ -124,22 +138,16 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
         return ShapedRecipePattern.of(this.key, this.rows);
     }
 
-    @Nullable public String group() {
-        return group;
-    }
-
-    public boolean showNotification() {
-        return showNotification;
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(this.result);
     }
 
     public static ShapedRecipe vanillaFactory(Identifier id, ExtendedShapedRecipeBuilder<ShapedRecipe> builder) {
         // Basically the same as ShapedRecipeBuilder, but doesn't fail if advancement is missing
         return new ShapedRecipe(
-                new Recipe.CommonInfo(builder.showNotification),
-                new CraftingRecipe.CraftingBookInfo(
-                        RecipeBuilder.determineCraftingBookCategory(builder.category),
-                        Objects.requireNonNullElse(builder.group, "")
-                ),
+                builder.commonInfo,
+                builder.bookInfo,
                 ShapedRecipePattern.of(builder.key, builder.rows),
                 builder.result
         );
@@ -163,25 +171,24 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
             this.factory = factory;
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemStackTemplate result, Factory<R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, Factory<R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
+        public Basic(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count, Factory<R> factory) {
             this(items, category, result, convertConstructor(factory));
         }
 
-        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Function5<String, CraftingBookCategory, ShapedRecipePattern, ItemStackTemplate, Boolean, R> factory) {
+        private static <R extends CraftingRecipe> BiFunction<ResourceKey<Recipe<?>>, Basic<R>, R> convertConstructor(Factory<R> factory) {
             return (id, builder) -> factory.apply(
-                    builder.group,
-                    RecipeBuilder.determineCraftingBookCategory(builder.category),
+                    builder.commonInfo,
+                    builder.bookInfo,
                     builder.pattern(),
-                    builder.result,
-                    builder.showNotification
+                    builder.result
             );
         }
 
@@ -195,4 +202,6 @@ public abstract class ExtendedShapedRecipeBuilder<R extends CraftingRecipe> impl
             return RecipeBuilder.getDefaultRecipeId(this.result);
         }
     }
+
+    public interface Factory<R extends CraftingRecipe> extends Function4<Recipe.CommonInfo, CraftingRecipe.CraftingBookInfo, ShapedRecipePattern, ItemStackTemplate, R> {}
 }

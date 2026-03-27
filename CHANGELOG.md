@@ -1,8 +1,14 @@
 # Changelog
 
+## [26.1-11.1.4] - 2026-03-27
+- Updated `ExtendedShapedRecipeBuilder` and `ExtendedShapelessRecipeBuilder` to match new recipe changes
+
+## [26.1-11.1.3] - 2026-03-26
+- Corrected `ExtendedShapedRecipe` and `ExtendedShapelessRecipe` to allow proper serializer to be returned
+
 ## [26.1-11.1.2] - 2026-03-25
 - Port to Minecraft 26.1 (NeoForge)
-- `ExtendedShapedRecipe` and `ExtendedShapeless` recipe now extend the vanilla classes and have been mostly gutted. But
+- `ExtendedShapedRecipe` and `ExtendedShapelessRecipe` now extend the vanilla classes and have been mostly gutted. But
 they contain helper methods to create basic serializers.
 
 ## [1.21.11-11.1.1] - 2026-03-01

@@ -1,5 +1,6 @@
 package net.silentchaos512.lib.crafting.recipe;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.mojang.datafixers.Products;
 import com.mojang.datafixers.util.Function4;
 import com.mojang.datafixers.util.Function5;
@@ -21,10 +22,60 @@ import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
-public abstract class ExtendedShapedRecipe extends ShapedRecipe implements CraftingRecipeExtension {
+public abstract class ExtendedShapedRecipe extends NormalCraftingRecipe implements CraftingRecipeExtension {
+    public final ShapedRecipePattern pattern;
+    protected final ItemStackTemplate result;
+
     public ExtendedShapedRecipe(CommonInfo commonInfo, CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
-        super(commonInfo, bookInfo, pattern, result);
+        super(commonInfo, bookInfo);
+        this.pattern = pattern;
+        this.result = result;
+    }
+
+    @Override
+    public abstract RecipeSerializer<? extends ExtendedShapedRecipe> getSerializer();
+
+    @VisibleForTesting
+    public List<Optional<Ingredient>> getIngredients() {
+        return this.pattern.ingredients();
+    }
+
+    @Override
+    protected PlacementInfo createPlacementInfo() {
+        return PlacementInfo.createFromOptionals(this.pattern.ingredients());
+    }
+
+    @Override
+    public boolean matches(CraftingInput input, Level level) {
+        return this.pattern.matches(input);
+    }
+
+    @Override
+    public ItemStack assemble(CraftingInput input) {
+        return this.result.create();
+    }
+
+    public int getWidth() {
+        return this.pattern.width();
+    }
+
+    public int getHeight() {
+        return this.pattern.height();
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new ShapedCraftingRecipeDisplay(
+                        this.pattern.width(),
+                        this.pattern.height(),
+                        this.pattern.ingredients().stream().map(e -> e.map(Ingredient::display).orElse(SlotDisplay.Empty.INSTANCE)).toList(),
+                        new SlotDisplay.ItemStackSlotDisplay(this.result),
+                        new SlotDisplay.ItemSlotDisplay(Items.CRAFTING_TABLE)
+                )
+        );
     }
 
     @Override
