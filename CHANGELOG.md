@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.21.1-11.2.0] - 2026-04-16
+### Added
+- A new color blending algorithm plus color blending helper methods
+
 ## [26.1-11.1.4] - 2026-03-27
 - Updated `ExtendedShapedRecipeBuilder` and `ExtendedShapelessRecipeBuilder` to match new recipe changes
 
