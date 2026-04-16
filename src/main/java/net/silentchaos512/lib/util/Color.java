@@ -9,12 +9,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
-@SuppressWarnings({"unused", "MagicNumber", "SpellCheckingInspection"})
+@SuppressWarnings({"unused", "MagicNumber"})
 public class Color {
     public static final Codec<Color> CODEC = Codec.STRING
             .comapFlatMap(Color::read, Color::format)
@@ -331,6 +333,15 @@ public class Color {
     }
 
     //endregion
+
+    public static Color blend(ColorBlendAlgorithm algorithm, Collection<Color> colors) {
+        return blend(algorithm, colors, true);
+    }
+
+    public static Color blend(ColorBlendAlgorithm algorithm, Collection<Color> colors, boolean forceAlpha) {
+        var intList = colors.stream().map(Color::getColor).collect(Collectors.toList());
+        return new Color(ColorUtils.blend(algorithm, intList, forceAlpha));
+    }
 
     public Color blendWith(Color other) {
         return blend(this, other);

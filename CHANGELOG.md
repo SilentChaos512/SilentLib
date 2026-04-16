@@ -1,5 +1,9 @@
 # Changelog
 
+## [1.21.1-10.6.0] - 2026-04-16
+### Added
+- A new color blending algorithm plus color blending helper methods
+
 ## [1.21.1-10.5.1] - 2025-05-25
 - Add DimPos#getPosLevel
 
