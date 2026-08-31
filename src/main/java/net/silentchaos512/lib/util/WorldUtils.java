@@ -1,6 +1,7 @@
 package net.silentchaos512.lib.util;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -80,8 +81,7 @@ public final class WorldUtils {
     @SuppressWarnings("MethodWithTooManyParameters")
     public static <T> Map<BlockPos, T> getBlocks(Level world, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax, BiFunction<Level, BlockPos, Optional<T>> getter) {
         Map<BlockPos, T> map = new LinkedHashMap<>();
-        //noinspection deprecation
-        if (!world.hasChunksAt(xMin, yMin, zMin, xMax, yMax, zMax)) {
+        if (!hasChunksAt(world, xMin, yMin, zMin, xMax, yMax, zMax)) {
             return map;
         }
 
@@ -96,6 +96,25 @@ public final class WorldUtils {
         }
 
         return map;
+    }
+
+    private static boolean hasChunksAt(Level world, int xMin, int yMin, int zMin, int xMax, int yMax, int zMax) {
+        if (yMax < world.getMinY() || yMin > world.getMaxY()) {
+            return false;
+        }
+
+        int minChunkX = SectionPos.blockToSectionCoord(xMin);
+        int maxChunkX = SectionPos.blockToSectionCoord(xMax);
+        int minChunkZ = SectionPos.blockToSectionCoord(zMin);
+        int maxChunkZ = SectionPos.blockToSectionCoord(zMax);
+        for (int chunkX = minChunkX; chunkX <= maxChunkX; ++chunkX) {
+            for (int chunkZ = minChunkZ; chunkZ <= maxChunkZ; ++chunkZ) {
+                if (!world.hasChunk(chunkX, chunkZ)) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public static <T extends BlockEntity> Map<BlockPos, T> getTileEntitiesInArea(Class<? extends T> clazz, Level world, BlockPos pos, int range) {
