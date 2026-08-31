@@ -1,7 +1,7 @@
 package net.silentchaos512.lib.data.recipe;
 
-import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.advancements.criterion.ImpossibleTrigger;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
+import net.minecraft.advancements.triggers.ImpossibleTrigger;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;

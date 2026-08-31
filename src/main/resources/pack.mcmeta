@@ -1,6 +1,7 @@
 {
     "pack": {
         "description": "Silent Lib",
-        "pack_format": 15
+        "min_format": 88,
+        "max_format": 88
     }
 }

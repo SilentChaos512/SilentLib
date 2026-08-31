@@ -3,8 +3,8 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'com.gradleup.shadow' version '9.+'
-    id 'net.neoforged.gradle.userdev' version '7.1.21'
+    id 'com.gradleup.shadow' version '9.6.1'
+    id 'net.neoforged.gradle.userdev' version '7.1.38'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -39,7 +39,7 @@ sourceSets.main.resources {
 
 repositories {
     flatDir {
-        name "fileRepo"
+        name = "fileRepo"
         dirs "repo"
     }
     mavenLocal()
@@ -47,9 +47,6 @@ repositories {
 
 // Mojang ships Java 25 to end users in 26.1, so mods should target Java 25.
 java.toolchain.languageVersion = JavaLanguageVersion.of(25)
-
-minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
-//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
 
 configurations {
     extraLibs {}
@@ -62,10 +59,22 @@ dependencies {
 
 tasks.shadowJar {
     archiveClassifier.set ''
+    exclude 'net/silentchaos512/lib/dev/**'
+    exclude 'data/silentlib/recipe/dev_smoke_*.json'
+    exclude 'data/silentlib/loot_table/dev_smoke_*.json'
+    exclude 'data/silentlib/worldgen/configured_feature/dev_smoke_*.json'
+    exclude 'data/silentlib/worldgen/placed_feature/dev_smoke_*.json'
     dependencies {
         include dependency("com.scrtwpns:mixbox")
     }
     relocate('com.scrtwpns', 'shadow.silentlib.scrtwpns')
+}
+tasks.named('jar') {
+    exclude 'net/silentchaos512/lib/dev/**'
+    exclude 'data/silentlib/recipe/dev_smoke_*.json'
+    exclude 'data/silentlib/loot_table/dev_smoke_*.json'
+    exclude 'data/silentlib/worldgen/configured_feature/dev_smoke_*.json'
+    exclude 'data/silentlib/worldgen/placed_feature/dev_smoke_*.json'
 }
 assemble.dependsOn shadowJar
 
@@ -89,15 +98,15 @@ runs {
 
     client {
         // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
         dependencies {
             runtime project.configurations.extraLibs
         }
     }
 
     server {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        //programArgument '--nogui'
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        argument '--nogui'
         dependencies {
             runtime project.configurations.extraLibs
         }
@@ -107,7 +116,7 @@ runs {
     // By default, the server will crash when no gametests are provided.
     // The gametest system is also enabled by default for other run configs under the /test command.
     gameTestServer {
-        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
     }
 
     clientData {
@@ -132,11 +141,7 @@ configurations {
 }
 
 repositories {
-    def gpr_creds = {
-        username = property('gpr.username')
-        password = property('gpr.token')
-    }
-
+    mavenCentral()
     mavenLocal()
     maven {
         // location of the maven that hosts JEI files
@@ -147,13 +152,19 @@ repositories {
 
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
+    testImplementation "org.junit.jupiter:junit-jupiter:5.12.2"
+    testRuntimeOnly "org.junit.platform:junit-platform-launcher"
 
     // JEI
     if (project.hasProperty("jei_version")) {
-        compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-        compileOnly "mezz.jei:jei-${mc_version}-forge-api:${jei_version}"
-        localRuntime "mezz.jei:jei-${mc_version}-forge:${jei_version}"
+        compileOnly "mezz.jei:jei-${minecraft_version}-common-api:${jei_version}"
+        compileOnly "mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}"
+        localRuntime "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
     }
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -185,6 +196,7 @@ tasks.withType(ProcessResources).configureEach {
 task sourcesJar(type: Jar) {
     archiveClassifier = 'sources'
     from sourceSets.main.allJava
+    exclude 'net/silentchaos512/lib/dev/**'
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {
@@ -192,21 +204,20 @@ task javadocJar(type: Jar, dependsOn: javadoc) {
     from javadoc.getDestinationDir()
 }
 
-artifacts {
-    archives sourcesJar
-    archives javadocJar
-}
+assemble.dependsOn sourcesJar, javadocJar
 
 // GPR/Maven publishing
 
 publishing {
     repositories {
-        maven {
-            name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/silentchaos512/silentlib")
-            credentials {
-                username = property('gpr.username')
-                password = property('gpr.token')
+        if (providers.gradleProperty('gpr.username').present && providers.gradleProperty('gpr.token').present) {
+            maven {
+                name = "GitHubPackages"
+                url = uri("https://maven.pkg.github.com/silentchaos512/silentlib")
+                credentials {
+                    username = providers.gradleProperty('gpr.username').get()
+                    password = providers.gradleProperty('gpr.token').get()
+                }
             }
         }
     }
@@ -227,6 +238,7 @@ tasks.withType(JavaCompile) {
 
 javadoc {
     failOnError = false
+    exclude 'net/silentchaos512/lib/dev/**'
 }
 
 // IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.

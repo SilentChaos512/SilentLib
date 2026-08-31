@@ -2,6 +2,7 @@ package net.silentchaos512.lib.crafting.ingredient;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
@@ -9,6 +10,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -23,7 +26,10 @@ public record IngredientWithCount(Ingredient ingredient, int count) implements P
             ).apply(instance, IngredientWithCount::new)
     );
 
-    public static final IngredientWithCount EMPTY = new IngredientWithCount(Ingredient.of(), 0);
+    /**
+     * An ingredient that matches no stacks. Vanilla no longer permits constructing an empty ingredient in 26.2.
+     */
+    public static final IngredientWithCount EMPTY = new IngredientWithCount(new EmptyIngredient().toVanilla(), 0);
 
     @Override
     public boolean test(@Nullable ItemStack pStack) {
@@ -53,5 +59,37 @@ public record IngredientWithCount(Ingredient ingredient, int count) implements P
     public void toNetwork(RegistryFriendlyByteBuf buf) {
         Ingredient.CONTENTS_STREAM_CODEC.encode(buf, this.ingredient);
         buf.writeByte(count);
+    }
+
+    private static final class EmptyIngredient implements ICustomIngredient {
+        @Override
+        public boolean test(ItemStack stack) {
+            return false;
+        }
+
+        @Override
+        public Stream<Holder<Item>> items() {
+            return Stream.empty();
+        }
+
+        @Override
+        public boolean isSimple() {
+            return true;
+        }
+
+        @Override
+        public IngredientType<?> getType() {
+            throw new UnsupportedOperationException("The empty IngredientWithCount sentinel cannot be serialized");
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return obj instanceof EmptyIngredient;
+        }
+
+        @Override
+        public int hashCode() {
+            return EmptyIngredient.class.hashCode();
+        }
     }
 }

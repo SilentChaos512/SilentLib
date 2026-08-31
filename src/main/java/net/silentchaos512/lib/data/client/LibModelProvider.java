@@ -100,8 +100,7 @@ public abstract class LibModelProvider implements DataProvider {
 
         public CompletableFuture<?> save(CachedOutput p_388014_, PackOutput.PathProvider p_388192_) {
             Map<Block, BlockStateModelDispatcher> map = Maps.transformValues(this.generators, BlockModelDefinitionGenerator::create);
-            //noinspection deprecation
-            Function<Block, Path> function = p_387598_ -> p_388192_.json(p_387598_.builtInRegistryHolder().key().identifier());
+            Function<Block, Path> function = block -> p_388192_.json(BuiltInRegistries.BLOCK.getKey(block));
             return DataProvider.saveAll(p_388014_, BlockStateModelDispatcher.CODEC, function, map);
         }
     }
@@ -154,9 +153,8 @@ public abstract class LibModelProvider implements DataProvider {
         }
 
         public CompletableFuture<?> save(CachedOutput output, PackOutput.PathProvider pathProvider) {
-            //noinspection deprecation
             return DataProvider.saveAll(
-                    output, ClientItem.CODEC, p_388594_ -> pathProvider.json(p_388594_.builtInRegistryHolder().key().identifier()), this.itemInfos
+                    output, ClientItem.CODEC, item -> pathProvider.json(BuiltInRegistries.ITEM.getKey(item)), this.itemInfos
             );
         }
     }
