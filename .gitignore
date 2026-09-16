@@ -39,3 +39,6 @@ logs/
 
 version.properties
 src/generated/resources/.cache/
+
+# Local porting checklist; never commit
+milestone.md

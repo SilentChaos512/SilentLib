@@ -66,6 +66,10 @@ public class ColorUtils {
     }
 
     public static int blendMixbox(Collection<Integer> colors, boolean forceAlpha) {
+        if (colors.isEmpty()) {
+            return 0xFFFFFFFF;
+        }
+
         float ratio = 1f / colors.size();
         float[][] z = new float[colors.size()][Mixbox.LATENT_SIZE];
         int colorIndex = 0;
@@ -82,6 +86,6 @@ public class ColorUtils {
             }
         }
         int result = Mixbox.latentToRgb(zMix);
-        return forceAlpha ? result | 0xFF000000 : result;
+        return forceAlpha ? result | 0xFF000000 : result & 0xFFFFFF;
     }
 }

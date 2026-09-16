@@ -1,0 +1,18 @@
+{
+  "type": "silentlib:dev_smoke_shaped",
+  "category": "misc",
+  "group": "silentlib_dev_smoke",
+  "pattern": [
+    "A",
+    "A"
+  ],
+  "key": {
+    "A": [
+      "minecraft:stick"
+    ]
+  },
+  "result": {
+    "id": "minecraft:emerald",
+    "count": 1
+  }
+}

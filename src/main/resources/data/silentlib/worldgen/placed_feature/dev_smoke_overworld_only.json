@@ -1,0 +1,12 @@
+{
+  "feature": "silentlib:dev_smoke_diamond_block",
+  "placement": [
+    {
+      "type": "silentlib:dimension_filter",
+      "is_whitelist": true,
+      "list": [
+        "minecraft:overworld"
+      ]
+    }
+  ]
+}

@@ -41,7 +41,7 @@ public record DimPos(int posX, int posY, int posZ, ResourceKey<Level> dimension)
     /**
      * Origin (0, 0, 0) in the overworld
      */
-    public static final DimPos ZERO = new DimPos(0, 0, 0, Level.OVERWORLD);
+    public static final DimPos ZERO = new DimPos(0, 0, 0, ResourceKey.create(Registries.DIMENSION, Identifier.parse("minecraft:overworld")));
 
     //region Static factory methods
 

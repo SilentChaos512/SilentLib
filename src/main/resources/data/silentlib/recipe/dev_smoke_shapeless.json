@@ -1,0 +1,14 @@
+{
+  "type": "silentlib:dev_smoke_shapeless",
+  "category": "misc",
+  "group": "silentlib_dev_smoke",
+  "ingredients": [
+    [
+      "minecraft:stick"
+    ]
+  ],
+  "result": {
+    "id": "minecraft:diamond",
+    "count": 1
+  }
+}
