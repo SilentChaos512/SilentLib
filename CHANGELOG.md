@@ -1,8 +1,8 @@
 # Changelog
 
-## [26.2-unreleased]
+## [26.2-12.0.0] - 2026-10-18
 ### Changed
-- Ported to Minecraft 26.2 and NeoForge 26.2.
+- Ported to Minecraft 26.2 and NeoForge 26.2 (Acidglow) [#48]
 - Updated recipe, data-generation, world, client-screen, and registry integrations for the 26.2 API.
 
 ### Fixed
